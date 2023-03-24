@@ -56,6 +56,11 @@ jobs:
           version="${{ github.event.inputs.version }}"
         fi
         
+        : # create the version branch, otherwise mike will create a branch
+        : # that has non common history with main
+        git checkout -b "update-docs-$version"
+        git checkout main
+        
         cp ../prefect_source/netlify.toml .
         cp ../prefect_source/mkdocs.yml .
         cp ../prefect_source/mkdocs.insiders.yml .
