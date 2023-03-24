@@ -54,8 +54,8 @@ jobs:
         if [[ -z "$version" ]]; then
           version="${{ github.event.inputs.version }}"
         fi
-
-        mike deploy --update-aliases --push --remote-branch=staging "$version" --docs-dir=../prefect_source/docs --deploy-prefix=site
+        git checkout -b "update-docs-$version"
+        mike deploy --update-aliases --branch=staging "update-docs-$version" --docs-dir=../prefect_source/docs --deploy-prefix=site
 
     - name: Create Pull Request
       env:
@@ -66,8 +66,6 @@ jobs:
           version="${{ github.event.inputs.version }}"
         fi
 
-        git checkout -b "update-docs-$version"
-        git pull origin staging
         cp ../prefect_source/netlify.toml .
         cp ../prefect_source/mkdocs.yml .
         cp ../prefect_source/mkdocs.insiders.yml .
