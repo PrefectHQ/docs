@@ -11,6 +11,11 @@ on:
         type: string
         required: true
 
+env: 
+  # branch name should be update-docs-<version>-<timestamp>
+  # should *not* use run_number or run_id because they are not incremented
+  # when a workflow is re-run
+  BRANCH_NAME:  
 jobs:
   build_and_deploy_docs:
     runs-on: ubuntu-latest
@@ -20,20 +25,24 @@ jobs:
       with:
         ref: main
         fetch-depth: 0
-        
-    - name: Setup Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: 3.10.x
-
-
-    - name: Clone PrefectHQ/prefect
+    
+    - name: Set docs version
       run: |
         version="${{ github.event.client_payload.version }}"
         if [[ -z "$version" ]]; then
           version="${{ github.event.inputs.version }}"
         fi
 
+        echo "version=$version" >> $GITHUB_ENV
+
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: 3.10.x
+
+    - name: Clone PrefectHQ/prefect
+      run: |
+        version="${{ env.version }}"
         if [[ $version == "latest" ]]; then
           git clone --depth 1 https://github.com/PrefectHQ/prefect.git prefect_source
         else
@@ -41,24 +50,35 @@ jobs:
         fi
       working-directory: ${{ github.workspace }}/.. 
 
-    - name: Install dependencies
+    - name: Install Prefect dependencies
       run: |
         pip install -e ".[dev]"
       working-directory: ${{ github.workspace }}/../prefect_source
-        
+
+    - name: Install Netlify TOML dependencies
+      run: |
+        pip install -r requirements.txt
+      working-directory: ${{ github.workspace }}/overrides/netlify
+    
+    - name: Set branch name
+      run: |
+        version="${{ env.version }}"
+        timestamp="$(date +%s)"
+        echo "branch_name=update-docs-$version-$timestamp" >> $GITHUB_ENV
+        echo "timestamp=$timestamp" >> $GITHUB_ENV
+      working-directory: ${{ github.workspace }}
+
     - name: Update docs
       run: |
         git config user.name "GitHub Actions Bot"
         git config user.email "github-actions-bot@example.com"
 
-        version="${{ github.event.client_payload.version }}"
-        if [[ -z "$version" ]]; then
-          version="${{ github.event.inputs.version }}"
-        fi
-        
+        version="${{ env.version }}"
+        branch_name="${{ env.branch_name }}"
+
         : # create the version branch, otherwise mike will create a branch
         : # that has non common history with main
-        git checkout -b "update-docs-$version"
+        git checkout -b $branch_name
         git checkout main
         
         ln -s ../prefect_source/mkdocs.yml
@@ -66,7 +86,7 @@ jobs:
         ln -s ../prefect_source/src ./src
         ln -s ../prefect_source/docs ./docs
         
-        mike deploy --update-aliases --branch="update-docs-$version" --prefix=versions $version
+        mike deploy --update-aliases --branch $branch_name --prefix=versions $version
         
         rm -rf site
         unlink ./src
@@ -74,17 +94,47 @@ jobs:
         unlink ./mkdocs.yml
         unlink ./mkdocs.insiders.yml
 
+    - name: Update Netlify TOML
+      env: 
+        PREFECT_SOURCE: ${{ github.workspace }}/../prefect_source
+      run: |
+        version="${{ env.version }}"
+
+        if [[ $version == "latest" ]]; then
+          python build-netlify-config.py \
+            --input-config-path "$PREFECT_SOURCE/netlify.toml" \
+            --overrides-path ./netlify.overrides.toml \
+            --additions-path ./netlify.additions.toml \
+            --output-config-path $GITHUB_WORKSPACE/netlify_temp.toml
+        fi
+        
+        # if $GITHUB_WORKSPACE/netlify.toml is missing, 
+        # or exists but differs from ./netlify_temp.toml, 
+        # move ./netlify_temp.toml to $GITHUB_WORKSPACE/netlify.toml
+
+        if [[ ! -f $GITHUB_WORKSPACE/netlify.toml ]] || \
+          [[ $(diff $GITHUB_WORKSPACE/netlify.toml ./netlify_temp.toml) ]]; then
+          mv ./netlify_temp.toml $GITHUB_WORKSPACE/netlify.toml
+          
+          # commit the change
+          git add $GITHUB_WORKSPACE/netlify.toml
+          git commit -m "Update Netlify TOML for version $version"
+        fi
+
+        # either way, remove ./netlify_temp.toml
+        rm ./netlify_temp.toml  
+
+      working-directory: ${{ github.workspace }}/overrides/netlify
+
     - name: Create Pull Request
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        version="${{ github.event.client_payload.version }}"
-        if [[ -z "$version" ]]; then
-          version="${{ github.event.inputs.version }}"
-        fi
+        version="${{ env.version }}"
+        branch_name="${{ env.branch_name }}"
 
-        git push origin "update-docs-$version"
-        gh pr create --base main --head "update-docs-$version" \
-          --title "Update documentation for $version" \
+        git push origin $branch_name
+        gh pr create --base main --head $branch_name \
+          --title "Update documentation for $version-$timestamp" \
           --body "Automated documentation update for version $version" \
           --label "documentation"
