@@ -86,7 +86,15 @@ jobs:
         ln -s ../prefect_source/mkdocs.insiders.yml      
         ln -s ../prefect_source/src ./src
         ln -s ../prefect_source/docs ./docs
-        
+
+        # append the contents of ./overrides/templates/outdated.html to ./docs/overrides/main.html
+        cat ./overrides/templates/outdated.html >> ./docs/overrides/main.html
+
+        # run ./utilities/update-mkdocs-config.py to update mkdocs.yml
+        python ./utilities/update-mkdocs-config.py \
+          --config-file-path ./mkdocs.yml \
+          --docs-version "$version"
+
         mike deploy --update-aliases --branch $branch_name --prefix=versions $version
         
         rm -rf site
