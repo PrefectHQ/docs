@@ -25,6 +25,7 @@ jobs:
       with:
         ref: main
         fetch-depth: 0
+        path: ./docs
     
     - name: Set docs version
       run: |
@@ -55,7 +56,7 @@ jobs:
           git clone --branch "$version" --depth 1 https://github.com/PrefectHQ/prefect.git prefect_source
         fi
 
-      working-directory: ${{ github.workspace }}/.. 
+      working-directory: ${{ github.workspace }}/
 
 
     - name: Clone PrefectHQ/mkdocs-material-insiders
@@ -64,7 +65,7 @@ jobs:
         repository: PrefectHQ/mkdocs-material-insiders
         ref: main
         token: ${{ secrets.MKDOCS_REPO_RO }}
-        path: ../mkdocs-material-insiders
+        path: ./mkdocs-material-insiders
         depth: 1
 
 
@@ -73,7 +74,7 @@ jobs:
         pip install --upgrade pip 
         pip install --upgrade --upgrade-strategy eager  -e ".[dev]"
 
-      working-directory: ${{ github.workspace }}/../prefect_source
+      working-directory: ${{ github.workspace }}/prefect_source
 
 
     - name: Install mkdocs-material-insiders
@@ -82,7 +83,7 @@ jobs:
         sudo apt-get install -y libcairo2
         pip install --upgrade --upgrade-strategy eager -e .
 
-      working-directory: ${{ github.workspace }}/../mkdocs-material-insiders
+      working-directory: ${{ github.workspace }}/mkdocs-material-insiders
 
 
     - name: Install Python dependencies
@@ -96,8 +97,6 @@ jobs:
         timestamp="$(date +%s)"
         echo "branch_name=update-docs-$version-$timestamp" >> $GITHUB_ENV
         echo "timestamp=$timestamp" >> $GITHUB_ENV
-
-      working-directory: ${{ github.workspace }}
 
 
     - name: Update docs
@@ -133,6 +132,8 @@ jobs:
         unlink ./docs
         unlink ./mkdocs.yml
         unlink ./mkdocs.insiders.yml
+
+      working-directory: ${{ github.workspace }}/docs
 
 
     - name: Update Netlify TOML
@@ -170,7 +171,7 @@ jobs:
           rm ./netlify_temp.toml
         fi
 
-      working-directory: ${{ github.workspace }}/overrides/netlify
+      working-directory: ${{ github.workspace }}/docs/overrides/netlify
 
 
     - name: Create Pull Request
@@ -185,3 +186,5 @@ jobs:
           --title "Update documentation for $version-$timestamp" \
           --body "Automated documentation update for version $version" \
           --label "documentation"
+      
+      working-directory: ${{ github.workspace }}/docs
