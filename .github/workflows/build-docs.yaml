@@ -131,11 +131,11 @@ jobs:
 
         # append the contents of ./overrides/templates/outdated.html to ./docs/overrides/main.html
         cat ./overrides/templates/outdated.html >> ./docs/overrides/main.html
-
-        # run ./utilities/update-mkdocs-config.py to update mkdocs.yml
-        python ./utilities/update-mkdocs-config.py \
-          --config-file-path ./mkdocs.yml \
-          --docs-version "$version"
+        
+        # update the docs version in mkdocs.yml since mike does not actually provide the 
+        # version like Mkdocs expects it to.
+        sed -i '/provider: mike/d' ./mkdocs.yml
+        sed -i "s/version:.*/version: $version/" ./mkdocs.yml
 
         mike deploy --update-aliases --branch $branch_name --prefix=versions $version
         
