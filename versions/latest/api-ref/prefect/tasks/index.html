@@ -3947,6 +3947,17 @@ Defaults to the value set in the flow the task is called in.</p></td>
           </td>
         </tr>
         <tr>
+          <td><code>result_storage_key</code></td>
+          <td>
+                <code><span title="typing.Optional">Optional</span>[str]</code>
+          </td>
+          <td><p>An optional key to store the result in storage at when persisted.
+Defaults to a unique identifier.</p></td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+        <tr>
           <td><code>result_serializer</code></td>
           <td>
                 <code><span title="typing.Optional">Optional</span>[<span title="prefect.results.ResultSerializer">ResultSerializer</span>]</code>
@@ -4764,7 +4775,18 @@ execution with matching cache key is used.</p></td>
 <span class="normal">845</span>
 <span class="normal">846</span>
 <span class="normal">847</span>
-<span class="normal">848</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@PrefectObjectRegistry</span><span class="o">.</span><span class="n">register_instances</span>
+<span class="normal">848</span>
+<span class="normal">849</span>
+<span class="normal">850</span>
+<span class="normal">851</span>
+<span class="normal">852</span>
+<span class="normal">853</span>
+<span class="normal">854</span>
+<span class="normal">855</span>
+<span class="normal">856</span>
+<span class="normal">857</span>
+<span class="normal">858</span>
+<span class="normal">859</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@PrefectObjectRegistry</span><span class="o">.</span><span class="n">register_instances</span>
 <span class="k">class</span> <span class="nc">Task</span><span class="p">(</span><span class="n">Generic</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">R</span><span class="p">]):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A Prefect task definition.</span>
@@ -4812,6 +4834,8 @@ execution with matching cache key is used.</p></td>
 <span class="sd">            the features being used.</span>
 <span class="sd">        result_storage: An optional block to use to persist the result of this task.</span>
 <span class="sd">            Defaults to the value set in the flow the task is called in.</span>
+<span class="sd">        result_storage_key: An optional key to store the result in storage at when persisted.</span>
+<span class="sd">            Defaults to a unique identifier.</span>
 <span class="sd">        result_serializer: An optional serializer to use to serialize the result of this</span>
 <span class="sd">            task for persistence. Defaults to the value set in the flow the task is</span>
 <span class="sd">            called in.</span>
@@ -4852,6 +4876,7 @@ execution with matching cache key is used.</p></td>
         <span class="n">persist_result</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">result_storage</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ResultStorage</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">result_serializer</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ResultSerializer</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">result_storage_key</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">cache_result_in_memory</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">timeout_seconds</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">log_prints</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -4915,6 +4940,7 @@ execution with matching cache key is used.</p></td>
         <span class="bp">self</span><span class="o">.</span><span class="n">persist_result</span> <span class="o">=</span> <span class="n">persist_result</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">result_storage</span> <span class="o">=</span> <span class="n">result_storage</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">result_serializer</span> <span class="o">=</span> <span class="n">result_serializer</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">result_storage_key</span> <span class="o">=</span> <span class="n">result_storage_key</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cache_result_in_memory</span> <span class="o">=</span> <span class="n">cache_result_in_memory</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">timeout_seconds</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">timeout_seconds</span><span class="p">)</span> <span class="k">if</span> <span class="n">timeout_seconds</span> <span class="k">else</span> <span class="kc">None</span>
         <span class="c1"># Warn if this task&#39;s `name` conflicts with another task while having a</span>
@@ -4967,6 +4993,7 @@ execution with matching cache key is used.</p></td>
         <span class="n">persist_result</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">NotSet</span><span class="p">,</span>
         <span class="n">result_storage</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ResultStorage</span><span class="p">]</span> <span class="o">=</span> <span class="n">NotSet</span><span class="p">,</span>
         <span class="n">result_serializer</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ResultSerializer</span><span class="p">]</span> <span class="o">=</span> <span class="n">NotSet</span><span class="p">,</span>
+        <span class="n">result_storage_key</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">NotSet</span><span class="p">,</span>
         <span class="n">cache_result_in_memory</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">timeout_seconds</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">log_prints</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">NotSet</span><span class="p">,</span>
@@ -5000,6 +5027,7 @@ execution with matching cache key is used.</p></td>
 <span class="sd">            persist_result: A new option for enabling or disabling result persistence.</span>
 <span class="sd">            result_storage: A new storage type to use for results.</span>
 <span class="sd">            result_serializer: A new serializer to use for results.</span>
+<span class="sd">            result_storage_key: A new key for the persisted result to be stored at.</span>
 <span class="sd">            timeout_seconds: A new maximum time for the task to complete in seconds.</span>
 <span class="sd">            log_prints: A new option for enabling or disabling redirection of `print` statements.</span>
 <span class="sd">            refresh_cache: A new option for enabling or disabling cache refresh.</span>
@@ -5067,6 +5095,11 @@ execution with matching cache key is used.</p></td>
             <span class="p">),</span>
             <span class="n">result_storage</span><span class="o">=</span><span class="p">(</span>
                 <span class="n">result_storage</span> <span class="k">if</span> <span class="n">result_storage</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">NotSet</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">result_storage</span>
+            <span class="p">),</span>
+            <span class="n">result_storage_key</span><span class="o">=</span><span class="p">(</span>
+                <span class="n">result_storage_key</span>
+                <span class="k">if</span> <span class="n">result_storage_key</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">NotSet</span>
+                <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">result_storage_key</span>
             <span class="p">),</span>
             <span class="n">result_serializer</span><span class="o">=</span><span class="p">(</span>
                 <span class="n">result_serializer</span>
@@ -5711,18 +5744,7 @@ task</p></td>
 
       <details class="quote">
         <summary>Source code in <code>prefect/tasks.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">715</span>
-<span class="normal">716</span>
-<span class="normal">717</span>
-<span class="normal">718</span>
-<span class="normal">719</span>
-<span class="normal">720</span>
-<span class="normal">721</span>
-<span class="normal">722</span>
-<span class="normal">723</span>
-<span class="normal">724</span>
-<span class="normal">725</span>
-<span class="normal">726</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">726</span>
 <span class="normal">727</span>
 <span class="normal">728</span>
 <span class="normal">729</span>
@@ -5844,7 +5866,18 @@ task</p></td>
 <span class="normal">845</span>
 <span class="normal">846</span>
 <span class="normal">847</span>
-<span class="normal">848</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">map</span><span class="p">(</span>
+<span class="normal">848</span>
+<span class="normal">849</span>
+<span class="normal">850</span>
+<span class="normal">851</span>
+<span class="normal">852</span>
+<span class="normal">853</span>
+<span class="normal">854</span>
+<span class="normal">855</span>
+<span class="normal">856</span>
+<span class="normal">857</span>
+<span class="normal">858</span>
+<span class="normal">859</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">map</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
     <span class="n">return_state</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -6145,18 +6178,7 @@ the state of the task</p></td>
 
       <details class="quote">
         <summary>Source code in <code>prefect/tasks.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">568</span>
-<span class="normal">569</span>
-<span class="normal">570</span>
-<span class="normal">571</span>
-<span class="normal">572</span>
-<span class="normal">573</span>
-<span class="normal">574</span>
-<span class="normal">575</span>
-<span class="normal">576</span>
-<span class="normal">577</span>
-<span class="normal">578</span>
-<span class="normal">579</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">579</span>
 <span class="normal">580</span>
 <span class="normal">581</span>
 <span class="normal">582</span>
@@ -6255,7 +6277,18 @@ the state of the task</p></td>
 <span class="normal">675</span>
 <span class="normal">676</span>
 <span class="normal">677</span>
-<span class="normal">678</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">submit</span><span class="p">(</span>
+<span class="normal">678</span>
+<span class="normal">679</span>
+<span class="normal">680</span>
+<span class="normal">681</span>
+<span class="normal">682</span>
+<span class="normal">683</span>
+<span class="normal">684</span>
+<span class="normal">685</span>
+<span class="normal">686</span>
+<span class="normal">687</span>
+<span class="normal">688</span>
+<span class="normal">689</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">submit</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
     <span class="n">return_state</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -6528,6 +6561,16 @@ retry can be jittered in order to avoid a "thundering herd".</p></td>
           </td>
         </tr>
         <tr>
+          <td><code>result_storage_key</code></td>
+          <td>
+                <code><span title="typing.Optional">Optional</span>[str]</code>
+          </td>
+          <td><p>A new key for the persisted result to be stored at.</p></td>
+          <td>
+                <code>NotSet</code>
+          </td>
+        </tr>
+        <tr>
           <td><code>timeout_seconds</code></td>
           <td>
                 <code><span title="typing.Union">Union</span>[int, float]</code>
@@ -6630,11 +6673,7 @@ retry can be jittered in order to avoid a "thundering herd".</p></td>
 
       <details class="quote">
         <summary>Source code in <code>prefect/tasks.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">284</span>
-<span class="normal">285</span>
-<span class="normal">286</span>
-<span class="normal">287</span>
-<span class="normal">288</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">288</span>
 <span class="normal">289</span>
 <span class="normal">290</span>
 <span class="normal">291</span>
@@ -6772,7 +6811,18 @@ retry can be jittered in order to avoid a "thundering herd".</p></td>
 <span class="normal">423</span>
 <span class="normal">424</span>
 <span class="normal">425</span>
-<span class="normal">426</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">with_options</span><span class="p">(</span>
+<span class="normal">426</span>
+<span class="normal">427</span>
+<span class="normal">428</span>
+<span class="normal">429</span>
+<span class="normal">430</span>
+<span class="normal">431</span>
+<span class="normal">432</span>
+<span class="normal">433</span>
+<span class="normal">434</span>
+<span class="normal">435</span>
+<span class="normal">436</span>
+<span class="normal">437</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">with_options</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -6794,6 +6844,7 @@ retry can be jittered in order to avoid a "thundering herd".</p></td>
     <span class="n">persist_result</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">NotSet</span><span class="p">,</span>
     <span class="n">result_storage</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ResultStorage</span><span class="p">]</span> <span class="o">=</span> <span class="n">NotSet</span><span class="p">,</span>
     <span class="n">result_serializer</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ResultSerializer</span><span class="p">]</span> <span class="o">=</span> <span class="n">NotSet</span><span class="p">,</span>
+    <span class="n">result_storage_key</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">NotSet</span><span class="p">,</span>
     <span class="n">cache_result_in_memory</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">timeout_seconds</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">log_prints</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">NotSet</span><span class="p">,</span>
@@ -6827,6 +6878,7 @@ retry can be jittered in order to avoid a "thundering herd".</p></td>
 <span class="sd">        persist_result: A new option for enabling or disabling result persistence.</span>
 <span class="sd">        result_storage: A new storage type to use for results.</span>
 <span class="sd">        result_serializer: A new serializer to use for results.</span>
+<span class="sd">        result_storage_key: A new key for the persisted result to be stored at.</span>
 <span class="sd">        timeout_seconds: A new maximum time for the task to complete in seconds.</span>
 <span class="sd">        log_prints: A new option for enabling or disabling redirection of `print` statements.</span>
 <span class="sd">        refresh_cache: A new option for enabling or disabling cache refresh.</span>
@@ -6894,6 +6946,11 @@ retry can be jittered in order to avoid a "thundering herd".</p></td>
         <span class="p">),</span>
         <span class="n">result_storage</span><span class="o">=</span><span class="p">(</span>
             <span class="n">result_storage</span> <span class="k">if</span> <span class="n">result_storage</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">NotSet</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">result_storage</span>
+        <span class="p">),</span>
+        <span class="n">result_storage_key</span><span class="o">=</span><span class="p">(</span>
+            <span class="n">result_storage_key</span>
+            <span class="k">if</span> <span class="n">result_storage_key</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">NotSet</span>
+            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">result_storage_key</span>
         <span class="p">),</span>
         <span class="n">result_serializer</span><span class="o">=</span><span class="p">(</span>
             <span class="n">result_serializer</span>
@@ -7202,6 +7259,17 @@ Defaults to the value set in the flow the task is called in.</p></td>
           </td>
         </tr>
         <tr>
+          <td><code>result_storage_key</code></td>
+          <td>
+                <code><span title="typing.Optional">Optional</span>[str]</code>
+          </td>
+          <td><p>An optional key to store the result in storage at when persisted.
+Defaults to a unique identifier.</p></td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+        <tr>
           <td><code>result_serializer</code></td>
           <td>
                 <code><span title="typing.Optional">Optional</span>[<span title="prefect.results.ResultSerializer">ResultSerializer</span>]</code>
@@ -7330,19 +7398,7 @@ execution with matching cache key is used.</p></td>
 
       <details class="quote">
         <summary>Source code in <code>prefect/tasks.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 887</span>
-<span class="normal"> 888</span>
-<span class="normal"> 889</span>
-<span class="normal"> 890</span>
-<span class="normal"> 891</span>
-<span class="normal"> 892</span>
-<span class="normal"> 893</span>
-<span class="normal"> 894</span>
-<span class="normal"> 895</span>
-<span class="normal"> 896</span>
-<span class="normal"> 897</span>
-<span class="normal"> 898</span>
-<span class="normal"> 899</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 899</span>
 <span class="normal"> 900</span>
 <span class="normal"> 901</span>
 <span class="normal"> 902</span>
@@ -7509,7 +7565,24 @@ execution with matching cache key is used.</p></td>
 <span class="normal">1063</span>
 <span class="normal">1064</span>
 <span class="normal">1065</span>
-<span class="normal">1066</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">task</span><span class="p">(</span>
+<span class="normal">1066</span>
+<span class="normal">1067</span>
+<span class="normal">1068</span>
+<span class="normal">1069</span>
+<span class="normal">1070</span>
+<span class="normal">1071</span>
+<span class="normal">1072</span>
+<span class="normal">1073</span>
+<span class="normal">1074</span>
+<span class="normal">1075</span>
+<span class="normal">1076</span>
+<span class="normal">1077</span>
+<span class="normal">1078</span>
+<span class="normal">1079</span>
+<span class="normal">1080</span>
+<span class="normal">1081</span>
+<span class="normal">1082</span>
+<span class="normal">1083</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">task</span><span class="p">(</span>
     <span class="n">__fn</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -7529,6 +7602,7 @@ execution with matching cache key is used.</p></td>
     <span class="n">retry_jitter_factor</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">persist_result</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">result_storage</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ResultStorage</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">result_storage_key</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">result_serializer</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ResultSerializer</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">cache_result_in_memory</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="n">timeout_seconds</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -7575,6 +7649,8 @@ execution with matching cache key is used.</p></td>
 <span class="sd">            the features being used.</span>
 <span class="sd">        result_storage: An optional block to use to persist the result of this task.</span>
 <span class="sd">            Defaults to the value set in the flow the task is called in.</span>
+<span class="sd">        result_storage_key: An optional key to store the result in storage at when persisted.</span>
+<span class="sd">            Defaults to a unique identifier.</span>
 <span class="sd">        result_serializer: An optional serializer to use to serialize the result of this</span>
 <span class="sd">            task for persistence. Defaults to the value set in the flow the task is</span>
 <span class="sd">            called in.</span>
@@ -7654,6 +7730,7 @@ execution with matching cache key is used.</p></td>
                 <span class="n">retry_jitter_factor</span><span class="o">=</span><span class="n">retry_jitter_factor</span><span class="p">,</span>
                 <span class="n">persist_result</span><span class="o">=</span><span class="n">persist_result</span><span class="p">,</span>
                 <span class="n">result_storage</span><span class="o">=</span><span class="n">result_storage</span><span class="p">,</span>
+                <span class="n">result_storage_key</span><span class="o">=</span><span class="n">result_storage_key</span><span class="p">,</span>
                 <span class="n">result_serializer</span><span class="o">=</span><span class="n">result_serializer</span><span class="p">,</span>
                 <span class="n">cache_result_in_memory</span><span class="o">=</span><span class="n">cache_result_in_memory</span><span class="p">,</span>
                 <span class="n">timeout_seconds</span><span class="o">=</span><span class="n">timeout_seconds</span><span class="p">,</span>
@@ -7680,6 +7757,7 @@ execution with matching cache key is used.</p></td>
                 <span class="n">retry_jitter_factor</span><span class="o">=</span><span class="n">retry_jitter_factor</span><span class="p">,</span>
                 <span class="n">persist_result</span><span class="o">=</span><span class="n">persist_result</span><span class="p">,</span>
                 <span class="n">result_storage</span><span class="o">=</span><span class="n">result_storage</span><span class="p">,</span>
+                <span class="n">result_storage_key</span><span class="o">=</span><span class="n">result_storage_key</span><span class="p">,</span>
                 <span class="n">result_serializer</span><span class="o">=</span><span class="n">result_serializer</span><span class="p">,</span>
                 <span class="n">cache_result_in_memory</span><span class="o">=</span><span class="n">cache_result_in_memory</span><span class="p">,</span>
                 <span class="n">timeout_seconds</span><span class="o">=</span><span class="n">timeout_seconds</span><span class="p">,</span>
