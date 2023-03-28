@@ -99,14 +99,16 @@ jobs:
         PREFECT_SOURCE: ${{ github.workspace }}/../prefect_source
       run: |
         version="${{ env.version }}"
-
-        if [[ $version == "latest" ]]; then
-          python build-netlify-config.py \
-            --input-config-path "$PREFECT_SOURCE/netlify.toml" \
-            --overrides-path ./netlify.overrides.toml \
-            --additions-path ./netlify.additions.toml \
-            --output-config-path $GITHUB_WORKSPACE/netlify_temp.toml
+        # if version is not latest, skip this step
+        if [[ $version != "latest" ]]; then
+          exit 0
         fi
+
+        python build-netlify-config.py \
+          --input-config-path "$PREFECT_SOURCE/netlify.toml" \
+          --overrides-path ./netlify.overrides.toml \
+          --additions-path ./netlify.additions.toml \
+          --output-config-path ./netlify_temp.toml
         
         # if $GITHUB_WORKSPACE/netlify.toml is missing, 
         # or exists but differs from ./netlify_temp.toml, 
