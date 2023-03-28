@@ -746,6 +746,13 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#result-storage-key" class="md-nav__link">
+    Result storage key
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#result-serializer" class="md-nav__link">
     Result serializer
   </a>
@@ -831,6 +838,13 @@
   
     <nav class="md-nav" aria-label="Result types">
       <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#unpersisted-results" class="md-nav__link">
+    Unpersisted results
+  </a>
+  
+</li>
         
           <li class="md-nav__item">
   <a href="#literal-results" class="md-nav__link">
@@ -3838,6 +3852,13 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#result-storage-key" class="md-nav__link">
+    Result storage key
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#result-serializer" class="md-nav__link">
     Result serializer
   </a>
@@ -3923,6 +3944,13 @@
   
     <nav class="md-nav" aria-label="Result types">
       <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#unpersisted-results" class="md-nav__link">
+    Unpersisted results
+  </a>
+  
+</li>
         
           <li class="md-nav__item">
   <a href="#literal-results" class="md-nav__link">
@@ -4299,6 +4327,61 @@ If there is no context to load the storage from and results must be persisted, r
 <li>A storage instance, e.g. <code>LocalFileSystem(basepath=".my-results")</code></li>
 <li>A storage slug, e.g. <code>'s3/dev-s3-block'</code></li>
 </ul>
+<h4 id="result-storage-key">Result storage key<a class="headerlink" href="#result-storage-key" title="Permanent link">&para;</a></h4>
+<p>The path of the result file in the result storage can be configured with the <code>result_storage_key</code>. The <code>result_storage_key</code> option defaults to a null value, which generates a unique identifier for each result.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
+<span class="kn">from</span> <span class="nn">prefect.filesystems</span> <span class="kn">import</span> <span class="n">LocalFileSystem</span><span class="p">,</span> <span class="n">S3</span>
+
+<span class="nd">@flow</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">my_flow</span><span class="p">(</span><span class="n">result_storage</span><span class="o">=</span><span class="n">S3</span><span class="p">(</span><span class="n">bucket_path</span><span class="o">=</span><span class="s2">&quot;my-bucket&quot;</span><span class="p">)):</span>
+    <span class="n">my_task</span><span class="p">()</span>
+
+<span class="nd">@task</span><span class="p">(</span><span class="n">persist_result</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">result_storage_key</span><span class="o">=</span><span class="s2">&quot;my_task.json&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">my_task</span><span class="p">():</span>
+    <span class="o">...</span>
+
+<span class="n">my_flow</span><span class="p">()</span>  <span class="c1"># The task&#39;s result will be persisted to &#39;s3://my-bucket/my_task.json&#39;</span>
+</code></pre></div>
+<p>Result storage keys are formatted with access to all of the modules in <code>prefect.runtime</code> and the run's <code>parameters</code>. In the following example, we will run a flow with three runs of the same task. Each task run will write its result to a unique file based on the <code>name</code> parameter.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
+
+<span class="nd">@flow</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">my_flow</span><span class="p">():</span>
+    <span class="n">hello_world</span><span class="p">()</span>
+    <span class="n">hello_world</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;foo&quot;</span><span class="p">)</span>
+    <span class="n">hello_world</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;bar&quot;</span><span class="p">)</span>
+
+<span class="nd">@task</span><span class="p">(</span><span class="n">persist_result</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">result_storage_key</span><span class="o">=</span><span class="s2">&quot;hello-</span><span class="si">{parameters[name]}</span><span class="s2">.json&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">hello_world</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;world&quot;</span><span class="p">):</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;hello </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span>
+
+<span class="n">my_flow</span><span class="p">()</span>
+</code></pre></div>
+<p>After running the flow, we can see three persisted result files in our storage directory:</p>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>ls<span class="w"> </span>~/.prefect/storage<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="s2">&quot;hello-&quot;</span>
+hello-bar.json
+hello-foo.json
+hello-world.json
+</code></pre></div>
+<p>In the next example, we include metadata about the flow run from the <code>prefect.runtime.flow_run</code> module:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
+
+<span class="nd">@flow</span>
+<span class="k">def</span> <span class="nf">my_flow</span><span class="p">():</span>
+    <span class="n">hello_world</span><span class="p">()</span>
+
+<span class="nd">@task</span><span class="p">(</span><span class="n">persist_result</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">result_storage_key</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">{flow_run.flow_name}</span><span class="s2">_</span><span class="si">{flow_run.name}</span><span class="s2">_hello.json&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">hello_world</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;world&quot;</span><span class="p">):</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;hello </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span>
+
+<span class="n">my_flow</span><span class="p">()</span>
+</code></pre></div>
+<p>After running this flow, we can see a result file templated with the name of the flow and the flow run:</p>
+<div class="highlight"><pre><span></span><code>❯ ls ~/.prefect/storage | grep &quot;my-flow&quot;    
+my-flow_industrious-trout_hello.json
+</code></pre></div>
+<p>If a result exists at a given storage key in the storage location, it will be overwritten.</p>
+<p>Result storage keys can only be configured on tasks at this time.</p>
 <h4 id="result-serializer">Result serializer<a class="headerlink" href="#result-serializer" title="Permanent link">&para;</a></h4>
 <p><a href="#result-serializer-types">The result serializer</a> can be configured with the <code>result_serializer</code> option. The <code>result_serializer</code> option defaults to a null value, which infers the serializer from the context.
 Generally, this means that tasks will use the result serializer configured on the flow unless otherwise specified.
@@ -4430,10 +4513,13 @@ If you are using custom serializers, you must pass a full instance.</p>
 <h2 id="result-types">Result types<a class="headerlink" href="#result-types" title="Permanent link">&para;</a></h2>
 <p>Prefect uses internal result types to capture information about the result attached to a state. The following types are used:</p>
 <ul>
+<li><code>UnpersistedResult</code>: Stores result metadata but the value is only available when created.</li>
 <li><code>LiteralResult</code>: Stores simple values inline.</li>
 <li><code>PersistedResult</code>: Stores a reference to a result persisted to storage.</li>
 </ul>
 <p>All result types include a <code>get()</code> method that can be called to return the value of the result. This is done behind the scenes when the <code>result()</code> method is used on states or futures.</p>
+<h3 id="unpersisted-results">Unpersisted results<a class="headerlink" href="#unpersisted-results" title="Permanent link">&para;</a></h3>
+<p>Unpersisted results are used to represent results that have not been and will not be persisted beyond the current flow run. The value associated with the result is stored in memory, but will not be available later. Result metadata is attached to this object for storage in the API and representation in the UI.</p>
 <h3 id="literal-results">Literal results<a class="headerlink" href="#literal-results" title="Permanent link">&para;</a></h3>
 <p>Literal results are used to represent <a href="#storage-of-results-in-prefect">results stored in the Prefect database</a>. The values contained by these results must always be JSON serializable.</p>
 <p>Example:
