@@ -110,10 +110,10 @@ jobs:
           --additions-path ./netlify.additions.toml \
           --output-config-path ./netlify_temp.toml
         
-        # if $GITHUB_WORKSPACE/netlify.toml is missing, 
-        # or exists but differs from ./netlify_temp.toml, 
-        # move ./netlify_temp.toml to $GITHUB_WORKSPACE/netlify.toml
-
+        # If $GITHUB_WORKSPACE/netlify.toml is missing, 
+        # or exist but differs from ./netlify_temp.toml, 
+        # move ./netlify_temp.toml to $GITHUB_WORKSPACE/netlify.toml.
+        # otherwise, just remove ./netlify_temp.toml
         if [[ ! -f $GITHUB_WORKSPACE/netlify.toml ]] || \
           [[ $(diff $GITHUB_WORKSPACE/netlify.toml ./netlify_temp.toml) ]]; then
           mv ./netlify_temp.toml $GITHUB_WORKSPACE/netlify.toml
@@ -121,10 +121,9 @@ jobs:
           # commit the change
           git add $GITHUB_WORKSPACE/netlify.toml
           git commit -m "Update Netlify TOML for version $version"
+        else
+          rm ./netlify_temp.toml
         fi
-
-        # either way, remove ./netlify_temp.toml
-        rm ./netlify_temp.toml  
 
       working-directory: ${{ github.workspace }}/overrides/netlify
 
