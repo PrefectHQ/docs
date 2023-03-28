@@ -33,6 +33,12 @@ jobs:
           version="${{ github.event.inputs.version }}"
         fi
 
+        # if version is missing, exit with error
+        if [[ -z "$version" ]]; then
+          echo "Can't build versioned docs without a version!"
+          exit 1
+        fi
+
         echo "version=$version" >> $GITHUB_ENV
 
     - name: Setup Python
@@ -104,16 +110,20 @@ jobs:
           exit 0
         fi
 
+        git checkout $branch_name
+
         python build-netlify-config.py \
           --input-config-path "$PREFECT_SOURCE/netlify.toml" \
           --overrides-path ./netlify.overrides.toml \
           --additions-path ./netlify.additions.toml \
           --output-config-path ./netlify_temp.toml
         
+
         # If $GITHUB_WORKSPACE/netlify.toml is missing, 
         # or exist but differs from ./netlify_temp.toml, 
         # move ./netlify_temp.toml to $GITHUB_WORKSPACE/netlify.toml.
         # otherwise, just remove ./netlify_temp.toml
+
         if [[ ! -f $GITHUB_WORKSPACE/netlify.toml ]] || \
           [[ $(diff $GITHUB_WORKSPACE/netlify.toml ./netlify_temp.toml) ]]; then
           mv ./netlify_temp.toml $GITHUB_WORKSPACE/netlify.toml
