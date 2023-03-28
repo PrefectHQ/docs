@@ -57,25 +57,41 @@ jobs:
 
       working-directory: ${{ github.workspace }}/.. 
 
-    - name: Install Prefect dependencies
+
+    - name: Clone PrefectHQ/mkdocs-material-insiders
+      uses: actions/checkout@v3
+      with:
+        repository: PrefectHQ/mkdocs-material-insiders
+        ref: main
+        token: ${{ secrets.MKDOCS_REPO_RO }}
+        path: ../mkdocs-material-insiders
+        depth: 1
+      
+      working-directory: ${{ github.workspace }}/..
+
+
+    - name: Install Prefect and dependencies
       run: |
         pip install --upgrade pip 
         pip install --upgrade --upgrade-strategy eager  -e ".[dev]"
 
       working-directory: ${{ github.workspace }}/../prefect_source
 
+
     - name: Install Python dependencies
       run: |
         pip install -r requirements.txt
     
+
     - name: Set branch name
       run: |
         version="${{ env.version }}"
         timestamp="$(date +%s)"
         echo "branch_name=update-docs-$version-$timestamp" >> $GITHUB_ENV
         echo "timestamp=$timestamp" >> $GITHUB_ENV
-        
+
       working-directory: ${{ github.workspace }}
+
 
     - name: Update docs
       run: |
@@ -110,6 +126,7 @@ jobs:
         unlink ./docs
         unlink ./mkdocs.yml
         unlink ./mkdocs.insiders.yml
+
 
     - name: Update Netlify TOML
       env: 
@@ -147,6 +164,7 @@ jobs:
         fi
 
       working-directory: ${{ github.workspace }}/overrides/netlify
+
 
     - name: Create Pull Request
       env:
