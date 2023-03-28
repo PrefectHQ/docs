@@ -14,7 +14,7 @@ def get_mkdocs_config(file_path):
         dict: A dict containing the mkdocs config
     """
     with open(file_path, "r") as f:
-        return yaml.load(f.read(), Loader=yaml.SafeLoader)
+        return yaml.load(f.read(), Loader=yaml.BaseLoader)
 
 
 def save_mkdocs_config(mkdocs_config, file_path):
