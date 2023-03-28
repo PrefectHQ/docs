@@ -50,11 +50,14 @@ jobs:
         else
           git clone --branch "$version" --depth 1 https://github.com/PrefectHQ/prefect.git prefect_source
         fi
+
       working-directory: ${{ github.workspace }}/.. 
 
     - name: Install Prefect dependencies
       run: |
-        pip install -e ".[dev]"
+        pip install --upgrade pip 
+        pip install --upgrade --upgrade-strategy eager  -e ".[dev]"
+
       working-directory: ${{ github.workspace }}/../prefect_source
 
     - name: Install Python dependencies
@@ -67,6 +70,7 @@ jobs:
         timestamp="$(date +%s)"
         echo "branch_name=update-docs-$version-$timestamp" >> $GITHUB_ENV
         echo "timestamp=$timestamp" >> $GITHUB_ENV
+        
       working-directory: ${{ github.workspace }}
 
     - name: Update docs
