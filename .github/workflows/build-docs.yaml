@@ -131,11 +131,10 @@ jobs:
 
         # append the contents of ./overrides/templates/outdated.html to ./docs/overrides/main.html
         cat ./overrides/templates/outdated.html >> ./docs/overrides/main.html
+
+        # add version string we can reference in Mkdocs templates
+        sed -i "/extra:/a\    version_string: $version" ./mkdocs.yml
         
-        # update the docs version in mkdocs.yml since mike does not actually provide the 
-        # version like Mkdocs expects it to.
-        sed -i '/provider: mike/d' ./mkdocs.yml
-        sed -i "s/version:.*/version: $version/" ./mkdocs.yml
 
         # generate API docs
         prefect dev build-docs
