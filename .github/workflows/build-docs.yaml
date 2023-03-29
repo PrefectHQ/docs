@@ -204,18 +204,19 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         version="${{ env.version }}"
+        display_name="${{ env.display_name }}"
         branch_name="${{ env.branch_name }}"
 
         if [[ $version == "latest" ]]; then
           commit_title="Update latest documentation"
         else
-          commit_title="Update documentation for $version"
+          commit_title="Update documentation for $display_name"
         fi
 
         git push origin $branch_name
         gh pr create --base main --head $branch_name \
           --title "$commit_title" \
-          --body "Automated documentation update for version $version" \
+          --body "Automated documentation update for $display_name" \
           --label "documentation"
       
       working-directory: ${{ github.workspace }}/docs
