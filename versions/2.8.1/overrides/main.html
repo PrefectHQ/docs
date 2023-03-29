@@ -1,11 +1,13 @@
 {% extends "base.html" %}
+
 {% block announce %}
 <div style="color: white;">
-  <a href="https://github.com/PrefectHQ/prefect/blob/main/RELEASE-NOTES.md#release-281" style="color: #07e798;">
-    <strong>Prefect 2.8.1 is live!</strong>
-  </a> We've replaced "Orion" in commands, components, and the API with more explicit nomenclature, plus 
-  <a href="https://github.com/PrefectHQ/prefect/blob/main/RELEASE-NOTES.md#release-281" style="color: #07e798;">
-    <strong>much more!</strong>
+  <a href="https://github.com/PrefectHQ/prefect/blob/main/RELEASE-NOTES.md#release-287" style="color: #07e798;">
+    <strong>Prefect 2.8.7 is here!</strong>
+  </a> Includes increased reliability for the Prefect engine, a new results tab in the UI, improvements to the flow run
+  graph, and
+  <a href="https://github.com/PrefectHQ/prefect/blob/main/RELEASE-NOTES.md#release-287" style="color: #07e798;">
+    <strong>more!</strong>
   </a>
 </div>
 
@@ -20,20 +22,39 @@
   </div> -->
 {% endblock %}
 
+{% block analytics %}
+{{ super() }}
+
+<script>
+  !function () {
+    var analytics = window.analytics = window.analytics || []; if (!analytics.initialize) if (analytics.invoked) window.console && console.error && console.error("Segment snippet included twice."); else {
+      analytics.invoked = !0; analytics.methods = ["trackSubmit", "trackClick", "trackLink", "trackForm", "pageview", "identify", "reset", "group", "track", "ready", "alias", "debug", "page", "once", "off", "on", "addSourceMiddleware", "addIntegrationMiddleware", "setAnonymousId", "addDestinationMiddleware"]; analytics.factory = function (e) { return function () { var t = Array.prototype.slice.call(arguments); t.unshift(e); analytics.push(t); return analytics } }; for (var e = 0; e < analytics.methods.length; e++) { var key = analytics.methods[e]; analytics[key] = analytics.factory(key) } analytics.load = function (key, e) { var t = document.createElement("script"); t.type = "text/javascript"; t.async = !0; t.src = "https://cdn.segment.com/analytics.js/v1/" + key + "/analytics.min.js"; var n = document.getElementsByTagName("script")[0]; n.parentNode.insertBefore(t, n); analytics._loadOptions = e }; analytics._writeKey = "xDLAoTXsNYpC4Y6JucKnJ8W1MYBuyAbD";; analytics.SNIPPET_VERSION = "4.15.3";
+      analytics.load("xDLAoTXsNYpC4Y6JucKnJ8W1MYBuyAbD");
+      analytics.page();
+    }
+  }();
+</script>
+{% endblock %}
 {% block outdated %}
   You're viewing the docs for Prefect {{ config.extra.version_string }}.
   <a href="{{ '../' ~ base_url }}"> 
-    <strong>Click here to go to latest.</strong>
+    <strong>Click here to view the latest docs.</strong>
   </a>
-{% endblock %}
 
-<script type="text/javascript">
-  if (outdated) {
-    // hide the announce banner if we are showing the outdated banner
+  <script type="text/javascript">
+    // extract the version from the URL
+    var version = window.location.pathname.split('/')[1];
+    console.log("version is latest!")
+    // check if the version is 'latest'
+    var showVersionBanner = version !== 'latest';
+    
+    // hide the announcement bar if we're not showing the latest version of the docs
+    // wait until dom is loaded
     document.addEventListener("DOMContentLoaded", function(event) {
-      if (document.querySelector('[data-md-component="outdated"]').getAttribute('hidden') === null) {
+      if (showVersionBanner) {
         document.querySelector('[data-md-component="announce"]').setAttribute('hidden', '');
       }
     });
-  }
-</script>
+  </script>
+{% endblock %}
+
