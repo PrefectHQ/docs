@@ -199,9 +199,15 @@ jobs:
         version="${{ env.version }}"
         branch_name="${{ env.branch_name }}"
 
+        if [[ $version == "latest" ]]; then
+          commit_title="Update latest documentation"
+        else
+          commit_title="Update documentation for $version"
+        fi
+
         git push origin $branch_name
         gh pr create --base main --head $branch_name \
-          --title "Update documentation for $version-$timestamp" \
+          --title "$commit_title" \
           --body "Automated documentation update for version $version" \
           --label "documentation"
       
