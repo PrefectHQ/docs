@@ -142,8 +142,15 @@ jobs:
         ln -s ../prefect_source/src ./src
         ln -s ../prefect_source/docs ./docs
 
-        # append the contents of ./overrides/templates/outdated.html to ./docs/overrides/main.html
+        # append the contents of ./overrides/templates/outdated.html to 
+        # ./docs/overrides/main.html
         cat ./overrides/templates/outdated.html >> ./docs/overrides/main.html
+
+        # if there's a file named <version>.css in ./overrides/stylesheets, 
+        # append it to ./docs/stylesheets/extra.css
+        if [[ -f ./overrides/stylesheets/$version.css ]]; then
+          cat ./overrides/stylesheets/$version.css >> ./docs/stylesheets/extra.css
+        fi
 
         # add version string we can reference in Mkdocs templates
         sed -i "/extra:/a\    version_string: $display_name" ./mkdocs.yml
