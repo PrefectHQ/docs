@@ -21,10 +21,15 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'Version to build and deploy (e.g., "2.8.0"). Use "latest" to build and deploy directly from `main`.'
+        description: 'The release tag to build and deploy (e.g., "2.8.0"). Use "latest" to build directly from the main branch of PrefectHQ/Prefect.'
         type: string
         required: true
         default: 'latest'
+      display_name:
+        description: 'The display name for the version (e.g., 2.8.0, 2.8.x, 2.7.x). Leave blank to use the version number.'
+        type: string
+        required: false
+        default: ''
 
 jobs:
   build_docs_version:
@@ -48,6 +53,12 @@ jobs:
         if [[ -z "$version" ]]; then
           echo "Can't build versioned docs without a version!"
           exit 1
+        fi
+
+        # if the display name is blank, use the version number
+        display_name="${{ github.event.client_payload.display_name }}"
+        if [[ -z "$display_name" ]]; then
+          display_name="${{ github.event.inputs.display_name }}"
         fi
 
         echo "version=$version" >> $GITHUB_ENV
@@ -96,7 +107,7 @@ jobs:
       run: |
         version="${{ env.version }}"
         timestamp="$(date +%s)"
-        echo "branch_name=update-docs-$version-$timestamp" >> $GITHUB_ENV
+        echo "branch_name=update-docs-$display_name-$timestamp" >> $GITHUB_ENV
         echo "timestamp=$timestamp" >> $GITHUB_ENV
 
 
@@ -128,7 +139,7 @@ jobs:
         prefect dev build-docs
 
         # build versioned docs
-        mike deploy -F ./mkdocs.insiders.yml --update-aliases --branch $branch_name --prefix=versions $version
+        mike deploy -F ./mkdocs.insiders.yml --update-aliases --branch $branch_name --prefix=versions $display_name
         
         rm -rf site
         unlink ./src
