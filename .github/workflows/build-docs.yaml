@@ -122,14 +122,13 @@ jobs:
         cat ./overrides/templates/outdated.html >> ./docs/overrides/main.html
 
         # add version string we can reference in Mkdocs templates
-        sed -i "/extra:/a\    version_string: $version" ./mkdocs.insiders.yml
-        
+        sed -i "/extra:/a\    version_string: $version" ./mkdocs.yml
 
         # generate API docs
         prefect dev build-docs
 
         # build versioned docs
-        mike deploy --update-aliases --branch $branch_name --prefix=versions $version
+        mike deploy -F ./mkdocs.insiders.yml --update-aliases --branch $branch_name --prefix=versions $version
         
         rm -rf site
         unlink ./src
