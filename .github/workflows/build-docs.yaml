@@ -69,19 +69,11 @@ jobs:
       working-directory: ${{ github.workspace }}/
 
 
-    # - name: Clone PrefectHQ/mkdocs-material-insiders
-    #   uses: actions/checkout@v3
-    #   with:
-    #     repository: PrefectHQ/mkdocs-material-insiders
-    #     ref: main
-    #     token: ${{ secrets.MKDOCS_REPO_TEST_TOKEN }}
-    #     path: ./mkdocs-material-insiders
-    #     fetch-depth: 1
-
-    # step to run pip install directly from git repo of PrefectHQ/mkdocs-material-insiders repo using MKDOCS_REPO_TEST_TOKEN secret
     - name: Install PrefectHQ/mkdocs-material-insiders
+      env:
+        MKDOCS_REPO_TEST_TOKEN: ${{ secrets.MKDOCS_REPO_TEST_TOKEN }}
       run: |
-        pip install git+https://${{ secrets.MKDOCS_REPO_TEST_TOKEN }}@github.com/PrefectHQ/mkdocs-material-insiders.git
+        pip install git+https://$MKDOCS_REPO_TEST_TOKEN@github.com/PrefectHQ/mkdocs-material-insiders.git
         sudo apt-get install -y libcairo2
 
 
