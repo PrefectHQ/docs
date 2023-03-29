@@ -69,14 +69,20 @@ jobs:
       working-directory: ${{ github.workspace }}/
 
 
-    - name: Clone PrefectHQ/mkdocs-material-insiders
-      uses: actions/checkout@v3
-      with:
-        repository: PrefectHQ/mkdocs-material-insiders
-        ref: main
-        token: ${{ secrets.MKDOCS_REPO_TEST_TOKEN }}
-        path: ./mkdocs-material-insiders
-        fetch-depth: 1
+    # - name: Clone PrefectHQ/mkdocs-material-insiders
+    #   uses: actions/checkout@v3
+    #   with:
+    #     repository: PrefectHQ/mkdocs-material-insiders
+    #     ref: main
+    #     token: ${{ secrets.MKDOCS_REPO_TEST_TOKEN }}
+    #     path: ./mkdocs-material-insiders
+    #     fetch-depth: 1
+
+    # step to run pip install directly from git repo of PrefectHQ/mkdocs-material-insiders repo using MKDOCS_REPO_TEST_TOKEN secret
+    - name: Install PrefectHQ/mkdocs-material-insiders
+      run: |
+        pip install git+https://${{ secrets.MKDOCS_REPO_TEST_TOKEN }}@github.com/PrefectHQ/mkdocs-material-insiders.git
+        sudo apt-get install -y libcairo2
 
 
     - name: Install Prefect and dependencies
@@ -85,15 +91,6 @@ jobs:
         pip install --upgrade --upgrade-strategy eager  -e ".[dev]"
 
       working-directory: ${{ github.workspace }}/prefect_source
-
-
-    - name: Install mkdocs-material-insiders
-      run: |
-        # make sure libcairo2 is installed
-        sudo apt-get install -y libcairo2
-        pip install --upgrade --upgrade-strategy eager -e .
-
-      working-directory: ${{ github.workspace }}/mkdocs-material-insiders
 
 
     - name: Install Python dependencies
