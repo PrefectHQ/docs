@@ -40,15 +40,21 @@
   <a href="{{ '../' ~ base_url }}"> 
     <strong>Click here to view the latest docs.</strong>
   </a>
-{% endblock %}
 
-<script type="text/javascript">
-  if (outdated) {
-    // hide the announce banner if we are showing the outdated banner
+  <script type="text/javascript">
+    // extract the version from the URL
+    var version = window.location.pathname.split('/')[1];
+    console.log("version is latest!")
+    // check if the version is 'latest'
+    var showVersionBanner = version !== 'latest';
+    
+    // hide the announcement bar if we're not showing the latest version of the docs
+    // wait until dom is loaded
     document.addEventListener("DOMContentLoaded", function(event) {
-      if (document.querySelector('[data-md-component="outdated"]').getAttribute('hidden') === null) {
+      if (showVersionBanner) {
         document.querySelector('[data-md-component="announce"]').setAttribute('hidden', '');
       }
     });
-  }
-</script>
+  </script>
+{% endblock %}
+
