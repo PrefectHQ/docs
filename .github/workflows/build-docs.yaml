@@ -170,7 +170,7 @@ jobs:
 
         git checkout $branch_name
 
-        echo "Merge Netlify TOML overrides and additions..."
+        echo "Merging Netlify TOML overrides and additions..."
         python build-netlify-config.py \
           --input-config-path "$PREFECT_SOURCE/netlify.toml" \
           --overrides-path ./netlify.overrides.toml \
@@ -197,6 +197,14 @@ jobs:
         fi
 
       working-directory: ${{ github.workspace }}/docs/overrides/netlify
+
+
+    - name: Sort docs versions
+      run: |
+        git checkout $branch_name
+        python ./utilities/sort-docs-versions.py --versions-file-path ./versions/versions.json
+
+      working-directory: ${{ github.workspace }}/docs
 
 
     - name: Create Pull Request
