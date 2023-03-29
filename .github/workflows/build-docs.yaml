@@ -69,14 +69,14 @@ jobs:
       working-directory: ${{ github.workspace }}/
 
 
-    # - name: Clone PrefectHQ/mkdocs-material-insiders
-    #   uses: actions/checkout@v3
-    #   with:
-    #     repository: PrefectHQ/mkdocs-material-insiders
-    #     ref: main
-    #     token: ${{ secrets.MKDOCS_REPO_RO }}
-    #     path: ./mkdocs-material-insiders
-    #     fetch-depth: 1
+    - name: Clone PrefectHQ/mkdocs-material-insiders
+      uses: actions/checkout@v3
+      with:
+        repository: PrefectHQ/mkdocs-material-insiders
+        ref: main
+        token: ${{ secrets.MKDOCS_REPO_TEST_TOKEN }}
+        path: ./mkdocs-material-insiders
+        fetch-depth: 1
 
 
     - name: Install Prefect and dependencies
@@ -87,13 +87,13 @@ jobs:
       working-directory: ${{ github.workspace }}/prefect_source
 
 
-    # - name: Install mkdocs-material-insiders
-    #   run: |
-    #     # make sure libcairo2 is installed
-    #     sudo apt-get install -y libcairo2
-    #     pip install --upgrade --upgrade-strategy eager -e .
+    - name: Install mkdocs-material-insiders
+      run: |
+        # make sure libcairo2 is installed
+        sudo apt-get install -y libcairo2
+        pip install --upgrade --upgrade-strategy eager -e .
 
-    #   working-directory: ${{ github.workspace }}/mkdocs-material-insiders
+      working-directory: ${{ github.workspace }}/mkdocs-material-insiders
 
 
     - name: Install Python dependencies
@@ -133,7 +133,7 @@ jobs:
         cat ./overrides/templates/outdated.html >> ./docs/overrides/main.html
 
         # add version string we can reference in Mkdocs templates
-        sed -i "/extra:/a\    version_string: $version" ./mkdocs.yml
+        sed -i "/extra:/a\    version_string: $version" ./mkdocs.insiders.yml
         
 
         # generate API docs
