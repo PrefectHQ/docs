@@ -1,6 +1,7 @@
 import argparse
 import json
 
+from packaging.version import parse as parseVersion
 
 def get_versions_json(file_path):
     """Accepts a file path for versions.json and returns a dict containing
@@ -28,7 +29,7 @@ def sort_versions_json(versions_json):
     # use sorted() to sort the versions in descending order
     sorted_versions = sorted(
         versions_json,
-        key=lambda version: version["version"],
+        key=lambda version: parseVersion(version["version"]),
         reverse=True,
     )
 
