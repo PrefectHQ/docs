@@ -26,6 +26,10 @@ def sort_versions_json(versions_json):
     Returns:
         dict: A dict containing the versions JSON file with sorted versions
     """
+
+    # remove the "latest" version from the list if it exists
+    versions_json = [version for version in versions_json if version["version"] != "latest"]
+
     # use sorted() to sort the versions in descending order
     sorted_versions = sorted(
         versions_json,
