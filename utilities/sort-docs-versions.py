@@ -33,6 +33,13 @@ def sort_versions_json(versions_json):
         reverse=True,
     )
 
+    # iterate over the sorted versions and set the "aliases" key to an empty list
+    for version in sorted_versions:
+        version["aliases"] = []
+
+    # then, add the "latest" alias to the first version
+    sorted_versions[0]["aliases"].append("latest")
+
     return sorted_versions
 
 
