@@ -5706,13 +5706,25 @@
 <div id="redoc-container"></div>
 <script src="https://unpkg.com/redoc@2.x/bundles/redoc.standalone.js"> </script>
 <script>
+
     fetch("../schema.json").then(async response => {
       const schemaJSON = await response.json();
-
-      Redoc.init(schemaJSON, {
+      
+      const redocOptions = {
         scrollYOffset: 50,
+        // Disable search bar to avoid CSP errors due to blob: URLs for 
+        // the search worker
         disableSearch: true,
-      }, document.getElementById('redoc-container'));
+      };
+
+      // Our docs styles interfere with the default ReDoc styles, but we 
+      // can use shadow DOM to isolate the ReDoc styles.
+      const container = document.getElementById('redoc-container');
+      const shadowRoot = container.attachShadow({mode: 'open'});
+      const redocDiv = document.createElement('div');
+      shadowRoot.appendChild(redocDiv);
+
+      Redoc.init(schemaJSON, redocOptions, redocDiv);
     });
 </script>
 
