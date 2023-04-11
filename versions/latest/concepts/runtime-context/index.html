@@ -154,10 +154,10 @@
             
             
 <div style="color: white;">
-  <a href="https://github.com/PrefectHQ/prefect/blob/main/RELEASE-NOTES.md#release-2100" style="color: #07e798;">
-    <strong>Prefect 2.10.0 is here!</strong>
+  <a href="https://github.com/PrefectHQ/prefect/blob/main/RELEASE-NOTES.md#release-2103" style="color: #07e798;">
+    <strong>Prefect 2.10.3 is here!</strong>
   </a> With new features such as workers, projects, variables, and versioned documentation alongside a slew of performance improvements and
-  <a href="https://github.com/PrefectHQ/prefect/blob/main/RELEASE-NOTES.md#release-2100" style="color: #07e798;">
+  <a href="https://github.com/PrefectHQ/prefect/blob/main/RELEASE-NOTES.md#release-2103" style="color: #07e798;">
     <strong>more!</strong>
   </a>
 </div>
@@ -5980,6 +5980,15 @@
 <h1 id="runtime-context">Runtime context<a class="headerlink" href="#runtime-context" title="Permanent link">&para;</a></h1>
 <p>Prefect tracks information about the current flow or task run with a run context. The run context can be thought of as a global variable which allows the Prefect engine to determine relationships between your runs e.g. which flow your task is called from.</p>
 <p>The run context itself is full of internal objects used by Prefect to manage execution of your run and is only available in specific situtations. For this reason, we expose a simple interface that only includes the items you care about and dynamically retrieves additional information when necessary. We call this the "runtime context" as it contains information that can only be accessed when a run is happening.</p>
+<div class="admonition tip">
+<p class="admonition-title">Mock values via environment variable</p>
+<p>Oftentimes, you may want to mock certain values for testing purposes.  For example, by manually setting an ID or a scheduled start time to ensure your code is functioning properly.  Starting in version <code>2.10.3</code>, you can mock values in runtime via environment variable using the schema <code>PREFECT__RUNTIME__{SUBMODULE}__{KEY_NAME}=value</code>:
+<div class="terminal">
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span><span class="nb">export</span><span class="w"> </span><span class="nv">PREFECT__RUNTIME__TASK_RUN__FAKE_KEY</span><span class="o">=</span><span class="s1">&#39;foo&#39;</span>
+$<span class="w"> </span>python<span class="w"> </span>-c<span class="w"> </span><span class="s1">&#39;from prefect.runtime import task_run; print(task_run.fake_key)&#39;</span><span class="w"> </span><span class="c1"># &quot;foo&quot;</span>
+</code></pre></div>
+</div></p>
+</div>
 <h2 id="accessing-runtime-information">Accessing runtime information<a class="headerlink" href="#accessing-runtime-information" title="Permanent link">&para;</a></h2>
 <p>The <code>prefect.runtime</code> module is the home for all runtime context access. It has a submodule for each major runtime concept:</p>
 <ul>

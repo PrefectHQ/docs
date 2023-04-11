@@ -154,10 +154,10 @@
             
             
 <div style="color: white;">
-  <a href="https://github.com/PrefectHQ/prefect/blob/main/RELEASE-NOTES.md#release-2100" style="color: #07e798;">
-    <strong>Prefect 2.10.0 is here!</strong>
+  <a href="https://github.com/PrefectHQ/prefect/blob/main/RELEASE-NOTES.md#release-2103" style="color: #07e798;">
+    <strong>Prefect 2.10.3 is here!</strong>
   </a> With new features such as workers, projects, variables, and versioned documentation alongside a slew of performance improvements and
-  <a href="https://github.com/PrefectHQ/prefect/blob/main/RELEASE-NOTES.md#release-2100" style="color: #07e798;">
+  <a href="https://github.com/PrefectHQ/prefect/blob/main/RELEASE-NOTES.md#release-2103" style="color: #07e798;">
     <strong>more!</strong>
   </a>
 </div>
@@ -6592,6 +6592,16 @@ of the current directory is used.  If no recipe is provided, one is inferred.</p
                 <code>None</code>
           </td>
         </tr>
+        <tr>
+          <td><code>inputs</code></td>
+          <td>
+                <code>dict</code>
+          </td>
+          <td><p>a dictionary of inputs to use when formatting the recipe</p></td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
     </tbody>
   </table>
 
@@ -6693,7 +6703,13 @@ of the current directory is used.  If no recipe is provided, one is inferred.</p
 <span class="normal">250</span>
 <span class="normal">251</span>
 <span class="normal">252</span>
-<span class="normal">253</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">initialize_project</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">recipe</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="normal">253</span>
+<span class="normal">254</span>
+<span class="normal">255</span>
+<span class="normal">256</span>
+<span class="normal">257</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">initialize_project</span><span class="p">(</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">recipe</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">inputs</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Initializes a basic project structure with base files.  If no name is provided, the name</span>
 <span class="sd">    of the current directory is used.  If no recipe is provided, one is inferred.</span>
@@ -6701,6 +6717,7 @@ of the current directory is used.  If no recipe is provided, one is inferred.</p
 <span class="sd">    Args:</span>
 <span class="sd">        name (str, optional): the name of the project; if not provided, the current directory name</span>
 <span class="sd">        recipe (str, optional): the name of the recipe to use; if not provided, one is inferred</span>
+<span class="sd">        inputs (dict, optional): a dictionary of inputs to use when formatting the recipe</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        List[str]: a list of files / directories that were created</span>
@@ -6751,6 +6768,7 @@ of the current directory is used.  If no recipe is provided, one is inferred.</p
     <span class="k">elif</span> <span class="n">recipe</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">recipe</span> <span class="o">=</span> <span class="s2">&quot;local&quot;</span>
 
+    <span class="n">formatting_kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">inputs</span> <span class="ow">or</span> <span class="p">{})</span>
     <span class="n">configuration</span> <span class="o">=</span> <span class="n">configure_project_by_recipe</span><span class="p">(</span><span class="n">recipe</span><span class="o">=</span><span class="n">recipe</span><span class="p">,</span> <span class="o">**</span><span class="n">formatting_kwargs</span><span class="p">)</span>
 
     <span class="n">project_name</span> <span class="o">=</span> <span class="n">name</span> <span class="ow">or</span> <span class="n">dir_name</span>
@@ -6850,11 +6868,7 @@ of the current directory is used.  If no recipe is provided, one is inferred.</p
 
       <details class="quote">
         <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/projects/base.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">256</span>
-<span class="normal">257</span>
-<span class="normal">258</span>
-<span class="normal">259</span>
-<span class="normal">260</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">260</span>
 <span class="normal">261</span>
 <span class="normal">262</span>
 <span class="normal">263</span>
@@ -6903,7 +6917,11 @@ of the current directory is used.  If no recipe is provided, one is inferred.</p
 <span class="normal">306</span>
 <span class="normal">307</span>
 <span class="normal">308</span>
-<span class="normal">309</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">register_flow</span><span class="p">(</span><span class="n">entrypoint</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">force</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+<span class="normal">309</span>
+<span class="normal">310</span>
+<span class="normal">311</span>
+<span class="normal">312</span>
+<span class="normal">313</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">register_flow</span><span class="p">(</span><span class="n">entrypoint</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">force</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Register a flow with this project from an entrypoint.</span>
 
