@@ -154,10 +154,10 @@
             
             
 <div style="color: white;">
-  <a href="https://github.com/PrefectHQ/prefect/blob/main/RELEASE-NOTES.md#release-2100" style="color: #07e798;">
-    <strong>Prefect 2.10.0 is here!</strong>
+  <a href="https://github.com/PrefectHQ/prefect/blob/main/RELEASE-NOTES.md#release-2103" style="color: #07e798;">
+    <strong>Prefect 2.10.3 is here!</strong>
   </a> With new features such as workers, projects, variables, and versioned documentation alongside a slew of performance improvements and
-  <a href="https://github.com/PrefectHQ/prefect/blob/main/RELEASE-NOTES.md#release-2100" style="color: #07e798;">
+  <a href="https://github.com/PrefectHQ/prefect/blob/main/RELEASE-NOTES.md#release-2103" style="color: #07e798;">
     <strong>more!</strong>
   </a>
 </div>
@@ -6134,7 +6134,16 @@ the repository will be cloned using the default git credentials</p></td>
 <span class="normal">61</span>
 <span class="normal">62</span>
 <span class="normal">63</span>
-<span class="normal">64</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">git_clone_project</span><span class="p">(</span>
+<span class="normal">64</span>
+<span class="normal">65</span>
+<span class="normal">66</span>
+<span class="normal">67</span>
+<span class="normal">68</span>
+<span class="normal">69</span>
+<span class="normal">70</span>
+<span class="normal">71</span>
+<span class="normal">72</span>
+<span class="normal">73</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">git_clone_project</span><span class="p">(</span>
     <span class="n">repository</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">branch</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">access_token</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -6168,9 +6177,18 @@ the repository will be cloned using the default git credentials</p></td>
     <span class="c1"># Limit git history</span>
     <span class="n">cmd</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;--depth&quot;</span><span class="p">,</span> <span class="s2">&quot;1&quot;</span><span class="p">]</span>
 
-    <span class="n">subprocess</span><span class="o">.</span><span class="n">check_call</span><span class="p">(</span>
-        <span class="n">cmd</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s2">&quot;win32&quot;</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stdout</span>
-    <span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">subprocess</span><span class="o">.</span><span class="n">check_call</span><span class="p">(</span>
+            <span class="n">cmd</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s2">&quot;win32&quot;</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stdout</span>
+        <span class="p">)</span>
+    <span class="k">except</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">CalledProcessError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+        <span class="c1"># Hide the command used to avoid leaking the access token</span>
+        <span class="n">exc_chain</span> <span class="o">=</span> <span class="kc">None</span> <span class="k">if</span> <span class="n">access_token</span> <span class="k">else</span> <span class="n">exc</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Failed to clone repository </span><span class="si">{</span><span class="n">repository</span><span class="si">!r}</span><span class="s2"> with exit code&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="n">exc</span><span class="o">.</span><span class="n">returncode</span><span class="si">}</span><span class="s2">.&quot;</span>
+        <span class="p">)</span> <span class="kn">from</span> <span class="nn">exc_chain</span>
+
     <span class="n">directory</span> <span class="o">=</span> <span class="s2">&quot;/&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">repository</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">:])</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;.git&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;directory&quot;</span><span class="p">:</span> <span class="n">directory</span><span class="p">}</span>
 </code></pre></div></td></tr></table></div>
