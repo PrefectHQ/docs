@@ -3,6 +3,7 @@ import json
 
 from packaging.version import parse as parseVersion
 
+
 def get_versions_json(file_path):
     """Accepts a file path for versions.json and returns a dict containing
     the versions JSON file.
