@@ -182,10 +182,16 @@ jobs:
         # docs site defaults to showing users docs for the most recently released 
         # Prefect version.
         newest_release = $(python utilities/get-newest-version.py --versions-file-path ./versions/versions.json --build-version "$version")
+        
         if [[ $newest_release == "$version" ]]; then
           mike deploy -F ./mkdocs.insiders.yml --update-aliases --branch $branch_name --prefix=versions latest
         fi
         
+        # Save newest version check to GITHUB_ENV so we can use it later
+        is_newest_release = [[ $newest_release == "$version" ]]
+        echo "is_newest_release=$is_newest_release" >> $GITHUB_ENV
+        
+        # clean up
         rm -rf site
         unlink ./src
         unlink ./docs
@@ -200,8 +206,8 @@ jobs:
         PREFECT_SOURCE: ${{ github.workspace }}/prefect_source
       run: |
         version="${{ env.version }}"
-        # If version is not unreleased, skip this step. This ensures that the docs repo
-        # will stay up to date in with changes to netlify.toml in the Prefect repo.
+        # If version is not 'unreleased', skip this step. We should only need to update
+        # the Netlify TOML when building docs for commits to Prefect's main branch.
         if [[ $version != "unreleased" ]]; then
           exit 0
         fi
@@ -254,17 +260,36 @@ jobs:
         version="${{ env.version }}"
         display_name="${{ env.display_name }}"
         branch_name="${{ env.branch_name }}"
-
+        is_newest_release="${{ env.is_newest_release }}"
+        
+        # set the PR title
         if [[ $display_name == "unreleased" ]]; then
-          commit_title="Update unreleased documentation"
+          pull_request_title="Update unreleased documentation"
         else
-          commit_title="Update documentation for $display_name"
+          pull_request_title="Update documentation for $display_name"
         fi
-
-        git push origin $branch_name
-        gh pr create --base main --head $branch_name \
-          --title "$commit_title" \
-          --body "Automated documentation update for $display_name" \
-          --label "documentation"
+        
+        # Delete any existing pull requests that are open for this version
+        # by checking against pull_reqeust_title because the new PR will
+        # supersede the old one.
+        gh pr list --state open --json title --jq '.[] | select(.title == "$pull_request_title") | .number' | \
+          xargs -I {} gh pr close {}
+        
+        # auto-merge the PR if the build was triggered by a commit to Prefect's main branch
+        # otherwise, just create the PR. We can check for this by checking if this flow
+        # was triggered by a repository_dispatch event.
+        if [[ $GITHUB_EVENT_NAME == "repository_dispatch" ]]; then
+          gh pr create --base main --head $branch_name \
+            --title "$pull_request_title" \
+            --body "Automated documentation update for $display_name" \
+            --label "documentation" \
+            --merge
+        else
+          gh pr create --base main --head $branch_name \
+            --title "$pull_request_title" \
+            --body "Automated documentation update for $display_name" \
+            --label "documentation"
+        fi
+        
       
       working-directory: ${{ github.workspace }}/docs
