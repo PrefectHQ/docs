@@ -22,12 +22,15 @@ Manually triggered builds accept two parameters:
 ### Choosing version and display name
 If you don't provide a version name, the build action uses the version as the display 
 name. In most cases, this is what you want. If you're building the docs for `2.10.4`, 
-for example, you probably want them published as `2.10.4`. In that scenario, entering
-`2.10.4` as the version and leaving the display name blank will provide what's needed.
+for example, you probably want them published under the name `2.10.4`. 
 
-But sometimes, you might want to publish a docs version under an alias. For example, it 
-might be better to combine the docs for older releases to keep the number of versions 
-in the selector manageable. 
+In that scenario, entering `2.10.4` as the version and leaving the display name blank 
+will build the docs for Prefect `2.10.4` and publish them as `2.10.4` - exactly what 
+you want.
+
+However, you may occasionally want to publish a docs version under an alias. 
+For example, it might be better to combine the docs for older release series under a 
+single name to keep the length of the version selector box manageable.
 
 So, if you know that the docs for `2.6.12` are useful for the entire series of `2.6` 
 releases, you might decide to build the docs for `2.6.12` but publish them as `2.6.x`.
