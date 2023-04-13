@@ -183,7 +183,7 @@
           <aside class="md-banner md-banner--warning">
             <div class="md-banner__inner md-grid md-typeset">
               
-  You're viewing the docs for Prefect 2.10.3.
+  You're viewing the docs for Prefect latest.
   <a href="../../.."> 
     <strong>Click here to view the latest docs.</strong>
   </a>
@@ -1329,6 +1329,19 @@
       
         <span class="md-typeset">
           Configuring Prefetch
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#polling-for-work" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Polling for work
         </span>
       
     </span>
@@ -6365,6 +6378,19 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#polling-for-work" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Polling for work
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -6392,13 +6418,14 @@
 <h1 id="work-pools-workers-agents">Work Pools, Workers &amp; Agents<a class="headerlink" href="#work-pools-workers-agents" title="Permanent link">&para;</a></h1>
 <p>Work pools and the services that poll them, workers and agents, bridge the Prefect <em>orchestration environment</em> with your <em>execution environment</em>. When a <a href="/concepts/deployments/">deployment</a> creates a flow run, it is submitted to a specific work pool for scheduling. A worker or agent running in the execution environment polls its respective work pool for new runs to execute.</p>
 <p>Each work pool has a default queue that all runs will be sent to. Work queues are automatically created whenever they are referenced by either a deployment or an agent. For most applications, this automatic behavior will be sufficient to run flows as expected. For advanced needs, additional queues can be created to enable a greater degree of control over work delivery. See <a href="#work-pool-configuration">work pool configuration</a> for more information.</p>
-<p>To run deployments, you must configure at least one agent (and its associated work pool):</p>
+<p>To run deployments, you must configure at least one agent or worker (and its associated work pool):</p>
 <ol>
 <li><a href="#starting-an-agent">Start an agent</a></li>
 <li><a href="#work-pool-configuration">Configure a work pool</a> (optional)</li>
 </ol>
 <h2 id="agent-overview">Agent overview<a class="headerlink" href="#agent-overview" title="Permanent link">&para;</a></h2>
 <p>Agent processes are lightweight polling services that get scheduled work from a <a href="#work-pool-overview">work pool</a> and deploy the corresponding flow runs. </p>
+<p>Agents poll for work every 15 seconds by default. This interval is configurable in your <a href="./settings/">profile settings</a> with the <code>PREFECT_AGENT_QUERY_INTERVAL</code> setting.</p>
 <p>It is possible for multiple agent processes to be started for a single work pool. Each agent process sends a unique ID to the server to help disambiguate themselves and let users know how many agents are active.</p>
 <h3 id="agent-options">Agent options<a class="headerlink" href="#agent-options" title="Permanent link">&para;</a></h3>
 <p>Agents are configured to pull work from one or more work pool queues. If the agent references a work queue that doesn't exist, it will be created automatically.</p>
@@ -6743,6 +6770,9 @@ For example, to limit a worker to five concurrent flow runs:</p>
 <p>By default, the worker begins submitting flow runs a short time (10 seconds) before they are scheduled to run. This behavior allows time for the infrastructure to be created so that the flow run can start on time. </p>
 <p>In some cases, infrastructure will take longer than 10 seconds to start the flow run. The prefetch can be increased using the <code>--prefetch-seconds</code> option or the <code>PREFECT_WORKER_PREFETCH_SECONDS</code> setting.</p>
 <p>If this value is <em>more</em> than the amount of time it takes for the infrastructure to start, the flow run will <em>wait</em> until its scheduled start time.</p>
+<h3 id="polling-for-work">Polling for work<a class="headerlink" href="#polling-for-work" title="Permanent link">&para;</a></h3>
+<p>Workers poll for work every 15 seconds by default. This interval is configurable in your <a href="./settings/">profile settings</a> with the
+<code>PREFECT_WORKER_QUERY_SECONDS</code> setting.</p>
 
   
   
