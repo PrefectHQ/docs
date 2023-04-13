@@ -183,12 +183,12 @@ jobs:
         # Prefect version.
         newest_release=$(python utilities/get-newest-version.py --versions-file-path ./versions/versions.json --build-version "$version")
         
-        if [[ $newest_release == "$version" ]]; then
+        if [[ "$newest_release" == "$version" ]]; then
           mike deploy -F ./mkdocs.insiders.yml --update-aliases --branch $branch_name --prefix=versions latest
         fi
         
         # Save newest version check to GITHUB_ENV so we can use it later
-        is_newest_release=[[ $newest_release == "$version" ]]
+        is_newest_release=[[ "$newest_release" == "$version" ]]
         echo "is_newest_release=$is_newest_release" >> $GITHUB_ENV
         
         # clean up
