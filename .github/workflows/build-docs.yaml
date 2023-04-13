@@ -21,12 +21,17 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'The release tag to build and deploy (e.g., "2.8.0"). Use "latest" to build directly from the main branch of PrefectHQ/Prefect.'
+        description: 'The release tag or branch to build and deploy 
+        (e.g., "2.8.0", "2.8.0-docs-hotfix"). 
+        Use `unreleased` to build directly from the main branch of `PrefectHQ/prefect`. 
+        To manually update the unreleased docs, enter `unreleased` as the version and 
+        leave the display name blank.'
         type: string
         required: true
-        default: 'latest'
+        default: 'unreleased'
       display_name:
-        description: 'The display name for the version (e.g., 2.8.0, 2.8.x, 2.7.x). Leave blank to use the version number.'
+        description: 'The display name for the version (e.g., 2.8.0, 2.8.x, 2.7.x). 
+        Leave blank to use the version number.'
         type: string
         required: false
         default: ''
@@ -77,7 +82,7 @@ jobs:
     - name: Clone PrefectHQ/prefect
       run: |
         version="${{ env.version }}"
-        if [[ $version == "latest" ]]; then
+        if [[ $version == "unreleased" ]]; then
           git clone --depth 1 https://github.com/PrefectHQ/prefect.git prefect_source
         else
           git clone --branch "$version" --depth 1 https://github.com/PrefectHQ/prefect.git prefect_source
@@ -137,8 +142,8 @@ jobs:
         git add ./versions/versions.json
         git commit -m "Update versions.json"
 
-        : # create the version branch, otherwise mike will create a branch
-        : # that has non common history with main
+        # create the version branch, otherwise mike will create a branch
+        # that has no common history with main
         git checkout -b $branch_name
         git checkout main
         
@@ -151,7 +156,7 @@ jobs:
         # ./docs/overrides/main.html
         cat ./overrides/templates/outdated.html >> ./docs/overrides/main.html
 
-        # if the version is anything other than 'latest', append the contents
+        # if the version is anything other than 'unreleased', append the contents
         # of ./overrides/stylesheets/not-latest.css to ./docs/stylesheets/extra.css
         if [[ $version != "latest" ]]; then
           cat ./overrides/stylesheets/not-latest.css >> ./docs/stylesheets/extra.css
@@ -172,6 +177,15 @@ jobs:
         # build versioned docs
         mike deploy -F ./mkdocs.insiders.yml --update-aliases --branch $branch_name --prefix=versions "$display_name"
         
+        # If the release we're building docs for is the newest release, 
+        # also build the 'latest' docs version. This ensures that the
+        # docs site defaults to showing users docs for the most recently released 
+        # Prefect version.
+        newest_release = $(python utilities/get-newest-version.py --versions-file-path ./versions/versions.json --build-version "$version")
+        if [[ $newest_release == "$version" ]]; then
+          mike deploy -F ./mkdocs.insiders.yml --update-aliases --branch $branch_name --prefix=versions latest
+        fi
+        
         rm -rf site
         unlink ./src
         unlink ./docs
@@ -186,8 +200,9 @@ jobs:
         PREFECT_SOURCE: ${{ github.workspace }}/prefect_source
       run: |
         version="${{ env.version }}"
-        # if version is not latest, skip this step
-        if [[ $version != "latest" ]]; then
+        # If version is not unreleased, skip this step. This ensures that the docs repo
+        # will stay up to date in with changes to netlify.toml in the Prefect repo.
+        if [[ $version != "unreleased" ]]; then
           exit 0
         fi
 
@@ -240,8 +255,8 @@ jobs:
         display_name="${{ env.display_name }}"
         branch_name="${{ env.branch_name }}"
 
-        if [[ $display_name == "latest" ]]; then
-          commit_title="Update latest documentation"
+        if [[ $display_name == "unreleased" ]]; then
+          commit_title="Update unreleased documentation"
         else
           commit_title="Update documentation for $display_name"
         fi
