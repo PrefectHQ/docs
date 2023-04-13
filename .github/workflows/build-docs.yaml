@@ -278,6 +278,9 @@ jobs:
         gh pr list --state open --json title --jq '.[] | select(.title == "$pull_request_title") | .number' | \
           xargs -I {} gh pr close {}
         
+        # push the branch to GitHub
+        git push origin $branch_name
+        
         # auto-merge the PR if the build was triggered by a commit to Prefect's main branch
         # otherwise, just create the PR. We can check for this by checking if this flow
         # was triggered by a repository_dispatch event.
