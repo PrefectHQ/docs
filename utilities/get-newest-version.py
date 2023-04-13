@@ -27,6 +27,7 @@ def get_newest_version(versions: "list[dict]", build_version: str) -> str:
     Returns:
         dict: A dict containing the versions JSON file with sorted versions
     """
+    excluded_versions = ["latest", "unreleased"]
 
     if len(versions) == 0:
         return build_version
@@ -37,10 +38,11 @@ def get_newest_version(versions: "list[dict]", build_version: str) -> str:
     versions: "list[str]" = [
         version["version"]
         for version in versions
-        if version["version"] not in ["latest", "unreleased"]
+        if version["version"] not in excluded_versions
     ]
 
-    versions.append(build_version)
+    if build_version not in excluded_versions:
+        versions.append(build_version)
 
     # use sorted() to sort the versions in descending order
     sorted_versions = sorted(
