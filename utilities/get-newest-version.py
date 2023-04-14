@@ -1,3 +1,9 @@
+"""
+This script is used to determine the newest version of the docs by comparing
+all versions in the versions.json file plus the version being built to determine
+which is the newest version. The build action uses the output of this script
+
+"""
 import argparse
 import json
 

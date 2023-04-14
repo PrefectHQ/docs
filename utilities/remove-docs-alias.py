@@ -1,3 +1,9 @@
+"""
+This script removes aliases from the versions.json file because `mike` does not
+reliable change the `latest` alias to only point to the newest version when
+adding or removing versions. Removing the aliases before building a new docs
+makes it easy to add the alias to the correct version after the docs are built.
+"""
 import argparse
 import json
 

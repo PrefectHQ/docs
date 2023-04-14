@@ -1,3 +1,10 @@
+"""
+This script sorts the versions in the versions.json file in descending order.
+
+It's needed because the version selector `mike` adds to the docs UI outputs the versions
+in the order they are listed in the versions.json file, but `mike` does not sort the
+versions in sort-docs-versions.py after building the docs.
+"""
 import argparse
 import json
 
