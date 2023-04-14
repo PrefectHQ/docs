@@ -13,10 +13,16 @@ The `docs` repository serves two purposes:
 First, the docs build action is triggered, either manually or by an automatic 
 repository dispatch call from the `PrefectHQ/prefect` repository.
 
-Then, the build happens in the [build workflow action](https://github.com/PrefectHQ/docs/blob/main/.github/workflows/build-docs.yaml).
-The workflow primarily consists of Bash commands that clone the correct branch of 
-[the Prefect repository](https://github.com/PrefectHQ/prefect), prepare it for the `mike` build utility, and then create a 
-pull request to merge the changes into `main`
+Next, the build happens in the [build workflow action](https://github.com/PrefectHQ/docs/blob/main/.github/workflows/build-docs.yaml).
+
+To keep things simple, the workflow primarily consists of Bash commands that clone the a
+branch or release tag of [the Prefect repository](https://github.com/PrefectHQ/prefect),
+prepare it for the `mike` build utility, sort the versions list `mike` generates, and 
+then create a pull request to merge the changes into `main`.
+
+The workflow calls several small Python scripts in the `utilities` directory to handle
+scripts handle preparation steps that would be difficult or verbose in bash.
+
 ## Manual docs builds
 Manually triggered builds accept two parameters: 
   - A version
@@ -62,3 +68,13 @@ required unless something goes wrong.
 If the docs site isn't updating in response to 
 changes that _should_ trigger a new build, check the [list of recent build workflow
 runs](https://github.com/PrefectHQ/docs/actions/workflows/build-docs.yaml) for build failures.
+
+## `unreleased` docs version
+The versioned docs currently show an `unreleased` version in the version selector. 
+This version includes the latest docs changes from the main branch of the `prefect` 
+repository. 
+
+To hide the unreleased docs, do the following:
+- Change `HIDE_UNRELEASED_VERSION` to `True` in `sort-docs-versions.py`.
+- Delete the `unreleased` version from `versions/versions.json`.
+- Push the changes to the `main` branch of this repository.
