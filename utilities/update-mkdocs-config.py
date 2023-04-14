@@ -1,4 +1,9 @@
-import argparse 
+"""
+This script adds the docs version to the mkdocs config so we can render
+version numbers in docs templates. `mike` is supposed to do this, but it
+did not work as documented as of April 2023.
+"""
+import argparse
 
 import yaml
 
