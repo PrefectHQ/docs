@@ -1,9 +1,8 @@
 # Prefect Versioned Documentation
 
 This repository contains Prefect's versioned documentation. Development of the docs 
-happens in the main Prefect repository, so if you're looking to edit or add 
-documentation, https://github.com/PrefectHQ/prefect/tree/main/docs is where you want 
-to be. 
+happens in [the `docs` directory](https://github.com/PrefectHQ/prefect/tree/main/docs) 
+of the main Prefect repository, so any edits or additions should be done there.
 
 The `docs` repository serves two purposes:
 1. Build versioned documentation via a GitHub action. 
@@ -14,6 +13,10 @@ The `docs` repository serves two purposes:
 First, the docs build action is triggered, either manually or by an automatic 
 repository dispatch call from the `PrefectHQ/prefect` repository.
 
+Then, the build happens in the [build workflow action](https://github.com/PrefectHQ/docs/blob/main/.github/workflows/build-docs.yaml).
+The workflow primarily consists of Bash commands that clone the correct branch of 
+[the Prefect repository](https://github.com/PrefectHQ/prefect), prepare it for the `mike` build utility, and then create a 
+pull request to merge the changes into `main`
 ## Manual docs builds
 Manually triggered builds accept two parameters: 
   - A version
@@ -43,13 +46,19 @@ An updated copy of the website is deployed to Netlify every time a merge to `mai
 occurs and the updated docs usually appear at https://docs.prefect.io in under a minute.
 
 ## Automated docs builds
-- 1
-- 2
+Automated docs builds run in response specific changes to in the Prefect repository. 
 
-### Build triggers
-- 1
-- 2
+The events in the Prefect repo that trigger a versioned docs build in _this_ repository
+are:
+- A new release is published
+- A change to the `docs` directory is merged to main
+- A change to `netlify.toml` is merged to main
+
 
 ### Merging and deploying automated builds
-- 1
-- 2
+Automated builds create auto-merge pull requests, so no human intervention should be 
+required unless something goes wrong. 
+
+If the docs site isn't updating in response to 
+changes that _should_ trigger a new build, check the [list of recent build workflow
+runs](https://github.com/PrefectHQ/docs/actions/workflows/build-docs.yaml) for build failures.
