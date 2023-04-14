@@ -10,6 +10,7 @@ import json
 
 from packaging.version import parse as parseVersion
 
+HIDE_UNRELEASED_VERSION = False
 
 def get_versions_json(file_path):
     """Accepts a file path for versions.json and returns a dict containing
@@ -34,11 +35,15 @@ def sort_versions_json(versions):
     Returns:
         dict: A dict containing the versions JSON file with sorted versions
     """
-
-    # remove the "latest" version from the list if it exists
-    versions = [
-        version for version in versions if version["version"] != "latest"
-    ]
+    if HIDE_UNRELEASED_VERSION:
+        # Remove the "unreleased" version from the list if necessary.
+        # This will not prevent "unreleased" docs from being added built,
+        # but it will prevent them from being added to the version selector.
+        versions = [
+            version
+            for version in versions
+            if version["version"] != "unreleased"
+        ]
 
     invalid_versions_count = 0
 
