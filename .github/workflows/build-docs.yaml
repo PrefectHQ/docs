@@ -281,20 +281,19 @@ jobs:
         # push the branch to GitHub
         git push origin $branch_name
         
-        # auto-merge the PR if the build was triggered by a commit to Prefect's main branch
-        # otherwise, just create the PR. We can check for this by checking if this flow
-        # was triggered by a repository_dispatch event.
+        # create the PR
+        gh pr create --base main --head $branch_name \
+          --title "$pull_request_title" \
+          --body "Automated documentation update for $display_name" \
+          --label "documentation" \
+        
+        # auto-merge the PR if the build was triggered by a commit to Prefect's main 
+        # repo. This is because we only want to auto-merge PRs automatically 
+        # triggered docs builds. Manual builds should be reviewed by a human.
         if [[ $GITHUB_EVENT_NAME == "repository_dispatch" ]]; then
-          gh pr create --base main --head $branch_name \
-            --title "$pull_request_title" \
-            --body "Automated documentation update for $display_name" \
-            --label "documentation" \
-            --merge
-        else
-          gh pr create --base main --head $branch_name \
-            --title "$pull_request_title" \
-            --body "Automated documentation update for $display_name" \
-            --label "documentation"
+          # give the PR a few seconds to be created before trying to auto-merge it
+          sleep 10
+          gh pr merge --merge --auto $branch_name 
         fi
         
       
