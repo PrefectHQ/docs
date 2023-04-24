@@ -6292,7 +6292,7 @@
             <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">set_flow_run_state</span><span class="p">(</span>
                 <span class="n">flow_run_id</span><span class="o">=</span><span class="nb">id</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="n">cancelling_state</span>
             <span class="p">)</span>
-        <span class="k">except</span> <span class="n">ObjectNotFound</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+        <span class="k">except</span> <span class="n">ObjectNotFound</span><span class="p">:</span>
             <span class="n">exit_with_error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Flow run &#39;</span><span class="si">{</span><span class="nb">id</span><span class="si">}</span><span class="s2">&#39; not found!&quot;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">SetStateStatus</span><span class="o">.</span><span class="n">ABORT</span><span class="p">:</span>
@@ -6347,7 +6347,7 @@
     <span class="k">async</span> <span class="k">with</span> <span class="n">get_client</span><span class="p">()</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">delete_flow_run</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span>
-        <span class="k">except</span> <span class="n">ObjectNotFound</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+        <span class="k">except</span> <span class="n">ObjectNotFound</span><span class="p">:</span>
             <span class="n">exit_with_error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Flow run &#39;</span><span class="si">{</span><span class="nb">id</span><span class="si">}</span><span class="s2">&#39; not found!&quot;</span><span class="p">)</span>
 
     <span class="n">exit_with_success</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Successfully deleted flow run &#39;</span><span class="si">{</span><span class="nb">id</span><span class="si">}</span><span class="s2">&#39;.&quot;</span><span class="p">)</span>
@@ -6522,7 +6522,9 @@
 <span class="normal">233</span>
 <span class="normal">234</span>
 <span class="normal">235</span>
-<span class="normal">236</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@flow_run_app</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="normal">236</span>
+<span class="normal">237</span>
+<span class="normal">238</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@flow_run_app</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">logs</span><span class="p">(</span>
     <span class="nb">id</span><span class="p">:</span> <span class="n">UUID</span><span class="p">,</span>
     <span class="n">head</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
@@ -6571,14 +6573,16 @@
         <span class="c1"># Get the flow run</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">flow_run</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">read_flow_run</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span>
-        <span class="k">except</span> <span class="n">ObjectNotFound</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+        <span class="k">except</span> <span class="n">ObjectNotFound</span><span class="p">:</span>
             <span class="n">exit_with_error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Flow run </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span><span class="si">!r}</span><span class="s2"> not found!&quot;</span><span class="p">)</span>
 
         <span class="k">while</span> <span class="n">more_logs</span><span class="p">:</span>
             <span class="n">num_logs_to_return_from_page</span> <span class="o">=</span> <span class="p">(</span>
                 <span class="n">LOGS_DEFAULT_PAGE_SIZE</span>
                 <span class="k">if</span> <span class="n">user_specified_num_logs</span> <span class="ow">is</span> <span class="kc">None</span>
-                <span class="k">else</span> <span class="nb">min</span><span class="p">(</span><span class="n">LOGS_DEFAULT_PAGE_SIZE</span><span class="p">,</span> <span class="n">user_specified_num_logs</span><span class="p">)</span>
+                <span class="k">else</span> <span class="nb">min</span><span class="p">(</span>
+                    <span class="n">LOGS_DEFAULT_PAGE_SIZE</span><span class="p">,</span> <span class="n">user_specified_num_logs</span> <span class="o">-</span> <span class="n">num_logs_returned</span>
+                <span class="p">)</span>
             <span class="p">)</span>
 
             <span class="c1"># Get the next page of logs</span>

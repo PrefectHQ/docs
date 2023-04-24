@@ -6667,13 +6667,7 @@
 
       <details class="quote">
         <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/cli/work_queue.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">579</span>
-<span class="normal">580</span>
-<span class="normal">581</span>
-<span class="normal">582</span>
-<span class="normal">583</span>
-<span class="normal">584</span>
-<span class="normal">585</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">585</span>
 <span class="normal">586</span>
 <span class="normal">587</span>
 <span class="normal">588</span>
@@ -6701,7 +6695,13 @@
 <span class="normal">610</span>
 <span class="normal">611</span>
 <span class="normal">612</span>
-<span class="normal">613</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@work_app</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="normal">613</span>
+<span class="normal">614</span>
+<span class="normal">615</span>
+<span class="normal">616</span>
+<span class="normal">617</span>
+<span class="normal">618</span>
+<span class="normal">619</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@work_app</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
 <span class="nd">@experimental_parameter</span><span class="p">(</span><span class="s2">&quot;pool&quot;</span><span class="p">,</span> <span class="n">group</span><span class="o">=</span><span class="s2">&quot;work_pools&quot;</span><span class="p">,</span> <span class="n">when</span><span class="o">=</span><span class="k">lambda</span> <span class="n">y</span><span class="p">:</span> <span class="n">y</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span>
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Argument</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;The name or ID of the work queue to delete&quot;</span><span class="p">),</span>
@@ -6981,7 +6981,11 @@
 <span class="normal">487</span>
 <span class="normal">488</span>
 <span class="normal">489</span>
-<span class="normal">490</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@work_app</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="normal">490</span>
+<span class="normal">491</span>
+<span class="normal">492</span>
+<span class="normal">493</span>
+<span class="normal">494</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@work_app</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
 <span class="nd">@experimental_parameter</span><span class="p">(</span><span class="s2">&quot;pool&quot;</span><span class="p">,</span> <span class="n">group</span><span class="o">=</span><span class="s2">&quot;work_pools&quot;</span><span class="p">,</span> <span class="n">when</span><span class="o">=</span><span class="k">lambda</span> <span class="n">y</span><span class="p">:</span> <span class="n">y</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">ls</span><span class="p">(</span>
     <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
@@ -7024,7 +7028,8 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">queues</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">read_work_queues</span><span class="p">()</span>
 
-            <span class="n">sort_by_created_key</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">q</span><span class="p">:</span> <span class="n">pendulum</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="s2">&quot;utc&quot;</span><span class="p">)</span> <span class="o">-</span> <span class="n">q</span><span class="o">.</span><span class="n">created</span>
+            <span class="k">def</span> <span class="nf">sort_by_created_key</span><span class="p">(</span><span class="n">q</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">pendulum</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="s2">&quot;utc&quot;</span><span class="p">)</span> <span class="o">-</span> <span class="n">q</span><span class="o">.</span><span class="n">created</span>
 
             <span class="k">for</span> <span class="n">queue</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">queues</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">sort_by_created_key</span><span class="p">):</span>
                 <span class="n">row</span> <span class="o">=</span> <span class="p">[</span>
@@ -7062,7 +7067,9 @@
             <span class="n">wp_filter</span> <span class="o">=</span> <span class="n">WorkPoolFilter</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">WorkPoolFilterId</span><span class="p">(</span><span class="n">any_</span><span class="o">=</span><span class="n">pool_ids</span><span class="p">))</span>
             <span class="n">pools</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">read_work_pools</span><span class="p">(</span><span class="n">work_pool_filter</span><span class="o">=</span><span class="n">wp_filter</span><span class="p">)</span>
             <span class="n">pool_id_name_map</span> <span class="o">=</span> <span class="p">{</span><span class="n">p</span><span class="o">.</span><span class="n">id</span><span class="p">:</span> <span class="n">p</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">pools</span><span class="p">}</span>
-            <span class="n">sort_by_created_key</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">q</span><span class="p">:</span> <span class="n">pendulum</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="s2">&quot;utc&quot;</span><span class="p">)</span> <span class="o">-</span> <span class="n">q</span><span class="o">.</span><span class="n">created</span>
+
+            <span class="k">def</span> <span class="nf">sort_by_created_key</span><span class="p">(</span><span class="n">q</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">pendulum</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="s2">&quot;utc&quot;</span><span class="p">)</span> <span class="o">-</span> <span class="n">q</span><span class="o">.</span><span class="n">created</span>
 
             <span class="k">for</span> <span class="n">queue</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">queues</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">sort_by_created_key</span><span class="p">):</span>
                 <span class="n">row</span> <span class="o">=</span> <span class="p">[</span>
@@ -7097,7 +7104,8 @@
             <span class="k">except</span> <span class="n">ObjectNotFound</span><span class="p">:</span>
                 <span class="n">exit_with_error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No work pool found: </span><span class="si">{</span><span class="n">pool</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-            <span class="n">sort_by_created_key</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">q</span><span class="p">:</span> <span class="n">pendulum</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="s2">&quot;utc&quot;</span><span class="p">)</span> <span class="o">-</span> <span class="n">q</span><span class="o">.</span><span class="n">created</span>
+            <span class="k">def</span> <span class="nf">sort_by_created_key</span><span class="p">(</span><span class="n">q</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">pendulum</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="s2">&quot;utc&quot;</span><span class="p">)</span> <span class="o">-</span> <span class="n">q</span><span class="o">.</span><span class="n">created</span>
 
             <span class="k">for</span> <span class="n">queue</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">queues</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">sort_by_created_key</span><span class="p">):</span>
                 <span class="n">row</span> <span class="o">=</span> <span class="p">[</span>
@@ -7239,11 +7247,7 @@
 
       <details class="quote">
         <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/cli/work_queue.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">493</span>
-<span class="normal">494</span>
-<span class="normal">495</span>
-<span class="normal">496</span>
-<span class="normal">497</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">497</span>
 <span class="normal">498</span>
 <span class="normal">499</span>
 <span class="normal">500</span>
@@ -7322,7 +7326,13 @@
 <span class="normal">573</span>
 <span class="normal">574</span>
 <span class="normal">575</span>
-<span class="normal">576</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@work_app</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="normal">576</span>
+<span class="normal">577</span>
+<span class="normal">578</span>
+<span class="normal">579</span>
+<span class="normal">580</span>
+<span class="normal">581</span>
+<span class="normal">582</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@work_app</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
 <span class="nd">@experimental_parameter</span><span class="p">(</span><span class="s2">&quot;pool&quot;</span><span class="p">,</span> <span class="n">group</span><span class="o">=</span><span class="s2">&quot;work_pools&quot;</span><span class="p">,</span> <span class="n">when</span><span class="o">=</span><span class="k">lambda</span> <span class="n">y</span><span class="p">:</span> <span class="n">y</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">preview</span><span class="p">(</span>
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Argument</span><span class="p">(</span>
@@ -7382,7 +7392,9 @@
             <span class="k">except</span> <span class="n">ObjectNotFound</span><span class="p">:</span>
                 <span class="n">exit_with_error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No work queue found: </span><span class="si">{</span><span class="n">name</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="n">now</span> <span class="o">=</span> <span class="n">pendulum</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="s2">&quot;utc&quot;</span><span class="p">)</span>
-    <span class="n">sort_by_created_key</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">r</span><span class="p">:</span> <span class="n">now</span> <span class="o">-</span> <span class="n">r</span><span class="o">.</span><span class="n">created</span>
+
+    <span class="k">def</span> <span class="nf">sort_by_created_key</span><span class="p">(</span><span class="n">r</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">now</span> <span class="o">-</span> <span class="n">r</span><span class="o">.</span><span class="n">created</span>
 
     <span class="k">for</span> <span class="n">run</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">runs</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">sort_by_created_key</span><span class="p">):</span>
         <span class="n">table</span><span class="o">.</span><span class="n">add_row</span><span class="p">(</span>
