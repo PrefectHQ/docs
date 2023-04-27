@@ -6690,7 +6690,35 @@
 <span class="normal">235</span>
 <span class="normal">236</span>
 <span class="normal">237</span>
-<span class="normal">238</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@flow_run_app</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="normal">238</span>
+<span class="normal">239</span>
+<span class="normal">240</span>
+<span class="normal">241</span>
+<span class="normal">242</span>
+<span class="normal">243</span>
+<span class="normal">244</span>
+<span class="normal">245</span>
+<span class="normal">246</span>
+<span class="normal">247</span>
+<span class="normal">248</span>
+<span class="normal">249</span>
+<span class="normal">250</span>
+<span class="normal">251</span>
+<span class="normal">252</span>
+<span class="normal">253</span>
+<span class="normal">254</span>
+<span class="normal">255</span>
+<span class="normal">256</span>
+<span class="normal">257</span>
+<span class="normal">258</span>
+<span class="normal">259</span>
+<span class="normal">260</span>
+<span class="normal">261</span>
+<span class="normal">262</span>
+<span class="normal">263</span>
+<span class="normal">264</span>
+<span class="normal">265</span>
+<span class="normal">266</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@flow_run_app</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">logs</span><span class="p">(</span>
     <span class="nb">id</span><span class="p">:</span> <span class="n">UUID</span><span class="p">,</span>
     <span class="n">head</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
@@ -6707,8 +6735,8 @@
         <span class="s2">&quot;--num-logs&quot;</span><span class="p">,</span>
         <span class="s2">&quot;-n&quot;</span><span class="p">,</span>
         <span class="n">help</span><span class="o">=</span><span class="p">(</span>
-            <span class="s2">&quot;Number of logs to show when using the --head flag. If None, defaults to&quot;</span>
-            <span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="n">LOGS_WITH_LIMIT_FLAG_DEFAULT_NUM_LOGS</span><span class="si">}</span><span class="s2">.&quot;</span>
+            <span class="s2">&quot;Number of logs to show when using the --head or --tail flag. If None,&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot; defaults to </span><span class="si">{</span><span class="n">LOGS_WITH_LIMIT_FLAG_DEFAULT_NUM_LOGS</span><span class="si">}</span><span class="s2">.&quot;</span>
         <span class="p">),</span>
         <span class="nb">min</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
     <span class="p">),</span>
@@ -6717,6 +6745,15 @@
         <span class="s2">&quot;--reverse&quot;</span><span class="p">,</span>
         <span class="s2">&quot;-r&quot;</span><span class="p">,</span>
         <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Reverse the logs order to print the most recent logs first&quot;</span><span class="p">,</span>
+    <span class="p">),</span>
+    <span class="n">tail</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
+        <span class="kc">False</span><span class="p">,</span>
+        <span class="s2">&quot;--tail&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;-t&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Show the last </span><span class="si">{</span><span class="n">LOGS_WITH_LIMIT_FLAG_DEFAULT_NUM_LOGS</span><span class="si">}</span><span class="s2"> logs instead of&quot;</span>
+            <span class="s2">&quot; all logs.&quot;</span>
+        <span class="p">),</span>
     <span class="p">),</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -6727,11 +6764,19 @@
     <span class="n">more_logs</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="n">num_logs_returned</span> <span class="o">=</span> <span class="mi">0</span>
 
-    <span class="c1"># If head is specified, we need to stop after we&#39;ve retrieved enough logs</span>
-    <span class="k">if</span> <span class="n">head</span> <span class="ow">or</span> <span class="n">num_logs</span><span class="p">:</span>
-        <span class="n">user_specified_num_logs</span> <span class="o">=</span> <span class="n">num_logs</span> <span class="ow">or</span> <span class="n">LOGS_WITH_LIMIT_FLAG_DEFAULT_NUM_LOGS</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">user_specified_num_logs</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="c1"># if head and tail flags are being used together</span>
+    <span class="k">if</span> <span class="n">head</span> <span class="ow">and</span> <span class="n">tail</span><span class="p">:</span>
+        <span class="n">exit_with_error</span><span class="p">(</span><span class="s2">&quot;Please provide either a `head` or `tail` option but not both.&quot;</span><span class="p">)</span>
+
+    <span class="n">user_specified_num_logs</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">num_logs</span> <span class="ow">or</span> <span class="n">LOGS_WITH_LIMIT_FLAG_DEFAULT_NUM_LOGS</span>
+        <span class="k">if</span> <span class="n">head</span> <span class="ow">or</span> <span class="n">tail</span> <span class="ow">or</span> <span class="n">num_logs</span>
+        <span class="k">else</span> <span class="kc">None</span>
+    <span class="p">)</span>
+
+    <span class="c1"># if using tail update offset according to LOGS_DEFAULT_PAGE_SIZE</span>
+    <span class="k">if</span> <span class="n">tail</span><span class="p">:</span>
+        <span class="n">offset</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">user_specified_num_logs</span> <span class="o">-</span> <span class="n">LOGS_DEFAULT_PAGE_SIZE</span><span class="p">)</span>
 
     <span class="n">log_filter</span> <span class="o">=</span> <span class="n">LogFilter</span><span class="p">(</span><span class="n">flow_run_id</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;any_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="nb">id</span><span class="p">]})</span>
 
@@ -6758,13 +6803,12 @@
                 <span class="n">offset</span><span class="o">=</span><span class="n">offset</span><span class="p">,</span>
                 <span class="n">sort</span><span class="o">=</span><span class="p">(</span>
                     <span class="n">schemas</span><span class="o">.</span><span class="n">sorting</span><span class="o">.</span><span class="n">LogSort</span><span class="o">.</span><span class="n">TIMESTAMP_DESC</span>
-                    <span class="k">if</span> <span class="n">reverse</span>
+                    <span class="k">if</span> <span class="n">reverse</span> <span class="ow">or</span> <span class="n">tail</span>
                     <span class="k">else</span> <span class="n">schemas</span><span class="o">.</span><span class="n">sorting</span><span class="o">.</span><span class="n">LogSort</span><span class="o">.</span><span class="n">TIMESTAMP_ASC</span>
                 <span class="p">),</span>
             <span class="p">)</span>
 
-            <span class="c1"># Print the logs</span>
-            <span class="k">for</span> <span class="n">log</span> <span class="ow">in</span> <span class="n">page_logs</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">log</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">page_logs</span><span class="p">)</span> <span class="k">if</span> <span class="n">tail</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">reverse</span> <span class="k">else</span> <span class="n">page_logs</span><span class="p">:</span>
                 <span class="n">app</span><span class="o">.</span><span class="n">console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span>
                     <span class="c1"># Print following the flow run format (declared in logging.yml)</span>
                     <span class="p">(</span>
@@ -6778,11 +6822,23 @@
             <span class="c1"># Update the number of logs retrieved</span>
             <span class="n">num_logs_returned</span> <span class="o">+=</span> <span class="n">num_logs_to_return_from_page</span>
 
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">page_logs</span><span class="p">)</span> <span class="o">==</span> <span class="n">LOGS_DEFAULT_PAGE_SIZE</span><span class="p">:</span>
-                <span class="n">offset</span> <span class="o">+=</span> <span class="n">LOGS_DEFAULT_PAGE_SIZE</span>
+            <span class="k">if</span> <span class="n">tail</span><span class="p">:</span>
+                <span class="c1">#  If the current offset is not 0, update the offset for the next page</span>
+                <span class="k">if</span> <span class="n">offset</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">offset</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="mi">0</span>
+                        <span class="c1"># Reset the offset to 0 if there are less logs than the LOGS_DEFAULT_PAGE_SIZE to get the remaining log</span>
+                        <span class="k">if</span> <span class="n">offset</span> <span class="o">&lt;</span> <span class="n">LOGS_DEFAULT_PAGE_SIZE</span>
+                        <span class="k">else</span> <span class="n">offset</span> <span class="o">-</span> <span class="n">LOGS_DEFAULT_PAGE_SIZE</span>
+                    <span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">more_logs</span> <span class="o">=</span> <span class="kc">False</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="c1"># No more logs to show, exit</span>
-                <span class="n">more_logs</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">page_logs</span><span class="p">)</span> <span class="o">==</span> <span class="n">LOGS_DEFAULT_PAGE_SIZE</span><span class="p">:</span>
+                    <span class="n">offset</span> <span class="o">+=</span> <span class="n">LOGS_DEFAULT_PAGE_SIZE</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># No more logs to show, exit</span>
+                    <span class="n">more_logs</span> <span class="o">=</span> <span class="kc">False</span>
 </code></pre></div></td></tr></table></div>
       </details>
   </div>
