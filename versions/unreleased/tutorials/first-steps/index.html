@@ -2276,6 +2276,8 @@
       
         
       
+        
+      
     
     
     <li class="md-nav__item md-nav__item--nested">
@@ -2353,6 +2355,32 @@
     
   
     Azure Container Instance
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guides/deployment/helm-worker/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    Kubernetes Worker with Helm
   
 
     
@@ -6347,13 +6375,15 @@
 
 <h1 id="flows-and-tasks">Flows and tasks<a class="headerlink" href="#flows-and-tasks" title="Permanent link">&para;</a></h1>
 <p>Let's start with the basics, defining the central components of Prefect workflows.</p>
-<p>A <a href="/concepts/flows/">flow</a> is the basis of all Prefect workflows. A flow is a Python function decorated with a <code>@flow</code> decorator. </p>
-<p>A <a href="/concepts/tasks/">task</a> is a Python function decorated with a <code>@task</code> decorator. Tasks represent distinct pieces of work executed within a flow. </p>
-<p>All Prefect workflows are defined within the context of a flow. Every Prefect workflow must contain at least one flow function that serves as the entrypoint for execution of the flow. </p>
-<p>Flows can include calls to tasks as well as to child flows, which we call "subflows" in this context. At a high level, this is just like writing any other Python application: you organize specific, repetitive work into tasks, and call those tasks from flows.</p>
+<p>A <a href="/concepts/flows/">flow</a> is the basis of all Prefect workflows. A flow is a Python function decorated with a <code>@flow</code> decorator.</p>
+<p>A <a href="/concepts/tasks/">task</a> is a Python function decorated with a <code>@task</code> decorator. Tasks represent distinct pieces of work executed within a flow.</p>
+<p>Some important things to know about flows:
+1. All Prefect workflows are defined within the context of a flow.
+2. Every Prefect workflow must contain at least one flow function that serves as the entrypoint for execution of the flow.
+3. Flows can include calls to tasks as well as to child flows, which we call "subflows" in this context. At a high level, this is just like writing any other Python application: you organize specific, repetitive work into tasks, and call those tasks from flows.</p>
 <h2 id="run-a-basic-flow">Run a basic flow<a class="headerlink" href="#run-a-basic-flow" title="Permanent link">&para;</a></h2>
 <p>The simplest way to begin with Prefect is to import <code>flow</code> and annotate your Python function using the <a class="autorefs autorefs-internal" href="../../api-ref/prefect/flows/#prefect.flows.flow"><code>@flow</code></a> decorator.</p>
-<p>Enter the following code into your code editor, Jupyter Notebook, or Python REPL. </p>
+<p>Enter the following code into your code editor, Jupyter Notebook, or Python REPL.</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span>
 
 <span class="nd">@flow</span>
@@ -6364,7 +6394,7 @@
 <span class="nb">print</span><span class="p">(</span><span class="n">my_favorite_function</span><span class="p">())</span>
 </code></pre></div>
 <p>Running a Prefect flow manually is as easy as calling the annotated function &mdash; in this case, the <code>my_favorite_function()</code>.</p>
-<p>Run your code in your chosen environment. Here's what the output looks like if your run the code in a Python script:</p>
+<p>Here's what the output looks like if your run the code in a Python script:</p>
 <div class="terminal">
 <div class="highlight"><pre><span></span><code><span class="m">15</span>:27:42.543<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>prefect.engine<span class="w"> </span>-<span class="w"> </span>Created<span class="w"> </span>flow<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;olive-poodle&#39;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>flow<span class="w"> </span><span class="s1">&#39;my-favorite-function&#39;</span>
 <span class="m">15</span>:27:42.543<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>Flow<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;olive-poodle&#39;</span><span class="w"> </span>-<span class="w"> </span>Using<span class="w"> </span>task<span class="w"> </span>runner<span class="w"> </span><span class="s1">&#39;ConcurrentTaskRunner&#39;</span>
@@ -6374,9 +6404,8 @@ What<span class="w"> </span>is<span class="w"> </span>your<span class="w"> </spa
 </code></pre></div>
 </div>
 
-<p>Notice the log messages surrounding the expected output, "What is your favorite number?". Finally, the value returned by the function is printed. </p>
-<p>By adding the <code>@flow</code> decorator to a function, function calls will create a <em>flow run</em> &mdash; the Prefect orchestration engine manages flow and task state, including inspecting their progress, regardless of where your flow code runs.</p>
-<p>In this case, the state of <code>my_favorite_function()</code> is "Completed", with no further message details. This reflects the logged message we saw earlier, <code>Flow run 'olive-poodle' - Finished in state Completed()</code>. </p>
+<p>Notice the log messages surrounding the expected output, "What is your favorite number?". Finally, the value returned by the function is printed.</p>
+<p>By adding the <code>@flow</code> decorator to a function, function calls will create a <em>flow run</em> &mdash; the Prefect orchestration engine manages flow and task state regardless of where your flow code runs.</p>
 <h2 id="run-flows-with-parameters">Run flows with parameters<a class="headerlink" href="#run-flows-with-parameters" title="Permanent link">&para;</a></h2>
 <p>As with any Python function, you can pass arguments. The positional and keyword arguments defined on your flow function are called <em>parameters</em>. To demonstrate, run this code:</p>
 <div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">requests</span>
@@ -6389,8 +6418,7 @@ What<span class="w"> </span>is<span class="w"> </span>your<span class="w"> </spa
 <span class="n">api_result</span> <span class="o">=</span> <span class="n">call_api</span><span class="p">(</span><span class="s2">&quot;http://time.jsontest.com/&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">api_result</span><span class="p">)</span>
 </code></pre></div>
-<p>You can pass any parameters needed by your flow function, and you can pass <a href="/api-ref/prefect/flows/#prefect.flows.flow">parameters on the <code>@flow</code></a> decorator for configuration as well. We'll cover that in a future tutorial.</p>
-<p>For now, we run the <code>call_api()</code> flow, passing a valid URL as a parameter. In this case, we're sending a GET request to an API that should return valid JSON in the response. To output the dicionary returned by the API call, we wrap it in a <code>print</code> function.</p>
+<p>Let's run the <code>call_api()</code> flow, passing a valid URL as a parameter. In this case, we're sending a GET request to an API that should return valid JSON in the response. To output the dicionary returned by the API call, we wrap it in a <code>print</code> function.</p>
 <div class="terminal">
 <div class="highlight"><pre><span></span><code><span class="m">13</span>:21:08.437<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>prefect.engine<span class="w"> </span>-<span class="w"> </span>Created<span class="w"> </span>flow<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;serious-pig&#39;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>flow<span class="w"> </span><span class="s1">&#39;call-api&#39;</span>
 <span class="m">13</span>:21:08.437<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>Flow<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;serious-pig&#39;</span><span class="w"> </span>-<span class="w"> </span>Starting<span class="w"> </span><span class="s1">&#39;ConcurrentTaskRunner&#39;</span><span class="p">;</span><span class="w"> </span>submitted<span class="w"> </span>tasks<span class="w"> </span>will<span class="w"> </span>be<span class="w"> </span>run<span class="w"> </span>concurrently...
@@ -6400,7 +6428,7 @@ What<span class="w"> </span>is<span class="w"> </span>your<span class="w"> </spa
 </div>
 
 <h2 id="run-a-basic-flow-with-tasks">Run a basic flow with tasks<a class="headerlink" href="#run-a-basic-flow-with-tasks" title="Permanent link">&para;</a></h2>
-<p>Let's now add some <a href="/concepts/tasks/">tasks</a> to a flow so that we can orchestrate and monitor at a more granular level. </p>
+<p>Let's now add some <a href="/concepts/tasks/">tasks</a> to a flow so that we can orchestrate and monitor at a more granular level.</p>
 <p>A task is a function that represents a distinct piece of work executed within a flow. You don't have to use tasks &mdash; you can include all of the logic of your workflow within the flow itself. However, encapsulating your business logic into smaller task units gives you more granular observability, control over how specific tasks are run (potentially taking advantage of parallel execution), and the ability to reuse tasks across flows and subflows.</p>
 <p>Creating and adding tasks follows the exact same pattern as for flows. Import <code>task</code> and use the <a class="autorefs autorefs-internal" href="../../api-ref/prefect/tasks/#prefect.tasks.task"><code>@task</code> decorator</a> to annotate functions as tasks.</p>
 <p>Let's take the previous <code>call_api()</code> example and move the actual HTTP request to its own task.</p>
@@ -6420,9 +6448,8 @@ What<span class="w"> </span>is<span class="w"> </span>your<span class="w"> </spa
 
 <span class="nb">print</span><span class="p">(</span><span class="n">api_flow</span><span class="p">(</span><span class="s2">&quot;https://catfact.ninja/fact&quot;</span><span class="p">))</span>
 </code></pre></div>
-<p>As you can see, we still call these tasks as normal functions and can pass their return values to other tasks.<br />
-We can then call our flow function &mdash; now called <code>api_flow()</code> &mdash; 
-just as before and see the printed output. 
+<p>We can then call our flow function &mdash; now called <code>api_flow()</code> &mdash;
+just as before and see the printed output.
 Prefect manages all the intermediate states.</p>
 <div class="terminal">
 <div class="highlight"><pre><span></span><code><span class="m">14</span>:43:56.876<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>prefect.engine<span class="w"> </span>-<span class="w"> </span>Created<span class="w"> </span>flow<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;berserk-hornet&#39;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>flow<span class="w"> </span><span class="s1">&#39;api-flow&#39;</span>
@@ -6538,7 +6565,7 @@ Received<span class="w"> </span>a<span class="w"> </span>&lt;class<span class="w
 </code></pre></div>
 </div>
 
-<p>You can see that Prefect coerced the provided inputs into the types specified on your flow function!  </p>
+<p>You can see that Prefect coerced the provided inputs into the types specified on your flow function!</p>
 <p>While the above example is basic, this can be extended in powerful ways. In particular, Prefect attempts to coerce <em>any</em> <a href="https://pydantic-docs.helpmanual.io/">pydantic</a> model type hint into the correct form automatically:</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
 <span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">BaseModel</span>
