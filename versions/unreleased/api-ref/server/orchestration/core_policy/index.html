@@ -21,7 +21,7 @@
       
       
       <link rel="icon" href="../../../../img/favicon.png">
-      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-9.1.8+insiders-4.32.6">
+      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-9.1.9+insiders-4.32.6">
     
     
       
@@ -29,10 +29,10 @@
       
     
     
-      <link rel="stylesheet" href="../../../../assets/stylesheets/main.dc5b59cc.min.css">
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.938f8e87.min.css">
       
         
-        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.6932e648.min.css">
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.df142b89.min.css">
       
       
 
@@ -5481,10 +5481,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#prefect.server.orchestration.core_policy.PreventRedundantTransitions" class="md-nav__link">
+  <a href="#prefect.server.orchestration.core_policy.PreventPendingTransitions" class="md-nav__link">
     <span class="md-ellipsis">
       
-        PreventRedundantTransitions
+        PreventPendingTransitions
       
     </span>
   </a>
@@ -6602,10 +6602,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#prefect.server.orchestration.core_policy.PreventRedundantTransitions" class="md-nav__link">
+  <a href="#prefect.server.orchestration.core_policy.PreventPendingTransitions" class="md-nav__link">
     <span class="md-ellipsis">
       
-        PreventRedundantTransitions
+        PreventPendingTransitions
       
     </span>
   </a>
@@ -6814,7 +6814,7 @@ Prefect enforces on a state transition.</p>
             <span class="n">HandleFlowTerminalStateTransitions</span><span class="p">,</span>
             <span class="n">EnforceCancellingToCancelledTransition</span><span class="p">,</span>
             <span class="n">BypassCancellingScheduledFlowRuns</span><span class="p">,</span>
-            <span class="n">PreventRedundantTransitions</span><span class="p">,</span>
+            <span class="n">PreventPendingTransitions</span><span class="p">,</span>
             <span class="n">HandlePausingFlows</span><span class="p">,</span>
             <span class="n">HandleResumingPausedFlows</span><span class="p">,</span>
             <span class="n">CopyScheduledTime</span><span class="p">,</span>
@@ -8813,11 +8813,11 @@ state. This resets pause behavior during manual flow run retries.</p>
 
 
 
-<h2 id="prefect.server.orchestration.core_policy.PreventRedundantTransitions" class="doc doc-heading">
-        <code>PreventRedundantTransitions</code>
+<h2 id="prefect.server.orchestration.core_policy.PreventPendingTransitions" class="doc doc-heading">
+        <code>PreventPendingTransitions</code>
 
 
-<a href="#prefect.server.orchestration.core_policy.PreventRedundantTransitions" class="headerlink" title="Permanent link">&para;</a></h2>
+<a href="#prefect.server.orchestration.core_policy.PreventPendingTransitions" class="headerlink" title="Permanent link">&para;</a></h2>
 
 
   <div class="doc doc-contents ">
@@ -8825,11 +8825,20 @@ state. This resets pause behavior during manual flow run retries.</p>
         Bases: <code><a class="autorefs autorefs-internal" title="prefect.server.orchestration.rules.BaseOrchestrationRule" href="../rules/#prefect.server.orchestration.rules.BaseOrchestrationRule">BaseOrchestrationRule</a></code></p>
 
   
-      <p>Prevents redundant transitions.</p>
-<p>Under normal operation, this rule prevents the "backwards" progress of a run. This
-rule will also help prevent multiple agents from attempting to orchestrate a run by
-preventing transitions into the same state type. If any of these disallowed
-transitions are attempted, this rule will abort the transition.</p>
+      <p>Prevents transitions to PENDING.</p>
+<p>This rule is only used for flow runs.</p>
+<p>This is intended to prevent race conditions during duplicate submissions of runs.
+Before a run is submitted to its execution environment, it should be placed in a
+PENDING state. If two workers attempt to submit the same run, one of them should
+encounter a PENDING -&gt; PENDING transition and abort orchestration of the run.</p>
+<p>Similarly, if the execution environment starts quickly the run may be in a RUNNING
+state when the second worker attempts the PENDING transition. We deny these state
+changes as well to prevent duplicate submission. If a run has transitioned to a
+RUNNING state a worker should not attempt to submit it again unless it has moved
+into a terminal state.</p>
+<p>CANCELLING and CANCELLED runs should not be allowed to transition to PENDING.
+For re-runs of deployed runs, they should transition to SCHEDULED first.
+For re-runs of ad-hoc runs, they should transition directly to RUNNING.</p>
 
 
         <details class="quote">
@@ -8875,48 +8884,35 @@ transitions are attempted, this rule will abort the transition.</p>
 <span class="normal">778</span>
 <span class="normal">779</span>
 <span class="normal">780</span>
-<span class="normal">781</span>
-<span class="normal">782</span>
-<span class="normal">783</span>
-<span class="normal">784</span>
-<span class="normal">785</span>
-<span class="normal">786</span>
-<span class="normal">787</span>
-<span class="normal">788</span>
-<span class="normal">789</span>
-<span class="normal">790</span>
-<span class="normal">791</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">PreventRedundantTransitions</span><span class="p">(</span><span class="n">BaseOrchestrationRule</span><span class="p">):</span>
+<span class="normal">781</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">PreventPendingTransitions</span><span class="p">(</span><span class="n">BaseOrchestrationRule</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Prevents redundant transitions.</span>
+<span class="sd">    Prevents transitions to PENDING.</span>
 
-<span class="sd">    Under normal operation, this rule prevents the &quot;backwards&quot; progress of a run. This</span>
-<span class="sd">    rule will also help prevent multiple agents from attempting to orchestrate a run by</span>
-<span class="sd">    preventing transitions into the same state type. If any of these disallowed</span>
-<span class="sd">    transitions are attempted, this rule will abort the transition.</span>
+<span class="sd">    This rule is only used for flow runs.</span>
+
+<span class="sd">    This is intended to prevent race conditions during duplicate submissions of runs.</span>
+<span class="sd">    Before a run is submitted to its execution environment, it should be placed in a</span>
+<span class="sd">    PENDING state. If two workers attempt to submit the same run, one of them should</span>
+<span class="sd">    encounter a PENDING -&gt; PENDING transition and abort orchestration of the run.</span>
+
+<span class="sd">    Similarly, if the execution environment starts quickly the run may be in a RUNNING</span>
+<span class="sd">    state when the second worker attempts the PENDING transition. We deny these state</span>
+<span class="sd">    changes as well to prevent duplicate submission. If a run has transitioned to a</span>
+<span class="sd">    RUNNING state a worker should not attempt to submit it again unless it has moved</span>
+<span class="sd">    into a terminal state.</span>
+
+<span class="sd">    CANCELLING and CANCELLED runs should not be allowed to transition to PENDING.</span>
+<span class="sd">    For re-runs of deployed runs, they should transition to SCHEDULED first.</span>
+<span class="sd">    For re-runs of ad-hoc runs, they should transition directly to RUNNING.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">STATE_PROGRESS</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="kc">None</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-        <span class="n">StateType</span><span class="o">.</span><span class="n">SCHEDULED</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-        <span class="n">StateType</span><span class="o">.</span><span class="n">PENDING</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
-        <span class="n">StateType</span><span class="o">.</span><span class="n">RUNNING</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
-        <span class="n">StateType</span><span class="o">.</span><span class="n">CANCELLING</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
-    <span class="p">}</span>
-
     <span class="n">FROM_STATES</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="n">StateType</span><span class="o">.</span><span class="n">SCHEDULED</span><span class="p">,</span>
         <span class="n">StateType</span><span class="o">.</span><span class="n">PENDING</span><span class="p">,</span>
-        <span class="n">StateType</span><span class="o">.</span><span class="n">RUNNING</span><span class="p">,</span>
         <span class="n">StateType</span><span class="o">.</span><span class="n">CANCELLING</span><span class="p">,</span>
-        <span class="kc">None</span><span class="p">,</span>
-    <span class="p">]</span>
-    <span class="n">TO_STATES</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="n">StateType</span><span class="o">.</span><span class="n">SCHEDULED</span><span class="p">,</span>
-        <span class="n">StateType</span><span class="o">.</span><span class="n">PENDING</span><span class="p">,</span>
         <span class="n">StateType</span><span class="o">.</span><span class="n">RUNNING</span><span class="p">,</span>
-        <span class="n">StateType</span><span class="o">.</span><span class="n">CANCELLING</span><span class="p">,</span>
-        <span class="kc">None</span><span class="p">,</span>
+        <span class="n">StateType</span><span class="o">.</span><span class="n">CANCELLED</span><span class="p">,</span>
     <span class="p">]</span>
+    <span class="n">TO_STATES</span> <span class="o">=</span> <span class="p">[</span><span class="n">StateType</span><span class="o">.</span><span class="n">PENDING</span><span class="p">]</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">before_transition</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -8924,19 +8920,12 @@ transitions are attempted, this rule will abort the transition.</p>
         <span class="n">proposed_state</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">states</span><span class="o">.</span><span class="n">State</span><span class="p">],</span>
         <span class="n">context</span><span class="p">:</span> <span class="n">OrchestrationContext</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">initial_state_type</span> <span class="o">=</span> <span class="n">initial_state</span><span class="o">.</span><span class="n">type</span> <span class="k">if</span> <span class="n">initial_state</span> <span class="k">else</span> <span class="kc">None</span>
-        <span class="n">proposed_state_type</span> <span class="o">=</span> <span class="n">proposed_state</span><span class="o">.</span><span class="n">type</span> <span class="k">if</span> <span class="n">proposed_state</span> <span class="k">else</span> <span class="kc">None</span>
-
-        <span class="k">if</span> <span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">STATE_PROGRESS</span><span class="p">[</span><span class="n">proposed_state_type</span><span class="p">]</span>
-            <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">STATE_PROGRESS</span><span class="p">[</span><span class="n">initial_state_type</span><span class="p">]</span>
-        <span class="p">):</span>
-            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">abort_transition</span><span class="p">(</span>
-                <span class="n">reason</span><span class="o">=</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;This run cannot transition to the </span><span class="si">{</span><span class="n">proposed_state_type</span><span class="si">}</span><span class="s2"> state&quot;</span>
-                    <span class="sa">f</span><span class="s2">&quot; from the </span><span class="si">{</span><span class="n">initial_state_type</span><span class="si">}</span><span class="s2"> state.&quot;</span>
-                <span class="p">)</span>
+        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">abort_transition</span><span class="p">(</span>
+            <span class="n">reason</span><span class="o">=</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;This run is in a </span><span class="si">{</span><span class="n">initial_state</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> state and cannot&quot;</span>
+                <span class="s2">&quot; transition to a PENDING state.&quot;</span>
             <span class="p">)</span>
+        <span class="p">)</span>
 </code></pre></div></td></tr></table></div>
         </details>
 
@@ -8983,7 +8972,17 @@ flow's tasks cannot be run unless the flow is also running.</p>
 
         <details class="quote">
           <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/server/orchestration/core_policy.py</code></summary>
-          <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">794</span>
+          <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">784</span>
+<span class="normal">785</span>
+<span class="normal">786</span>
+<span class="normal">787</span>
+<span class="normal">788</span>
+<span class="normal">789</span>
+<span class="normal">790</span>
+<span class="normal">791</span>
+<span class="normal">792</span>
+<span class="normal">793</span>
+<span class="normal">794</span>
 <span class="normal">795</span>
 <span class="normal">796</span>
 <span class="normal">797</span>
@@ -9007,17 +9006,7 @@ flow's tasks cannot be run unless the flow is also running.</p>
 <span class="normal">815</span>
 <span class="normal">816</span>
 <span class="normal">817</span>
-<span class="normal">818</span>
-<span class="normal">819</span>
-<span class="normal">820</span>
-<span class="normal">821</span>
-<span class="normal">822</span>
-<span class="normal">823</span>
-<span class="normal">824</span>
-<span class="normal">825</span>
-<span class="normal">826</span>
-<span class="normal">827</span>
-<span class="normal">828</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">PreventRunningTasksFromStoppedFlows</span><span class="p">(</span><span class="n">BaseOrchestrationRule</span><span class="p">):</span>
+<span class="normal">818</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">PreventRunningTasksFromStoppedFlows</span><span class="p">(</span><span class="n">BaseOrchestrationRule</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Prevents running tasks from stopped flows.</span>
 
@@ -9096,7 +9085,17 @@ flow's tasks cannot be run unless the flow is also running.</p>
 
         <details class="quote">
           <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/server/orchestration/core_policy.py</code></summary>
-          <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">831</span>
+          <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">821</span>
+<span class="normal">822</span>
+<span class="normal">823</span>
+<span class="normal">824</span>
+<span class="normal">825</span>
+<span class="normal">826</span>
+<span class="normal">827</span>
+<span class="normal">828</span>
+<span class="normal">829</span>
+<span class="normal">830</span>
+<span class="normal">831</span>
 <span class="normal">832</span>
 <span class="normal">833</span>
 <span class="normal">834</span>
@@ -9107,17 +9106,7 @@ flow's tasks cannot be run unless the flow is also running.</p>
 <span class="normal">839</span>
 <span class="normal">840</span>
 <span class="normal">841</span>
-<span class="normal">842</span>
-<span class="normal">843</span>
-<span class="normal">844</span>
-<span class="normal">845</span>
-<span class="normal">846</span>
-<span class="normal">847</span>
-<span class="normal">848</span>
-<span class="normal">849</span>
-<span class="normal">850</span>
-<span class="normal">851</span>
-<span class="normal">852</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">EnforceCancellingToCancelledTransition</span><span class="p">(</span><span class="n">BaseOrchestrationRule</span><span class="p">):</span>
+<span class="normal">842</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">EnforceCancellingToCancelledTransition</span><span class="p">(</span><span class="n">BaseOrchestrationRule</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Rejects transitions from Cancelling to any terminal state except for Cancelled.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -9187,7 +9176,17 @@ a <code>Scheduled</code> state that may have associated infrastructure.</p>
 
         <details class="quote">
           <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/server/orchestration/core_policy.py</code></summary>
-          <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">855</span>
+          <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">845</span>
+<span class="normal">846</span>
+<span class="normal">847</span>
+<span class="normal">848</span>
+<span class="normal">849</span>
+<span class="normal">850</span>
+<span class="normal">851</span>
+<span class="normal">852</span>
+<span class="normal">853</span>
+<span class="normal">854</span>
+<span class="normal">855</span>
 <span class="normal">856</span>
 <span class="normal">857</span>
 <span class="normal">858</span>
@@ -9199,17 +9198,7 @@ a <code>Scheduled</code> state that may have associated infrastructure.</p>
 <span class="normal">864</span>
 <span class="normal">865</span>
 <span class="normal">866</span>
-<span class="normal">867</span>
-<span class="normal">868</span>
-<span class="normal">869</span>
-<span class="normal">870</span>
-<span class="normal">871</span>
-<span class="normal">872</span>
-<span class="normal">873</span>
-<span class="normal">874</span>
-<span class="normal">875</span>
-<span class="normal">876</span>
-<span class="normal">877</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">BypassCancellingScheduledFlowRuns</span><span class="p">(</span><span class="n">BaseOrchestrationRule</span><span class="p">):</span>
+<span class="normal">867</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">BypassCancellingScheduledFlowRuns</span><span class="p">(</span><span class="n">BaseOrchestrationRule</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Rejects transitions from Scheduled to Cancelling, and instead sets the state to Cancelled,</span>
 <span class="sd">    if the flow run has no associated infrastructure process ID.</span>
 
@@ -9413,7 +9402,7 @@ a <code>Scheduled</code> state that may have associated infrastructure.</p>
     <script id="__config" type="application/json">{"base": "../../../..", "features": ["announce.dismiss", "content.action.edit", "content.code.copy", "navigation.tabs.sticky", "search.suggest", "search.highlight", "navigation.path", "navigation.indexes"], "search": "../../../../assets/javascripts/workers/search.6c7302c4.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
-      <script src="../../../../assets/javascripts/bundle.734a6fd4.min.js"></script>
+      <script src="../../../../assets/javascripts/bundle.2047e101.min.js"></script>
       
         <script src="../../../../js/termynal.js"></script>
       
