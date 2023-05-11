@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="../../../../img/favicon.png">
-      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-9.1.8+insiders-4.32.6">
+      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-9.1.9+insiders-4.32.6">
     
     
       
@@ -31,10 +31,10 @@
       
     
     
-      <link rel="stylesheet" href="../../../../assets/stylesheets/main.dc5b59cc.min.css">
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.938f8e87.min.css">
       
         
-        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.6932e648.min.css">
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.df142b89.min.css">
       
       
 
@@ -179,7 +179,7 @@
           <aside class="md-banner md-banner--warning">
             <div class="md-banner__inner md-grid md-typeset">
               
-  You're viewing the docs for Prefect 2.10.7.
+  You're viewing the docs for Prefect 2.10.9.
   <a href="../../../../.."> 
     <strong>Click here to view the latest docs.</strong>
   </a>
@@ -525,8 +525,6 @@
       
         
       
-        
-      
     
     
     <li class="md-nav__item md-nav__item--nested">
@@ -746,32 +744,6 @@
     
   
     Storage & Infrastructure
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../../tutorials/developing-a-new-worker-type/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    
-  
-    Developing a New Worker Type
   
 
     
@@ -2155,6 +2127,8 @@
       
         
       
+        
+      
     
     
     <li class="md-nav__item md-nav__item--nested">
@@ -2258,6 +2232,32 @@
     
   
     Kubernetes Worker with Helm
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../guides/deployment/developing-a-new-worker-type/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    Developing a New Worker Type
   
 
     
@@ -4308,6 +4308,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#prefect.utilities.processutils.setup_signal_handlers_agent" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        setup_signal_handlers_agent()
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#prefect.utilities.processutils.setup_signal_handlers_server" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -6285,6 +6296,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#prefect.utilities.processutils.setup_signal_handlers_agent" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        setup_signal_handlers_agent()
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#prefect.utilities.processutils.setup_signal_handlers_server" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -6446,11 +6468,25 @@
 <span class="normal">337</span>
 <span class="normal">338</span>
 <span class="normal">339</span>
-<span class="normal">340</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">forward_signal_handler</span><span class="p">(</span>
+<span class="normal">340</span>
+<span class="normal">341</span>
+<span class="normal">342</span>
+<span class="normal">343</span>
+<span class="normal">344</span>
+<span class="normal">345</span>
+<span class="normal">346</span>
+<span class="normal">347</span>
+<span class="normal">348</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">forward_signal_handler</span><span class="p">(</span>
     <span class="n">pid</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">signum</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">*</span><span class="n">signums</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">process_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">print_fn</span><span class="p">:</span> <span class="n">Callable</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Forward subsequent signum events (e.g. interrupts) to respective signums.&quot;&quot;&quot;</span>
     <span class="n">current_signal</span><span class="p">,</span> <span class="n">future_signals</span> <span class="o">=</span> <span class="n">signums</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">signums</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+
+    <span class="c1"># avoid RecursionError when setting up a direct signal forward to the same signal for the main pid</span>
+    <span class="n">avoid_infinite_recursion</span> <span class="o">=</span> <span class="n">signum</span> <span class="o">==</span> <span class="n">current_signal</span> <span class="ow">and</span> <span class="n">pid</span> <span class="o">==</span> <span class="n">os</span><span class="o">.</span><span class="n">getpid</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">avoid_infinite_recursion</span><span class="p">:</span>
+        <span class="c1"># store the vanilla handler so it can be temporarily restored below</span>
+        <span class="n">original_handler</span> <span class="o">=</span> <span class="n">signal</span><span class="o">.</span><span class="n">getsignal</span><span class="p">(</span><span class="n">current_signal</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">handler</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
         <span class="n">print_fn</span><span class="p">(</span>
@@ -6458,6 +6494,8 @@
             <span class="sa">f</span><span class="s2">&quot;Sending </span><span class="si">{</span><span class="nb">getattr</span><span class="p">(</span><span class="n">current_signal</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;name&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">current_signal</span><span class="p">)</span><span class="si">}</span><span class="s2"> to&quot;</span>
             <span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="n">process_name</span><span class="si">}</span><span class="s2"> (PID </span><span class="si">{</span><span class="n">pid</span><span class="si">}</span><span class="s2">)...&quot;</span>
         <span class="p">)</span>
+        <span class="k">if</span> <span class="n">avoid_infinite_recursion</span><span class="p">:</span>
+            <span class="n">signal</span><span class="o">.</span><span class="n">signal</span><span class="p">(</span><span class="n">current_signal</span><span class="p">,</span> <span class="n">original_handler</span><span class="p">)</span>
         <span class="n">os</span><span class="o">.</span><span class="n">kill</span><span class="p">(</span><span class="n">pid</span><span class="p">,</span> <span class="n">current_signal</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">future_signals</span><span class="p">:</span>
             <span class="n">forward_signal_handler</span><span class="p">(</span>
@@ -6733,6 +6771,59 @@
 
 
 
+<h2 id="prefect.utilities.processutils.setup_signal_handlers_agent" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">setup_signal_handlers_agent</span></code>
+
+<a href="#prefect.utilities.processutils.setup_signal_handlers_agent" class="headerlink" title="Permanent link">&para;</a></h2>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>Handle interrupts of the agent gracefully.</p>
+
+      <details class="quote">
+        <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/utilities/processutils.py</code></summary>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">368</span>
+<span class="normal">369</span>
+<span class="normal">370</span>
+<span class="normal">371</span>
+<span class="normal">372</span>
+<span class="normal">373</span>
+<span class="normal">374</span>
+<span class="normal">375</span>
+<span class="normal">376</span>
+<span class="normal">377</span>
+<span class="normal">378</span>
+<span class="normal">379</span>
+<span class="normal">380</span>
+<span class="normal">381</span>
+<span class="normal">382</span>
+<span class="normal">383</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">setup_signal_handlers_agent</span><span class="p">(</span><span class="n">pid</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">process_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">print_fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Handle interrupts of the agent gracefully.&quot;&quot;&quot;</span>
+    <span class="n">setup_handler</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span>
+        <span class="n">forward_signal_handler</span><span class="p">,</span> <span class="n">pid</span><span class="p">,</span> <span class="n">process_name</span><span class="o">=</span><span class="n">process_name</span><span class="p">,</span> <span class="n">print_fn</span><span class="o">=</span><span class="n">print_fn</span>
+    <span class="p">)</span>
+    <span class="c1"># when agent receives SIGINT, it stops dequeueing new FlowRuns, and runs until the subprocesses finish</span>
+    <span class="c1"># the signal is not forwarded to subprocesses, so they can continue to run and hopefully still complete</span>
+    <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s2">&quot;win32&quot;</span><span class="p">:</span>
+        <span class="c1"># on Windows, use CTRL_BREAK_EVENT as SIGTERM is useless:</span>
+        <span class="c1"># https://bugs.python.org/issue26350</span>
+        <span class="n">setup_handler</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">SIGINT</span><span class="p">,</span> <span class="n">signal</span><span class="o">.</span><span class="n">CTRL_BREAK_EVENT</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># forward first SIGINT directly, send SIGKILL on subsequent interrupt</span>
+        <span class="n">setup_handler</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">SIGINT</span><span class="p">,</span> <span class="n">signal</span><span class="o">.</span><span class="n">SIGINT</span><span class="p">,</span> <span class="n">signal</span><span class="o">.</span><span class="n">SIGKILL</span><span class="p">)</span>
+        <span class="c1"># first SIGTERM: send SIGINT, send SIGKILL on subsequent SIGTERM</span>
+        <span class="n">setup_handler</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">SIGTERM</span><span class="p">,</span> <span class="n">signal</span><span class="o">.</span><span class="n">SIGINT</span><span class="p">,</span> <span class="n">signal</span><span class="o">.</span><span class="n">SIGKILL</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+      </details>
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+
 <h2 id="prefect.utilities.processutils.setup_signal_handlers_server" class="doc doc-heading">
 <code class="highlight language-python"><span class="n">setup_signal_handlers_server</span></code>
 
@@ -6745,27 +6836,29 @@
 
       <details class="quote">
         <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/utilities/processutils.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">343</span>
-<span class="normal">344</span>
-<span class="normal">345</span>
-<span class="normal">346</span>
-<span class="normal">347</span>
-<span class="normal">348</span>
-<span class="normal">349</span>
-<span class="normal">350</span>
-<span class="normal">351</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">351</span>
 <span class="normal">352</span>
 <span class="normal">353</span>
 <span class="normal">354</span>
 <span class="normal">355</span>
-<span class="normal">356</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">setup_signal_handlers_server</span><span class="p">(</span><span class="n">pid</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">process_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">print_fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">):</span>
+<span class="normal">356</span>
+<span class="normal">357</span>
+<span class="normal">358</span>
+<span class="normal">359</span>
+<span class="normal">360</span>
+<span class="normal">361</span>
+<span class="normal">362</span>
+<span class="normal">363</span>
+<span class="normal">364</span>
+<span class="normal">365</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">setup_signal_handlers_server</span><span class="p">(</span><span class="n">pid</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">process_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">print_fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Handle interrupts of the server gracefully.&quot;&quot;&quot;</span>
     <span class="n">setup_handler</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span>
         <span class="n">forward_signal_handler</span><span class="p">,</span> <span class="n">pid</span><span class="p">,</span> <span class="n">process_name</span><span class="o">=</span><span class="n">process_name</span><span class="p">,</span> <span class="n">print_fn</span><span class="o">=</span><span class="n">print_fn</span>
     <span class="p">)</span>
-    <span class="c1"># on Windows, use CTRL_BREAK_EVENT as SIGTERM is useless:</span>
-    <span class="c1"># https://bugs.python.org/issue26350</span>
+    <span class="c1"># when server receives a signal, it needs to be propagated to the uvicorn subprocess</span>
     <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s2">&quot;win32&quot;</span><span class="p">:</span>
+        <span class="c1"># on Windows, use CTRL_BREAK_EVENT as SIGTERM is useless:</span>
+        <span class="c1"># https://bugs.python.org/issue26350</span>
         <span class="n">setup_handler</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">SIGINT</span><span class="p">,</span> <span class="n">signal</span><span class="o">.</span><span class="n">CTRL_BREAK_EVENT</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="c1"># first interrupt: SIGTERM, second interrupt: SIGKILL</span>
@@ -6935,7 +7028,7 @@
     <script id="__config" type="application/json">{"base": "../../../..", "features": ["announce.dismiss", "content.action.edit", "content.code.copy", "navigation.tabs.sticky", "search.suggest", "search.highlight", "navigation.path", "navigation.indexes"], "search": "../../../../assets/javascripts/workers/search.6c7302c4.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
-      <script src="../../../../assets/javascripts/bundle.734a6fd4.min.js"></script>
+      <script src="../../../../assets/javascripts/bundle.2047e101.min.js"></script>
       
         <script src="../../../../js/termynal.js"></script>
       

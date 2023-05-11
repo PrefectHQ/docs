@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="../../../../img/favicon.png">
-      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-9.1.8+insiders-4.32.6">
+      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-9.1.9+insiders-4.32.6">
     
     
       
@@ -31,10 +31,10 @@
       
     
     
-      <link rel="stylesheet" href="../../../../assets/stylesheets/main.dc5b59cc.min.css">
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.938f8e87.min.css">
       
         
-        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.6932e648.min.css">
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.df142b89.min.css">
       
       
 
@@ -179,7 +179,7 @@
           <aside class="md-banner md-banner--warning">
             <div class="md-banner__inner md-grid md-typeset">
               
-  You're viewing the docs for Prefect 2.10.7.
+  You're viewing the docs for Prefect 2.10.9.
   <a href="../../../../.."> 
     <strong>Click here to view the latest docs.</strong>
   </a>
@@ -525,8 +525,6 @@
       
         
       
-        
-      
     
     
     <li class="md-nav__item md-nav__item--nested">
@@ -746,32 +744,6 @@
     
   
     Storage & Infrastructure
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../../tutorials/developing-a-new-worker-type/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    
-  
-    Developing a New Worker Type
   
 
     
@@ -2155,6 +2127,8 @@
       
         
       
+        
+      
     
     
     <li class="md-nav__item md-nav__item--nested">
@@ -2258,6 +2232,32 @@
     
   
     Kubernetes Worker with Helm
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../guides/deployment/developing-a-new-worker-type/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    Developing a New Worker Type
   
 
     
@@ -8123,7 +8123,36 @@ the flow run.</p>
 <span class="normal">1042</span>
 <span class="normal">1043</span>
 <span class="normal">1044</span>
-<span class="normal">1045</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@register_base_type</span>
+<span class="normal">1045</span>
+<span class="normal">1046</span>
+<span class="normal">1047</span>
+<span class="normal">1048</span>
+<span class="normal">1049</span>
+<span class="normal">1050</span>
+<span class="normal">1051</span>
+<span class="normal">1052</span>
+<span class="normal">1053</span>
+<span class="normal">1054</span>
+<span class="normal">1055</span>
+<span class="normal">1056</span>
+<span class="normal">1057</span>
+<span class="normal">1058</span>
+<span class="normal">1059</span>
+<span class="normal">1060</span>
+<span class="normal">1061</span>
+<span class="normal">1062</span>
+<span class="normal">1063</span>
+<span class="normal">1064</span>
+<span class="normal">1065</span>
+<span class="normal">1066</span>
+<span class="normal">1067</span>
+<span class="normal">1068</span>
+<span class="normal">1069</span>
+<span class="normal">1070</span>
+<span class="normal">1071</span>
+<span class="normal">1072</span>
+<span class="normal">1073</span>
+<span class="normal">1074</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@register_base_type</span>
 <span class="k">class</span> <span class="nc">BaseWorker</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
     <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">job_configuration</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">BaseJobConfiguration</span><span class="p">]</span> <span class="o">=</span> <span class="n">BaseJobConfiguration</span>
@@ -8217,6 +8246,18 @@ the flow run.</p>
 
     <span class="k">def</span> <span class="nf">get_name_slug</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">slugify</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">get_flow_run_logger</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flow_run</span><span class="p">:</span> <span class="s2">&quot;FlowRun&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PrefectLogAdapter</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">flow_run_logger</span><span class="p">(</span><span class="n">flow_run</span><span class="o">=</span><span class="n">flow_run</span><span class="p">)</span><span class="o">.</span><span class="n">getChild</span><span class="p">(</span>
+            <span class="s2">&quot;worker&quot;</span><span class="p">,</span>
+            <span class="n">extra</span><span class="o">=</span><span class="p">{</span>
+                <span class="s2">&quot;worker_name&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                <span class="s2">&quot;work_pool_name&quot;</span><span class="p">:</span> <span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_work_pool_name</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_work_pool</span> <span class="k">else</span> <span class="s2">&quot;&lt;unknown&gt;&quot;</span>
+                <span class="p">),</span>
+                <span class="s2">&quot;work_pool_id&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_work_pool</span><span class="p">,</span> <span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;unknown&quot;</span><span class="p">)),</span>
+            <span class="p">},</span>
+        <span class="p">)</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">run</span><span class="p">(</span>
@@ -8340,8 +8381,10 @@ the flow run.</p>
         <span class="k">return</span> <span class="n">cancelling_flow_runs</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">cancel_run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flow_run</span><span class="p">:</span> <span class="s2">&quot;FlowRun&quot;</span><span class="p">):</span>
+        <span class="n">run_logger</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_flow_run_logger</span><span class="p">(</span><span class="n">flow_run</span><span class="p">)</span>
+
         <span class="k">if</span> <span class="ow">not</span> <span class="n">flow_run</span><span class="o">.</span><span class="n">infrastructure_pid</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+            <span class="n">run_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;Flow run &#39;</span><span class="si">{</span><span class="n">flow_run</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">&#39; does not have an infrastructure pid&quot;</span>
                 <span class="s2">&quot; attached. Cancellation cannot be guaranteed.&quot;</span>
             <span class="p">)</span>
@@ -8374,7 +8417,7 @@ the flow run.</p>
         <span class="k">except</span> <span class="n">InfrastructureNotAvailable</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">exc</span><span class="si">}</span><span class="s2"> Flow run cannot be cancelled by this worker.&quot;</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span>
+            <span class="n">run_logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span>
                 <span class="s2">&quot;Encountered exception while killing infrastructure for flow run &quot;</span>
                 <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">flow_run</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">&#39;. Flow run may not be cancelled.&quot;</span>
             <span class="p">)</span>
@@ -8386,7 +8429,7 @@ the flow run.</p>
                 <span class="n">flow_run</span><span class="o">=</span><span class="n">flow_run</span><span class="p">,</span> <span class="n">configuration</span><span class="o">=</span><span class="n">configuration</span>
             <span class="p">)</span>
             <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mark_flow_run_as_cancelled</span><span class="p">(</span><span class="n">flow_run</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cancelled flow run &#39;</span><span class="si">{</span><span class="n">flow_run</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">&#39;!&quot;</span><span class="p">)</span>
+            <span class="n">run_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cancelled flow run &#39;</span><span class="si">{</span><span class="n">flow_run</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">&#39;!&quot;</span><span class="p">)</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">_update_local_work_pool_info</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
@@ -8491,7 +8534,10 @@ the flow run.</p>
                 <span class="p">)</span>
                 <span class="k">break</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Submitting flow run &#39;</span><span class="si">{</span><span class="n">flow_run</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+                <span class="n">run_logger</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_flow_run_logger</span><span class="p">(</span><span class="n">flow_run</span><span class="p">)</span>
+                <span class="n">run_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Worker &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39; submitting flow run &#39;</span><span class="si">{</span><span class="n">flow_run</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">&#39;&quot;</span>
+                <span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_submitting_flow_run_ids</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">flow_run</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_runs_task_group</span><span class="o">.</span><span class="n">start_soon</span><span class="p">(</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_submit_run</span><span class="p">,</span>
@@ -8524,6 +8570,8 @@ the flow run.</p>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Submits a given flow run for execution by the worker.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">run_logger</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_flow_run_logger</span><span class="p">(</span><span class="n">flow_run</span><span class="p">)</span>
+
         <span class="k">try</span><span class="p">:</span>
             <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_flow_run</span><span class="p">(</span><span class="n">flow_run</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
@@ -8551,13 +8599,13 @@ the flow run.</p>
                         <span class="n">infrastructure_pid</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">readiness_result</span><span class="p">),</span>
                     <span class="p">)</span>
                 <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span>
+                    <span class="n">run_logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span>
                         <span class="s2">&quot;An error occurred while setting the `infrastructure_pid` on &quot;</span>
                         <span class="sa">f</span><span class="s2">&quot;flow run </span><span class="si">{</span><span class="n">flow_run</span><span class="o">.</span><span class="n">id</span><span class="si">!r}</span><span class="s2">. The flow run will &quot;</span>
                         <span class="s2">&quot;not be cancellable.&quot;</span>
                     <span class="p">)</span>
 
-            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Completed submission of flow run &#39;</span><span class="si">{</span><span class="n">flow_run</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+            <span class="n">run_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Completed submission of flow run &#39;</span><span class="si">{</span><span class="n">flow_run</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
 
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># If the run is not ready to submit, release the concurrency slot</span>
@@ -8569,6 +8617,8 @@ the flow run.</p>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">_submit_run_and_capture_errors</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">flow_run</span><span class="p">:</span> <span class="s2">&quot;FlowRun&quot;</span><span class="p">,</span> <span class="n">task_status</span><span class="p">:</span> <span class="n">anyio</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">TaskStatus</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">BaseWorkerResult</span><span class="p">,</span> <span class="ne">Exception</span><span class="p">]:</span>
+        <span class="n">run_logger</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_flow_run_logger</span><span class="p">(</span><span class="n">flow_run</span><span class="p">)</span>
+
         <span class="k">try</span><span class="p">:</span>
             <span class="n">configuration</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_configuration</span><span class="p">(</span><span class="n">flow_run</span><span class="p">)</span>
             <span class="n">submitted_event</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_emit_flow_run_submitted_event</span><span class="p">(</span><span class="n">configuration</span><span class="p">)</span>
@@ -8587,7 +8637,7 @@ the flow run.</p>
                 <span class="n">task_status</span><span class="o">.</span><span class="n">started</span><span class="p">(</span><span class="n">exc</span><span class="p">)</span>
                 <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_propose_failed_state</span><span class="p">(</span><span class="n">flow_run</span><span class="p">,</span> <span class="n">exc</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span>
+                <span class="n">run_logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span>
                     <span class="sa">f</span><span class="s2">&quot;An error occurred while monitoring flow run &#39;</span><span class="si">{</span><span class="n">flow_run</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">&#39;. &quot;</span>
                     <span class="s2">&quot;The flow run will not be marked as failed, but an issue may have &quot;</span>
                     <span class="s2">&quot;occurred.&quot;</span>
@@ -8598,7 +8648,7 @@ the flow run.</p>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_limiter</span><span class="o">.</span><span class="n">release_on_behalf_of</span><span class="p">(</span><span class="n">flow_run</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">task_status</span><span class="o">.</span><span class="n">_future</span><span class="o">.</span><span class="n">done</span><span class="p">():</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+            <span class="n">run_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;Infrastructure returned without reporting flow run &#39;</span><span class="si">{</span><span class="n">flow_run</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">&#39; &quot;</span>
                 <span class="s2">&quot;as started or raising an error. This behavior is not expected and &quot;</span>
                 <span class="s2">&quot;generally indicates improper implementation of infrastructure. The &quot;</span>
@@ -8654,13 +8704,14 @@ the flow run.</p>
         <span class="k">return</span> <span class="n">configuration</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">_propose_pending_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flow_run</span><span class="p">:</span> <span class="s2">&quot;FlowRun&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="n">run_logger</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_flow_run_logger</span><span class="p">(</span><span class="n">flow_run</span><span class="p">)</span>
         <span class="n">state</span> <span class="o">=</span> <span class="n">flow_run</span><span class="o">.</span><span class="n">state</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">state</span> <span class="o">=</span> <span class="k">await</span> <span class="n">propose_state</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="p">,</span> <span class="n">Pending</span><span class="p">(),</span> <span class="n">flow_run_id</span><span class="o">=</span><span class="n">flow_run</span><span class="o">.</span><span class="n">id</span>
             <span class="p">)</span>
         <span class="k">except</span> <span class="n">Abort</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="n">run_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
                 <span class="p">(</span>
                     <span class="sa">f</span><span class="s2">&quot;Aborted submission of flow run &#39;</span><span class="si">{</span><span class="n">flow_run</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">&#39;. &quot;</span>
                     <span class="sa">f</span><span class="s2">&quot;Server sent an abort signal: </span><span class="si">{</span><span class="n">exc</span><span class="si">}</span><span class="s2">&quot;</span>
@@ -8668,13 +8719,13 @@ the flow run.</p>
             <span class="p">)</span>
             <span class="k">return</span> <span class="kc">False</span>
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span>
+            <span class="n">run_logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;Failed to update state of flow run &#39;</span><span class="si">{</span><span class="n">flow_run</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="k">return</span> <span class="kc">False</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">state</span><span class="o">.</span><span class="n">is_pending</span><span class="p">():</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="n">run_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
                 <span class="p">(</span>
                     <span class="sa">f</span><span class="s2">&quot;Aborted submission of flow run &#39;</span><span class="si">{</span><span class="n">flow_run</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">&#39;: &quot;</span>
                     <span class="sa">f</span><span class="s2">&quot;Server returned a non-pending state </span><span class="si">{</span><span class="n">state</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">value</span><span class="si">!r}</span><span class="s2">&quot;</span>
@@ -8685,6 +8736,7 @@ the flow run.</p>
         <span class="k">return</span> <span class="kc">True</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">_propose_failed_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flow_run</span><span class="p">:</span> <span class="s2">&quot;FlowRun&quot;</span><span class="p">,</span> <span class="n">exc</span><span class="p">:</span> <span class="ne">Exception</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">run_logger</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_flow_run_logger</span><span class="p">(</span><span class="n">flow_run</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">await</span> <span class="n">propose_state</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="p">,</span>
@@ -8696,12 +8748,13 @@ the flow run.</p>
             <span class="c1"># raise in the agent process</span>
             <span class="k">pass</span>
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+            <span class="n">run_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;Failed to update state of flow run &#39;</span><span class="si">{</span><span class="n">flow_run</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">,</span>
                 <span class="n">exc_info</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
             <span class="p">)</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">_propose_crashed_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flow_run</span><span class="p">:</span> <span class="s2">&quot;FlowRun&quot;</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">run_logger</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_flow_run_logger</span><span class="p">(</span><span class="n">flow_run</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">state</span> <span class="o">=</span> <span class="k">await</span> <span class="n">propose_state</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="p">,</span>
@@ -8712,12 +8765,10 @@ the flow run.</p>
             <span class="c1"># Flow run already marked as failed</span>
             <span class="k">pass</span>
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;Failed to update state of flow run &#39;</span><span class="si">{</span><span class="n">flow_run</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">&#39;&quot;</span>
-            <span class="p">)</span>
+            <span class="n">run_logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to update state of flow run &#39;</span><span class="si">{</span><span class="n">flow_run</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">state</span><span class="o">.</span><span class="n">is_crashed</span><span class="p">():</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                <span class="n">run_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
                     <span class="sa">f</span><span class="s2">&quot;Reported flow run &#39;</span><span class="si">{</span><span class="n">flow_run</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">&#39; as crashed: </span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="s2">&quot;</span>
                 <span class="p">)</span>
 
@@ -8796,7 +8847,9 @@ the flow run.</p>
         <span class="p">}</span>
 
     <span class="k">def</span> <span class="nf">_event_related_resources</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">configuration</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">BaseJobConfiguration</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">configuration</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">BaseJobConfiguration</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">include_self</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">RelatedResource</span><span class="p">]:</span>
         <span class="n">related</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">if</span> <span class="n">configuration</span><span class="p">:</span>
@@ -8808,6 +8861,11 @@ the flow run.</p>
                     <span class="n">kind</span><span class="o">=</span><span class="s2">&quot;work-pool&quot;</span><span class="p">,</span> <span class="n">role</span><span class="o">=</span><span class="s2">&quot;work-pool&quot;</span><span class="p">,</span> <span class="nb">object</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_work_pool</span>
                 <span class="p">)</span>
             <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">include_self</span><span class="p">:</span>
+            <span class="n">worker_resource</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_event_resource</span><span class="p">()</span>
+            <span class="n">worker_resource</span><span class="p">[</span><span class="s2">&quot;prefect.resource.role&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;worker&quot;</span>
+            <span class="n">related</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">RelatedResource</span><span class="p">(</span><span class="n">__root__</span><span class="o">=</span><span class="n">worker_resource</span><span class="p">))</span>
 
         <span class="k">return</span> <span class="n">related</span>
 
@@ -8903,22 +8961,22 @@ pool, the work pool queues it is polling, and its local settings.</p>
 
       <details class="quote">
         <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/workers/base.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">795</span>
-<span class="normal">796</span>
-<span class="normal">797</span>
-<span class="normal">798</span>
-<span class="normal">799</span>
-<span class="normal">800</span>
-<span class="normal">801</span>
-<span class="normal">802</span>
-<span class="normal">803</span>
-<span class="normal">804</span>
-<span class="normal">805</span>
-<span class="normal">806</span>
-<span class="normal">807</span>
-<span class="normal">808</span>
-<span class="normal">809</span>
-<span class="normal">810</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_status</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">816</span>
+<span class="normal">817</span>
+<span class="normal">818</span>
+<span class="normal">819</span>
+<span class="normal">820</span>
+<span class="normal">821</span>
+<span class="normal">822</span>
+<span class="normal">823</span>
+<span class="normal">824</span>
+<span class="normal">825</span>
+<span class="normal">826</span>
+<span class="normal">827</span>
+<span class="normal">828</span>
+<span class="normal">829</span>
+<span class="normal">830</span>
+<span class="normal">831</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_status</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Retrieves the status of the current worker including its name, current worker</span>
 <span class="sd">    pool, the work pool queues it is polling, and its local settings.</span>
@@ -8961,19 +9019,19 @@ individual workers if they support killing infrastructure.</p>
 
       <details class="quote">
         <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/workers/base.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">407</span>
-<span class="normal">408</span>
-<span class="normal">409</span>
-<span class="normal">410</span>
-<span class="normal">411</span>
-<span class="normal">412</span>
-<span class="normal">413</span>
-<span class="normal">414</span>
-<span class="normal">415</span>
-<span class="normal">416</span>
-<span class="normal">417</span>
-<span class="normal">418</span>
-<span class="normal">419</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">kill_infrastructure</span><span class="p">(</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">419</span>
+<span class="normal">420</span>
+<span class="normal">421</span>
+<span class="normal">422</span>
+<span class="normal">423</span>
+<span class="normal">424</span>
+<span class="normal">425</span>
+<span class="normal">426</span>
+<span class="normal">427</span>
+<span class="normal">428</span>
+<span class="normal">429</span>
+<span class="normal">430</span>
+<span class="normal">431</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">kill_infrastructure</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">infrastructure_pid</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">configuration</span><span class="p">:</span> <span class="n">BaseJobConfiguration</span><span class="p">,</span>
@@ -9013,19 +9071,19 @@ individual workers if they support killing infrastructure.</p>
 
       <details class="quote">
         <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/workers/base.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">393</span>
-<span class="normal">394</span>
-<span class="normal">395</span>
-<span class="normal">396</span>
-<span class="normal">397</span>
-<span class="normal">398</span>
-<span class="normal">399</span>
-<span class="normal">400</span>
-<span class="normal">401</span>
-<span class="normal">402</span>
-<span class="normal">403</span>
-<span class="normal">404</span>
-<span class="normal">405</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">405</span>
+<span class="normal">406</span>
+<span class="normal">407</span>
+<span class="normal">408</span>
+<span class="normal">409</span>
+<span class="normal">410</span>
+<span class="normal">411</span>
+<span class="normal">412</span>
+<span class="normal">413</span>
+<span class="normal">414</span>
+<span class="normal">415</span>
+<span class="normal">416</span>
+<span class="normal">417</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">run</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">flow_run</span><span class="p">:</span> <span class="s2">&quot;FlowRun&quot;</span><span class="p">,</span>
@@ -9064,18 +9122,18 @@ individual workers if they support killing infrastructure.</p>
 
       <details class="quote">
         <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/workers/base.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">427</span>
-<span class="normal">428</span>
-<span class="normal">429</span>
-<span class="normal">430</span>
-<span class="normal">431</span>
-<span class="normal">432</span>
-<span class="normal">433</span>
-<span class="normal">434</span>
-<span class="normal">435</span>
-<span class="normal">436</span>
-<span class="normal">437</span>
-<span class="normal">438</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">setup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">439</span>
+<span class="normal">440</span>
+<span class="normal">441</span>
+<span class="normal">442</span>
+<span class="normal">443</span>
+<span class="normal">444</span>
+<span class="normal">445</span>
+<span class="normal">446</span>
+<span class="normal">447</span>
+<span class="normal">448</span>
+<span class="normal">449</span>
+<span class="normal">450</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">setup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Prepares the worker to run.&quot;&quot;&quot;</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Setting up worker...&quot;</span><span class="p">)</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">_runs_task_group</span> <span class="o">=</span> <span class="n">anyio</span><span class="o">.</span><span class="n">create_task_group</span><span class="p">()</span>
@@ -9114,16 +9172,16 @@ queues. Sends a worker heartbeat to the API.</p>
 
       <details class="quote">
         <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/workers/base.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">605</span>
-<span class="normal">606</span>
-<span class="normal">607</span>
-<span class="normal">608</span>
-<span class="normal">609</span>
-<span class="normal">610</span>
-<span class="normal">611</span>
-<span class="normal">612</span>
-<span class="normal">613</span>
-<span class="normal">614</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">sync_with_backend</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">619</span>
+<span class="normal">620</span>
+<span class="normal">621</span>
+<span class="normal">622</span>
+<span class="normal">623</span>
+<span class="normal">624</span>
+<span class="normal">625</span>
+<span class="normal">626</span>
+<span class="normal">627</span>
+<span class="normal">628</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">sync_with_backend</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Updates the worker&#39;s local information about it&#39;s current work pool and</span>
 <span class="sd">    queues. Sends a worker heartbeat to the API.</span>
@@ -9159,18 +9217,18 @@ queues. Sends a worker heartbeat to the API.</p>
 
       <details class="quote">
         <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/workers/base.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">440</span>
-<span class="normal">441</span>
-<span class="normal">442</span>
-<span class="normal">443</span>
-<span class="normal">444</span>
-<span class="normal">445</span>
-<span class="normal">446</span>
-<span class="normal">447</span>
-<span class="normal">448</span>
-<span class="normal">449</span>
-<span class="normal">450</span>
-<span class="normal">451</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">teardown</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">exc_info</span><span class="p">):</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">452</span>
+<span class="normal">453</span>
+<span class="normal">454</span>
+<span class="normal">455</span>
+<span class="normal">456</span>
+<span class="normal">457</span>
+<span class="normal">458</span>
+<span class="normal">459</span>
+<span class="normal">460</span>
+<span class="normal">461</span>
+<span class="normal">462</span>
+<span class="normal">463</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">teardown</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">exc_info</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Cleans up resources after the worker is stopped.&quot;&quot;&quot;</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Tearing down worker...&quot;</span><span class="p">)</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">is_setup</span> <span class="o">=</span> <span class="kc">False</span>
@@ -9354,7 +9412,7 @@ queues. Sends a worker heartbeat to the API.</p>
     <script id="__config" type="application/json">{"base": "../../../..", "features": ["announce.dismiss", "content.action.edit", "content.code.copy", "navigation.tabs.sticky", "search.suggest", "search.highlight", "navigation.path", "navigation.indexes"], "search": "../../../../assets/javascripts/workers/search.6c7302c4.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
-      <script src="../../../../assets/javascripts/bundle.734a6fd4.min.js"></script>
+      <script src="../../../../assets/javascripts/bundle.2047e101.min.js"></script>
       
         <script src="../../../../js/termynal.js"></script>
       

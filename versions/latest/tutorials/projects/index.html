@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="../../img/favicon.png">
-      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-9.1.8+insiders-4.32.6">
+      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-9.1.9+insiders-4.32.6">
     
     
       
@@ -31,10 +31,10 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.dc5b59cc.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.938f8e87.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.6932e648.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.df142b89.min.css">
       
       
 
@@ -179,7 +179,7 @@
           <aside class="md-banner md-banner--warning">
             <div class="md-banner__inner md-grid md-typeset">
               
-  You're viewing the docs for Prefect 2.10.7.
+  You're viewing the docs for Prefect 2.10.9.
   <a href="../../.."> 
     <strong>Click here to view the latest docs.</strong>
   </a>
@@ -511,8 +511,6 @@
       
         
           
-        
-      
         
       
         
@@ -897,32 +895,6 @@
     
   
     Storage & Infrastructure
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../developing-a-new-worker-type/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    
-  
-    Developing a New Worker Type
   
 
     
@@ -2306,6 +2278,8 @@
       
         
       
+        
+      
     
     
     <li class="md-nav__item md-nav__item--nested">
@@ -2409,6 +2383,32 @@
     
   
     Kubernetes Worker with Helm
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guides/deployment/developing-a-new-worker-type/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    Developing a New Worker Type
   
 
     
@@ -6451,7 +6451,8 @@
 <p><a name="worker-tip"></a></p>
 <div class="admonition tip">
 <p class="admonition-title">Projects require workers</p>
-<p>Note that using a project to manage your deployments requires the use of workers.  This tutorial assumes that you have already set up two work pools, each with a worker, which only requires a single CLI command for each:</p>
+<p>Note that using a project to manage your deployments requires the use of workers.<br />
+This tutorial assumes that you have already set up two work pools, each with a worker, which only requires a single CLI command for each:</p>
 <ul>
 <li><strong>Local</strong>: <code>prefect worker start -t process -p local-work</code></li>
 <li><strong>Docker</strong>: <code>prefect worker start -t docker -p docker-work</code></li>
@@ -6602,6 +6603,7 @@ $<span class="w"> </span>prefect<span class="w"> </span>project<span class="w"> 
 <span class="w">    </span><span class="nt">access_token</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span>
 </code></pre></div>
 These <code>pull</code> steps are the instructions sent to your worker's runtime environment that allow it to clone your project in remote locations. For more information, see <a href="/concepts/projects/">the project concept documentation</a>.</p>
+<p>For more examples of configuration options available for cloning projects, see <a href="/api-ref/prefect/projects/steps/pull">the <code>git_clone_project</code> step documentation</a>.</p>
 </div>
 <h3 id="dockerized-deployment">Dockerized deployment<a class="headerlink" href="#dockerized-deployment" title="Permanent link">&para;</a></h3>
 <p>In this example, we extend the examples above by dockerizing our setup and executing runs with a Docker Worker.  Building off the <a href="#git-based-deployment">git-based example above</a>, let's switch our deployment to submit work to the <code>docker-work</code> work pool that <a href="#worker-tip">we started at the beginning</a>:</p>
@@ -6647,6 +6649,7 @@ $<span class="w"> </span>python<span class="w"> </span>flows/pandas_flow.py
 <li><a href="/concepts/projects/#the-prefect-yaml-file">each step</a> references a function with inputs and outputs</li>
 <li>in this case, we are using <code>dockerfile: auto</code> to tell Prefect to automatically create a <code>Dockerfile</code> for us; otherwise we could write our own and pass its location as a path to the <code>dockerfile</code> kwarg</li>
 <li>to avoid dealing with real image registries, we are not pushing this image; in most use cases you will want <code>push: true</code> (which is the default)</li>
+<li>to see all available configuration options for building Docker images, see <a href="https://prefecthq.github.io/prefect-docker/projects/steps/#prefect_docker.projects.steps.build_docker_image">the <code>build_docker_image</code> step documentation</a></li>
 </ul>
 <p>All that's left to do is create our deployment and specify our image name to instruct the worker what image to pull:</p>
 <div class="terminal">
@@ -6658,7 +6661,7 @@ $<span class="w"> </span>prefect<span class="w"> </span>deployment<span class="w
 </code></pre></div>
 </div>
 
-<p>Your run should complete succsessfully, logs and all!  Note that the <code>-v</code> flag represents a job variable, which are the allowed pieces of infrastructure configuration on a given work pool.  Each work pool can customize the fields they accept here.</p>
+<p>Your run should complete successfully, logs and all!  Note that the <code>-v</code> flag represents a job variable, which are the allowed pieces of infrastructure configuration on a given work pool.  Each work pool can customize the fields they accept here.</p>
 <div class="admonition tip">
 <p class="admonition-title">Templating values</p>
 <p>As a matter of best practice, you should avoid hardcoding the image name and tag in both your <code>prefect.yaml</code> and CLI. Instead, you should <a href="/concepts/projects/#templating-options">use variable templating</a>.</p>
@@ -6860,7 +6863,7 @@ $<span class="w"> </span>prefect<span class="w"> </span>deployment<span class="w
     <script id="__config" type="application/json">{"base": "../..", "features": ["announce.dismiss", "content.action.edit", "content.code.copy", "navigation.tabs.sticky", "search.suggest", "search.highlight", "navigation.path", "navigation.indexes"], "search": "../../assets/javascripts/workers/search.6c7302c4.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.734a6fd4.min.js"></script>
+      <script src="../../assets/javascripts/bundle.2047e101.min.js"></script>
       
         <script src="../../js/termynal.js"></script>
       
