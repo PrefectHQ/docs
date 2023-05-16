@@ -6453,7 +6453,9 @@
 <span class="normal">142</span>
 <span class="normal">143</span>
 <span class="normal">144</span>
-<span class="normal">145</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@app</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="normal">145</span>
+<span class="normal">146</span>
+<span class="normal">147</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@app</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">version</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the current Prefect version.&quot;&quot;&quot;</span>
     <span class="kn">import</span> <span class="nn">sqlite3</span>
@@ -6477,8 +6479,10 @@
     <span class="n">server_type</span><span class="p">:</span> <span class="nb">str</span>
 
     <span class="k">try</span><span class="p">:</span>
-        <span class="k">async</span> <span class="k">with</span> <span class="n">prefect</span><span class="o">.</span><span class="n">get_client</span><span class="p">()</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
-            <span class="n">server_type</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">server_type</span><span class="o">.</span><span class="n">value</span>
+        <span class="c1"># We do not context manage the client because when using an ephemeral app we do not</span>
+        <span class="c1"># want to create the database or run migrations</span>
+        <span class="n">client</span> <span class="o">=</span> <span class="n">prefect</span><span class="o">.</span><span class="n">get_client</span><span class="p">()</span>
+        <span class="n">server_type</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">server_type</span><span class="o">.</span><span class="n">value</span>
     <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
         <span class="n">server_type</span> <span class="o">=</span> <span class="s2">&quot;&lt;client error&gt;&quot;</span>
 
