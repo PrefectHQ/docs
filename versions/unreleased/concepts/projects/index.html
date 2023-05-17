@@ -6796,7 +6796,7 @@
 <ul>
 <li><strong>step outputs</strong>: every step of both <code>build</code> and <code>push</code> produce named fields such as <code>image_name</code>; you can reference these fields within <code>deployment.yaml</code> and <code>prefect deploy</code> will populate them with each call.  References must be enclosed in double brackets and be of the form <code>"{{ field_name }}"</code></li>
 <li><strong>blocks</strong>: <a href="/concepts/blocks">Prefect blocks</a> can also be referenced with the special syntax <code>{{ prefect.blocks.block_type.block_slug }}</code>; it is highly recommended that you use block references for any sensitive information (such as a GitHub access token or any credentials) to avoid hardcoding these values in plaintext</li>
-<li><strong>variables</strong>: <a href="/concepts/variables">Prefect variables</a> can also be referenced with the special syntax <code>{{ prefect.variables.variable_name }}</code>. Variables can be used reference non-sensitive, reusable pieces of information such as a default image name or a default work pool name.</li>
+<li><strong>variables</strong>: <a href="/concepts/variables">Prefect variables</a> can also be referenced with the special syntax <code>{{ prefect.variables.variable_name }}</code>. Variables can be used to reference non-sensitive, reusable pieces of information such as a default image name or a default work pool name.</li>
 </ul>
 <p>As an example, consider the following <code>deployment.yaml</code> file:</p>
 <div class="highlight"><pre><span></span><code><span class="nt">deployments</span><span class="p">:</span>
@@ -6983,7 +6983,7 @@
 </tr>
 <tr>
 <td><code>schedule</code></td>
-<td>An optional <a href="/concepts/schedules">schedule</a> to assign to the deployment. Fields for this sections are documented in the <a href="#schedule-fields">Schedule Fields</a> section.</td>
+<td>An optional <a href="/concepts/schedules">schedule</a> to assign to the deployment. Fields for this section are documented in the <a href="#schedule-fields">Schedule Fields</a> section.</td>
 </tr>
 <tr>
 <td><code>flow_name</code></td>
@@ -6999,7 +6999,7 @@
 </tr>
 <tr>
 <td><code>work_pool</code></td>
-<td>Information on where to schedule flow runs for the deployment. Fields for this sections are documented in the <a href="#work-pool-fields">Work Pool Fields</a> section.</td>
+<td>Information on where to schedule flow runs for the deployment. Fields for this section are documented in the <a href="#work-pool-fields">Work Pool Fields</a> section.</td>
 </tr>
 </tbody>
 </table>
@@ -7164,7 +7164,7 @@
 </code></pre></div>
 <p>Anytime you run <code>prefect deploy</code>, this <code>push</code> section will be executed upon successful completion of your <code>build</code> section. For more information on the mechanics of steps, <a href="#deployment-mechanics">see below</a>.</p>
 <h3 id="the-pull-section">The Pull Section<a class="headerlink" href="#the-pull-section" title="Permanent link">&para;</a></h3>
-<p>The pull section is the most important section within the <code>prefect.yaml</code> file as it contains instructions for preparing this project for a deployment run.  These instructions will be executed each time a deployment created wthin this project is run via a worker.</p>
+<p>The pull section is the most important section within the <code>prefect.yaml</code> file as it contains instructions for preparing this project for a deployment run.  These instructions will be executed each time a deployment created within this project is run via a worker.</p>
 <p>There are three main types of steps that typically show up in a <code>pull</code> section:</p>
 <ul>
 <li><code>set_working_directory</code>: this step simply sets the working directory for the process prior to importing your flow</li>
@@ -7179,7 +7179,7 @@
 <p>In general this directory doesn't need to be altered or inspected by users (hence the fact that it is hidden); its only use case right now is storing the existence of known workflows within your project in the <code>flows.json</code> file.  Workflows get registered into <code>.prefect/flows.json</code> through two mechanisms:</p>
 <ul>
 <li>running <code>prefect deploy</code> with an entrypoint (e.g., <code>prefect deploy ./path/to/file.py:flow_func</code>) will automatically register this flow within this project</li>
-<li>explicity running <code>prefect project register-flow ./path/to/file.py:flow_func</code> allows users to register flows explicitly themselves</li>
+<li>explicitly running <code>prefect project register-flow ./path/to/file.py:flow_func</code> allows users to register flows explicitly themselves</li>
 </ul>
 <p>Registration of flows allows you to to deploy based on flow name reference using the <code>--flow</code> or <code>-f</code> flag of <code>prefect deploy</code>:</p>
 <div class="terminal">
