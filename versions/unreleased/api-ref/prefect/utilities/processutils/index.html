@@ -4343,6 +4343,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#prefect.utilities.processutils.setup_signal_handlers_worker" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        setup_signal_handlers_worker()
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -6359,6 +6370,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#prefect.utilities.processutils.setup_signal_handlers_worker" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        setup_signal_handlers_worker()
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -6907,6 +6929,59 @@
         <span class="n">setup_handler</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">SIGINT</span><span class="p">,</span> <span class="n">signal</span><span class="o">.</span><span class="n">SIGTERM</span><span class="p">,</span> <span class="n">signal</span><span class="o">.</span><span class="n">SIGKILL</span><span class="p">)</span>
         <span class="c1"># forward first SIGTERM directly, send SIGKILL on subsequent SIGTERM</span>
         <span class="n">setup_handler</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">SIGTERM</span><span class="p">,</span> <span class="n">signal</span><span class="o">.</span><span class="n">SIGTERM</span><span class="p">,</span> <span class="n">signal</span><span class="o">.</span><span class="n">SIGKILL</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+      </details>
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+
+<h2 id="prefect.utilities.processutils.setup_signal_handlers_worker" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">setup_signal_handlers_worker</span></code>
+
+<a href="#prefect.utilities.processutils.setup_signal_handlers_worker" class="headerlink" title="Permanent link">&para;</a></h2>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>Handle interrupts of workers gracefully.</p>
+
+      <details class="quote">
+        <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/utilities/processutils.py</code></summary>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">386</span>
+<span class="normal">387</span>
+<span class="normal">388</span>
+<span class="normal">389</span>
+<span class="normal">390</span>
+<span class="normal">391</span>
+<span class="normal">392</span>
+<span class="normal">393</span>
+<span class="normal">394</span>
+<span class="normal">395</span>
+<span class="normal">396</span>
+<span class="normal">397</span>
+<span class="normal">398</span>
+<span class="normal">399</span>
+<span class="normal">400</span>
+<span class="normal">401</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">setup_signal_handlers_worker</span><span class="p">(</span><span class="n">pid</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">process_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">print_fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Handle interrupts of workers gracefully.&quot;&quot;&quot;</span>
+    <span class="n">setup_handler</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span>
+        <span class="n">forward_signal_handler</span><span class="p">,</span> <span class="n">pid</span><span class="p">,</span> <span class="n">process_name</span><span class="o">=</span><span class="n">process_name</span><span class="p">,</span> <span class="n">print_fn</span><span class="o">=</span><span class="n">print_fn</span>
+    <span class="p">)</span>
+    <span class="c1"># when agent receives SIGINT, it stops dequeueing new FlowRuns, and runs until the subprocesses finish</span>
+    <span class="c1"># the signal is not forwarded to subprocesses, so they can continue to run and hopefully still complete</span>
+    <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s2">&quot;win32&quot;</span><span class="p">:</span>
+        <span class="c1"># on Windows, use CTRL_BREAK_EVENT as SIGTERM is useless:</span>
+        <span class="c1"># https://bugs.python.org/issue26350</span>
+        <span class="n">setup_handler</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">SIGINT</span><span class="p">,</span> <span class="n">signal</span><span class="o">.</span><span class="n">CTRL_BREAK_EVENT</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># forward first SIGINT directly, send SIGKILL on subsequent interrupt</span>
+        <span class="n">setup_handler</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">SIGINT</span><span class="p">,</span> <span class="n">signal</span><span class="o">.</span><span class="n">SIGINT</span><span class="p">,</span> <span class="n">signal</span><span class="o">.</span><span class="n">SIGKILL</span><span class="p">)</span>
+        <span class="c1"># first SIGTERM: send SIGINT, send SIGKILL on subsequent SIGTERM</span>
+        <span class="n">setup_handler</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">SIGTERM</span><span class="p">,</span> <span class="n">signal</span><span class="o">.</span><span class="n">SIGINT</span><span class="p">,</span> <span class="n">signal</span><span class="o">.</span><span class="n">SIGKILL</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
       </details>
   </div>
