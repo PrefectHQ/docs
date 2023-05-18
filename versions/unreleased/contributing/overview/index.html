@@ -6807,22 +6807,6 @@ for how to set the database connection URL for each database type.</p>
 Be sure to check the file to make sure it only includes the changes you want to make. Additionally, you may need to
 remove extra statements that were included and not related to your change.</p>
 </div>
-<p>When adding a migration for SQLite, it's important to include the following <code>PRAGMA</code> statements for both upgrade and downgrade:</p>
-<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">upgrade</span><span class="p">():</span>
-    <span class="n">op</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;PRAGMA foreign_keys=OFF&quot;</span><span class="p">)</span> <span class="c1"># &lt;-- add this line</span>
-
-    <span class="c1"># migration code here</span>
-
-    <span class="n">op</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;PRAGMA foreign_keys=ON&quot;</span><span class="p">)</span> <span class="c1"># &lt;-- add this line</span>
-
-
-<span class="k">def</span> <span class="nf">downgrade</span><span class="p">():</span>
-    <span class="n">op</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;PRAGMA foreign_keys=OFF&quot;</span><span class="p">)</span> <span class="c1"># &lt;-- add this line</span>
-
-    <span class="c1"># migration code here</span>
-
-    <span class="n">op</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;PRAGMA foreign_keys=ON&quot;</span><span class="p">)</span> <span class="c1"># &lt;-- add this line</span>
-</code></pre></div>
 <p>The new migration can be found in the <code>src/prefect/server/database/migrations/versions/</code> directory. Each database type
 has its own subdirectory. For example, the SQLite migrations are stored in <code>src/prefect/server/database/migrations/versions/sqlite/</code>.</p>
 <p>After you have inspected the migration file, you can apply the migration to your database by running the following command:</p>

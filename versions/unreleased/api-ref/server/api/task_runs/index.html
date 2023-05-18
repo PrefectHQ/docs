@@ -6944,7 +6944,9 @@ run will be returned.</p>
 <span class="normal">241</span>
 <span class="normal">242</span>
 <span class="normal">243</span>
-<span class="normal">244</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@router</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;/</span><span class="si">{id}</span><span class="s2">/set_state&quot;</span><span class="p">)</span>
+<span class="normal">244</span>
+<span class="normal">245</span>
+<span class="normal">246</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@router</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;/</span><span class="si">{id}</span><span class="s2">/set_state&quot;</span><span class="p">)</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">set_task_run_state</span><span class="p">(</span>
     <span class="n">task_run_id</span><span class="p">:</span> <span class="n">UUID</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The task run id&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;id&quot;</span><span class="p">),</span>
     <span class="n">state</span><span class="p">:</span> <span class="n">schemas</span><span class="o">.</span><span class="n">actions</span><span class="o">.</span><span class="n">StateCreate</span> <span class="o">=</span> <span class="n">Body</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The intended state.&quot;</span><span class="p">),</span>
@@ -6969,7 +6971,9 @@ run will be returned.</p>
     <span class="n">now</span> <span class="o">=</span> <span class="n">pendulum</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
 
     <span class="c1"># create the state</span>
-    <span class="k">async</span> <span class="k">with</span> <span class="n">db</span><span class="o">.</span><span class="n">session_context</span><span class="p">(</span><span class="n">begin_transaction</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
+    <span class="k">async</span> <span class="k">with</span> <span class="n">db</span><span class="o">.</span><span class="n">session_context</span><span class="p">(</span>
+        <span class="n">begin_transaction</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">with_for_update</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
         <span class="n">orchestration_result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">models</span><span class="o">.</span><span class="n">task_runs</span><span class="o">.</span><span class="n">set_task_run_state</span><span class="p">(</span>
             <span class="n">session</span><span class="o">=</span><span class="n">session</span><span class="p">,</span>
             <span class="n">task_run_id</span><span class="o">=</span><span class="n">task_run_id</span><span class="p">,</span>
