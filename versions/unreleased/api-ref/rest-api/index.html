@@ -6188,6 +6188,77 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#interacting-with-the-rest-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Interacting with the REST API
+        </span>
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Interacting with the REST API">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#prefectclient-with-prefect-server" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          PrefectClient with Prefect server
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#requests-with-prefect" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Requests with Prefect
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#curl-with-prefect-cloud" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          curl with Prefect Cloud
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#finding-your-prefect-cloud-details" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Finding your Prefect Cloud details
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#rest-guidelines" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -6317,13 +6388,104 @@
 
 
 <h1 id="rest-api">REST API<a class="headerlink" href="#rest-api" title="Permanent link">&para;</a></h1>
-<p>The <a href="/api-ref/rest-api/">Prefect REST API</a> is used for communicating data from clients to the Prefect server so that orchestration can be performed. This API is consumed by clients such as the Prefect Python SDK or the server dashboard.</p>
+<p>The Prefect REST API is used for communicating data from clients to the Prefect server so that orchestration can be performed. This API is consumed by clients such as the Prefect Python SDK or the server dashboard.</p>
 <p>Prefect Cloud and a locally hosted Prefect server each provide a REST API.</p>
 <ul>
-<li>Interactive Prefect Cloud REST API documentation is available at <a href="https://app.prefect.cloud/api/docs" target="_blank">https://app.prefect.cloud/api/docs</a>.</li>
-<li>Interactive REST API documentation for a locally hosted open-source Prefect server is available at <a href="http://localhost:4200/docs" target="_blank">http://localhost:4200/docs</a> or the <code>/docs</code> endpoint of the <a href="/concepts/settings/#prefect_api_url"><code>PREFECT_API_URL</code></a> you have configured to access the server. You must have the server running with <code>prefect server start</code> to access the interactive documentation.</li>
-<li>The REST API documentation for a locally hosted open-source Prefect server is also available in the <a href="/api-ref/rest-api-reference/">Prefect REST API Reference</a>.</li>
+<li>Prefect Cloud:<ul>
+<li><a href="https://app.prefect.cloud/api/docs">Interactive Prefect Cloud REST API documentation</a></li>
+<li><a href="#finding-your-prefect-cloud-details">Finding your Prefect Cloud details</a></li>
 </ul>
+</li>
+<li>Locally hosted open-source Prefect server:<ul>
+<li>Interactive REST API documentation for a locally hosted open-source Prefect server is available at <code>http://localhost:4200/docs</code> or the <code>/docs</code> endpoint of the <a href="/concepts/settings/#prefect_api_url">PREFECT_API_URL</a> you have configured to access the server. You must have the server running with <code>prefect server start</code> to access the interactive documentation.</li>
+<li><a href="/api-ref/rest-api-reference/">Prefect REST API documentation</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="interacting-with-the-rest-api">Interacting with the REST API<a class="headerlink" href="#interacting-with-the-rest-api" title="Permanent link">&para;</a></h2>
+<p>You have many options to interact with the Prefect REST API:</p>
+<ul>
+<li>Create an instance of <a href="/api-ref/prefect/client/orchestration/#prefect.client.orchestration.PrefectClient"><code>PrefectClient</code></a> </li>
+<li>Use your favorite Python HTTP library such as <a href="https://requests.readthedocs.io/en/latest/">Requests</a> or <a href="https://www.python-httpx.org/">HTTPX</a></li>
+<li>Use an HTTP library in your language of choice</li>
+<li>Use <a href="https://curl.se/">curl</a> from the command line </li>
+</ul>
+<h3 id="prefectclient-with-prefect-server">PrefectClient with Prefect server<a class="headerlink" href="#prefectclient-with-prefect-server" title="Permanent link">&para;</a></h3>
+<p>This example uses <code>PrefectClient</code> with a locally hosted Prefect server:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">asyncio</span>
+<span class="kn">from</span> <span class="nn">prefect.client</span> <span class="kn">import</span> <span class="n">get_client</span>
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">get_flows</span><span class="p">():</span>
+    <span class="n">client</span> <span class="o">=</span> <span class="n">get_client</span><span class="p">()</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">read_flows</span><span class="p">(</span><span class="n">limit</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">r</span>
+
+<span class="n">r</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">get_flows</span><span class="p">())</span>
+
+<span class="k">for</span> <span class="n">flow</span> <span class="ow">in</span> <span class="n">r</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">flow</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">flow</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">get_flows</span><span class="p">())</span>
+</code></pre></div>
+<p>Output:</p>
+<div class="terminal">
+<div class="highlight"><pre><span></span><code>cat-facts<span class="w"> </span>58ed68b1-0201-4f37-adef-0ea24bd2a022
+dog-facts<span class="w"> </span>e7c0403d-44e7-45cf-a6c8-79117b7f3766
+sloth-facts<span class="w"> </span>771c0574-f5bf-4f59-a69d-3be3e061a62d
+capybara-facts<span class="w"> </span>fbadaf8b-584f-48b9-b092-07d351edd424
+lemur-facts<span class="w"> </span>53f710e7-3b0f-4b2f-ab6b-44934111818c
+</code></pre></div>
+</div>
+
+<h3 id="requests-with-prefect">Requests with Prefect<a class="headerlink" href="#requests-with-prefect" title="Permanent link">&para;</a></h3>
+<p>This example uses the Requests library with Prefect Cloud to return the five newest artifacts.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">requests</span>
+
+<span class="n">PREFECT_API_URL</span><span class="o">=</span><span class="s2">&quot;https://api.prefect.cloud/api/accounts/abc-my-cloud-account-id-is-here/workspaces/123-my-workspace-id-is-here&quot;</span>
+<span class="n">PREFECT_API_KEY</span><span class="o">=</span><span class="s2">&quot;123abc_my_api_key_goes_here&quot;</span>
+<span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;sort&quot;</span><span class="p">:</span> <span class="s2">&quot;CREATED_DESC&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;limit&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+    <span class="s2">&quot;artifacts&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;key&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;exists_&quot;</span><span class="p">:</span> <span class="kc">True</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;Authorization&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;Bearer </span><span class="si">{</span><span class="n">PREFECT_API_KEY</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">}</span>
+<span class="n">endpoint</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">PREFECT_API_URL</span><span class="si">}</span><span class="s2">/artifacts/filter&quot;</span>
+
+<span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">endpoint</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span>
+<span class="k">for</span> <span class="n">artifact</span> <span class="ow">in</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">artifact</span><span class="p">)</span>
+</code></pre></div>
+<h3 id="curl-with-prefect-cloud">curl with Prefect Cloud<a class="headerlink" href="#curl-with-prefect-cloud" title="Permanent link">&para;</a></h3>
+<p>This example uses curl with Prefect Cloud to create a flow run:</p>
+<div class="highlight"><pre><span></span><code><span class="nv">ACCOUNT_ID</span><span class="o">=</span><span class="s2">&quot;abc-my-cloud-account-id-goes-here&quot;</span>
+<span class="nv">WORKSPACE_ID</span><span class="o">=</span><span class="s2">&quot;123-my-workspace-id-goes-here&quot;</span>
+<span class="nv">PREFECT_API_URL</span><span class="o">=</span><span class="s2">&quot;https://api.prefect.cloud/api/accounts/</span><span class="nv">$ACCOUNT_ID</span><span class="s2">/workspaces/</span><span class="nv">$WORKSPACE_ID</span><span class="s2">&quot;</span>
+<span class="nv">PREFECT_API_KEY</span><span class="o">=</span><span class="s2">&quot;123abc_my_api_key_goes_here&quot;</span>
+<span class="nv">DEPLOYMENT_ID</span><span class="o">=</span><span class="s2">&quot;my_deployment_id&quot;</span>
+
+curl<span class="w"> </span>--location<span class="w"> </span>--request<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$PREFECT_API_URL</span><span class="s2">/deployments/</span><span class="nv">$DEPLOYMENT_ID</span><span class="s2">/create_flow_run&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--header<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--header<span class="w"> </span><span class="s2">&quot;Authorization: Bearer </span><span class="nv">$PREFECT_API_KEY</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--header<span class="w"> </span><span class="s2">&quot;X-PREFECT-API-VERSION: 0.8.4&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--data-raw<span class="w"> </span><span class="s2">&quot;{}&quot;</span>
+</code></pre></div>
+<p>Note that in this example <code>--data-raw "{}"</code> is required and is where you can specify other aspects of the flow run such as the state. Windows users substitute <code>^</code> for <code>\</code> for line multi-line commands.</p>
+<h2 id="finding-your-prefect-cloud-details">Finding your Prefect Cloud details<a class="headerlink" href="#finding-your-prefect-cloud-details" title="Permanent link">&para;</a></h2>
+<p>When working with the Prefect Cloud REST API you will need your Account ID and often the Workspace ID for the <a href="/cloud/workspaces/">workspace</a> you want to interact with. You can find both IDs for a <a href="/concepts/settings/">Prefect profile</a> in the CLI with <code>prefect profile inspect my_profile</code>. This command will also display your <a href="/cloud/users/api-keys/">Prefect API key</a>, as shown below:</p>
+<div class="terminal">
+<div class="highlight"><pre><span></span><code><span class="nv">PREFECT_API_URL</span><span class="o">=</span><span class="s1">&#39;https://api.prefect.cloud/api/accounts/abc-my-account-id-is-here/workspaces/123-my-workspace-id-is-here&#39;</span>
+<span class="nv">PREFECT_API_KEY</span><span class="o">=</span><span class="s1">&#39;123abc_my_api_key_is_here&#39;</span>
+</code></pre></div>
+</div>
+
+<p>Alternatively, view your Account ID and Workspace ID in your browser URL. For example: <code>https://app.prefect.cloud/account/abc-my-account-id-is-here/workspaces/123-my-workspace-id-is-here</code>. </p>
 <h2 id="rest-guidelines">REST Guidelines<a class="headerlink" href="#rest-guidelines" title="Permanent link">&para;</a></h2>
 <p>The REST APIs adhere to the following guidelines:</p>
 <ul>
@@ -6393,7 +6555,7 @@
 </code></pre></div>
 <h2 id="openapi">OpenAPI<a class="headerlink" href="#openapi" title="Permanent link">&para;</a></h2>
 <p>The Prefect REST API can be fully described with an OpenAPI 3.0 compliant document. <a href="https://swagger.io/docs/specification/about/">OpenAPI</a> is a standard specification for describing REST APIs.</p>
-<p>To generate Prefect's complete OpenAPI document, run the following commands in an interactive Python session:</p>
+<p>To generate Prefect server's complete OpenAPI document, run the following commands in an interactive Python session:</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect.server.api.server</span> <span class="kn">import</span> <span class="n">create_app</span>
 
 <span class="n">app</span> <span class="o">=</span> <span class="n">create_app</span><span class="p">()</span>

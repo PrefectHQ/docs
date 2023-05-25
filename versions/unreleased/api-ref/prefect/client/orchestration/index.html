@@ -4501,6 +4501,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#prefect.client.orchestration.PrefectClient.read_worker_metadata" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        read_worker_metadata()
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -7892,6 +7903,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#prefect.client.orchestration.PrefectClient.read_worker_metadata" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        read_worker_metadata()
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -10536,7 +10558,25 @@ $ python -m asyncio
 <span class="normal">2500</span>
 <span class="normal">2501</span>
 <span class="normal">2502</span>
-<span class="normal">2503</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">PrefectClient</span><span class="p">:</span>
+<span class="normal">2503</span>
+<span class="normal">2504</span>
+<span class="normal">2505</span>
+<span class="normal">2506</span>
+<span class="normal">2507</span>
+<span class="normal">2508</span>
+<span class="normal">2509</span>
+<span class="normal">2510</span>
+<span class="normal">2511</span>
+<span class="normal">2512</span>
+<span class="normal">2513</span>
+<span class="normal">2514</span>
+<span class="normal">2515</span>
+<span class="normal">2516</span>
+<span class="normal">2517</span>
+<span class="normal">2518</span>
+<span class="normal">2519</span>
+<span class="normal">2520</span>
+<span class="normal">2521</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">PrefectClient</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    An asynchronous client for interacting with the [Prefect REST API](/api-ref/rest-api/).</span>
 
@@ -11939,7 +11979,13 @@ $ python -m asyncio
 <span class="sd">        Returns:</span>
 <span class="sd">            a [Deployment model][prefect.server.schemas.core.Deployment] representation of the deployment</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">response</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;/deployments/</span><span class="si">{</span><span class="n">deployment_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;/deployments/</span><span class="si">{</span><span class="n">deployment_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">httpx</span><span class="o">.</span><span class="n">HTTPStatusError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">e</span><span class="o">.</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="n">status</span><span class="o">.</span><span class="n">HTTP_404_NOT_FOUND</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">prefect</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">ObjectNotFound</span><span class="p">(</span><span class="n">http_exc</span><span class="o">=</span><span class="n">e</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span>
         <span class="k">return</span> <span class="n">schemas</span><span class="o">.</span><span class="n">responses</span><span class="o">.</span><span class="n">DeploymentResponse</span><span class="o">.</span><span class="n">parse_obj</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">read_deployment_by_name</span><span class="p">(</span>
@@ -12629,10 +12675,16 @@ $ python -m asyncio
 <span class="sd">        Returns:</span>
 <span class="sd">            Information about the newly created work pool.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">response</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
-            <span class="s2">&quot;/work_pools/&quot;</span><span class="p">,</span>
-            <span class="n">json</span><span class="o">=</span><span class="n">work_pool</span><span class="o">.</span><span class="n">dict</span><span class="p">(</span><span class="n">json_compatible</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exclude_unset</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
-        <span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+                <span class="s2">&quot;/work_pools/&quot;</span><span class="p">,</span>
+                <span class="n">json</span><span class="o">=</span><span class="n">work_pool</span><span class="o">.</span><span class="n">dict</span><span class="p">(</span><span class="n">json_compatible</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exclude_unset</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+            <span class="p">)</span>
+        <span class="k">except</span> <span class="n">httpx</span><span class="o">.</span><span class="n">HTTPStatusError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">e</span><span class="o">.</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="n">status</span><span class="o">.</span><span class="n">HTTP_409_CONFLICT</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">prefect</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">ObjectAlreadyExists</span><span class="p">(</span><span class="n">http_exc</span><span class="o">=</span><span class="n">e</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span>
 
         <span class="k">return</span> <span class="n">pydantic</span><span class="o">.</span><span class="n">parse_obj_as</span><span class="p">(</span><span class="n">WorkPool</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
 
@@ -12883,6 +12935,12 @@ $ python -m asyncio
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Reads all variables.&quot;&quot;&quot;</span>
         <span class="n">response</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;/variables/filter&quot;</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;limit&quot;</span><span class="p">:</span> <span class="n">limit</span><span class="p">})</span>
         <span class="k">return</span> <span class="n">pydantic</span><span class="o">.</span><span class="n">parse_obj_as</span><span class="p">(</span><span class="n">List</span><span class="p">[</span><span class="n">schemas</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">Variable</span><span class="p">],</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">read_worker_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Reads worker metadata stored in Prefect collection registry.&quot;&quot;&quot;</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;collections/views/aggregate-worker-metadata&quot;</span><span class="p">)</span>
+        <span class="n">response</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="fm">__aenter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -13364,7 +13422,7 @@ successful.</p>
     <tbody>
         <tr>
           <td>
-                <code><span title="prefect.server.schemas">schemas</span>.<span title="schemas.core">core</span>.<span title="schemas.core.Flow">Flow</span></code>
+                <code><span title="prefect.server.schemas">schemas</span>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.core" href="../../../server/schemas/core/#prefect.server.schemas.core">core</a>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.core.Flow" href="../../../server/schemas/core/#prefect.server.schemas.core.Flow">Flow</a></code>
           </td>
           <td><p>a <a class="autorefs autorefs-internal" href="../../../server/schemas/core/#prefect.server.schemas.core.Flow">Flow model</a> representation of the flow</p></td>
         </tr>
@@ -13435,7 +13493,7 @@ be returned.</p>
         <tr>
           <td><code>flow_filter</code></td>
           <td>
-                <code><span title="prefect.server.schemas">schemas</span>.<span title="schemas.filters">filters</span>.<span title="schemas.filters.FlowFilter">FlowFilter</span></code>
+                <code><span title="prefect.server.schemas">schemas</span>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.filters" href="../../../server/schemas/filters/#prefect.server.schemas.filters">filters</a>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.filters.FlowFilter" href="../../../server/schemas/filters/#prefect.server.schemas.filters.FlowFilter">FlowFilter</a></code>
           </td>
           <td><p>filter criteria for flows</p></td>
           <td>
@@ -13445,7 +13503,7 @@ be returned.</p>
         <tr>
           <td><code>flow_run_filter</code></td>
           <td>
-                <code><span title="prefect.server.schemas">schemas</span>.<span title="schemas.filters">filters</span>.<span title="schemas.filters.FlowRunFilter">FlowRunFilter</span></code>
+                <code><span title="prefect.server.schemas">schemas</span>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.filters" href="../../../server/schemas/filters/#prefect.server.schemas.filters">filters</a>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.filters.FlowRunFilter" href="../../../server/schemas/filters/#prefect.server.schemas.filters.FlowRunFilter">FlowRunFilter</a></code>
           </td>
           <td><p>filter criteria for flow runs</p></td>
           <td>
@@ -13455,7 +13513,7 @@ be returned.</p>
         <tr>
           <td><code>task_run_filter</code></td>
           <td>
-                <code><span title="prefect.server.schemas">schemas</span>.<span title="schemas.filters">filters</span>.<span title="schemas.filters.TaskRunFilter">TaskRunFilter</span></code>
+                <code><span title="prefect.server.schemas">schemas</span>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.filters" href="../../../server/schemas/filters/#prefect.server.schemas.filters">filters</a>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.filters.TaskRunFilter" href="../../../server/schemas/filters/#prefect.server.schemas.filters.TaskRunFilter">TaskRunFilter</a></code>
           </td>
           <td><p>filter criteria for task runs</p></td>
           <td>
@@ -13465,7 +13523,7 @@ be returned.</p>
         <tr>
           <td><code>deployment_filter</code></td>
           <td>
-                <code><span title="prefect.server.schemas">schemas</span>.<span title="schemas.filters">filters</span>.<span title="schemas.filters.DeploymentFilter">DeploymentFilter</span></code>
+                <code><span title="prefect.server.schemas">schemas</span>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.filters" href="../../../server/schemas/filters/#prefect.server.schemas.filters">filters</a>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.filters.DeploymentFilter" href="../../../server/schemas/filters/#prefect.server.schemas.filters.DeploymentFilter">DeploymentFilter</a></code>
           </td>
           <td><p>filter criteria for deployments</p></td>
           <td>
@@ -13475,7 +13533,7 @@ be returned.</p>
         <tr>
           <td><code>work_pool_filter</code></td>
           <td>
-                <code><span title="prefect.server.schemas">schemas</span>.<span title="schemas.filters">filters</span>.<span title="schemas.filters.WorkPoolFilter">WorkPoolFilter</span></code>
+                <code><span title="prefect.server.schemas">schemas</span>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.filters" href="../../../server/schemas/filters/#prefect.server.schemas.filters">filters</a>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.filters.WorkPoolFilter" href="../../../server/schemas/filters/#prefect.server.schemas.filters.WorkPoolFilter">WorkPoolFilter</a></code>
           </td>
           <td><p>filter criteria for work pools</p></td>
           <td>
@@ -13485,7 +13543,7 @@ be returned.</p>
         <tr>
           <td><code>work_queue_filter</code></td>
           <td>
-                <code><span title="prefect.server.schemas">schemas</span>.<span title="schemas.filters">filters</span>.<span title="schemas.filters.WorkQueueFilter">WorkQueueFilter</span></code>
+                <code><span title="prefect.server.schemas">schemas</span>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.filters" href="../../../server/schemas/filters/#prefect.server.schemas.filters">filters</a>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.filters.WorkQueueFilter" href="../../../server/schemas/filters/#prefect.server.schemas.filters.WorkQueueFilter">WorkQueueFilter</a></code>
           </td>
           <td><p>filter criteria for work pool queues</p></td>
           <td>
@@ -13495,7 +13553,7 @@ be returned.</p>
         <tr>
           <td><code>sort</code></td>
           <td>
-                <code><span title="prefect.server.schemas">schemas</span>.<span title="schemas.sorting">sorting</span>.<span title="schemas.sorting.FlowSort">FlowSort</span></code>
+                <code><span title="prefect.server.schemas">schemas</span>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.sorting" href="../../../server/schemas/sorting/#prefect.server.schemas.sorting">sorting</a>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.sorting.FlowSort" href="../../../server/schemas/sorting/#prefect.server.schemas.sorting.FlowSort">FlowSort</a></code>
           </td>
           <td><p>sort criteria for the flows</p></td>
           <td>
@@ -13536,7 +13594,7 @@ be returned.</p>
     <tbody>
         <tr>
           <td>
-                <code><span title="typing.List">List</span>[<span title="prefect.server.schemas">schemas</span>.<span title="schemas.core">core</span>.<span title="schemas.core.Flow">Flow</span>]</code>
+                <code><span title="typing.List">List</span>[<span title="prefect.server.schemas">schemas</span>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.core" href="../../../server/schemas/core/#prefect.server.schemas.core">core</a>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.core.Flow" href="../../../server/schemas/core/#prefect.server.schemas.core.Flow">Flow</a>]</code>
           </td>
           <td><p>a list of Flow model representations of the flows</p></td>
         </tr>
@@ -13729,7 +13787,7 @@ be returned.</p>
     <tbody>
         <tr>
           <td>
-                <code><span title="prefect.server.schemas">schemas</span>.<span title="schemas.core">core</span>.<span title="schemas.core.Flow">Flow</span></code>
+                <code><span title="prefect.server.schemas">schemas</span>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.core" href="../../../server/schemas/core/#prefect.server.schemas.core">core</a>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.core.Flow" href="../../../server/schemas/core/#prefect.server.schemas.core.Flow">Flow</a></code>
           </td>
           <td><p>a fully hydrated Flow model</p></td>
         </tr>
@@ -13836,7 +13894,7 @@ deployment defaults</p></td>
         <tr>
           <td><code>state</code></td>
           <td>
-                <code><a class="autorefs autorefs-internal" title="prefect.states" href="../../states/#prefect.states">prefect</a>.<a class="autorefs autorefs-internal" title="prefect.states" href="../../states/#prefect.states">states</a>.<a class="autorefs autorefs-internal" title="prefect.states.State" href="../schemas/#prefect.client.schemas.State">State</a></code>
+                <code><a class="autorefs autorefs-internal" title="prefect.states" href="../../states/#prefect.states">prefect</a>.<span title="prefect.states.states">states</span>.<span title="prefect.states.states.State">State</span></code>
           </td>
           <td><p>The initial state for the run. If not provided, defaults to
 <code>Scheduled</code> for now. Should always be a <code>Scheduled</code> type.</p></td>
@@ -14144,7 +14202,7 @@ run identifier in the parent flow</p></td>
         <tr>
           <td><code>state</code></td>
           <td>
-                <code><a class="autorefs autorefs-internal" title="prefect.states" href="../../states/#prefect.states">prefect</a>.<a class="autorefs autorefs-internal" title="prefect.states" href="../../states/#prefect.states">states</a>.<a class="autorefs autorefs-internal" title="prefect.states.State" href="../schemas/#prefect.client.schemas.State">State</a></code>
+                <code><a class="autorefs autorefs-internal" title="prefect.states" href="../../states/#prefect.states">prefect</a>.<span title="prefect.states.states">states</span>.<span title="prefect.states.states.State">State</span></code>
           </td>
           <td><p>The initial state for the run. If not provided, defaults to
 <code>Scheduled</code> for now. Should always be a <code>Scheduled</code> type.</p></td>
@@ -14397,7 +14455,7 @@ be merged with any existing parameters.</p></td>
         <tr>
           <td><code>empirical_policy</code></td>
           <td>
-                <code><span title="typing.Optional">Optional</span>[<span title="prefect.server.schemas">schemas</span>.<span title="schemas.core">core</span>.<span title="schemas.core.FlowRunPolicy">FlowRunPolicy</span>]</code>
+                <code><span title="typing.Optional">Optional</span>[<span title="prefect.server.schemas">schemas</span>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.core" href="../../../server/schemas/core/#prefect.server.schemas.core">core</a>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.core.FlowRunPolicy" href="../../../server/schemas/core/#prefect.server.schemas.core.FlowRunPolicy">FlowRunPolicy</a>]</code>
           </td>
           <td><p>A new flow run orchestration policy. This will not be
 merged with any existing policy.</p></td>
@@ -14606,7 +14664,7 @@ infrastructure block.</p></td>
     <tbody>
         <tr>
           <td>
-                <code><a class="autorefs autorefs-internal" title="prefect.states" href="../../states/#prefect.states">prefect</a>.<a class="autorefs autorefs-internal" title="prefect.exceptions" href="../../exceptions/#prefect.exceptions">exceptions</a>.<a class="autorefs autorefs-internal" title="prefect.exceptions.ObjectNotFound" href="../../exceptions/#prefect.exceptions.ObjectNotFound">ObjectNotFound</a></code>
+                <code><a class="autorefs autorefs-internal" title="prefect.states" href="../../states/#prefect.states">prefect</a>.<span title="prefect.states.exceptions">exceptions</span>.<span title="prefect.states.exceptions.ObjectNotFound">ObjectNotFound</span></code>
           </td>
           <td><p>If request returns 404</p></td>
         </tr>
@@ -14885,7 +14943,7 @@ running tasks.</p>
     <tbody>
         <tr>
           <td>
-                <code><a class="autorefs autorefs-internal" title="prefect.states" href="../../states/#prefect.states">prefect</a>.<a class="autorefs autorefs-internal" title="prefect.exceptions" href="../../exceptions/#prefect.exceptions">exceptions</a>.<a class="autorefs autorefs-internal" title="prefect.exceptions.ObjectNotFound" href="../../exceptions/#prefect.exceptions.ObjectNotFound">ObjectNotFound</a></code>
+                <code><a class="autorefs autorefs-internal" title="prefect.states" href="../../states/#prefect.states">prefect</a>.<span title="prefect.states.exceptions">exceptions</span>.<span title="prefect.states.exceptions.ObjectNotFound">ObjectNotFound</span></code>
           </td>
           <td><p>If request returns 404</p></td>
         </tr>
@@ -15182,7 +15240,7 @@ slots will never be released.</p></td>
     <tbody>
         <tr>
           <td>
-                <code><a class="autorefs autorefs-internal" title="prefect.states" href="../../states/#prefect.states">prefect</a>.<a class="autorefs autorefs-internal" title="prefect.exceptions" href="../../exceptions/#prefect.exceptions">exceptions</a>.<a class="autorefs autorefs-internal" title="prefect.exceptions.ObjectNotFound" href="../../exceptions/#prefect.exceptions.ObjectNotFound">ObjectNotFound</a></code>
+                <code><a class="autorefs autorefs-internal" title="prefect.states" href="../../states/#prefect.states">prefect</a>.<span title="prefect.states.exceptions">exceptions</span>.<span title="prefect.states.exceptions.ObjectNotFound">ObjectNotFound</span></code>
           </td>
           <td><p>If request returns 404</p></td>
         </tr>
@@ -15321,7 +15379,7 @@ slots will never be released.</p></td>
     <tbody>
         <tr>
           <td>
-                <code><a class="autorefs autorefs-internal" title="prefect.states" href="../../states/#prefect.states">prefect</a>.<a class="autorefs autorefs-internal" title="prefect.exceptions" href="../../exceptions/#prefect.exceptions">exceptions</a>.<a class="autorefs autorefs-internal" title="prefect.exceptions.ObjectNotFound" href="../../exceptions/#prefect.exceptions.ObjectNotFound">ObjectNotFound</a></code>
+                <code><a class="autorefs autorefs-internal" title="prefect.states" href="../../states/#prefect.states">prefect</a>.<span title="prefect.states.exceptions">exceptions</span>.<span title="prefect.states.exceptions.ObjectNotFound">ObjectNotFound</span></code>
           </td>
           <td><p>If request returns 404</p></td>
         </tr>
@@ -15502,7 +15560,7 @@ slots will never be released.</p></td>
     <tbody>
         <tr>
           <td>
-                <code><a class="autorefs autorefs-internal" title="prefect.states" href="../../states/#prefect.states">prefect</a>.<a class="autorefs autorefs-internal" title="prefect.exceptions" href="../../exceptions/#prefect.exceptions">exceptions</a>.<a class="autorefs autorefs-internal" title="prefect.exceptions.ObjectAlreadyExists" href="../../exceptions/#prefect.exceptions.ObjectAlreadyExists">ObjectAlreadyExists</a></code>
+                <code><a class="autorefs autorefs-internal" title="prefect.states" href="../../states/#prefect.states">prefect</a>.<span title="prefect.states.exceptions">exceptions</span>.<span title="prefect.states.exceptions.ObjectAlreadyExists">ObjectAlreadyExists</span></code>
           </td>
           <td><p>If request returns 409</p></td>
         </tr>
@@ -15526,7 +15584,7 @@ slots will never be released.</p></td>
     <tbody>
         <tr>
 <td><code>UUID</code></td>          <td>
-                <code><span title="prefect.server.schemas">schemas</span>.<span title="schemas.core">core</span>.<span title="schemas.core.WorkQueue">WorkQueue</span></code>
+                <code><span title="prefect.server.schemas">schemas</span>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.core" href="../../../server/schemas/core/#prefect.server.schemas.core">core</a>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.core.WorkQueue" href="../../../server/schemas/core/#prefect.server.schemas.core.WorkQueue">WorkQueue</a></code>
           </td>
           <td><p>The UUID of the newly created workflow</p></td>
         </tr>
@@ -15738,7 +15796,7 @@ the queue belongs to.</p></td>
     <tbody>
         <tr>
           <td>
-                <code><a class="autorefs autorefs-internal" title="prefect.states" href="../../states/#prefect.states">prefect</a>.<a class="autorefs autorefs-internal" title="prefect.exceptions" href="../../exceptions/#prefect.exceptions">exceptions</a>.<a class="autorefs autorefs-internal" title="prefect.exceptions.ObjectNotFound" href="../../exceptions/#prefect.exceptions.ObjectNotFound">ObjectNotFound</a></code>
+                <code><a class="autorefs autorefs-internal" title="prefect.states" href="../../states/#prefect.states">prefect</a>.<span title="prefect.states.exceptions">exceptions</span>.<span title="prefect.states.exceptions.ObjectNotFound">ObjectNotFound</span></code>
           </td>
           <td><p>if no work queue is found</p></td>
         </tr>
@@ -15762,7 +15820,7 @@ the queue belongs to.</p></td>
     <tbody>
         <tr>
           <td>
-                <code><span title="prefect.server.schemas">schemas</span>.<span title="schemas.core">core</span>.<span title="schemas.core.WorkQueue">WorkQueue</span></code>
+                <code><span title="prefect.server.schemas">schemas</span>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.core" href="../../../server/schemas/core/#prefect.server.schemas.core">core</a>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.core.WorkQueue" href="../../../server/schemas/core/#prefect.server.schemas.core.WorkQueue">WorkQueue</a></code>
           </td>
           <td><p>schemas.core.WorkQueue: a work queue API object</p></td>
         </tr>
@@ -15912,7 +15970,7 @@ the queue belongs to.</p></td>
         </tr>
         <tr>
           <td>
-                <code><a class="autorefs autorefs-internal" title="prefect.states" href="../../states/#prefect.states">prefect</a>.<a class="autorefs autorefs-internal" title="prefect.exceptions" href="../../exceptions/#prefect.exceptions">exceptions</a>.<a class="autorefs autorefs-internal" title="prefect.exceptions.ObjectNotFound" href="../../exceptions/#prefect.exceptions.ObjectNotFound">ObjectNotFound</a></code>
+                <code><a class="autorefs autorefs-internal" title="prefect.states" href="../../states/#prefect.states">prefect</a>.<span title="prefect.states.exceptions">exceptions</span>.<span title="prefect.states.exceptions.ObjectNotFound">ObjectNotFound</span></code>
           </td>
           <td><p>if request returns 404</p></td>
         </tr>
@@ -16056,7 +16114,7 @@ Defaults to now.</p></td>
     <tbody>
         <tr>
           <td>
-                <code><a class="autorefs autorefs-internal" title="prefect.states" href="../../states/#prefect.states">prefect</a>.<a class="autorefs autorefs-internal" title="prefect.exceptions" href="../../exceptions/#prefect.exceptions">exceptions</a>.<a class="autorefs autorefs-internal" title="prefect.exceptions.ObjectNotFound" href="../../exceptions/#prefect.exceptions.ObjectNotFound">ObjectNotFound</a></code>
+                <code><a class="autorefs autorefs-internal" title="prefect.states" href="../../states/#prefect.states">prefect</a>.<span title="prefect.states.exceptions">exceptions</span>.<span title="prefect.states.exceptions.ObjectNotFound">ObjectNotFound</span></code>
           </td>
           <td><p>If request returns 404</p></td>
         </tr>
@@ -16225,7 +16283,7 @@ Defaults to now.</p></td>
     <tbody>
         <tr>
           <td>
-                <code><a class="autorefs autorefs-internal" title="prefect.states" href="../../states/#prefect.states">prefect</a>.<a class="autorefs autorefs-internal" title="prefect.exceptions" href="../../exceptions/#prefect.exceptions">exceptions</a>.<a class="autorefs autorefs-internal" title="prefect.exceptions.ObjectNotFound" href="../../exceptions/#prefect.exceptions.ObjectNotFound">ObjectNotFound</a></code>
+                <code><a class="autorefs autorefs-internal" title="prefect.states" href="../../states/#prefect.states">prefect</a>.<span title="prefect.states.exceptions">exceptions</span>.<span title="prefect.states.exceptions.ObjectNotFound">ObjectNotFound</span></code>
           </td>
           <td><p>If request returns 404</p></td>
         </tr>
@@ -16249,7 +16307,7 @@ Defaults to now.</p></td>
     <tbody>
         <tr>
 <td><code>WorkQueue</code></td>          <td>
-                <code><span title="prefect.server.schemas">schemas</span>.<span title="schemas.core">core</span>.<span title="schemas.core.WorkQueue">WorkQueue</span></code>
+                <code><span title="prefect.server.schemas">schemas</span>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.core" href="../../../server/schemas/core/#prefect.server.schemas.core">core</a>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.core.WorkQueue" href="../../../server/schemas/core/#prefect.server.schemas.core.WorkQueue">WorkQueue</a></code>
           </td>
           <td><p>an instantiated WorkQueue object</p></td>
         </tr>
@@ -16366,7 +16424,7 @@ Defaults to now.</p></td>
     <tbody>
         <tr>
           <td>
-                <code><span title="typing.List">List</span>[<span title="prefect.server.schemas">schemas</span>.<span title="schemas.core">core</span>.<span title="schemas.core.WorkQueue">WorkQueue</span>]</code>
+                <code><span title="typing.List">List</span>[<span title="prefect.server.schemas">schemas</span>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.core" href="../../../server/schemas/core/#prefect.server.schemas.core">core</a>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.core.WorkQueue" href="../../../server/schemas/core/#prefect.server.schemas.core.WorkQueue">WorkQueue</a>]</code>
           </td>
           <td><p>a list of WorkQueue model representations
 of the work queues</p></td>
@@ -16498,7 +16556,7 @@ of the work queues</p></td>
     <tbody>
         <tr>
           <td>
-                <code><a class="autorefs autorefs-internal" title="prefect.states" href="../../states/#prefect.states">prefect</a>.<a class="autorefs autorefs-internal" title="prefect.exceptions" href="../../exceptions/#prefect.exceptions">exceptions</a>.<a class="autorefs autorefs-internal" title="prefect.exceptions.ObjectNotFound" href="../../exceptions/#prefect.exceptions.ObjectNotFound">ObjectNotFound</a></code>
+                <code><a class="autorefs autorefs-internal" title="prefect.states" href="../../states/#prefect.states">prefect</a>.<span title="prefect.states.exceptions">exceptions</span>.<span title="prefect.states.exceptions.ObjectNotFound">ObjectNotFound</span></code>
           </td>
           <td><p>If request returns 404</p></td>
         </tr>
@@ -17232,7 +17290,7 @@ this is set to <code>False</code>.</p></td>
     <tbody>
         <tr>
           <td>
-                <code><span title="typing.List">List</span>[<span title="prefect.server.schemas">schemas</span>.<span title="schemas.core">core</span>.<span title="schemas.core.BlockType">BlockType</span>]</code>
+                <code><span title="typing.List">List</span>[<span title="prefect.server.schemas">schemas</span>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.core" href="../../../server/schemas/core/#prefect.server.schemas.core">core</a>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.core.BlockType" href="../../../server/schemas/core/#prefect.server.schemas.core.BlockType">BlockType</a>]</code>
           </td>
           <td><p>List of BlockTypes.</p></td>
         </tr>
@@ -17315,7 +17373,7 @@ this is set to <code>False</code>.</p></td>
     <tbody>
         <tr>
           <td>
-                <code><span title="typing.List">List</span>[<span title="prefect.server.schemas">schemas</span>.<span title="schemas.core">core</span>.<span title="schemas.core.BlockSchema">BlockSchema</span>]</code>
+                <code><span title="typing.List">List</span>[<span title="prefect.server.schemas">schemas</span>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.core" href="../../../server/schemas/core/#prefect.server.schemas.core">core</a>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.core.BlockSchema" href="../../../server/schemas/core/#prefect.server.schemas.core.BlockSchema">BlockSchema</a>]</code>
           </td>
           <td><p>A BlockSchema.</p></td>
         </tr>
@@ -17933,7 +17991,7 @@ Block may not work if this is <code>False</code>.</p></td>
         <tr>
           <td><code>schedule</code></td>
           <td>
-                <code><span title="prefect.server.schemas">schemas</span>.<span title="schemas.schedules">schedules</span>.<span title="schemas.schedules.SCHEDULE_TYPES">SCHEDULE_TYPES</span></code>
+                <code><span title="prefect.server.schemas">schemas</span>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.schedules" href="../../../server/schemas/schedules/#prefect.server.schemas.schedules">schedules</a>.<span title="prefect.server.schemas.schedules.SCHEDULE_TYPES">SCHEDULE_TYPES</span></code>
           </td>
           <td><p>an optional schedule to apply to the deployment</p></td>
           <td>
@@ -18245,7 +18303,7 @@ to use for this deployment</p></td>
     <tbody>
         <tr>
           <td>
-                <code><span title="prefect.server.schemas">schemas</span>.<span title="schemas.responses">responses</span>.<span title="schemas.responses.DeploymentResponse">DeploymentResponse</span></code>
+                <code><span title="prefect.server.schemas">schemas</span>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.responses" href="../../../server/schemas/responses/#prefect.server.schemas.responses">responses</a>.<span title="prefect.server.schemas.responses.DeploymentResponse">DeploymentResponse</span></code>
           </td>
           <td><p>a <a class="autorefs autorefs-internal" href="../../../server/schemas/core/#prefect.server.schemas.core.Deployment">Deployment model</a> representation of the deployment</p></td>
         </tr>
@@ -18268,7 +18326,13 @@ to use for this deployment</p></td>
 <span class="normal">1498</span>
 <span class="normal">1499</span>
 <span class="normal">1500</span>
-<span class="normal">1501</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">read_deployment</span><span class="p">(</span>
+<span class="normal">1501</span>
+<span class="normal">1502</span>
+<span class="normal">1503</span>
+<span class="normal">1504</span>
+<span class="normal">1505</span>
+<span class="normal">1506</span>
+<span class="normal">1507</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">read_deployment</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">deployment_id</span><span class="p">:</span> <span class="n">UUID</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">schemas</span><span class="o">.</span><span class="n">responses</span><span class="o">.</span><span class="n">DeploymentResponse</span><span class="p">:</span>
@@ -18281,7 +18345,13 @@ to use for this deployment</p></td>
 <span class="sd">    Returns:</span>
 <span class="sd">        a [Deployment model][prefect.server.schemas.core.Deployment] representation of the deployment</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">response</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;/deployments/</span><span class="si">{</span><span class="n">deployment_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;/deployments/</span><span class="si">{</span><span class="n">deployment_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">httpx</span><span class="o">.</span><span class="n">HTTPStatusError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">e</span><span class="o">.</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="n">status</span><span class="o">.</span><span class="n">HTTP_404_NOT_FOUND</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">prefect</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">ObjectNotFound</span><span class="p">(</span><span class="n">http_exc</span><span class="o">=</span><span class="n">e</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span>
     <span class="k">return</span> <span class="n">schemas</span><span class="o">.</span><span class="n">responses</span><span class="o">.</span><span class="n">DeploymentResponse</span><span class="o">.</span><span class="n">parse_obj</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
 </code></pre></div></td></tr></table></div>
       </details>
@@ -18342,7 +18412,7 @@ to use for this deployment</p></td>
     <tbody>
         <tr>
           <td>
-                <code><a class="autorefs autorefs-internal" title="prefect.states" href="../../states/#prefect.states">prefect</a>.<a class="autorefs autorefs-internal" title="prefect.exceptions" href="../../exceptions/#prefect.exceptions">exceptions</a>.<a class="autorefs autorefs-internal" title="prefect.exceptions.ObjectNotFound" href="../../exceptions/#prefect.exceptions.ObjectNotFound">ObjectNotFound</a></code>
+                <code><a class="autorefs autorefs-internal" title="prefect.states" href="../../states/#prefect.states">prefect</a>.<span title="prefect.states.exceptions">exceptions</span>.<span title="prefect.states.exceptions.ObjectNotFound">ObjectNotFound</span></code>
           </td>
           <td><p>If request returns 404</p></td>
         </tr>
@@ -18366,7 +18436,7 @@ to use for this deployment</p></td>
     <tbody>
         <tr>
           <td>
-                <code><span title="prefect.server.schemas">schemas</span>.<span title="schemas.responses">responses</span>.<span title="schemas.responses.DeploymentResponse">DeploymentResponse</span></code>
+                <code><span title="prefect.server.schemas">schemas</span>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.responses" href="../../../server/schemas/responses/#prefect.server.schemas.responses">responses</a>.<span title="prefect.server.schemas.responses.DeploymentResponse">DeploymentResponse</span></code>
           </td>
           <td><p>a Deployment model representation of the deployment</p></td>
         </tr>
@@ -18375,13 +18445,7 @@ to use for this deployment</p></td>
 
       <details class="quote">
         <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/client/orchestration.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1503</span>
-<span class="normal">1504</span>
-<span class="normal">1505</span>
-<span class="normal">1506</span>
-<span class="normal">1507</span>
-<span class="normal">1508</span>
-<span class="normal">1509</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1509</span>
 <span class="normal">1510</span>
 <span class="normal">1511</span>
 <span class="normal">1512</span>
@@ -18400,7 +18464,13 @@ to use for this deployment</p></td>
 <span class="normal">1525</span>
 <span class="normal">1526</span>
 <span class="normal">1527</span>
-<span class="normal">1528</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">read_deployment_by_name</span><span class="p">(</span>
+<span class="normal">1528</span>
+<span class="normal">1529</span>
+<span class="normal">1530</span>
+<span class="normal">1531</span>
+<span class="normal">1532</span>
+<span class="normal">1533</span>
+<span class="normal">1534</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">read_deployment_by_name</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">schemas</span><span class="o">.</span><span class="n">responses</span><span class="o">.</span><span class="n">DeploymentResponse</span><span class="p">:</span>
@@ -18465,7 +18535,7 @@ the provided criteria will be returned.</p>
         <tr>
           <td><code>flow_filter</code></td>
           <td>
-                <code><span title="prefect.server.schemas">schemas</span>.<span title="schemas.filters">filters</span>.<span title="schemas.filters.FlowFilter">FlowFilter</span></code>
+                <code><span title="prefect.server.schemas">schemas</span>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.filters" href="../../../server/schemas/filters/#prefect.server.schemas.filters">filters</a>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.filters.FlowFilter" href="../../../server/schemas/filters/#prefect.server.schemas.filters.FlowFilter">FlowFilter</a></code>
           </td>
           <td><p>filter criteria for flows</p></td>
           <td>
@@ -18475,7 +18545,7 @@ the provided criteria will be returned.</p>
         <tr>
           <td><code>flow_run_filter</code></td>
           <td>
-                <code><span title="prefect.server.schemas">schemas</span>.<span title="schemas.filters">filters</span>.<span title="schemas.filters.FlowRunFilter">FlowRunFilter</span></code>
+                <code><span title="prefect.server.schemas">schemas</span>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.filters" href="../../../server/schemas/filters/#prefect.server.schemas.filters">filters</a>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.filters.FlowRunFilter" href="../../../server/schemas/filters/#prefect.server.schemas.filters.FlowRunFilter">FlowRunFilter</a></code>
           </td>
           <td><p>filter criteria for flow runs</p></td>
           <td>
@@ -18485,7 +18555,7 @@ the provided criteria will be returned.</p>
         <tr>
           <td><code>task_run_filter</code></td>
           <td>
-                <code><span title="prefect.server.schemas">schemas</span>.<span title="schemas.filters">filters</span>.<span title="schemas.filters.TaskRunFilter">TaskRunFilter</span></code>
+                <code><span title="prefect.server.schemas">schemas</span>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.filters" href="../../../server/schemas/filters/#prefect.server.schemas.filters">filters</a>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.filters.TaskRunFilter" href="../../../server/schemas/filters/#prefect.server.schemas.filters.TaskRunFilter">TaskRunFilter</a></code>
           </td>
           <td><p>filter criteria for task runs</p></td>
           <td>
@@ -18495,7 +18565,7 @@ the provided criteria will be returned.</p>
         <tr>
           <td><code>deployment_filter</code></td>
           <td>
-                <code><span title="prefect.server.schemas">schemas</span>.<span title="schemas.filters">filters</span>.<span title="schemas.filters.DeploymentFilter">DeploymentFilter</span></code>
+                <code><span title="prefect.server.schemas">schemas</span>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.filters" href="../../../server/schemas/filters/#prefect.server.schemas.filters">filters</a>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.filters.DeploymentFilter" href="../../../server/schemas/filters/#prefect.server.schemas.filters.DeploymentFilter">DeploymentFilter</a></code>
           </td>
           <td><p>filter criteria for deployments</p></td>
           <td>
@@ -18505,7 +18575,7 @@ the provided criteria will be returned.</p>
         <tr>
           <td><code>work_pool_filter</code></td>
           <td>
-                <code><span title="prefect.server.schemas">schemas</span>.<span title="schemas.filters">filters</span>.<span title="schemas.filters.WorkPoolFilter">WorkPoolFilter</span></code>
+                <code><span title="prefect.server.schemas">schemas</span>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.filters" href="../../../server/schemas/filters/#prefect.server.schemas.filters">filters</a>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.filters.WorkPoolFilter" href="../../../server/schemas/filters/#prefect.server.schemas.filters.WorkPoolFilter">WorkPoolFilter</a></code>
           </td>
           <td><p>filter criteria for work pools</p></td>
           <td>
@@ -18515,7 +18585,7 @@ the provided criteria will be returned.</p>
         <tr>
           <td><code>work_queue_filter</code></td>
           <td>
-                <code><span title="prefect.server.schemas">schemas</span>.<span title="schemas.filters">filters</span>.<span title="schemas.filters.WorkQueueFilter">WorkQueueFilter</span></code>
+                <code><span title="prefect.server.schemas">schemas</span>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.filters" href="../../../server/schemas/filters/#prefect.server.schemas.filters">filters</a>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.filters.WorkQueueFilter" href="../../../server/schemas/filters/#prefect.server.schemas.filters.WorkQueueFilter">WorkQueueFilter</a></code>
           </td>
           <td><p>filter criteria for work pool queues</p></td>
           <td>
@@ -18556,7 +18626,7 @@ the provided criteria will be returned.</p>
     <tbody>
         <tr>
           <td>
-                <code><span title="typing.List">List</span>[<span title="prefect.server.schemas">schemas</span>.<span title="schemas.responses">responses</span>.<span title="schemas.responses.DeploymentResponse">DeploymentResponse</span>]</code>
+                <code><span title="typing.List">List</span>[<span title="prefect.server.schemas">schemas</span>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.responses" href="../../../server/schemas/responses/#prefect.server.schemas.responses">responses</a>.<span title="prefect.server.schemas.responses.DeploymentResponse">DeploymentResponse</span>]</code>
           </td>
           <td><p>a list of Deployment model representations
 of the deployments</p></td>
@@ -18566,13 +18636,7 @@ of the deployments</p></td>
 
       <details class="quote">
         <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/client/orchestration.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1530</span>
-<span class="normal">1531</span>
-<span class="normal">1532</span>
-<span class="normal">1533</span>
-<span class="normal">1534</span>
-<span class="normal">1535</span>
-<span class="normal">1536</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1536</span>
 <span class="normal">1537</span>
 <span class="normal">1538</span>
 <span class="normal">1539</span>
@@ -18630,7 +18694,13 @@ of the deployments</p></td>
 <span class="normal">1591</span>
 <span class="normal">1592</span>
 <span class="normal">1593</span>
-<span class="normal">1594</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">read_deployments</span><span class="p">(</span>
+<span class="normal">1594</span>
+<span class="normal">1595</span>
+<span class="normal">1596</span>
+<span class="normal">1597</span>
+<span class="normal">1598</span>
+<span class="normal">1599</span>
+<span class="normal">1600</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">read_deployments</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">flow_filter</span><span class="p">:</span> <span class="n">schemas</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">FlowFilter</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -18754,7 +18824,7 @@ of the deployments</p></td>
     <tbody>
         <tr>
           <td>
-                <code><a class="autorefs autorefs-internal" title="prefect.states" href="../../states/#prefect.states">prefect</a>.<a class="autorefs autorefs-internal" title="prefect.exceptions" href="../../exceptions/#prefect.exceptions">exceptions</a>.<a class="autorefs autorefs-internal" title="prefect.exceptions.ObjectNotFound" href="../../exceptions/#prefect.exceptions.ObjectNotFound">ObjectNotFound</a></code>
+                <code><a class="autorefs autorefs-internal" title="prefect.states" href="../../states/#prefect.states">prefect</a>.<span title="prefect.states.exceptions">exceptions</span>.<span title="prefect.states.exceptions.ObjectNotFound">ObjectNotFound</span></code>
           </td>
           <td><p>If request returns 404</p></td>
         </tr>
@@ -18769,13 +18839,7 @@ of the deployments</p></td>
 
       <details class="quote">
         <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/client/orchestration.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1596</span>
-<span class="normal">1597</span>
-<span class="normal">1598</span>
-<span class="normal">1599</span>
-<span class="normal">1600</span>
-<span class="normal">1601</span>
-<span class="normal">1602</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1602</span>
 <span class="normal">1603</span>
 <span class="normal">1604</span>
 <span class="normal">1605</span>
@@ -18788,7 +18852,13 @@ of the deployments</p></td>
 <span class="normal">1612</span>
 <span class="normal">1613</span>
 <span class="normal">1614</span>
-<span class="normal">1615</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">delete_deployment</span><span class="p">(</span>
+<span class="normal">1615</span>
+<span class="normal">1616</span>
+<span class="normal">1617</span>
+<span class="normal">1618</span>
+<span class="normal">1619</span>
+<span class="normal">1620</span>
+<span class="normal">1621</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">delete_deployment</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">deployment_id</span><span class="p">:</span> <span class="n">UUID</span><span class="p">,</span>
 <span class="p">):</span>
@@ -18876,13 +18946,7 @@ of the deployments</p></td>
 
       <details class="quote">
         <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/client/orchestration.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1617</span>
-<span class="normal">1618</span>
-<span class="normal">1619</span>
-<span class="normal">1620</span>
-<span class="normal">1621</span>
-<span class="normal">1622</span>
-<span class="normal">1623</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1623</span>
 <span class="normal">1624</span>
 <span class="normal">1625</span>
 <span class="normal">1626</span>
@@ -18893,7 +18957,13 @@ of the deployments</p></td>
 <span class="normal">1631</span>
 <span class="normal">1632</span>
 <span class="normal">1633</span>
-<span class="normal">1634</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">read_flow_run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flow_run_id</span><span class="p">:</span> <span class="n">UUID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FlowRun</span><span class="p">:</span>
+<span class="normal">1634</span>
+<span class="normal">1635</span>
+<span class="normal">1636</span>
+<span class="normal">1637</span>
+<span class="normal">1638</span>
+<span class="normal">1639</span>
+<span class="normal">1640</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">read_flow_run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flow_run_id</span><span class="p">:</span> <span class="n">UUID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FlowRun</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Query the Prefect API for a flow run by id.</span>
 
@@ -18979,13 +19049,7 @@ of the deployments</p></td>
 
       <details class="quote">
         <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/client/orchestration.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1636</span>
-<span class="normal">1637</span>
-<span class="normal">1638</span>
-<span class="normal">1639</span>
-<span class="normal">1640</span>
-<span class="normal">1641</span>
-<span class="normal">1642</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1642</span>
 <span class="normal">1643</span>
 <span class="normal">1644</span>
 <span class="normal">1645</span>
@@ -18994,7 +19058,13 @@ of the deployments</p></td>
 <span class="normal">1648</span>
 <span class="normal">1649</span>
 <span class="normal">1650</span>
-<span class="normal">1651</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">resume_flow_run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flow_run_id</span><span class="p">:</span> <span class="n">UUID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OrchestrationResult</span><span class="p">:</span>
+<span class="normal">1651</span>
+<span class="normal">1652</span>
+<span class="normal">1653</span>
+<span class="normal">1654</span>
+<span class="normal">1655</span>
+<span class="normal">1656</span>
+<span class="normal">1657</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">resume_flow_run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flow_run_id</span><span class="p">:</span> <span class="n">UUID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OrchestrationResult</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Resumes a paused flow run.</span>
 
@@ -19049,7 +19119,7 @@ be returned.</p>
         <tr>
           <td><code>flow_filter</code></td>
           <td>
-                <code><span title="prefect.server.schemas">schemas</span>.<span title="schemas.filters">filters</span>.<span title="schemas.filters.FlowFilter">FlowFilter</span></code>
+                <code><span title="prefect.server.schemas">schemas</span>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.filters" href="../../../server/schemas/filters/#prefect.server.schemas.filters">filters</a>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.filters.FlowFilter" href="../../../server/schemas/filters/#prefect.server.schemas.filters.FlowFilter">FlowFilter</a></code>
           </td>
           <td><p>filter criteria for flows</p></td>
           <td>
@@ -19059,7 +19129,7 @@ be returned.</p>
         <tr>
           <td><code>flow_run_filter</code></td>
           <td>
-                <code><span title="prefect.server.schemas">schemas</span>.<span title="schemas.filters">filters</span>.<span title="schemas.filters.FlowRunFilter">FlowRunFilter</span></code>
+                <code><span title="prefect.server.schemas">schemas</span>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.filters" href="../../../server/schemas/filters/#prefect.server.schemas.filters">filters</a>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.filters.FlowRunFilter" href="../../../server/schemas/filters/#prefect.server.schemas.filters.FlowRunFilter">FlowRunFilter</a></code>
           </td>
           <td><p>filter criteria for flow runs</p></td>
           <td>
@@ -19069,7 +19139,7 @@ be returned.</p>
         <tr>
           <td><code>task_run_filter</code></td>
           <td>
-                <code><span title="prefect.server.schemas">schemas</span>.<span title="schemas.filters">filters</span>.<span title="schemas.filters.TaskRunFilter">TaskRunFilter</span></code>
+                <code><span title="prefect.server.schemas">schemas</span>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.filters" href="../../../server/schemas/filters/#prefect.server.schemas.filters">filters</a>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.filters.TaskRunFilter" href="../../../server/schemas/filters/#prefect.server.schemas.filters.TaskRunFilter">TaskRunFilter</a></code>
           </td>
           <td><p>filter criteria for task runs</p></td>
           <td>
@@ -19079,7 +19149,7 @@ be returned.</p>
         <tr>
           <td><code>deployment_filter</code></td>
           <td>
-                <code><span title="prefect.server.schemas">schemas</span>.<span title="schemas.filters">filters</span>.<span title="schemas.filters.DeploymentFilter">DeploymentFilter</span></code>
+                <code><span title="prefect.server.schemas">schemas</span>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.filters" href="../../../server/schemas/filters/#prefect.server.schemas.filters">filters</a>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.filters.DeploymentFilter" href="../../../server/schemas/filters/#prefect.server.schemas.filters.DeploymentFilter">DeploymentFilter</a></code>
           </td>
           <td><p>filter criteria for deployments</p></td>
           <td>
@@ -19089,7 +19159,7 @@ be returned.</p>
         <tr>
           <td><code>work_pool_filter</code></td>
           <td>
-                <code><span title="prefect.server.schemas">schemas</span>.<span title="schemas.filters">filters</span>.<span title="schemas.filters.WorkPoolFilter">WorkPoolFilter</span></code>
+                <code><span title="prefect.server.schemas">schemas</span>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.filters" href="../../../server/schemas/filters/#prefect.server.schemas.filters">filters</a>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.filters.WorkPoolFilter" href="../../../server/schemas/filters/#prefect.server.schemas.filters.WorkPoolFilter">WorkPoolFilter</a></code>
           </td>
           <td><p>filter criteria for work pools</p></td>
           <td>
@@ -19099,7 +19169,7 @@ be returned.</p>
         <tr>
           <td><code>work_queue_filter</code></td>
           <td>
-                <code><span title="prefect.server.schemas">schemas</span>.<span title="schemas.filters">filters</span>.<span title="schemas.filters.WorkQueueFilter">WorkQueueFilter</span></code>
+                <code><span title="prefect.server.schemas">schemas</span>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.filters" href="../../../server/schemas/filters/#prefect.server.schemas.filters">filters</a>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.filters.WorkQueueFilter" href="../../../server/schemas/filters/#prefect.server.schemas.filters.WorkQueueFilter">WorkQueueFilter</a></code>
           </td>
           <td><p>filter criteria for work pool queues</p></td>
           <td>
@@ -19109,7 +19179,7 @@ be returned.</p>
         <tr>
           <td><code>sort</code></td>
           <td>
-                <code><span title="prefect.server.schemas">schemas</span>.<span title="schemas.sorting">sorting</span>.<span title="schemas.sorting.FlowRunSort">FlowRunSort</span></code>
+                <code><span title="prefect.server.schemas">schemas</span>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.sorting" href="../../../server/schemas/sorting/#prefect.server.schemas.sorting">sorting</a>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.sorting.FlowRunSort" href="../../../server/schemas/sorting/#prefect.server.schemas.sorting.FlowRunSort">FlowRunSort</a></code>
           </td>
           <td><p>sort criteria for the flow runs</p></td>
           <td>
@@ -19160,13 +19230,7 @@ of the flow runs</p></td>
 
       <details class="quote">
         <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/client/orchestration.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1653</span>
-<span class="normal">1654</span>
-<span class="normal">1655</span>
-<span class="normal">1656</span>
-<span class="normal">1657</span>
-<span class="normal">1658</span>
-<span class="normal">1659</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1659</span>
 <span class="normal">1660</span>
 <span class="normal">1661</span>
 <span class="normal">1662</span>
@@ -19223,7 +19287,13 @@ of the flow runs</p></td>
 <span class="normal">1713</span>
 <span class="normal">1714</span>
 <span class="normal">1715</span>
-<span class="normal">1716</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">read_flow_runs</span><span class="p">(</span>
+<span class="normal">1716</span>
+<span class="normal">1717</span>
+<span class="normal">1718</span>
+<span class="normal">1719</span>
+<span class="normal">1720</span>
+<span class="normal">1721</span>
+<span class="normal">1722</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">read_flow_runs</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">flow_filter</span><span class="p">:</span> <span class="n">schemas</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">FlowFilter</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -19335,7 +19405,7 @@ of the flow runs</p></td>
         <tr>
           <td><code>state</code></td>
           <td>
-                <code><a class="autorefs autorefs-internal" title="prefect.states" href="../../states/#prefect.states">prefect</a>.<a class="autorefs autorefs-internal" title="prefect.states" href="../../states/#prefect.states">states</a>.<a class="autorefs autorefs-internal" title="prefect.states.State" href="../schemas/#prefect.client.schemas.State">State</a></code>
+                <code><a class="autorefs autorefs-internal" title="prefect.states" href="../../states/#prefect.states">prefect</a>.<span title="prefect.states.states">states</span>.<span title="prefect.states.states.State">State</span></code>
           </td>
           <td><p>the state to set</p></td>
           <td>
@@ -19376,13 +19446,7 @@ forcing the Prefect API to accept the state</p></td>
 
       <details class="quote">
         <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/client/orchestration.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1718</span>
-<span class="normal">1719</span>
-<span class="normal">1720</span>
-<span class="normal">1721</span>
-<span class="normal">1722</span>
-<span class="normal">1723</span>
-<span class="normal">1724</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1724</span>
 <span class="normal">1725</span>
 <span class="normal">1726</span>
 <span class="normal">1727</span>
@@ -19407,7 +19471,13 @@ forcing the Prefect API to accept the state</p></td>
 <span class="normal">1746</span>
 <span class="normal">1747</span>
 <span class="normal">1748</span>
-<span class="normal">1749</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">set_flow_run_state</span><span class="p">(</span>
+<span class="normal">1749</span>
+<span class="normal">1750</span>
+<span class="normal">1751</span>
+<span class="normal">1752</span>
+<span class="normal">1753</span>
+<span class="normal">1754</span>
+<span class="normal">1755</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">set_flow_run_state</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">flow_run_id</span><span class="p">:</span> <span class="n">UUID</span><span class="p">,</span>
     <span class="n">state</span><span class="p">:</span> <span class="s2">&quot;prefect.states.State&quot;</span><span class="p">,</span>
@@ -19498,7 +19568,7 @@ forcing the Prefect API to accept the state</p></td>
     <tbody>
         <tr>
           <td>
-                <code><span title="typing.List">List</span>[<a class="autorefs autorefs-internal" title="prefect.states" href="../../states/#prefect.states">prefect</a>.<a class="autorefs autorefs-internal" title="prefect.states" href="../../states/#prefect.states">states</a>.<a class="autorefs autorefs-internal" title="prefect.states.State" href="../schemas/#prefect.client.schemas.State">State</a>]</code>
+                <code><span title="typing.List">List</span>[<a class="autorefs autorefs-internal" title="prefect.states" href="../../states/#prefect.states">prefect</a>.<span title="prefect.states.states">states</span>.<span title="prefect.states.states.State">State</span>]</code>
           </td>
           <td><p>a list of State model representations
 of the flow run states</p></td>
@@ -19508,13 +19578,7 @@ of the flow run states</p></td>
 
       <details class="quote">
         <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/client/orchestration.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1751</span>
-<span class="normal">1752</span>
-<span class="normal">1753</span>
-<span class="normal">1754</span>
-<span class="normal">1755</span>
-<span class="normal">1756</span>
-<span class="normal">1757</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1757</span>
 <span class="normal">1758</span>
 <span class="normal">1759</span>
 <span class="normal">1760</span>
@@ -19524,7 +19588,13 @@ of the flow run states</p></td>
 <span class="normal">1764</span>
 <span class="normal">1765</span>
 <span class="normal">1766</span>
-<span class="normal">1767</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">read_flow_run_states</span><span class="p">(</span>
+<span class="normal">1767</span>
+<span class="normal">1768</span>
+<span class="normal">1769</span>
+<span class="normal">1770</span>
+<span class="normal">1771</span>
+<span class="normal">1772</span>
+<span class="normal">1773</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">read_flow_run_states</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span> <span class="n">flow_run_id</span><span class="p">:</span> <span class="n">UUID</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">prefect</span><span class="o">.</span><span class="n">states</span><span class="o">.</span><span class="n">State</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -19630,7 +19700,7 @@ addition to <code>task.tags</code></p></td>
         <tr>
           <td><code>state</code></td>
           <td>
-                <code><a class="autorefs autorefs-internal" title="prefect.states" href="../../states/#prefect.states">prefect</a>.<a class="autorefs autorefs-internal" title="prefect.states" href="../../states/#prefect.states">states</a>.<a class="autorefs autorefs-internal" title="prefect.states.State" href="../schemas/#prefect.client.schemas.State">State</a></code>
+                <code><a class="autorefs autorefs-internal" title="prefect.states" href="../../states/#prefect.states">prefect</a>.<span title="prefect.states.states">states</span>.<span title="prefect.states.states.State">State</span></code>
           </td>
           <td><p>The initial state for the run. If not provided, defaults to
 <code>Pending</code> for now. Should always be a <code>Scheduled</code> type.</p></td>
@@ -19641,7 +19711,7 @@ addition to <code>task.tags</code></p></td>
         <tr>
           <td><code>task_inputs</code></td>
           <td>
-                <code><span title="typing.Dict">Dict</span>[str, <span title="typing.List">List</span>[<span title="typing.Union">Union</span>[<span title="prefect.server.schemas">schemas</span>.<span title="schemas.core">core</span>.<span title="schemas.core.TaskRunResult">TaskRunResult</span>, <span title="prefect.server.schemas">schemas</span>.<span title="schemas.core">core</span>.<span title="schemas.core.Parameter">Parameter</span>, <span title="prefect.server.schemas">schemas</span>.<span title="schemas.core">core</span>.<span title="schemas.core.Constant">Constant</span>]]]</code>
+                <code><span title="typing.Dict">Dict</span>[str, <span title="typing.List">List</span>[<span title="typing.Union">Union</span>[<span title="prefect.server.schemas">schemas</span>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.core" href="../../../server/schemas/core/#prefect.server.schemas.core">core</a>.<span title="prefect.server.schemas.core.TaskRunResult">TaskRunResult</span>, <span title="prefect.server.schemas">schemas</span>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.core" href="../../../server/schemas/core/#prefect.server.schemas.core">core</a>.<span title="prefect.server.schemas.core.Parameter">Parameter</span>, <span title="prefect.server.schemas">schemas</span>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.core" href="../../../server/schemas/core/#prefect.server.schemas.core">core</a>.<span title="prefect.server.schemas.core.Constant">Constant</span>]]]</code>
           </td>
           <td><p>the set of inputs passed to the task</p></td>
           <td>
@@ -19671,13 +19741,7 @@ addition to <code>task.tags</code></p></td>
 
       <details class="quote">
         <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/client/orchestration.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1776</span>
-<span class="normal">1777</span>
-<span class="normal">1778</span>
-<span class="normal">1779</span>
-<span class="normal">1780</span>
-<span class="normal">1781</span>
-<span class="normal">1782</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1782</span>
 <span class="normal">1783</span>
 <span class="normal">1784</span>
 <span class="normal">1785</span>
@@ -19731,7 +19795,13 @@ addition to <code>task.tags</code></p></td>
 <span class="normal">1833</span>
 <span class="normal">1834</span>
 <span class="normal">1835</span>
-<span class="normal">1836</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">create_task_run</span><span class="p">(</span>
+<span class="normal">1836</span>
+<span class="normal">1837</span>
+<span class="normal">1838</span>
+<span class="normal">1839</span>
+<span class="normal">1840</span>
+<span class="normal">1841</span>
+<span class="normal">1842</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">create_task_run</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">task</span><span class="p">:</span> <span class="s2">&quot;Task&quot;</span><span class="p">,</span>
     <span class="n">flow_run_id</span><span class="p">:</span> <span class="n">UUID</span><span class="p">,</span>
@@ -19860,18 +19930,18 @@ addition to <code>task.tags</code></p></td>
 
       <details class="quote">
         <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/client/orchestration.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1838</span>
-<span class="normal">1839</span>
-<span class="normal">1840</span>
-<span class="normal">1841</span>
-<span class="normal">1842</span>
-<span class="normal">1843</span>
-<span class="normal">1844</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1844</span>
 <span class="normal">1845</span>
 <span class="normal">1846</span>
 <span class="normal">1847</span>
 <span class="normal">1848</span>
-<span class="normal">1849</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">read_task_run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task_run_id</span><span class="p">:</span> <span class="n">UUID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TaskRun</span><span class="p">:</span>
+<span class="normal">1849</span>
+<span class="normal">1850</span>
+<span class="normal">1851</span>
+<span class="normal">1852</span>
+<span class="normal">1853</span>
+<span class="normal">1854</span>
+<span class="normal">1855</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">read_task_run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task_run_id</span><span class="p">:</span> <span class="n">UUID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TaskRun</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Query the Prefect API for a task run by id.</span>
 
@@ -19922,7 +19992,7 @@ be returned.</p>
         <tr>
           <td><code>flow_filter</code></td>
           <td>
-                <code><span title="prefect.server.schemas">schemas</span>.<span title="schemas.filters">filters</span>.<span title="schemas.filters.FlowFilter">FlowFilter</span></code>
+                <code><span title="prefect.server.schemas">schemas</span>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.filters" href="../../../server/schemas/filters/#prefect.server.schemas.filters">filters</a>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.filters.FlowFilter" href="../../../server/schemas/filters/#prefect.server.schemas.filters.FlowFilter">FlowFilter</a></code>
           </td>
           <td><p>filter criteria for flows</p></td>
           <td>
@@ -19932,7 +20002,7 @@ be returned.</p>
         <tr>
           <td><code>flow_run_filter</code></td>
           <td>
-                <code><span title="prefect.server.schemas">schemas</span>.<span title="schemas.filters">filters</span>.<span title="schemas.filters.FlowRunFilter">FlowRunFilter</span></code>
+                <code><span title="prefect.server.schemas">schemas</span>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.filters" href="../../../server/schemas/filters/#prefect.server.schemas.filters">filters</a>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.filters.FlowRunFilter" href="../../../server/schemas/filters/#prefect.server.schemas.filters.FlowRunFilter">FlowRunFilter</a></code>
           </td>
           <td><p>filter criteria for flow runs</p></td>
           <td>
@@ -19942,7 +20012,7 @@ be returned.</p>
         <tr>
           <td><code>task_run_filter</code></td>
           <td>
-                <code><span title="prefect.server.schemas">schemas</span>.<span title="schemas.filters">filters</span>.<span title="schemas.filters.TaskRunFilter">TaskRunFilter</span></code>
+                <code><span title="prefect.server.schemas">schemas</span>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.filters" href="../../../server/schemas/filters/#prefect.server.schemas.filters">filters</a>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.filters.TaskRunFilter" href="../../../server/schemas/filters/#prefect.server.schemas.filters.TaskRunFilter">TaskRunFilter</a></code>
           </td>
           <td><p>filter criteria for task runs</p></td>
           <td>
@@ -19952,7 +20022,7 @@ be returned.</p>
         <tr>
           <td><code>deployment_filter</code></td>
           <td>
-                <code><span title="prefect.server.schemas">schemas</span>.<span title="schemas.filters">filters</span>.<span title="schemas.filters.DeploymentFilter">DeploymentFilter</span></code>
+                <code><span title="prefect.server.schemas">schemas</span>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.filters" href="../../../server/schemas/filters/#prefect.server.schemas.filters">filters</a>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.filters.DeploymentFilter" href="../../../server/schemas/filters/#prefect.server.schemas.filters.DeploymentFilter">DeploymentFilter</a></code>
           </td>
           <td><p>filter criteria for deployments</p></td>
           <td>
@@ -19962,7 +20032,7 @@ be returned.</p>
         <tr>
           <td><code>sort</code></td>
           <td>
-                <code><span title="prefect.server.schemas">schemas</span>.<span title="schemas.sorting">sorting</span>.<span title="schemas.sorting.TaskRunSort">TaskRunSort</span></code>
+                <code><span title="prefect.server.schemas">schemas</span>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.sorting" href="../../../server/schemas/sorting/#prefect.server.schemas.sorting">sorting</a>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.sorting.TaskRunSort" href="../../../server/schemas/sorting/#prefect.server.schemas.sorting.TaskRunSort">TaskRunSort</a></code>
           </td>
           <td><p>sort criteria for the task runs</p></td>
           <td>
@@ -20013,13 +20083,7 @@ of the task runs</p></td>
 
       <details class="quote">
         <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/client/orchestration.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1851</span>
-<span class="normal">1852</span>
-<span class="normal">1853</span>
-<span class="normal">1854</span>
-<span class="normal">1855</span>
-<span class="normal">1856</span>
-<span class="normal">1857</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1857</span>
 <span class="normal">1858</span>
 <span class="normal">1859</span>
 <span class="normal">1860</span>
@@ -20061,7 +20125,13 @@ of the task runs</p></td>
 <span class="normal">1896</span>
 <span class="normal">1897</span>
 <span class="normal">1898</span>
-<span class="normal">1899</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">read_task_runs</span><span class="p">(</span>
+<span class="normal">1899</span>
+<span class="normal">1900</span>
+<span class="normal">1901</span>
+<span class="normal">1902</span>
+<span class="normal">1903</span>
+<span class="normal">1904</span>
+<span class="normal">1905</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">read_task_runs</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">flow_filter</span><span class="p">:</span> <span class="n">schemas</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">FlowFilter</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -20158,7 +20228,7 @@ of the task runs</p></td>
         <tr>
           <td><code>state</code></td>
           <td>
-                <code><a class="autorefs autorefs-internal" title="prefect.states" href="../../states/#prefect.states">prefect</a>.<a class="autorefs autorefs-internal" title="prefect.states" href="../../states/#prefect.states">states</a>.<a class="autorefs autorefs-internal" title="prefect.states.State" href="../schemas/#prefect.client.schemas.State">State</a></code>
+                <code><a class="autorefs autorefs-internal" title="prefect.states" href="../../states/#prefect.states">prefect</a>.<span title="prefect.states.states">states</span>.<span title="prefect.states.states.State">State</span></code>
           </td>
           <td><p>the state to set</p></td>
           <td>
@@ -20199,13 +20269,7 @@ forcing the Prefect API to accept the state</p></td>
 
       <details class="quote">
         <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/client/orchestration.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1901</span>
-<span class="normal">1902</span>
-<span class="normal">1903</span>
-<span class="normal">1904</span>
-<span class="normal">1905</span>
-<span class="normal">1906</span>
-<span class="normal">1907</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1907</span>
 <span class="normal">1908</span>
 <span class="normal">1909</span>
 <span class="normal">1910</span>
@@ -20223,7 +20287,13 @@ forcing the Prefect API to accept the state</p></td>
 <span class="normal">1922</span>
 <span class="normal">1923</span>
 <span class="normal">1924</span>
-<span class="normal">1925</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">set_task_run_state</span><span class="p">(</span>
+<span class="normal">1925</span>
+<span class="normal">1926</span>
+<span class="normal">1927</span>
+<span class="normal">1928</span>
+<span class="normal">1929</span>
+<span class="normal">1930</span>
+<span class="normal">1931</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">set_task_run_state</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">task_run_id</span><span class="p">:</span> <span class="n">UUID</span><span class="p">,</span>
     <span class="n">state</span><span class="p">:</span> <span class="n">prefect</span><span class="o">.</span><span class="n">states</span><span class="o">.</span><span class="n">State</span><span class="p">,</span>
@@ -20307,7 +20377,7 @@ forcing the Prefect API to accept the state</p></td>
     <tbody>
         <tr>
           <td>
-                <code><span title="typing.List">List</span>[<a class="autorefs autorefs-internal" title="prefect.states" href="../../states/#prefect.states">prefect</a>.<a class="autorefs autorefs-internal" title="prefect.states" href="../../states/#prefect.states">states</a>.<a class="autorefs autorefs-internal" title="prefect.states.State" href="../schemas/#prefect.client.schemas.State">State</a>]</code>
+                <code><span title="typing.List">List</span>[<a class="autorefs autorefs-internal" title="prefect.states" href="../../states/#prefect.states">prefect</a>.<span title="prefect.states.states">states</span>.<span title="prefect.states.states.State">State</span>]</code>
           </td>
           <td><p>a list of State model representations of the task run states</p></td>
         </tr>
@@ -20316,13 +20386,7 @@ forcing the Prefect API to accept the state</p></td>
 
       <details class="quote">
         <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/client/orchestration.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1927</span>
-<span class="normal">1928</span>
-<span class="normal">1929</span>
-<span class="normal">1930</span>
-<span class="normal">1931</span>
-<span class="normal">1932</span>
-<span class="normal">1933</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1933</span>
 <span class="normal">1934</span>
 <span class="normal">1935</span>
 <span class="normal">1936</span>
@@ -20331,7 +20395,13 @@ forcing the Prefect API to accept the state</p></td>
 <span class="normal">1939</span>
 <span class="normal">1940</span>
 <span class="normal">1941</span>
-<span class="normal">1942</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">read_task_run_states</span><span class="p">(</span>
+<span class="normal">1942</span>
+<span class="normal">1943</span>
+<span class="normal">1944</span>
+<span class="normal">1945</span>
+<span class="normal">1946</span>
+<span class="normal">1947</span>
+<span class="normal">1948</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">read_task_run_states</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span> <span class="n">task_run_id</span><span class="p">:</span> <span class="n">UUID</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">prefect</span><span class="o">.</span><span class="n">states</span><span class="o">.</span><span class="n">State</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -20397,18 +20467,18 @@ forcing the Prefect API to accept the state</p></td>
 
       <details class="quote">
         <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/client/orchestration.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1944</span>
-<span class="normal">1945</span>
-<span class="normal">1946</span>
-<span class="normal">1947</span>
-<span class="normal">1948</span>
-<span class="normal">1949</span>
-<span class="normal">1950</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1950</span>
 <span class="normal">1951</span>
 <span class="normal">1952</span>
 <span class="normal">1953</span>
 <span class="normal">1954</span>
-<span class="normal">1955</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">create_logs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logs</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">LogCreate</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="normal">1955</span>
+<span class="normal">1956</span>
+<span class="normal">1957</span>
+<span class="normal">1958</span>
+<span class="normal">1959</span>
+<span class="normal">1960</span>
+<span class="normal">1961</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">create_logs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logs</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">LogCreate</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create logs for a flow or task run</span>
 
@@ -20510,13 +20580,7 @@ forcing the Prefect API to accept the state</p></td>
 
       <details class="quote">
         <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/client/orchestration.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1957</span>
-<span class="normal">1958</span>
-<span class="normal">1959</span>
-<span class="normal">1960</span>
-<span class="normal">1961</span>
-<span class="normal">1962</span>
-<span class="normal">1963</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1963</span>
 <span class="normal">1964</span>
 <span class="normal">1965</span>
 <span class="normal">1966</span>
@@ -20549,7 +20613,13 @@ forcing the Prefect API to accept the state</p></td>
 <span class="normal">1993</span>
 <span class="normal">1994</span>
 <span class="normal">1995</span>
-<span class="normal">1996</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">create_flow_run_notification_policy</span><span class="p">(</span>
+<span class="normal">1996</span>
+<span class="normal">1997</span>
+<span class="normal">1998</span>
+<span class="normal">1999</span>
+<span class="normal">2000</span>
+<span class="normal">2001</span>
+<span class="normal">2002</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">create_flow_run_notification_policy</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">block_document_id</span><span class="p">:</span> <span class="n">UUID</span><span class="p">,</span>
     <span class="n">is_active</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
@@ -20679,13 +20749,7 @@ of the notification policies</p></td>
 
       <details class="quote">
         <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/client/orchestration.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1998</span>
-<span class="normal">1999</span>
-<span class="normal">2000</span>
-<span class="normal">2001</span>
-<span class="normal">2002</span>
-<span class="normal">2003</span>
-<span class="normal">2004</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2004</span>
 <span class="normal">2005</span>
 <span class="normal">2006</span>
 <span class="normal">2007</span>
@@ -20710,7 +20774,13 @@ of the notification policies</p></td>
 <span class="normal">2026</span>
 <span class="normal">2027</span>
 <span class="normal">2028</span>
-<span class="normal">2029</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">read_flow_run_notification_policies</span><span class="p">(</span>
+<span class="normal">2029</span>
+<span class="normal">2030</span>
+<span class="normal">2031</span>
+<span class="normal">2032</span>
+<span class="normal">2033</span>
+<span class="normal">2034</span>
+<span class="normal">2035</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">read_flow_run_notification_policies</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">flow_run_notification_policy_filter</span><span class="p">:</span> <span class="n">FlowRunNotificationPolicyFilter</span><span class="p">,</span>
     <span class="n">limit</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -20768,13 +20838,7 @@ of the notification policies</p></td>
 
       <details class="quote">
         <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/client/orchestration.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2031</span>
-<span class="normal">2032</span>
-<span class="normal">2033</span>
-<span class="normal">2034</span>
-<span class="normal">2035</span>
-<span class="normal">2036</span>
-<span class="normal">2037</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2037</span>
 <span class="normal">2038</span>
 <span class="normal">2039</span>
 <span class="normal">2040</span>
@@ -20786,7 +20850,13 @@ of the notification policies</p></td>
 <span class="normal">2046</span>
 <span class="normal">2047</span>
 <span class="normal">2048</span>
-<span class="normal">2049</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">read_logs</span><span class="p">(</span>
+<span class="normal">2049</span>
+<span class="normal">2050</span>
+<span class="normal">2051</span>
+<span class="normal">2052</span>
+<span class="normal">2053</span>
+<span class="normal">2054</span>
+<span class="normal">2055</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">read_logs</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">log_filter</span><span class="p">:</span> <span class="n">LogFilter</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">limit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -20874,13 +20944,7 @@ of the notification policies</p></td>
 
       <details class="quote">
         <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/client/orchestration.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2051</span>
-<span class="normal">2052</span>
-<span class="normal">2053</span>
-<span class="normal">2054</span>
-<span class="normal">2055</span>
-<span class="normal">2056</span>
-<span class="normal">2057</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2057</span>
 <span class="normal">2058</span>
 <span class="normal">2059</span>
 <span class="normal">2060</span>
@@ -20903,7 +20967,13 @@ of the notification policies</p></td>
 <span class="normal">2077</span>
 <span class="normal">2078</span>
 <span class="normal">2079</span>
-<span class="normal">2080</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">resolve_datadoc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">datadoc</span><span class="p">:</span> <span class="n">DataDocument</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="normal">2080</span>
+<span class="normal">2081</span>
+<span class="normal">2082</span>
+<span class="normal">2083</span>
+<span class="normal">2084</span>
+<span class="normal">2085</span>
+<span class="normal">2086</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">resolve_datadoc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">datadoc</span><span class="p">:</span> <span class="n">DataDocument</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Recursively decode possibly nested data documents.</span>
 
@@ -20993,18 +21063,18 @@ of the notification policies</p></td>
 
       <details class="quote">
         <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/client/orchestration.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2082</span>
-<span class="normal">2083</span>
-<span class="normal">2084</span>
-<span class="normal">2085</span>
-<span class="normal">2086</span>
-<span class="normal">2087</span>
-<span class="normal">2088</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2088</span>
 <span class="normal">2089</span>
 <span class="normal">2090</span>
 <span class="normal">2091</span>
 <span class="normal">2092</span>
-<span class="normal">2093</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">send_worker_heartbeat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">work_pool_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">worker_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="normal">2093</span>
+<span class="normal">2094</span>
+<span class="normal">2095</span>
+<span class="normal">2096</span>
+<span class="normal">2097</span>
+<span class="normal">2098</span>
+<span class="normal">2099</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">send_worker_heartbeat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">work_pool_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">worker_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Sends a worker heartbeat for a given work pool.</span>
 
@@ -21065,7 +21135,7 @@ member workers.</p></td>
         <tr>
           <td><code>worker_filter</code></td>
           <td>
-                <code><span title="typing.Optional">Optional</span>[<span title="prefect.server.schemas">schemas</span>.<span title="schemas.filters">filters</span>.<span title="schemas.filters.WorkerFilter">WorkerFilter</span>]</code>
+                <code><span title="typing.Optional">Optional</span>[<span title="prefect.server.schemas">schemas</span>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.filters" href="../../../server/schemas/filters/#prefect.server.schemas.filters">filters</a>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.filters.WorkerFilter" href="../../../server/schemas/filters/#prefect.server.schemas.filters.WorkerFilter">WorkerFilter</a>]</code>
           </td>
           <td><p>Criteria by which to filter workers.</p></td>
           <td>
@@ -21097,13 +21167,7 @@ member workers.</p></td>
 
       <details class="quote">
         <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/client/orchestration.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2095</span>
-<span class="normal">2096</span>
-<span class="normal">2097</span>
-<span class="normal">2098</span>
-<span class="normal">2099</span>
-<span class="normal">2100</span>
-<span class="normal">2101</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2101</span>
 <span class="normal">2102</span>
 <span class="normal">2103</span>
 <span class="normal">2104</span>
@@ -21127,7 +21191,13 @@ member workers.</p></td>
 <span class="normal">2122</span>
 <span class="normal">2123</span>
 <span class="normal">2124</span>
-<span class="normal">2125</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">read_workers_for_work_pool</span><span class="p">(</span>
+<span class="normal">2125</span>
+<span class="normal">2126</span>
+<span class="normal">2127</span>
+<span class="normal">2128</span>
+<span class="normal">2129</span>
+<span class="normal">2130</span>
+<span class="normal">2131</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">read_workers_for_work_pool</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">work_pool_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">worker_filter</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">schemas</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">WorkerFilter</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -21218,7 +21288,7 @@ information.</p></td>
     <tbody>
         <tr>
           <td>
-                <code><span title="prefect.server.schemas">schemas</span>.<span title="schemas.core">core</span>.<span title="schemas.core.WorkPool">WorkPool</span></code>
+                <code><span title="prefect.server.schemas">schemas</span>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.core" href="../../../server/schemas/core/#prefect.server.schemas.core">core</a>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.core.WorkPool" href="../../../server/schemas/core/#prefect.server.schemas.core.WorkPool">WorkPool</a></code>
           </td>
           <td><p>Information about the requested work pool.</p></td>
         </tr>
@@ -21227,13 +21297,7 @@ information.</p></td>
 
       <details class="quote">
         <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/client/orchestration.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2127</span>
-<span class="normal">2128</span>
-<span class="normal">2129</span>
-<span class="normal">2130</span>
-<span class="normal">2131</span>
-<span class="normal">2132</span>
-<span class="normal">2133</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2133</span>
 <span class="normal">2134</span>
 <span class="normal">2135</span>
 <span class="normal">2136</span>
@@ -21245,7 +21309,13 @@ information.</p></td>
 <span class="normal">2142</span>
 <span class="normal">2143</span>
 <span class="normal">2144</span>
-<span class="normal">2145</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">read_work_pool</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">work_pool_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">schemas</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">WorkPool</span><span class="p">:</span>
+<span class="normal">2145</span>
+<span class="normal">2146</span>
+<span class="normal">2147</span>
+<span class="normal">2148</span>
+<span class="normal">2149</span>
+<span class="normal">2150</span>
+<span class="normal">2151</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">read_work_pool</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">work_pool_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">schemas</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">WorkPool</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Reads information for a given work pool</span>
 
@@ -21352,13 +21422,7 @@ information.</p></td>
 
       <details class="quote">
         <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/client/orchestration.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2147</span>
-<span class="normal">2148</span>
-<span class="normal">2149</span>
-<span class="normal">2150</span>
-<span class="normal">2151</span>
-<span class="normal">2152</span>
-<span class="normal">2153</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2153</span>
 <span class="normal">2154</span>
 <span class="normal">2155</span>
 <span class="normal">2156</span>
@@ -21380,7 +21444,13 @@ information.</p></td>
 <span class="normal">2172</span>
 <span class="normal">2173</span>
 <span class="normal">2174</span>
-<span class="normal">2175</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">read_work_pools</span><span class="p">(</span>
+<span class="normal">2175</span>
+<span class="normal">2176</span>
+<span class="normal">2177</span>
+<span class="normal">2178</span>
+<span class="normal">2179</span>
+<span class="normal">2180</span>
+<span class="normal">2181</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">read_work_pools</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">limit</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">offset</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
@@ -21447,7 +21517,7 @@ information.</p></td>
         <tr>
           <td><code>work_pool</code></td>
           <td>
-                <code><span title="prefect.server.schemas">schemas</span>.<span title="schemas.actions">actions</span>.<span title="schemas.actions.WorkPoolCreate">WorkPoolCreate</span></code>
+                <code><span title="prefect.server.schemas">schemas</span>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.actions" href="../../../server/schemas/actions/#prefect.server.schemas.actions">actions</a>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.actions.WorkPoolCreate" href="../../../server/schemas/actions/#prefect.server.schemas.actions.WorkPoolCreate">WorkPoolCreate</a></code>
           </td>
           <td><p>Desired configuration for the new work pool.</p></td>
           <td>
@@ -21468,7 +21538,7 @@ information.</p></td>
     <tbody>
         <tr>
           <td>
-                <code><span title="prefect.server.schemas">schemas</span>.<span title="schemas.core">core</span>.<span title="schemas.core.WorkPool">WorkPool</span></code>
+                <code><span title="prefect.server.schemas">schemas</span>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.core" href="../../../server/schemas/core/#prefect.server.schemas.core">core</a>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.core.WorkPool" href="../../../server/schemas/core/#prefect.server.schemas.core.WorkPool">WorkPool</a></code>
           </td>
           <td><p>Information about the newly created work pool.</p></td>
         </tr>
@@ -21477,13 +21547,7 @@ information.</p></td>
 
       <details class="quote">
         <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/client/orchestration.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2177</span>
-<span class="normal">2178</span>
-<span class="normal">2179</span>
-<span class="normal">2180</span>
-<span class="normal">2181</span>
-<span class="normal">2182</span>
-<span class="normal">2183</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2183</span>
 <span class="normal">2184</span>
 <span class="normal">2185</span>
 <span class="normal">2186</span>
@@ -21495,7 +21559,19 @@ information.</p></td>
 <span class="normal">2192</span>
 <span class="normal">2193</span>
 <span class="normal">2194</span>
-<span class="normal">2195</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">create_work_pool</span><span class="p">(</span>
+<span class="normal">2195</span>
+<span class="normal">2196</span>
+<span class="normal">2197</span>
+<span class="normal">2198</span>
+<span class="normal">2199</span>
+<span class="normal">2200</span>
+<span class="normal">2201</span>
+<span class="normal">2202</span>
+<span class="normal">2203</span>
+<span class="normal">2204</span>
+<span class="normal">2205</span>
+<span class="normal">2206</span>
+<span class="normal">2207</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">create_work_pool</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">work_pool</span><span class="p">:</span> <span class="n">schemas</span><span class="o">.</span><span class="n">actions</span><span class="o">.</span><span class="n">WorkPoolCreate</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">schemas</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">WorkPool</span><span class="p">:</span>
@@ -21508,10 +21584,16 @@ information.</p></td>
 <span class="sd">    Returns:</span>
 <span class="sd">        Information about the newly created work pool.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">response</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
-        <span class="s2">&quot;/work_pools/&quot;</span><span class="p">,</span>
-        <span class="n">json</span><span class="o">=</span><span class="n">work_pool</span><span class="o">.</span><span class="n">dict</span><span class="p">(</span><span class="n">json_compatible</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exclude_unset</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
-    <span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+            <span class="s2">&quot;/work_pools/&quot;</span><span class="p">,</span>
+            <span class="n">json</span><span class="o">=</span><span class="n">work_pool</span><span class="o">.</span><span class="n">dict</span><span class="p">(</span><span class="n">json_compatible</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exclude_unset</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+        <span class="p">)</span>
+    <span class="k">except</span> <span class="n">httpx</span><span class="o">.</span><span class="n">HTTPStatusError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">e</span><span class="o">.</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="n">status</span><span class="o">.</span><span class="n">HTTP_409_CONFLICT</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">prefect</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">ObjectAlreadyExists</span><span class="p">(</span><span class="n">http_exc</span><span class="o">=</span><span class="n">e</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span>
 
     <span class="k">return</span> <span class="n">pydantic</span><span class="o">.</span><span class="n">parse_obj_as</span><span class="p">(</span><span class="n">WorkPool</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
 </code></pre></div></td></tr></table></div>
@@ -21564,23 +21646,23 @@ information.</p></td>
 
       <details class="quote">
         <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/client/orchestration.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2207</span>
-<span class="normal">2208</span>
-<span class="normal">2209</span>
-<span class="normal">2210</span>
-<span class="normal">2211</span>
-<span class="normal">2212</span>
-<span class="normal">2213</span>
-<span class="normal">2214</span>
-<span class="normal">2215</span>
-<span class="normal">2216</span>
-<span class="normal">2217</span>
-<span class="normal">2218</span>
-<span class="normal">2219</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2219</span>
 <span class="normal">2220</span>
 <span class="normal">2221</span>
 <span class="normal">2222</span>
-<span class="normal">2223</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">delete_work_pool</span><span class="p">(</span>
+<span class="normal">2223</span>
+<span class="normal">2224</span>
+<span class="normal">2225</span>
+<span class="normal">2226</span>
+<span class="normal">2227</span>
+<span class="normal">2228</span>
+<span class="normal">2229</span>
+<span class="normal">2230</span>
+<span class="normal">2231</span>
+<span class="normal">2232</span>
+<span class="normal">2233</span>
+<span class="normal">2234</span>
+<span class="normal">2235</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">delete_work_pool</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">work_pool_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
 <span class="p">):</span>
@@ -21686,7 +21768,7 @@ information.</p></td>
     <tbody>
         <tr>
           <td>
-                <code><span title="typing.List">List</span>[<span title="prefect.server.schemas">schemas</span>.<span title="schemas.core">core</span>.<span title="schemas.core.WorkQueue">WorkQueue</span>]</code>
+                <code><span title="typing.List">List</span>[<span title="prefect.server.schemas">schemas</span>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.core" href="../../../server/schemas/core/#prefect.server.schemas.core">core</a>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.core.WorkQueue" href="../../../server/schemas/core/#prefect.server.schemas.core.WorkQueue">WorkQueue</a>]</code>
           </td>
           <td><p>List of queues for the specified work pool.</p></td>
         </tr>
@@ -21695,19 +21777,7 @@ information.</p></td>
 
       <details class="quote">
         <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/client/orchestration.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2225</span>
-<span class="normal">2226</span>
-<span class="normal">2227</span>
-<span class="normal">2228</span>
-<span class="normal">2229</span>
-<span class="normal">2230</span>
-<span class="normal">2231</span>
-<span class="normal">2232</span>
-<span class="normal">2233</span>
-<span class="normal">2234</span>
-<span class="normal">2235</span>
-<span class="normal">2236</span>
-<span class="normal">2237</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2237</span>
 <span class="normal">2238</span>
 <span class="normal">2239</span>
 <span class="normal">2240</span>
@@ -21738,7 +21808,19 @@ information.</p></td>
 <span class="normal">2265</span>
 <span class="normal">2266</span>
 <span class="normal">2267</span>
-<span class="normal">2268</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">read_work_queues</span><span class="p">(</span>
+<span class="normal">2268</span>
+<span class="normal">2269</span>
+<span class="normal">2270</span>
+<span class="normal">2271</span>
+<span class="normal">2272</span>
+<span class="normal">2273</span>
+<span class="normal">2274</span>
+<span class="normal">2275</span>
+<span class="normal">2276</span>
+<span class="normal">2277</span>
+<span class="normal">2278</span>
+<span class="normal">2279</span>
+<span class="normal">2280</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">read_work_queues</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">work_pool_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">work_queue_filter</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">WorkQueueFilter</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -21879,19 +21961,7 @@ scheduled for after the given datetime string will not be returned.</p></td>
 
       <details class="quote">
         <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/client/orchestration.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2270</span>
-<span class="normal">2271</span>
-<span class="normal">2272</span>
-<span class="normal">2273</span>
-<span class="normal">2274</span>
-<span class="normal">2275</span>
-<span class="normal">2276</span>
-<span class="normal">2277</span>
-<span class="normal">2278</span>
-<span class="normal">2279</span>
-<span class="normal">2280</span>
-<span class="normal">2281</span>
-<span class="normal">2282</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2282</span>
 <span class="normal">2283</span>
 <span class="normal">2284</span>
 <span class="normal">2285</span>
@@ -21911,7 +21981,19 @@ scheduled for after the given datetime string will not be returned.</p></td>
 <span class="normal">2299</span>
 <span class="normal">2300</span>
 <span class="normal">2301</span>
-<span class="normal">2302</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">get_scheduled_flow_runs_for_work_pool</span><span class="p">(</span>
+<span class="normal">2302</span>
+<span class="normal">2303</span>
+<span class="normal">2304</span>
+<span class="normal">2305</span>
+<span class="normal">2306</span>
+<span class="normal">2307</span>
+<span class="normal">2308</span>
+<span class="normal">2309</span>
+<span class="normal">2310</span>
+<span class="normal">2311</span>
+<span class="normal">2312</span>
+<span class="normal">2313</span>
+<span class="normal">2314</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">get_scheduled_flow_runs_for_work_pool</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">work_pool_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">work_queue_names</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -21982,7 +22064,7 @@ scheduled for after the given datetime string will not be returned.</p></td>
         <tr>
           <td><code>artifact</code></td>
           <td>
-                <code><span title="prefect.server.schemas">schemas</span>.<span title="schemas.actions">actions</span>.<span title="schemas.actions.ArtifactCreate">ArtifactCreate</span></code>
+                <code><span title="prefect.server.schemas">schemas</span>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.actions" href="../../../server/schemas/actions/#prefect.server.schemas.actions">actions</a>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.actions.ArtifactCreate" href="../../../server/schemas/actions/#prefect.server.schemas.actions.ArtifactCreate">ArtifactCreate</a></code>
           </td>
           <td><p>Desired configuration for the new artifact.</p></td>
           <td>
@@ -22003,7 +22085,7 @@ scheduled for after the given datetime string will not be returned.</p></td>
     <tbody>
         <tr>
           <td>
-                <code><span title="prefect.server.schemas">schemas</span>.<span title="schemas.core">core</span>.<span title="schemas.core.Artifact">Artifact</span></code>
+                <code><span title="prefect.server.schemas">schemas</span>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.core" href="../../../server/schemas/core/#prefect.server.schemas.core">core</a>.<span title="prefect.server.schemas.core.Artifact">Artifact</span></code>
           </td>
           <td><p>Information about the newly created artifact.</p></td>
         </tr>
@@ -22012,25 +22094,25 @@ scheduled for after the given datetime string will not be returned.</p></td>
 
       <details class="quote">
         <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/client/orchestration.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2304</span>
-<span class="normal">2305</span>
-<span class="normal">2306</span>
-<span class="normal">2307</span>
-<span class="normal">2308</span>
-<span class="normal">2309</span>
-<span class="normal">2310</span>
-<span class="normal">2311</span>
-<span class="normal">2312</span>
-<span class="normal">2313</span>
-<span class="normal">2314</span>
-<span class="normal">2315</span>
-<span class="normal">2316</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2316</span>
 <span class="normal">2317</span>
 <span class="normal">2318</span>
 <span class="normal">2319</span>
 <span class="normal">2320</span>
 <span class="normal">2321</span>
-<span class="normal">2322</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">create_artifact</span><span class="p">(</span>
+<span class="normal">2322</span>
+<span class="normal">2323</span>
+<span class="normal">2324</span>
+<span class="normal">2325</span>
+<span class="normal">2326</span>
+<span class="normal">2327</span>
+<span class="normal">2328</span>
+<span class="normal">2329</span>
+<span class="normal">2330</span>
+<span class="normal">2331</span>
+<span class="normal">2332</span>
+<span class="normal">2333</span>
+<span class="normal">2334</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">create_artifact</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">artifact</span><span class="p">:</span> <span class="n">schemas</span><span class="o">.</span><span class="n">actions</span><span class="o">.</span><span class="n">ArtifactCreate</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">schemas</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">Artifact</span><span class="p">:</span>
@@ -22088,7 +22170,7 @@ be returned.</p>
         <tr>
           <td><code>artifact_filter</code></td>
           <td>
-                <code><span title="prefect.server.schemas">schemas</span>.<span title="schemas.filters">filters</span>.<span title="schemas.filters.ArtifactFilter">ArtifactFilter</span></code>
+                <code><span title="prefect.server.schemas">schemas</span>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.filters" href="../../../server/schemas/filters/#prefect.server.schemas.filters">filters</a>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.filters.ArtifactFilter" href="../../../server/schemas/filters/#prefect.server.schemas.filters.ArtifactFilter">ArtifactFilter</a></code>
           </td>
           <td><p>filter criteria for artifacts</p></td>
           <td>
@@ -22098,7 +22180,7 @@ be returned.</p>
         <tr>
           <td><code>flow_run_filter</code></td>
           <td>
-                <code><span title="prefect.server.schemas">schemas</span>.<span title="schemas.filters">filters</span>.<span title="schemas.filters.FlowRunFilter">FlowRunFilter</span></code>
+                <code><span title="prefect.server.schemas">schemas</span>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.filters" href="../../../server/schemas/filters/#prefect.server.schemas.filters">filters</a>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.filters.FlowRunFilter" href="../../../server/schemas/filters/#prefect.server.schemas.filters.FlowRunFilter">FlowRunFilter</a></code>
           </td>
           <td><p>filter criteria for flow runs</p></td>
           <td>
@@ -22108,7 +22190,7 @@ be returned.</p>
         <tr>
           <td><code>task_run_filter</code></td>
           <td>
-                <code><span title="prefect.server.schemas">schemas</span>.<span title="schemas.filters">filters</span>.<span title="schemas.filters.TaskRunFilter">TaskRunFilter</span></code>
+                <code><span title="prefect.server.schemas">schemas</span>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.filters" href="../../../server/schemas/filters/#prefect.server.schemas.filters">filters</a>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.filters.TaskRunFilter" href="../../../server/schemas/filters/#prefect.server.schemas.filters.TaskRunFilter">TaskRunFilter</a></code>
           </td>
           <td><p>filter criteria for task runs</p></td>
           <td>
@@ -22118,7 +22200,7 @@ be returned.</p>
         <tr>
           <td><code>sort</code></td>
           <td>
-                <code><span title="prefect.server.schemas">schemas</span>.<span title="schemas.sorting">sorting</span>.<span title="schemas.sorting.ArtifactSort">ArtifactSort</span></code>
+                <code><span title="prefect.server.schemas">schemas</span>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.sorting" href="../../../server/schemas/sorting/#prefect.server.schemas.sorting">sorting</a>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.sorting.ArtifactSort" href="../../../server/schemas/sorting/#prefect.server.schemas.sorting.ArtifactSort">ArtifactSort</a></code>
           </td>
           <td><p>sort criteria for the artifacts</p></td>
           <td>
@@ -22168,19 +22250,7 @@ be returned.</p>
 
       <details class="quote">
         <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/client/orchestration.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2324</span>
-<span class="normal">2325</span>
-<span class="normal">2326</span>
-<span class="normal">2327</span>
-<span class="normal">2328</span>
-<span class="normal">2329</span>
-<span class="normal">2330</span>
-<span class="normal">2331</span>
-<span class="normal">2332</span>
-<span class="normal">2333</span>
-<span class="normal">2334</span>
-<span class="normal">2335</span>
-<span class="normal">2336</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2336</span>
 <span class="normal">2337</span>
 <span class="normal">2338</span>
 <span class="normal">2339</span>
@@ -22206,7 +22276,19 @@ be returned.</p>
 <span class="normal">2359</span>
 <span class="normal">2360</span>
 <span class="normal">2361</span>
-<span class="normal">2362</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">read_artifacts</span><span class="p">(</span>
+<span class="normal">2362</span>
+<span class="normal">2363</span>
+<span class="normal">2364</span>
+<span class="normal">2365</span>
+<span class="normal">2366</span>
+<span class="normal">2367</span>
+<span class="normal">2368</span>
+<span class="normal">2369</span>
+<span class="normal">2370</span>
+<span class="normal">2371</span>
+<span class="normal">2372</span>
+<span class="normal">2373</span>
+<span class="normal">2374</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">read_artifacts</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">artifact_filter</span><span class="p">:</span> <span class="n">schemas</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">ArtifactFilter</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -22284,7 +22366,7 @@ be returned.</p>
         <tr>
           <td><code>artifact_filter</code></td>
           <td>
-                <code><span title="prefect.server.schemas">schemas</span>.<span title="schemas.filters">filters</span>.<span title="schemas.filters.ArtifactCollectionFilter">ArtifactCollectionFilter</span></code>
+                <code><span title="prefect.server.schemas">schemas</span>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.filters" href="../../../server/schemas/filters/#prefect.server.schemas.filters">filters</a>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.filters.ArtifactCollectionFilter" href="../../../server/schemas/filters/#prefect.server.schemas.filters.ArtifactCollectionFilter">ArtifactCollectionFilter</a></code>
           </td>
           <td><p>filter criteria for artifacts</p></td>
           <td>
@@ -22294,7 +22376,7 @@ be returned.</p>
         <tr>
           <td><code>flow_run_filter</code></td>
           <td>
-                <code><span title="prefect.server.schemas">schemas</span>.<span title="schemas.filters">filters</span>.<span title="schemas.filters.FlowRunFilter">FlowRunFilter</span></code>
+                <code><span title="prefect.server.schemas">schemas</span>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.filters" href="../../../server/schemas/filters/#prefect.server.schemas.filters">filters</a>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.filters.FlowRunFilter" href="../../../server/schemas/filters/#prefect.server.schemas.filters.FlowRunFilter">FlowRunFilter</a></code>
           </td>
           <td><p>filter criteria for flow runs</p></td>
           <td>
@@ -22304,7 +22386,7 @@ be returned.</p>
         <tr>
           <td><code>task_run_filter</code></td>
           <td>
-                <code><span title="prefect.server.schemas">schemas</span>.<span title="schemas.filters">filters</span>.<span title="schemas.filters.TaskRunFilter">TaskRunFilter</span></code>
+                <code><span title="prefect.server.schemas">schemas</span>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.filters" href="../../../server/schemas/filters/#prefect.server.schemas.filters">filters</a>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.filters.TaskRunFilter" href="../../../server/schemas/filters/#prefect.server.schemas.filters.TaskRunFilter">TaskRunFilter</a></code>
           </td>
           <td><p>filter criteria for task runs</p></td>
           <td>
@@ -22314,7 +22396,7 @@ be returned.</p>
         <tr>
           <td><code>sort</code></td>
           <td>
-                <code><span title="prefect.server.schemas">schemas</span>.<span title="schemas.sorting">sorting</span>.<span title="schemas.sorting.ArtifactCollectionSort">ArtifactCollectionSort</span></code>
+                <code><span title="prefect.server.schemas">schemas</span>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.sorting" href="../../../server/schemas/sorting/#prefect.server.schemas.sorting">sorting</a>.<a class="autorefs autorefs-internal" title="prefect.server.schemas.sorting.ArtifactCollectionSort" href="../../../server/schemas/sorting/#prefect.server.schemas.sorting.ArtifactCollectionSort">ArtifactCollectionSort</a></code>
           </td>
           <td><p>sort criteria for the artifacts</p></td>
           <td>
@@ -22364,19 +22446,7 @@ be returned.</p>
 
       <details class="quote">
         <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/client/orchestration.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2364</span>
-<span class="normal">2365</span>
-<span class="normal">2366</span>
-<span class="normal">2367</span>
-<span class="normal">2368</span>
-<span class="normal">2369</span>
-<span class="normal">2370</span>
-<span class="normal">2371</span>
-<span class="normal">2372</span>
-<span class="normal">2373</span>
-<span class="normal">2374</span>
-<span class="normal">2375</span>
-<span class="normal">2376</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2376</span>
 <span class="normal">2377</span>
 <span class="normal">2378</span>
 <span class="normal">2379</span>
@@ -22402,7 +22472,19 @@ be returned.</p>
 <span class="normal">2399</span>
 <span class="normal">2400</span>
 <span class="normal">2401</span>
-<span class="normal">2402</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">read_latest_artifacts</span><span class="p">(</span>
+<span class="normal">2402</span>
+<span class="normal">2403</span>
+<span class="normal">2404</span>
+<span class="normal">2405</span>
+<span class="normal">2406</span>
+<span class="normal">2407</span>
+<span class="normal">2408</span>
+<span class="normal">2409</span>
+<span class="normal">2410</span>
+<span class="normal">2411</span>
+<span class="normal">2412</span>
+<span class="normal">2413</span>
+<span class="normal">2414</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">read_latest_artifacts</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">artifact_filter</span><span class="p">:</span> <span class="n">schemas</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">ArtifactCollectionFilter</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -22491,20 +22573,20 @@ be returned.</p>
 
       <details class="quote">
         <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/client/orchestration.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2404</span>
-<span class="normal">2405</span>
-<span class="normal">2406</span>
-<span class="normal">2407</span>
-<span class="normal">2408</span>
-<span class="normal">2409</span>
-<span class="normal">2410</span>
-<span class="normal">2411</span>
-<span class="normal">2412</span>
-<span class="normal">2413</span>
-<span class="normal">2414</span>
-<span class="normal">2415</span>
-<span class="normal">2416</span>
-<span class="normal">2417</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">delete_artifact</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">artifact_id</span><span class="p">:</span> <span class="n">UUID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2416</span>
+<span class="normal">2417</span>
+<span class="normal">2418</span>
+<span class="normal">2419</span>
+<span class="normal">2420</span>
+<span class="normal">2421</span>
+<span class="normal">2422</span>
+<span class="normal">2423</span>
+<span class="normal">2424</span>
+<span class="normal">2425</span>
+<span class="normal">2426</span>
+<span class="normal">2427</span>
+<span class="normal">2428</span>
+<span class="normal">2429</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">delete_artifact</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">artifact_id</span><span class="p">:</span> <span class="n">UUID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Deletes an artifact with the provided id.</span>
 
@@ -22544,16 +22626,16 @@ be returned.</p>
 
       <details class="quote">
         <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/client/orchestration.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2419</span>
-<span class="normal">2420</span>
-<span class="normal">2421</span>
-<span class="normal">2422</span>
-<span class="normal">2423</span>
-<span class="normal">2424</span>
-<span class="normal">2425</span>
-<span class="normal">2426</span>
-<span class="normal">2427</span>
-<span class="normal">2428</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">read_variable_by_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">schemas</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">Variable</span><span class="p">]:</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2431</span>
+<span class="normal">2432</span>
+<span class="normal">2433</span>
+<span class="normal">2434</span>
+<span class="normal">2435</span>
+<span class="normal">2436</span>
+<span class="normal">2437</span>
+<span class="normal">2438</span>
+<span class="normal">2439</span>
+<span class="normal">2440</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">read_variable_by_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">schemas</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">Variable</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Reads a variable by name. Returns None if no variable is found.&quot;&quot;&quot;</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">response</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;/variables/name/</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -22589,15 +22671,15 @@ be returned.</p>
 
       <details class="quote">
         <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/client/orchestration.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2430</span>
-<span class="normal">2431</span>
-<span class="normal">2432</span>
-<span class="normal">2433</span>
-<span class="normal">2434</span>
-<span class="normal">2435</span>
-<span class="normal">2436</span>
-<span class="normal">2437</span>
-<span class="normal">2438</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">delete_variable_by_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2442</span>
+<span class="normal">2443</span>
+<span class="normal">2444</span>
+<span class="normal">2445</span>
+<span class="normal">2446</span>
+<span class="normal">2447</span>
+<span class="normal">2448</span>
+<span class="normal">2449</span>
+<span class="normal">2450</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">delete_variable_by_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Deletes a variable by name.&quot;&quot;&quot;</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;/variables/name/</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -22632,13 +22714,48 @@ be returned.</p>
 
       <details class="quote">
         <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/client/orchestration.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2440</span>
-<span class="normal">2441</span>
-<span class="normal">2442</span>
-<span class="normal">2443</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">read_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">limit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">schemas</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">Variable</span><span class="p">]:</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2452</span>
+<span class="normal">2453</span>
+<span class="normal">2454</span>
+<span class="normal">2455</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">read_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">limit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">schemas</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">Variable</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Reads all variables.&quot;&quot;&quot;</span>
     <span class="n">response</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;/variables/filter&quot;</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;limit&quot;</span><span class="p">:</span> <span class="n">limit</span><span class="p">})</span>
     <span class="k">return</span> <span class="n">pydantic</span><span class="o">.</span><span class="n">parse_obj_as</span><span class="p">(</span><span class="n">List</span><span class="p">[</span><span class="n">schemas</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">Variable</span><span class="p">],</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
+</code></pre></div></td></tr></table></div>
+      </details>
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+
+<h3 id="prefect.client.orchestration.PrefectClient.read_worker_metadata" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">read_worker_metadata</span></code>
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-async"><code>async</code></small>
+  </span>
+
+<a href="#prefect.client.orchestration.PrefectClient.read_worker_metadata" class="headerlink" title="Permanent link">&para;</a></h3>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>Reads worker metadata stored in Prefect collection registry.</p>
+
+      <details class="quote">
+        <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/client/orchestration.py</code></summary>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2457</span>
+<span class="normal">2458</span>
+<span class="normal">2459</span>
+<span class="normal">2460</span>
+<span class="normal">2461</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">read_worker_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Reads worker metadata stored in Prefect collection registry.&quot;&quot;&quot;</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;collections/views/aggregate-worker-metadata&quot;</span><span class="p">)</span>
+    <span class="n">response</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
 </code></pre></div></td></tr></table></div>
       </details>
   </div>
@@ -22674,11 +22791,11 @@ be returned.</p>
 
         <details class="quote">
           <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/client/orchestration.py</code></summary>
-          <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2506</span>
-<span class="normal">2507</span>
-<span class="normal">2508</span>
-<span class="normal">2509</span>
-<span class="normal">2510</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@deprecated_callable</span><span class="p">(</span><span class="n">start_date</span><span class="o">=</span><span class="s2">&quot;Feb 2023&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Use `PrefectClient` instead.&quot;</span><span class="p">)</span>
+          <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2524</span>
+<span class="normal">2525</span>
+<span class="normal">2526</span>
+<span class="normal">2527</span>
+<span class="normal">2528</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@deprecated_callable</span><span class="p">(</span><span class="n">start_date</span><span class="o">=</span><span class="s2">&quot;Feb 2023&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Use `PrefectClient` instead.&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">OrionClient</span><span class="p">(</span><span class="n">PrefectClient</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Deprecated. Use `PrefectClient` instead.</span>
@@ -22734,7 +22851,7 @@ be returned.</p>
 <span class="normal">91</span>
 <span class="normal">92</span>
 <span class="normal">93</span>
-<span class="normal">94</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_client</span><span class="p">(</span><span class="n">httpx_settings</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;PrefectClient&quot;</span><span class="p">:</span>
+<span class="normal">94</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_client</span><span class="p">(</span><span class="n">httpx_settings</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;PrefectClient&quot;</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Retrieve a HTTP client for communicating with the Prefect REST API.</span>
 
