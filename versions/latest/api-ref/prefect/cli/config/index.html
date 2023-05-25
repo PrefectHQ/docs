@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="../../../../img/favicon.png">
-      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-9.1.9+insiders-4.32.6">
+      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-9.1.14+insiders-4.35.1">
     
     
       
@@ -31,7 +31,7 @@
       
     
     
-      <link rel="stylesheet" href="../../../../assets/stylesheets/main.938f8e87.min.css">
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.14411569.min.css">
       
         
         <link rel="stylesheet" href="../../../../assets/stylesheets/palette.df142b89.min.css">
@@ -86,34 +86,20 @@
     
 
     
-      
-        <meta  property="og:type"  content="website" >
-      
-        <meta  property="og:title"  content="prefect.cli.config - Prefect Docs" >
-      
-        <meta  property="og:description"  content="Prefect command line interface for configuring settings." >
-      
-        <meta  property="og:image"  content="https://docs.prefect.io/latest/assets/images/social/api-ref/prefect/cli/config.png" >
-      
-        <meta  property="og:image:type"  content="image/png" >
-      
-        <meta  property="og:image:width"  content="1200" >
-      
-        <meta  property="og:image:height"  content="630" >
-      
-        <meta  property="og:url"  content="https://docs.prefect.io/latest/api-ref/prefect/cli/config/" >
-      
-        <meta  name="twitter:card"  content="summary_large_image" >
-      
-        <meta  name="twitter:title"  content="prefect.cli.config - Prefect Docs" >
-      
-        <meta  name="twitter:description"  content="Prefect command line interface for configuring settings." >
-      
-        <meta  name="twitter:image"  content="https://docs.prefect.io/latest/assets/images/social/api-ref/prefect/cli/config.png" >
-      
-    
-    
-  </head>
+  
+<meta property="og:type" content="website" />
+<meta property="og:title" content="prefect.cli.config - Prefect Docs" />
+<meta property="og:description" content="Prefect command line interface for configuring settings." />
+<meta property="og:image" content="https://docs.prefect.io/latest/assets/images/social/api-ref/prefect/cli/config.png" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:url" content="https://docs.prefect.io/latest/api-ref/prefect/cli/config/" />
+<meta property="twitter:card" content="summary_large_image" />
+<meta property="twitter.title" content="prefect.cli.config - Prefect Docs" />
+<meta property="twitter:description" content="Prefect command line interface for configuring settings." />
+<meta property="twitter:image" content="https://docs.prefect.io/latest/assets/images/social/api-ref/prefect/cli/config.png" />
+</head>
   
   
     
@@ -179,7 +165,7 @@
           <aside class="md-banner md-banner--warning">
             <div class="md-banner__inner md-grid md-typeset">
               
-  You're viewing the docs for Prefect 2.10.10.
+  You're viewing the docs for Prefect 2.10.11.
   <a href="../../../../.."> 
     <strong>Click here to view the latest docs.</strong>
   </a>
@@ -2011,6 +1997,8 @@
       
         
       
+        
+      
     
     
     <li class="md-nav__item md-nav__item--nested">
@@ -2318,6 +2306,32 @@
     
   
     Migration Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../guides/state-change-hooks/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    State Change Hooks
   
 
     
@@ -6508,7 +6522,14 @@
 <span class="normal">62</span>
 <span class="normal">63</span>
 <span class="normal">64</span>
-<span class="normal">65</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@config_app</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s2">&quot;set&quot;</span><span class="p">)</span>
+<span class="normal">65</span>
+<span class="normal">66</span>
+<span class="normal">67</span>
+<span class="normal">68</span>
+<span class="normal">69</span>
+<span class="normal">70</span>
+<span class="normal">71</span>
+<span class="normal">72</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@config_app</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s2">&quot;set&quot;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">set_</span><span class="p">(</span><span class="n">settings</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Change the value for a setting by setting the value in the current profile.</span>
@@ -6524,6 +6545,13 @@
 
         <span class="k">if</span> <span class="n">setting</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">prefect</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">SETTING_VARIABLES</span><span class="p">:</span>
             <span class="n">exit_with_error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown setting name </span><span class="si">{</span><span class="n">setting</span><span class="si">!r}</span><span class="s2">.&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Guard against changing settings that tweak config locations</span>
+        <span class="k">if</span> <span class="n">setting</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot;PREFECT_HOME&quot;</span><span class="p">,</span> <span class="s2">&quot;PREFECT_PROFILES_PATH&quot;</span><span class="p">}:</span>
+            <span class="n">exit_with_error</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Setting </span><span class="si">{</span><span class="n">setting</span><span class="si">!r}</span><span class="s2"> cannot be changed with this command. &quot;</span>
+                <span class="s2">&quot;Use an environment variable instead.&quot;</span>
+            <span class="p">)</span>
 
         <span class="n">parsed_settings</span><span class="p">[</span><span class="n">setting</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
 
@@ -6573,14 +6601,7 @@
 
       <details class="quote">
         <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/cli/config.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 92</span>
-<span class="normal"> 93</span>
-<span class="normal"> 94</span>
-<span class="normal"> 95</span>
-<span class="normal"> 96</span>
-<span class="normal"> 97</span>
-<span class="normal"> 98</span>
-<span class="normal"> 99</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 99</span>
 <span class="normal">100</span>
 <span class="normal">101</span>
 <span class="normal">102</span>
@@ -6608,7 +6629,14 @@
 <span class="normal">124</span>
 <span class="normal">125</span>
 <span class="normal">126</span>
-<span class="normal">127</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@config_app</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="normal">127</span>
+<span class="normal">128</span>
+<span class="normal">129</span>
+<span class="normal">130</span>
+<span class="normal">131</span>
+<span class="normal">132</span>
+<span class="normal">133</span>
+<span class="normal">134</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@config_app</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
 <span class="k">def</span> <span class="nf">unset</span><span class="p">(</span><span class="n">settings</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Restore the default value for a setting.</span>
@@ -6668,14 +6696,7 @@ set.</p>
 
       <details class="quote">
         <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/cli/config.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">68</span>
-<span class="normal">69</span>
-<span class="normal">70</span>
-<span class="normal">71</span>
-<span class="normal">72</span>
-<span class="normal">73</span>
-<span class="normal">74</span>
-<span class="normal">75</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">75</span>
 <span class="normal">76</span>
 <span class="normal">77</span>
 <span class="normal">78</span>
@@ -6689,7 +6710,14 @@ set.</p>
 <span class="normal">86</span>
 <span class="normal">87</span>
 <span class="normal">88</span>
-<span class="normal">89</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@config_app</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="normal">89</span>
+<span class="normal">90</span>
+<span class="normal">91</span>
+<span class="normal">92</span>
+<span class="normal">93</span>
+<span class="normal">94</span>
+<span class="normal">95</span>
+<span class="normal">96</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@config_app</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
 <span class="k">def</span> <span class="nf">validate</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Read and validate the current profile.</span>
@@ -6733,14 +6761,7 @@ set.</p>
 
       <details class="quote">
         <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/cli/config.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">153</span>
-<span class="normal">154</span>
-<span class="normal">155</span>
-<span class="normal">156</span>
-<span class="normal">157</span>
-<span class="normal">158</span>
-<span class="normal">159</span>
-<span class="normal">160</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">160</span>
 <span class="normal">161</span>
 <span class="normal">162</span>
 <span class="normal">163</span>
@@ -6787,7 +6808,14 @@ set.</p>
 <span class="normal">204</span>
 <span class="normal">205</span>
 <span class="normal">206</span>
-<span class="normal">207</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@config_app</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="normal">207</span>
+<span class="normal">208</span>
+<span class="normal">209</span>
+<span class="normal">210</span>
+<span class="normal">211</span>
+<span class="normal">212</span>
+<span class="normal">213</span>
+<span class="normal">214</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@config_app</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
 <span class="k">def</span> <span class="nf">view</span><span class="p">(</span>
     <span class="n">show_defaults</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
         <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;--show-defaults/--hide-defaults&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="p">(</span><span class="n">show_defaults_help</span><span class="p">)</span>
@@ -7005,7 +7033,7 @@ set.</p>
     <script id="__config" type="application/json">{"base": "../../../..", "features": ["announce.dismiss", "content.action.edit", "content.code.copy", "navigation.tabs.sticky", "search.suggest", "search.highlight", "navigation.path", "navigation.indexes"], "search": "../../../../assets/javascripts/workers/search.6c7302c4.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
-      <script src="../../../../assets/javascripts/bundle.2047e101.min.js"></script>
+      <script src="../../../../assets/javascripts/bundle.10c6cd24.min.js"></script>
       
         <script src="../../../../js/termynal.js"></script>
       

@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="../../../../img/favicon.png">
-      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-9.1.9+insiders-4.32.6">
+      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-9.1.14+insiders-4.35.1">
     
     
       
@@ -31,7 +31,7 @@
       
     
     
-      <link rel="stylesheet" href="../../../../assets/stylesheets/main.938f8e87.min.css">
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.14411569.min.css">
       
         
         <link rel="stylesheet" href="../../../../assets/stylesheets/palette.df142b89.min.css">
@@ -86,34 +86,20 @@
     
 
     
-      
-        <meta  property="og:type"  content="website" >
-      
-        <meta  property="og:title"  content="server.api.run_history - Prefect Docs" >
-      
-        <meta  property="og:description"  content="Prefect API routes for querying flow and task run history." >
-      
-        <meta  property="og:image"  content="https://docs.prefect.io/latest/assets/images/social/api-ref/server/api/run_history.png" >
-      
-        <meta  property="og:image:type"  content="image/png" >
-      
-        <meta  property="og:image:width"  content="1200" >
-      
-        <meta  property="og:image:height"  content="630" >
-      
-        <meta  property="og:url"  content="https://docs.prefect.io/latest/api-ref/server/api/run_history/" >
-      
-        <meta  name="twitter:card"  content="summary_large_image" >
-      
-        <meta  name="twitter:title"  content="server.api.run_history - Prefect Docs" >
-      
-        <meta  name="twitter:description"  content="Prefect API routes for querying flow and task run history." >
-      
-        <meta  name="twitter:image"  content="https://docs.prefect.io/latest/assets/images/social/api-ref/server/api/run_history.png" >
-      
-    
-    
-  </head>
+  
+<meta property="og:type" content="website" />
+<meta property="og:title" content="server.api.run_history - Prefect Docs" />
+<meta property="og:description" content="Prefect API routes for querying flow and task run history." />
+<meta property="og:image" content="https://docs.prefect.io/latest/assets/images/social/api-ref/server/api/run_history.png" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:url" content="https://docs.prefect.io/latest/api-ref/server/api/run_history/" />
+<meta property="twitter:card" content="summary_large_image" />
+<meta property="twitter.title" content="server.api.run_history - Prefect Docs" />
+<meta property="twitter:description" content="Prefect API routes for querying flow and task run history." />
+<meta property="twitter:image" content="https://docs.prefect.io/latest/assets/images/social/api-ref/server/api/run_history.png" />
+</head>
   
   
     
@@ -179,7 +165,7 @@
           <aside class="md-banner md-banner--warning">
             <div class="md-banner__inner md-grid md-typeset">
               
-  You're viewing the docs for Prefect 2.10.10.
+  You're viewing the docs for Prefect 2.10.11.
   <a href="../../../../.."> 
     <strong>Click here to view the latest docs.</strong>
   </a>
@@ -2011,6 +1997,8 @@
       
         
       
+        
+      
     
     
     <li class="md-nav__item md-nav__item--nested">
@@ -2318,6 +2306,32 @@
     
   
     Migration Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../guides/state-change-hooks/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    State Change Hooks
   
 
     
@@ -6677,7 +6691,7 @@
 
     <span class="c1"># issue the query</span>
     <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
-    <span class="n">records</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+    <span class="n">records</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">mappings</span><span class="p">()</span>
 
     <span class="c1"># load and parse the record if the database returns JSON as strings</span>
     <span class="k">if</span> <span class="n">db</span><span class="o">.</span><span class="n">uses_json_strings</span><span class="p">:</span>
@@ -6685,7 +6699,7 @@
         <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">records</span><span class="p">:</span>
             <span class="n">r</span><span class="p">[</span><span class="s2">&quot;states&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s2">&quot;states&quot;</span><span class="p">])</span>
 
-    <span class="k">return</span> <span class="n">pydantic</span><span class="o">.</span><span class="n">parse_obj_as</span><span class="p">(</span><span class="n">List</span><span class="p">[</span><span class="n">schemas</span><span class="o">.</span><span class="n">responses</span><span class="o">.</span><span class="n">HistoryResponse</span><span class="p">],</span> <span class="n">records</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">pydantic</span><span class="o">.</span><span class="n">parse_obj_as</span><span class="p">(</span><span class="n">List</span><span class="p">[</span><span class="n">schemas</span><span class="o">.</span><span class="n">responses</span><span class="o">.</span><span class="n">HistoryResponse</span><span class="p">],</span> <span class="nb">list</span><span class="p">(</span><span class="n">records</span><span class="p">))</span>
 </code></pre></div></td></tr></table></div>
       </details>
   </div>
@@ -6849,7 +6863,7 @@
     <script id="__config" type="application/json">{"base": "../../../..", "features": ["announce.dismiss", "content.action.edit", "content.code.copy", "navigation.tabs.sticky", "search.suggest", "search.highlight", "navigation.path", "navigation.indexes"], "search": "../../../../assets/javascripts/workers/search.6c7302c4.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
-      <script src="../../../../assets/javascripts/bundle.2047e101.min.js"></script>
+      <script src="../../../../assets/javascripts/bundle.10c6cd24.min.js"></script>
       
         <script src="../../../../js/termynal.js"></script>
       

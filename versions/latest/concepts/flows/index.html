@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="../../img/favicon.png">
-      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-9.1.9+insiders-4.32.6">
+      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-9.1.14+insiders-4.35.1">
     
     
       
@@ -31,7 +31,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.938f8e87.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.14411569.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.df142b89.min.css">
@@ -86,34 +86,20 @@
     
 
     
-      
-        <meta  property="og:type"  content="website" >
-      
-        <meta  property="og:title"  content="Flows - Prefect Docs" >
-      
-        <meta  property="og:description"  content="Prefect flows are the foundational containers for workflow logic." >
-      
-        <meta  property="og:image"  content="https://docs.prefect.io/latest/assets/images/social/concepts/flows.png" >
-      
-        <meta  property="og:image:type"  content="image/png" >
-      
-        <meta  property="og:image:width"  content="1200" >
-      
-        <meta  property="og:image:height"  content="630" >
-      
-        <meta  property="og:url"  content="https://docs.prefect.io/latest/concepts/flows/" >
-      
-        <meta  name="twitter:card"  content="summary_large_image" >
-      
-        <meta  name="twitter:title"  content="Flows - Prefect Docs" >
-      
-        <meta  name="twitter:description"  content="Prefect flows are the foundational containers for workflow logic." >
-      
-        <meta  name="twitter:image"  content="https://docs.prefect.io/latest/assets/images/social/concepts/flows.png" >
-      
-    
-    
-  </head>
+  
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Flows - Prefect Docs" />
+<meta property="og:description" content="Prefect flows are the foundational containers for workflow logic." />
+<meta property="og:image" content="https://docs.prefect.io/latest/assets/images/social/concepts/flows.png" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:url" content="https://docs.prefect.io/latest/concepts/flows/" />
+<meta property="twitter:card" content="summary_large_image" />
+<meta property="twitter.title" content="Flows - Prefect Docs" />
+<meta property="twitter:description" content="Prefect flows are the foundational containers for workflow logic." />
+<meta property="twitter:image" content="https://docs.prefect.io/latest/assets/images/social/concepts/flows.png" />
+</head>
   
   
     
@@ -179,7 +165,7 @@
           <aside class="md-banner md-banner--warning">
             <div class="md-banner__inner md-grid md-typeset">
               
-  You're viewing the docs for Prefect 2.10.10.
+  You're viewing the docs for Prefect 2.10.11.
   <a href="../../.."> 
     <strong>Click here to view the latest docs.</strong>
   </a>
@@ -1206,19 +1192,6 @@
         
       </ul>
     </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#configure-a-state-hook" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        <span class="md-typeset">
-          Configure a state hook
-        </span>
-      
-    </span>
-  </a>
   
 </li>
       
@@ -2320,6 +2293,8 @@
       
         
       
+        
+      
     
     
     <li class="md-nav__item md-nav__item--nested">
@@ -2627,6 +2602,32 @@
     
   
     Migration Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guides/state-change-hooks/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    State Change Hooks
   
 
     
@@ -6752,19 +6753,6 @@
   
 </li>
       
-        <li class="md-nav__item">
-  <a href="#configure-a-state-hook" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        <span class="md-typeset">
-          Configure a state hook
-        </span>
-      
-    </span>
-  </a>
-  
-</li>
-      
     </ul>
   
 </nav>
@@ -7583,32 +7571,6 @@ From the command line in your execution environment, you can delete a flow run b
 To get the flow run ID, see [Inspect a flow run](#inspect-a-flow-run).
 -->
 
-<h2 id="configure-a-state-hook">Configure a state hook<a class="headerlink" href="#configure-a-state-hook" title="Permanent link">&para;</a></h2>
-<p>To run a client-side hook upon a flow run entering a certain state (like <code>Failed</code>), you can configure a state hook:</p>
-<p>For example, to send a Slack notification when a flow run fails, we can use the <code>on_failure</code> hook:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span>
-<span class="kn">from</span> <span class="nn">prefect.blocks.core</span> <span class="kn">import</span> <span class="n">Block</span>
-<span class="kn">from</span> <span class="nn">prefect.settings</span> <span class="kn">import</span> <span class="n">PREFECT_API_URL</span>
-
-<span class="k">def</span> <span class="nf">notify_slack</span><span class="p">(</span><span class="n">flow</span><span class="p">,</span> <span class="n">flow_run</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
-    <span class="n">slack_webhook_block</span> <span class="o">=</span> <span class="n">Block</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;slack-webhook/my-slack-webhook&quot;</span><span class="p">)</span>
-
-    <span class="n">slack_webhook_block</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span>
-        <span class="sa">f</span><span class="s2">&quot;Your job </span><span class="si">{</span><span class="n">flow_run</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> entered </span><span class="si">{</span><span class="n">state</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> with message:</span><span class="se">\n\n</span><span class="s2">&gt;</span><span class="si">{</span><span class="n">state</span><span class="o">.</span><span class="n">message</span><span class="si">}</span><span class="se">\n\n</span><span class="s2">&quot;</span>
-        <span class="sa">f</span><span class="s2">&quot;See &lt;https://</span><span class="si">{</span><span class="n">PREFECT_API_URL</span><span class="o">.</span><span class="n">value</span><span class="p">()</span><span class="si">}</span><span class="s2">/flow-runs/flow-run/</span><span class="si">{</span><span class="n">flow_run</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">|the flow run in the UI&gt;</span><span class="se">\n\n</span><span class="s2">&quot;</span>
-        <span class="sa">f</span><span class="s2">&quot;Tags: </span><span class="si">{</span><span class="n">flow_run</span><span class="o">.</span><span class="n">tags</span><span class="si">}</span><span class="se">\n\n</span><span class="s2">&quot;</span>
-        <span class="sa">f</span><span class="s2">&quot;Scheduled start time = </span><span class="si">{</span><span class="n">flow_run</span><span class="o">.</span><span class="n">expected_start_time</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
-    <span class="p">)</span>
-
-<span class="nd">@flow</span><span class="p">(</span><span class="n">on_failure</span><span class="o">=</span><span class="p">[</span><span class="n">notify_slack</span><span class="p">],</span> <span class="n">retries</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">noisy_flow</span><span class="p">():</span>
-    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;oops!&quot;</span><span class="p">)</span>
-
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-    <span class="n">noisy_flow</span><span class="p">()</span>
-</code></pre></div>
-<p>Note that the <code>on_failure</code> hook will not run until all <code>retries</code> have completed, when the flow run finally enters a <code>Failed</code> state.</p>
-
   
   
 
@@ -7758,7 +7720,7 @@ To get the flow run ID, see [Inspect a flow run](#inspect-a-flow-run).
     <script id="__config" type="application/json">{"base": "../..", "features": ["announce.dismiss", "content.action.edit", "content.code.copy", "navigation.tabs.sticky", "search.suggest", "search.highlight", "navigation.path", "navigation.indexes"], "search": "../../assets/javascripts/workers/search.6c7302c4.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.2047e101.min.js"></script>
+      <script src="../../assets/javascripts/bundle.10c6cd24.min.js"></script>
       
         <script src="../../js/termynal.js"></script>
       
