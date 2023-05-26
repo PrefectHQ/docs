@@ -45,7 +45,7 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,300i,400,400i,700,700i%7CSource+Code+Pro:400,400i,700,700i&display=fallback">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,300i,400,400i,700,700i%7CSource+Code+Pro:400,400i,700,700i&amp;display=fallback">
         <style>:root{--md-text-font:"Inter";--md-code-font:"Source Code Pro"}</style>
       
     
@@ -73,12 +73,92 @@
   
 
 
-  
-  
+  <script src="../../../../assets/external/cdn.amplitude.com/libs/analytics-browser-1.9.1-min.js.gz.js"></script>
+<script type="text/javascript">
+const amplitudeKey = ""
+const amplitudeUrl = "https://api2.amplitude.com/2/httpapi"
 
 
-  <script id="__analytics">function __md_analytics(){function n(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],n("js",new Date),n("config","G-3M31G9B0QJ"),document.addEventListener("DOMContentLoaded",function(){document.forms.search&&document.forms.search.query.addEventListener("blur",function(){this.value&&n("event","search",{search_term:this.value})}),document$.subscribe(function(){var a=document.forms.feedback;if(void 0!==a)for(var e of a.querySelectorAll("[type=submit]"))e.addEventListener("click",function(e){e.preventDefault();var t=document.location.pathname,e=this.getAttribute("data-md-value");n("event","feedback",{page:t,data:e}),a.firstElementChild.disabled=!0;e=a.querySelector(".md-feedback__note [data-md-value='"+e+"']");e&&(e.hidden=!1)}),a.hidden=!1}),location$.subscribe(function(e){n("config","G-3M31G9B0QJ",{page_path:e.pathname})})});var e=document.createElement("script");e.async=!0,e.src="https://www.googletagmanager.com/gtag/js?id=G-3M31G9B0QJ",document.getElementById("__analytics").insertAdjacentElement("afterEnd",e)}</script>
+const addUrl = (event) => {
+  const deviceId = amplitude.getDeviceId()
+  const { href = '' } = event.target
+  const url = new URL(href)
+  url.searchParams.append('deviceId', deviceId)
+  event.target.href = url.toString()
+}
 
+const removeUrl = (event) => {
+  const { href = '' } = event.target
+  const url = new URL(href)
+  url.searchParams.delete('deviceId')
+  event.target.href = url.toString()
+}
+
+const urls = [
+  'https://app.prefect.cloud',
+  'https://app.stg.prefect.dev',
+  'https://app.prefect.dev',
+]
+
+const selector = urls.map((url) => `a[href^="${url}"]`).join(',')
+
+const addDeviceIdToAppLinks = () => {
+  const elements = document.querySelectorAll(selector)
+
+  elements.forEach((element) => {
+    element.addEventListener('mouseenter', addUrl)
+    element.addEventListener('mouseleave', removeUrl)
+    element.addEventListener('focus', addUrl)
+    element.addEventListener('blur', removeUrl)
+    element.addEventListener('touchstart', addUrl)
+    element.addEventListener('touchend', removeUrl)
+  })
+}
+
+
+const init = () => {
+  amplitude.init(amplitudeKey, undefined, {
+    useBatch: true,
+    serverUrl: amplitudeUrl,
+    attribution: {
+      disabled: false,
+      trackNewCampaigns: true,
+      trackPageViews: true,
+      resetSessionOnNewCampaign: true,
+    },
+    defaultTracking: {
+      pageViews: {
+        trackOn: function() { return true},
+        eventType: "Page View: Docs",
+        trackHistoryChanges: "all",
+      },
+      sessions: false,
+      formInteractions: true,
+      fileDownloads: true,
+    },
+  })
+}
+
+function trackPageView() {
+  amplitude.track(
+    'Page View: Docs',
+    {
+      'url': window.href,
+      'title': document.title,
+      'referrer': document.referrer,
+      'path': window.location.pathname
+    }
+  )
+}
+
+if (amplitudeKey){
+  document.addEventListener("DOMContentLoaded", function() {
+      init()
+      setTimeout(addDeviceIdToAppLinks)
+      setTimeout(trackPageView)
+  });
+}
+</script>
   
     <script>"undefined"!=typeof __md_analytics&&__md_analytics()</script>
   
@@ -6571,7 +6651,8 @@
 
         <details class="quote">
           <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/blocks/notifications.py</code></summary>
-          <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">15</span>
+          <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">14</span>
+<span class="normal">15</span>
 <span class="normal">16</span>
 <span class="normal">17</span>
 <span class="normal">18</span>
@@ -6615,8 +6696,7 @@
 <span class="normal">56</span>
 <span class="normal">57</span>
 <span class="normal">58</span>
-<span class="normal">59</span>
-<span class="normal">60</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">AbstractAppriseNotificationBlock</span><span class="p">(</span><span class="n">NotificationBlock</span><span class="p">,</span> <span class="n">ABC</span><span class="p">):</span>
+<span class="normal">59</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">AbstractAppriseNotificationBlock</span><span class="p">(</span><span class="n">NotificationBlock</span><span class="p">,</span> <span class="n">ABC</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    An abstract class for sending notifications using Apprise.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -6706,7 +6786,8 @@
 
         <details class="quote">
           <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/blocks/notifications.py</code></summary>
-          <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">63</span>
+          <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">62</span>
+<span class="normal">63</span>
 <span class="normal">64</span>
 <span class="normal">65</span>
 <span class="normal">66</span>
@@ -6716,8 +6797,7 @@
 <span class="normal">70</span>
 <span class="normal">71</span>
 <span class="normal">72</span>
-<span class="normal">73</span>
-<span class="normal">74</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">AppriseNotificationBlock</span><span class="p">(</span><span class="n">AbstractAppriseNotificationBlock</span><span class="p">,</span> <span class="n">ABC</span><span class="p">):</span>
+<span class="normal">73</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">AppriseNotificationBlock</span><span class="p">(</span><span class="n">AbstractAppriseNotificationBlock</span><span class="p">,</span> <span class="n">ABC</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A base class for sending notifications using Apprise, through webhook URLs.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -6783,7 +6863,8 @@ See <a href="https://github.com/caronc/apprise/wiki/Notify_Mattermost">Apprise n
 
         <details class="quote">
           <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/blocks/notifications.py</code></summary>
-          <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">415</span>
+          <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">414</span>
+<span class="normal">415</span>
 <span class="normal">416</span>
 <span class="normal">417</span>
 <span class="normal">418</span>
@@ -6856,8 +6937,7 @@ See <a href="https://github.com/caronc/apprise/wiki/Notify_Mattermost">Apprise n
 <span class="normal">485</span>
 <span class="normal">486</span>
 <span class="normal">487</span>
-<span class="normal">488</span>
-<span class="normal">489</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">MattermostWebhook</span><span class="p">(</span><span class="n">AbstractAppriseNotificationBlock</span><span class="p">):</span>
+<span class="normal">488</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">MattermostWebhook</span><span class="p">(</span><span class="n">AbstractAppriseNotificationBlock</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Enables sending notifications via a provided Mattermost webhook.</span>
 <span class="sd">    See [Apprise notify_Mattermost docs](https://github.com/caronc/apprise/wiki/Notify_Mattermost) # noqa</span>
@@ -6983,7 +7063,8 @@ See <a href="https://github.com/caronc/apprise/wiki/Notify_Mattermost">Apprise n
 
         <details class="quote">
           <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/blocks/notifications.py</code></summary>
-          <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">105</span>
+          <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">104</span>
+<span class="normal">105</span>
 <span class="normal">106</span>
 <span class="normal">107</span>
 <span class="normal">108</span>
@@ -7007,8 +7088,7 @@ See <a href="https://github.com/caronc/apprise/wiki/Notify_Mattermost">Apprise n
 <span class="normal">126</span>
 <span class="normal">127</span>
 <span class="normal">128</span>
-<span class="normal">129</span>
-<span class="normal">130</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">MicrosoftTeamsWebhook</span><span class="p">(</span><span class="n">AppriseNotificationBlock</span><span class="p">):</span>
+<span class="normal">129</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">MicrosoftTeamsWebhook</span><span class="p">(</span><span class="n">AppriseNotificationBlock</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Enables sending notifications via a provided Microsoft Teams webhook.</span>
 
@@ -7087,7 +7167,8 @@ for more info on formatting the URL.</p>
 
         <details class="quote">
           <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/blocks/notifications.py</code></summary>
-          <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">303</span>
+          <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">302</span>
+<span class="normal">303</span>
 <span class="normal">304</span>
 <span class="normal">305</span>
 <span class="normal">306</span>
@@ -7195,8 +7276,7 @@ for more info on formatting the URL.</p>
 <span class="normal">408</span>
 <span class="normal">409</span>
 <span class="normal">410</span>
-<span class="normal">411</span>
-<span class="normal">412</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">OpsgenieWebhook</span><span class="p">(</span><span class="n">AbstractAppriseNotificationBlock</span><span class="p">):</span>
+<span class="normal">411</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">OpsgenieWebhook</span><span class="p">(</span><span class="n">AbstractAppriseNotificationBlock</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Enables sending notifications via a provided Opsgenie webhook.</span>
 <span class="sd">    See [Apprise notify_opsgenie docs](https://github.com/caronc/apprise/wiki/Notify_opsgenie)</span>
@@ -7359,7 +7439,8 @@ for more info on formatting the URL.</p>
 
         <details class="quote">
           <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/blocks/notifications.py</code></summary>
-          <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">133</span>
+          <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">132</span>
+<span class="normal">133</span>
 <span class="normal">134</span>
 <span class="normal">135</span>
 <span class="normal">136</span>
@@ -7463,8 +7544,7 @@ for more info on formatting the URL.</p>
 <span class="normal">234</span>
 <span class="normal">235</span>
 <span class="normal">236</span>
-<span class="normal">237</span>
-<span class="normal">238</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">PagerDutyWebHook</span><span class="p">(</span><span class="n">AbstractAppriseNotificationBlock</span><span class="p">):</span>
+<span class="normal">237</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">PagerDutyWebHook</span><span class="p">(</span><span class="n">AbstractAppriseNotificationBlock</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Enables sending notifications via a provided PagerDuty webhook.</span>
 <span class="sd">    See [Apprise notify_pagerduty docs](https://github.com/caronc/apprise/wiki/Notify_pagerduty)</span>
@@ -7622,7 +7702,8 @@ for more info on formatting the URL.</p>
 
         <details class="quote">
           <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/blocks/notifications.py</code></summary>
-          <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 79</span>
+          <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 78</span>
+<span class="normal"> 79</span>
 <span class="normal"> 80</span>
 <span class="normal"> 81</span>
 <span class="normal"> 82</span>
@@ -7644,8 +7725,7 @@ for more info on formatting the URL.</p>
 <span class="normal"> 98</span>
 <span class="normal"> 99</span>
 <span class="normal">100</span>
-<span class="normal">101</span>
-<span class="normal">102</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">SlackWebhook</span><span class="p">(</span><span class="n">AppriseNotificationBlock</span><span class="p">):</span>
+<span class="normal">101</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">SlackWebhook</span><span class="p">(</span><span class="n">AppriseNotificationBlock</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Enables sending notifications via a provided Slack webhook.</span>
 
@@ -7721,7 +7801,8 @@ Find more on sending Twilio SMS messages in the <a href="https://www.twilio.com/
 
         <details class="quote">
           <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/blocks/notifications.py</code></summary>
-          <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">241</span>
+          <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">240</span>
+<span class="normal">241</span>
 <span class="normal">242</span>
 <span class="normal">243</span>
 <span class="normal">244</span>
@@ -7779,8 +7860,7 @@ Find more on sending Twilio SMS messages in the <a href="https://www.twilio.com/
 <span class="normal">296</span>
 <span class="normal">297</span>
 <span class="normal">298</span>
-<span class="normal">299</span>
-<span class="normal">300</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">TwilioSMS</span><span class="p">(</span><span class="n">AbstractAppriseNotificationBlock</span><span class="p">):</span>
+<span class="normal">299</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">TwilioSMS</span><span class="p">(</span><span class="n">AbstractAppriseNotificationBlock</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Enables sending notifications via Twilio SMS.</span>
 <span class="sd">    Find more on sending Twilio SMS messages in the [docs](https://www.twilio.com/docs/sms).</span>
 
@@ -8023,9 +8103,9 @@ Find more on sending Twilio SMS messages in the <a href="https://www.twilio.com/
     
       <script src="../../../../assets/javascripts/bundle.10c6cd24.min.js"></script>
       
-        <script src="../../../../js/termynal.js"></script>
-      
         <script src="../../../../js/custom.js"></script>
+      
+        <script src="../../../../js/termynal.js"></script>
       
     
   </body>

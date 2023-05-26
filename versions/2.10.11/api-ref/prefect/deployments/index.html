@@ -45,7 +45,7 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,300i,400,400i,700,700i%7CSource+Code+Pro:400,400i,700,700i&display=fallback">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,300i,400,400i,700,700i%7CSource+Code+Pro:400,400i,700,700i&amp;display=fallback">
         <style>:root{--md-text-font:"Inter";--md-code-font:"Source Code Pro"}</style>
       
     
@@ -73,12 +73,92 @@
   
 
 
-  
-  
+  <script src="../../../assets/external/cdn.amplitude.com/libs/analytics-browser-1.9.1-min.js.gz.js"></script>
+<script type="text/javascript">
+const amplitudeKey = ""
+const amplitudeUrl = "https://api2.amplitude.com/2/httpapi"
 
 
-  <script id="__analytics">function __md_analytics(){function n(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],n("js",new Date),n("config","G-3M31G9B0QJ"),document.addEventListener("DOMContentLoaded",function(){document.forms.search&&document.forms.search.query.addEventListener("blur",function(){this.value&&n("event","search",{search_term:this.value})}),document$.subscribe(function(){var a=document.forms.feedback;if(void 0!==a)for(var e of a.querySelectorAll("[type=submit]"))e.addEventListener("click",function(e){e.preventDefault();var t=document.location.pathname,e=this.getAttribute("data-md-value");n("event","feedback",{page:t,data:e}),a.firstElementChild.disabled=!0;e=a.querySelector(".md-feedback__note [data-md-value='"+e+"']");e&&(e.hidden=!1)}),a.hidden=!1}),location$.subscribe(function(e){n("config","G-3M31G9B0QJ",{page_path:e.pathname})})});var e=document.createElement("script");e.async=!0,e.src="https://www.googletagmanager.com/gtag/js?id=G-3M31G9B0QJ",document.getElementById("__analytics").insertAdjacentElement("afterEnd",e)}</script>
+const addUrl = (event) => {
+  const deviceId = amplitude.getDeviceId()
+  const { href = '' } = event.target
+  const url = new URL(href)
+  url.searchParams.append('deviceId', deviceId)
+  event.target.href = url.toString()
+}
 
+const removeUrl = (event) => {
+  const { href = '' } = event.target
+  const url = new URL(href)
+  url.searchParams.delete('deviceId')
+  event.target.href = url.toString()
+}
+
+const urls = [
+  'https://app.prefect.cloud',
+  'https://app.stg.prefect.dev',
+  'https://app.prefect.dev',
+]
+
+const selector = urls.map((url) => `a[href^="${url}"]`).join(',')
+
+const addDeviceIdToAppLinks = () => {
+  const elements = document.querySelectorAll(selector)
+
+  elements.forEach((element) => {
+    element.addEventListener('mouseenter', addUrl)
+    element.addEventListener('mouseleave', removeUrl)
+    element.addEventListener('focus', addUrl)
+    element.addEventListener('blur', removeUrl)
+    element.addEventListener('touchstart', addUrl)
+    element.addEventListener('touchend', removeUrl)
+  })
+}
+
+
+const init = () => {
+  amplitude.init(amplitudeKey, undefined, {
+    useBatch: true,
+    serverUrl: amplitudeUrl,
+    attribution: {
+      disabled: false,
+      trackNewCampaigns: true,
+      trackPageViews: true,
+      resetSessionOnNewCampaign: true,
+    },
+    defaultTracking: {
+      pageViews: {
+        trackOn: function() { return true},
+        eventType: "Page View: Docs",
+        trackHistoryChanges: "all",
+      },
+      sessions: false,
+      formInteractions: true,
+      fileDownloads: true,
+    },
+  })
+}
+
+function trackPageView() {
+  amplitude.track(
+    'Page View: Docs',
+    {
+      'url': window.href,
+      'title': document.title,
+      'referrer': document.referrer,
+      'path': window.location.pathname
+    }
+  )
+}
+
+if (amplitudeKey){
+  document.addEventListener("DOMContentLoaded", function() {
+      init()
+      setTimeout(addDeviceIdToAppLinks)
+      setTimeout(trackPageView)
+  });
+}
+</script>
   
     <script>"undefined"!=typeof __md_analytics&&__md_analytics()</script>
   
@@ -7576,7 +7656,7 @@ storage or, if stored on a local filesystem, an absolute path</p></td>
         <span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;One of more tags to apply to this deployment.&quot;</span><span class="p">,</span>
     <span class="p">)</span>
-    <span class="n">schedule</span><span class="p">:</span> <span class="n">schemas</span><span class="o">.</span><span class="n">schedules</span><span class="o">.</span><span class="n">SCHEDULE_TYPES</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">schedule</span><span class="p">:</span> <span class="n">SCHEDULE_TYPES</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">is_schedule_active</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Whether or not the schedule is active.&quot;</span>
     <span class="p">)</span>
@@ -8209,8 +8289,8 @@ deployment's work queue</p></td>
 <code class="highlight language-python"><span class="n">build_from_flow</span></code>
   
   <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-async"><code>async</code></small>
       <small class="doc doc-label doc-label-classmethod"><code>classmethod</code></small>
+      <small class="doc doc-label doc-label-async"><code>async</code></small>
   </span>
 
 <a href="#prefect.deployments.Deployment.build_from_flow" class="headerlink" title="Permanent link">&para;</a></h3>
@@ -9080,7 +9160,7 @@ is largely for testing, and assumes the flow is already available locally.</p>
 <span class="normal">219</span>
 <span class="normal">220</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@inject_client</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">load_flow_from_flow_run</span><span class="p">(</span>
-    <span class="n">flow_run</span><span class="p">:</span> <span class="n">schemas</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">FlowRun</span><span class="p">,</span> <span class="n">client</span><span class="p">:</span> <span class="n">PrefectClient</span><span class="p">,</span> <span class="n">ignore_storage</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">flow_run</span><span class="p">:</span> <span class="n">FlowRun</span><span class="p">,</span> <span class="n">client</span><span class="p">:</span> <span class="n">PrefectClient</span><span class="p">,</span> <span class="n">ignore_storage</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Flow</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Load a flow from the location/script provided in a deployment&#39;s storage document.</span>
@@ -9671,9 +9751,9 @@ prevent creating multiple flow runs.</p></td>
     
       <script src="../../../assets/javascripts/bundle.10c6cd24.min.js"></script>
       
-        <script src="../../../js/termynal.js"></script>
-      
         <script src="../../../js/custom.js"></script>
+      
+        <script src="../../../js/termynal.js"></script>
       
     
   </body>
