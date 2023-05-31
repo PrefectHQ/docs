@@ -45,7 +45,7 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,300i,400,400i,700,700i%7CSource+Code+Pro:400,400i,700,700i&display=fallback">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,300i,400,400i,700,700i%7CSource+Code+Pro:400,400i,700,700i&amp;display=fallback">
         <style>:root{--md-text-font:"Inter";--md-code-font:"Source Code Pro"}</style>
       
     
@@ -73,12 +73,92 @@
   
 
 
-  
-  
+  <script src="../../../../assets/external/cdn.amplitude.com/libs/analytics-browser-1.9.1-min.js.gz.js"></script>
+<script type="text/javascript">
+const amplitudeKey = "c97dd2acbf306ab7bf54aca0aeb7ffa1"
+const amplitudeUrl = "/2/httpapi"
 
 
-  <script id="__analytics">function __md_analytics(){function n(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],n("js",new Date),n("config","G-3M31G9B0QJ"),document.addEventListener("DOMContentLoaded",function(){document.forms.search&&document.forms.search.query.addEventListener("blur",function(){this.value&&n("event","search",{search_term:this.value})}),document$.subscribe(function(){var a=document.forms.feedback;if(void 0!==a)for(var e of a.querySelectorAll("[type=submit]"))e.addEventListener("click",function(e){e.preventDefault();var t=document.location.pathname,e=this.getAttribute("data-md-value");n("event","feedback",{page:t,data:e}),a.firstElementChild.disabled=!0;e=a.querySelector(".md-feedback__note [data-md-value='"+e+"']");e&&(e.hidden=!1)}),a.hidden=!1}),location$.subscribe(function(e){n("config","G-3M31G9B0QJ",{page_path:e.pathname})})});var e=document.createElement("script");e.async=!0,e.src="https://www.googletagmanager.com/gtag/js?id=G-3M31G9B0QJ",document.getElementById("__analytics").insertAdjacentElement("afterEnd",e)}</script>
+const addUrl = (event) => {
+  const deviceId = amplitude.getDeviceId()
+  const { href = '' } = event.target
+  const url = new URL(href)
+  url.searchParams.append('deviceId', deviceId)
+  event.target.href = url.toString()
+}
 
+const removeUrl = (event) => {
+  const { href = '' } = event.target
+  const url = new URL(href)
+  url.searchParams.delete('deviceId')
+  event.target.href = url.toString()
+}
+
+const urls = [
+  'https://app.prefect.cloud',
+  'https://app.stg.prefect.dev',
+  'https://app.prefect.dev',
+]
+
+const selector = urls.map((url) => `a[href^="${url}"]`).join(',')
+
+const addDeviceIdToAppLinks = () => {
+  const elements = document.querySelectorAll(selector)
+
+  elements.forEach((element) => {
+    element.addEventListener('mouseenter', addUrl)
+    element.addEventListener('mouseleave', removeUrl)
+    element.addEventListener('focus', addUrl)
+    element.addEventListener('blur', removeUrl)
+    element.addEventListener('touchstart', addUrl)
+    element.addEventListener('touchend', removeUrl)
+  })
+}
+
+
+const init = () => {
+  amplitude.init(amplitudeKey, undefined, {
+    useBatch: true,
+    serverUrl: amplitudeUrl,
+    attribution: {
+      disabled: false,
+      trackNewCampaigns: true,
+      trackPageViews: true,
+      resetSessionOnNewCampaign: true,
+    },
+    defaultTracking: {
+      pageViews: {
+        trackOn: function() { return true},
+        eventType: "Page View: Docs",
+        trackHistoryChanges: "all",
+      },
+      sessions: false,
+      formInteractions: true,
+      fileDownloads: true,
+    },
+  })
+}
+
+function trackPageView() {
+  amplitude.track(
+    'Page View: Docs',
+    {
+      'url': window.href,
+      'title': document.title,
+      'referrer': document.referrer,
+      'path': window.location.pathname
+    }
+  )
+}
+
+if (amplitudeKey){
+  document.addEventListener("DOMContentLoaded", function() {
+      init()
+      setTimeout(addDeviceIdToAppLinks)
+      setTimeout(trackPageView)
+  });
+}
+</script>
   
     <script>"undefined"!=typeof __md_analytics&&__md_analytics()</script>
   
@@ -5053,10 +5133,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#prefect.server.api.server.create_app" class="md-nav__link">
+  <a href="#prefect.server.api.server.create_api_app" class="md-nav__link">
     <span class="md-ellipsis">
       
-        create_app()
+        create_api_app()
       
     </span>
   </a>
@@ -5064,10 +5144,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#prefect.server.api.server.create_orion_api" class="md-nav__link">
+  <a href="#prefect.server.api.server.create_app" class="md-nav__link">
     <span class="md-ellipsis">
       
-        create_orion_api()
+        create_app()
       
     </span>
   </a>
@@ -6374,10 +6454,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#prefect.server.api.server.create_app" class="md-nav__link">
+  <a href="#prefect.server.api.server.create_api_app" class="md-nav__link">
     <span class="md-ellipsis">
       
-        create_app()
+        create_api_app()
       
     </span>
   </a>
@@ -6385,10 +6465,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#prefect.server.api.server.create_orion_api" class="md-nav__link">
+  <a href="#prefect.server.api.server.create_app" class="md-nav__link">
     <span class="md-ellipsis">
       
-        create_orion_api()
+        create_app()
       
     </span>
   </a>
@@ -6574,8 +6654,7 @@ writes.</p>
 
         <details class="quote">
           <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/server/api/server.py</code></summary>
-          <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">105</span>
-<span class="normal">106</span>
+          <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">106</span>
 <span class="normal">107</span>
 <span class="normal">108</span>
 <span class="normal">109</span>
@@ -6589,7 +6668,8 @@ writes.</p>
 <span class="normal">117</span>
 <span class="normal">118</span>
 <span class="normal">119</span>
-<span class="normal">120</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">RequestLimitMiddleware</span><span class="p">:</span>
+<span class="normal">120</span>
+<span class="normal">121</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">RequestLimitMiddleware</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A middleware that limits the number of concurrent requests handled by the API.</span>
 
@@ -6651,8 +6731,7 @@ application still returns the index.</p>
 
         <details class="quote">
           <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/server/api/server.py</code></summary>
-          <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 90</span>
-<span class="normal"> 91</span>
+          <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 91</span>
 <span class="normal"> 92</span>
 <span class="normal"> 93</span>
 <span class="normal"> 94</span>
@@ -6663,7 +6742,8 @@ application still returns the index.</p>
 <span class="normal"> 99</span>
 <span class="normal">100</span>
 <span class="normal">101</span>
-<span class="normal">102</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">SPAStaticFiles</span><span class="p">(</span><span class="n">StaticFiles</span><span class="p">):</span>
+<span class="normal">102</span>
+<span class="normal">103</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">SPAStaticFiles</span><span class="p">(</span><span class="n">StaticFiles</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Implementation of `StaticFiles` for serving single page applications.</span>
 
@@ -6699,6 +6779,273 @@ application still returns the index.</p>
 
 </div>
 
+
+<div class="doc doc-object doc-function">
+
+
+
+<h2 id="prefect.server.api.server.create_api_app" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">create_api_app</span></code>
+
+<a href="#prefect.server.api.server.create_api_app" class="headerlink" title="Permanent link">&para;</a></h2>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>Create a FastAPI app that includes the Prefect REST API</p>
+
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>router_prefix</code></td>
+          <td>
+                <code><span title="typing.Optional">Optional</span>[str]</code>
+          </td>
+          <td><p>a prefix to apply to all included routers</p></td>
+          <td>
+                <code>&#39;&#39;</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>dependencies</code></td>
+          <td>
+                <code><span title="typing.Optional">Optional</span>[<span title="typing.List">List</span>[<span title="fastapi.Depends">Depends</span>]]</code>
+          </td>
+          <td><p>a list of global dependencies to add to each Prefect REST API router</p></td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>health_check_path</code></td>
+          <td>
+                <code>str</code>
+          </td>
+          <td><p>the health check route path</p></td>
+          <td>
+                <code>&#39;/health&#39;</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>fast_api_app_kwargs</code></td>
+          <td>
+                <code>dict</code>
+          </td>
+          <td><p>kwargs to pass to the FastAPI constructor</p></td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>router_overrides</code></td>
+          <td>
+                <code><span title="typing.Mapping">Mapping</span>[str, <span title="typing.Optional">Optional</span>[<span title="fastapi.APIRouter">APIRouter</span>]]</code>
+          </td>
+          <td><p>a mapping of route prefixes (i.e. "/admin") to new routers
+allowing the caller to override the default routers. If <code>None</code> is provided
+as a value, the default router will be dropped from the application.</p></td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
+                <code><span title="fastapi.FastAPI">FastAPI</span></code>
+          </td>
+          <td><p>a FastAPI app that serves the Prefect REST API</p></td>
+        </tr>
+    </tbody>
+  </table>
+
+      <details class="quote">
+        <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/server/api/server.py</code></summary>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">216</span>
+<span class="normal">217</span>
+<span class="normal">218</span>
+<span class="normal">219</span>
+<span class="normal">220</span>
+<span class="normal">221</span>
+<span class="normal">222</span>
+<span class="normal">223</span>
+<span class="normal">224</span>
+<span class="normal">225</span>
+<span class="normal">226</span>
+<span class="normal">227</span>
+<span class="normal">228</span>
+<span class="normal">229</span>
+<span class="normal">230</span>
+<span class="normal">231</span>
+<span class="normal">232</span>
+<span class="normal">233</span>
+<span class="normal">234</span>
+<span class="normal">235</span>
+<span class="normal">236</span>
+<span class="normal">237</span>
+<span class="normal">238</span>
+<span class="normal">239</span>
+<span class="normal">240</span>
+<span class="normal">241</span>
+<span class="normal">242</span>
+<span class="normal">243</span>
+<span class="normal">244</span>
+<span class="normal">245</span>
+<span class="normal">246</span>
+<span class="normal">247</span>
+<span class="normal">248</span>
+<span class="normal">249</span>
+<span class="normal">250</span>
+<span class="normal">251</span>
+<span class="normal">252</span>
+<span class="normal">253</span>
+<span class="normal">254</span>
+<span class="normal">255</span>
+<span class="normal">256</span>
+<span class="normal">257</span>
+<span class="normal">258</span>
+<span class="normal">259</span>
+<span class="normal">260</span>
+<span class="normal">261</span>
+<span class="normal">262</span>
+<span class="normal">263</span>
+<span class="normal">264</span>
+<span class="normal">265</span>
+<span class="normal">266</span>
+<span class="normal">267</span>
+<span class="normal">268</span>
+<span class="normal">269</span>
+<span class="normal">270</span>
+<span class="normal">271</span>
+<span class="normal">272</span>
+<span class="normal">273</span>
+<span class="normal">274</span>
+<span class="normal">275</span>
+<span class="normal">276</span>
+<span class="normal">277</span>
+<span class="normal">278</span>
+<span class="normal">279</span>
+<span class="normal">280</span>
+<span class="normal">281</span>
+<span class="normal">282</span>
+<span class="normal">283</span>
+<span class="normal">284</span>
+<span class="normal">285</span>
+<span class="normal">286</span>
+<span class="normal">287</span>
+<span class="normal">288</span>
+<span class="normal">289</span>
+<span class="normal">290</span>
+<span class="normal">291</span>
+<span class="normal">292</span>
+<span class="normal">293</span>
+<span class="normal">294</span>
+<span class="normal">295</span>
+<span class="normal">296</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">create_api_app</span><span class="p">(</span>
+    <span class="n">router_prefix</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="n">dependencies</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Depends</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">health_check_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;/health&quot;</span><span class="p">,</span>
+    <span class="n">version_check_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;/version&quot;</span><span class="p">,</span>
+    <span class="n">fast_api_app_kwargs</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">router_overrides</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Optional</span><span class="p">[</span><span class="n">APIRouter</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FastAPI</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create a FastAPI app that includes the Prefect REST API</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        router_prefix: a prefix to apply to all included routers</span>
+<span class="sd">        dependencies: a list of global dependencies to add to each Prefect REST API router</span>
+<span class="sd">        health_check_path: the health check route path</span>
+<span class="sd">        fast_api_app_kwargs: kwargs to pass to the FastAPI constructor</span>
+<span class="sd">        router_overrides: a mapping of route prefixes (i.e. &quot;/admin&quot;) to new routers</span>
+<span class="sd">            allowing the caller to override the default routers. If `None` is provided</span>
+<span class="sd">            as a value, the default router will be dropped from the application.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        a FastAPI app that serves the Prefect REST API</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">fast_api_app_kwargs</span> <span class="o">=</span> <span class="n">fast_api_app_kwargs</span> <span class="ow">or</span> <span class="p">{}</span>
+    <span class="n">api_app</span> <span class="o">=</span> <span class="n">FastAPI</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="n">API_TITLE</span><span class="p">,</span> <span class="o">**</span><span class="n">fast_api_app_kwargs</span><span class="p">)</span>
+    <span class="n">api_app</span><span class="o">.</span><span class="n">add_middleware</span><span class="p">(</span><span class="n">GZipMiddleware</span><span class="p">)</span>
+
+    <span class="nd">@api_app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">health_check_path</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Root&quot;</span><span class="p">])</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">health_check</span><span class="p">():</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="nd">@api_app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">version_check_path</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Root&quot;</span><span class="p">])</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">orion_info</span><span class="p">():</span>
+        <span class="k">return</span> <span class="n">SERVER_API_VERSION</span>
+
+    <span class="c1"># always include version checking</span>
+    <span class="k">if</span> <span class="n">dependencies</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">dependencies</span> <span class="o">=</span> <span class="p">[</span><span class="n">Depends</span><span class="p">(</span><span class="n">enforce_minimum_version</span><span class="p">)]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">dependencies</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Depends</span><span class="p">(</span><span class="n">enforce_minimum_version</span><span class="p">))</span>
+
+    <span class="n">routers</span> <span class="o">=</span> <span class="p">{</span><span class="n">router</span><span class="o">.</span><span class="n">prefix</span><span class="p">:</span> <span class="n">router</span> <span class="k">for</span> <span class="n">router</span> <span class="ow">in</span> <span class="n">API_ROUTERS</span><span class="p">}</span>
+
+    <span class="k">if</span> <span class="n">router_overrides</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">prefix</span><span class="p">,</span> <span class="n">router</span> <span class="ow">in</span> <span class="n">router_overrides</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="c1"># We may want to allow this behavior in the future to inject new routes, but</span>
+            <span class="c1"># for now this will be treated an as an exception</span>
+            <span class="k">if</span> <span class="n">prefix</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">routers</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span>
+                    <span class="s2">&quot;Router override provided for prefix that does not exist:&quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="n">prefix</span><span class="si">!r}</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
+
+            <span class="c1"># Drop the existing router</span>
+            <span class="n">existing_router</span> <span class="o">=</span> <span class="n">routers</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">prefix</span><span class="p">)</span>
+
+            <span class="c1"># Replace it with a new router if provided</span>
+            <span class="k">if</span> <span class="n">router</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">prefix</span> <span class="o">!=</span> <span class="n">router</span><span class="o">.</span><span class="n">prefix</span><span class="p">:</span>
+                    <span class="c1"># We may want to allow this behavior in the future, but it will</span>
+                    <span class="c1"># break expectations without additional routing and is banned for</span>
+                    <span class="c1"># now</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;Router override for </span><span class="si">{</span><span class="n">prefix</span><span class="si">!r}</span><span class="s2"> defines a different prefix &quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">router</span><span class="o">.</span><span class="n">prefix</span><span class="si">!r}</span><span class="s2">.&quot;</span>
+                    <span class="p">)</span>
+
+                <span class="n">existing_paths</span> <span class="o">=</span> <span class="n">method_paths_from_routes</span><span class="p">(</span><span class="n">existing_router</span><span class="o">.</span><span class="n">routes</span><span class="p">)</span>
+                <span class="n">new_paths</span> <span class="o">=</span> <span class="n">method_paths_from_routes</span><span class="p">(</span><span class="n">router</span><span class="o">.</span><span class="n">routes</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">existing_paths</span><span class="o">.</span><span class="n">issubset</span><span class="p">(</span><span class="n">new_paths</span><span class="p">):</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;Router override for </span><span class="si">{</span><span class="n">prefix</span><span class="si">!r}</span><span class="s2"> is missing paths defined by &quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;the original router: </span><span class="si">{</span><span class="n">existing_paths</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="n">new_paths</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="p">)</span>
+
+                <span class="n">routers</span><span class="p">[</span><span class="n">prefix</span><span class="p">]</span> <span class="o">=</span> <span class="n">router</span>
+
+    <span class="k">for</span> <span class="n">router</span> <span class="ow">in</span> <span class="n">routers</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+        <span class="n">api_app</span><span class="o">.</span><span class="n">include_router</span><span class="p">(</span><span class="n">router</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="n">router_prefix</span><span class="p">,</span> <span class="n">dependencies</span><span class="o">=</span><span class="n">dependencies</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">api_app</span>
+</code></pre></div></td></tr></table></div>
+      </details>
+  </div>
+
+</div>
 
 <div class="doc doc-object doc-function">
 
@@ -6763,13 +7110,7 @@ and services will be disabled.</p></td>
 
       <details class="quote">
         <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/server/api/server.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">399</span>
-<span class="normal">400</span>
-<span class="normal">401</span>
-<span class="normal">402</span>
-<span class="normal">403</span>
-<span class="normal">404</span>
-<span class="normal">405</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">405</span>
 <span class="normal">406</span>
 <span class="normal">407</span>
 <span class="normal">408</span>
@@ -6960,7 +7301,13 @@ and services will be disabled.</p></td>
 <span class="normal">593</span>
 <span class="normal">594</span>
 <span class="normal">595</span>
-<span class="normal">596</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">create_app</span><span class="p">(</span>
+<span class="normal">596</span>
+<span class="normal">597</span>
+<span class="normal">598</span>
+<span class="normal">599</span>
+<span class="normal">600</span>
+<span class="normal">601</span>
+<span class="normal">602</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">create_app</span><span class="p">(</span>
     <span class="n">settings</span><span class="p">:</span> <span class="n">prefect</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">Settings</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">ephemeral</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">ignore_cache</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -7091,7 +7438,7 @@ and services will be disabled.</p></td>
         <span class="n">version</span><span class="o">=</span><span class="n">API_VERSION</span><span class="p">,</span>
         <span class="n">lifespan</span><span class="o">=</span><span class="n">lifespan</span><span class="p">,</span>
     <span class="p">)</span>
-    <span class="n">api_app</span> <span class="o">=</span> <span class="n">create_orion_api</span><span class="p">(</span>
+    <span class="n">api_app</span> <span class="o">=</span> <span class="n">create_api_app</span><span class="p">(</span>
         <span class="n">fast_api_app_kwargs</span><span class="o">=</span><span class="p">{</span>
             <span class="s2">&quot;exception_handlers&quot;</span><span class="p">:</span> <span class="p">{</span>
                 <span class="c1"># NOTE: FastAPI special cases the generic `Exception` handler and</span>
@@ -7168,273 +7515,6 @@ and services will be disabled.</p></td>
 
 
 
-<h2 id="prefect.server.api.server.create_orion_api" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">create_orion_api</span></code>
-
-<a href="#prefect.server.api.server.create_orion_api" class="headerlink" title="Permanent link">&para;</a></h2>
-
-
-  <div class="doc doc-contents ">
-  
-      <p>Create a FastAPI app that includes the Prefect REST API</p>
-
-  <p><strong>Parameters:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Description</th>
-        <th>Default</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td><code>router_prefix</code></td>
-          <td>
-                <code><span title="typing.Optional">Optional</span>[str]</code>
-          </td>
-          <td><p>a prefix to apply to all included routers</p></td>
-          <td>
-                <code>&#39;&#39;</code>
-          </td>
-        </tr>
-        <tr>
-          <td><code>dependencies</code></td>
-          <td>
-                <code><span title="typing.Optional">Optional</span>[<span title="typing.List">List</span>[<span title="fastapi.Depends">Depends</span>]]</code>
-          </td>
-          <td><p>a list of global dependencies to add to each Prefect REST API router</p></td>
-          <td>
-                <code>None</code>
-          </td>
-        </tr>
-        <tr>
-          <td><code>health_check_path</code></td>
-          <td>
-                <code>str</code>
-          </td>
-          <td><p>the health check route path</p></td>
-          <td>
-                <code>&#39;/health&#39;</code>
-          </td>
-        </tr>
-        <tr>
-          <td><code>fast_api_app_kwargs</code></td>
-          <td>
-                <code>dict</code>
-          </td>
-          <td><p>kwargs to pass to the FastAPI constructor</p></td>
-          <td>
-                <code>None</code>
-          </td>
-        </tr>
-        <tr>
-          <td><code>router_overrides</code></td>
-          <td>
-                <code><span title="typing.Mapping">Mapping</span>[str, <span title="typing.Optional">Optional</span>[<span title="fastapi.APIRouter">APIRouter</span>]]</code>
-          </td>
-          <td><p>a mapping of route prefixes (i.e. "/admin") to new routers
-allowing the caller to override the default routers. If <code>None</code> is provided
-as a value, the default router will be dropped from the application.</p></td>
-          <td>
-                <code>None</code>
-          </td>
-        </tr>
-    </tbody>
-  </table>
-
-  <p><strong>Returns:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td>
-                <code><span title="fastapi.FastAPI">FastAPI</span></code>
-          </td>
-          <td><p>a FastAPI app that serves the Prefect REST API</p></td>
-        </tr>
-    </tbody>
-  </table>
-
-      <details class="quote">
-        <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/server/api/server.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">210</span>
-<span class="normal">211</span>
-<span class="normal">212</span>
-<span class="normal">213</span>
-<span class="normal">214</span>
-<span class="normal">215</span>
-<span class="normal">216</span>
-<span class="normal">217</span>
-<span class="normal">218</span>
-<span class="normal">219</span>
-<span class="normal">220</span>
-<span class="normal">221</span>
-<span class="normal">222</span>
-<span class="normal">223</span>
-<span class="normal">224</span>
-<span class="normal">225</span>
-<span class="normal">226</span>
-<span class="normal">227</span>
-<span class="normal">228</span>
-<span class="normal">229</span>
-<span class="normal">230</span>
-<span class="normal">231</span>
-<span class="normal">232</span>
-<span class="normal">233</span>
-<span class="normal">234</span>
-<span class="normal">235</span>
-<span class="normal">236</span>
-<span class="normal">237</span>
-<span class="normal">238</span>
-<span class="normal">239</span>
-<span class="normal">240</span>
-<span class="normal">241</span>
-<span class="normal">242</span>
-<span class="normal">243</span>
-<span class="normal">244</span>
-<span class="normal">245</span>
-<span class="normal">246</span>
-<span class="normal">247</span>
-<span class="normal">248</span>
-<span class="normal">249</span>
-<span class="normal">250</span>
-<span class="normal">251</span>
-<span class="normal">252</span>
-<span class="normal">253</span>
-<span class="normal">254</span>
-<span class="normal">255</span>
-<span class="normal">256</span>
-<span class="normal">257</span>
-<span class="normal">258</span>
-<span class="normal">259</span>
-<span class="normal">260</span>
-<span class="normal">261</span>
-<span class="normal">262</span>
-<span class="normal">263</span>
-<span class="normal">264</span>
-<span class="normal">265</span>
-<span class="normal">266</span>
-<span class="normal">267</span>
-<span class="normal">268</span>
-<span class="normal">269</span>
-<span class="normal">270</span>
-<span class="normal">271</span>
-<span class="normal">272</span>
-<span class="normal">273</span>
-<span class="normal">274</span>
-<span class="normal">275</span>
-<span class="normal">276</span>
-<span class="normal">277</span>
-<span class="normal">278</span>
-<span class="normal">279</span>
-<span class="normal">280</span>
-<span class="normal">281</span>
-<span class="normal">282</span>
-<span class="normal">283</span>
-<span class="normal">284</span>
-<span class="normal">285</span>
-<span class="normal">286</span>
-<span class="normal">287</span>
-<span class="normal">288</span>
-<span class="normal">289</span>
-<span class="normal">290</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">create_orion_api</span><span class="p">(</span>
-    <span class="n">router_prefix</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
-    <span class="n">dependencies</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Depends</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">health_check_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;/health&quot;</span><span class="p">,</span>
-    <span class="n">version_check_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;/version&quot;</span><span class="p">,</span>
-    <span class="n">fast_api_app_kwargs</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">router_overrides</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Optional</span><span class="p">[</span><span class="n">APIRouter</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FastAPI</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Create a FastAPI app that includes the Prefect REST API</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        router_prefix: a prefix to apply to all included routers</span>
-<span class="sd">        dependencies: a list of global dependencies to add to each Prefect REST API router</span>
-<span class="sd">        health_check_path: the health check route path</span>
-<span class="sd">        fast_api_app_kwargs: kwargs to pass to the FastAPI constructor</span>
-<span class="sd">        router_overrides: a mapping of route prefixes (i.e. &quot;/admin&quot;) to new routers</span>
-<span class="sd">            allowing the caller to override the default routers. If `None` is provided</span>
-<span class="sd">            as a value, the default router will be dropped from the application.</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        a FastAPI app that serves the Prefect REST API</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">fast_api_app_kwargs</span> <span class="o">=</span> <span class="n">fast_api_app_kwargs</span> <span class="ow">or</span> <span class="p">{}</span>
-    <span class="n">api_app</span> <span class="o">=</span> <span class="n">FastAPI</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="n">API_TITLE</span><span class="p">,</span> <span class="o">**</span><span class="n">fast_api_app_kwargs</span><span class="p">)</span>
-    <span class="n">api_app</span><span class="o">.</span><span class="n">add_middleware</span><span class="p">(</span><span class="n">GZipMiddleware</span><span class="p">)</span>
-
-    <span class="nd">@api_app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">health_check_path</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Root&quot;</span><span class="p">])</span>
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">health_check</span><span class="p">():</span>
-        <span class="k">return</span> <span class="kc">True</span>
-
-    <span class="nd">@api_app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">version_check_path</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Root&quot;</span><span class="p">])</span>
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">orion_info</span><span class="p">():</span>
-        <span class="k">return</span> <span class="n">SERVER_API_VERSION</span>
-
-    <span class="c1"># always include version checking</span>
-    <span class="k">if</span> <span class="n">dependencies</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">dependencies</span> <span class="o">=</span> <span class="p">[</span><span class="n">Depends</span><span class="p">(</span><span class="n">enforce_minimum_version</span><span class="p">)]</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">dependencies</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Depends</span><span class="p">(</span><span class="n">enforce_minimum_version</span><span class="p">))</span>
-
-    <span class="n">routers</span> <span class="o">=</span> <span class="p">{</span><span class="n">router</span><span class="o">.</span><span class="n">prefix</span><span class="p">:</span> <span class="n">router</span> <span class="k">for</span> <span class="n">router</span> <span class="ow">in</span> <span class="n">API_ROUTERS</span><span class="p">}</span>
-
-    <span class="k">if</span> <span class="n">router_overrides</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">prefix</span><span class="p">,</span> <span class="n">router</span> <span class="ow">in</span> <span class="n">router_overrides</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="c1"># We may want to allow this behavior in the future to inject new routes, but</span>
-            <span class="c1"># for now this will be treated an as an exception</span>
-            <span class="k">if</span> <span class="n">prefix</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">routers</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span>
-                    <span class="s2">&quot;Router override provided for prefix that does not exist:&quot;</span>
-                    <span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="n">prefix</span><span class="si">!r}</span><span class="s2">&quot;</span>
-                <span class="p">)</span>
-
-            <span class="c1"># Drop the existing router</span>
-            <span class="n">existing_router</span> <span class="o">=</span> <span class="n">routers</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">prefix</span><span class="p">)</span>
-
-            <span class="c1"># Replace it with a new router if provided</span>
-            <span class="k">if</span> <span class="n">router</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">prefix</span> <span class="o">!=</span> <span class="n">router</span><span class="o">.</span><span class="n">prefix</span><span class="p">:</span>
-                    <span class="c1"># We may want to allow this behavior in the future, but it will</span>
-                    <span class="c1"># break expectations without additional routing and is banned for</span>
-                    <span class="c1"># now</span>
-                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                        <span class="sa">f</span><span class="s2">&quot;Router override for </span><span class="si">{</span><span class="n">prefix</span><span class="si">!r}</span><span class="s2"> defines a different prefix &quot;</span>
-                        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">router</span><span class="o">.</span><span class="n">prefix</span><span class="si">!r}</span><span class="s2">.&quot;</span>
-                    <span class="p">)</span>
-
-                <span class="n">existing_paths</span> <span class="o">=</span> <span class="n">method_paths_from_routes</span><span class="p">(</span><span class="n">existing_router</span><span class="o">.</span><span class="n">routes</span><span class="p">)</span>
-                <span class="n">new_paths</span> <span class="o">=</span> <span class="n">method_paths_from_routes</span><span class="p">(</span><span class="n">router</span><span class="o">.</span><span class="n">routes</span><span class="p">)</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="n">existing_paths</span><span class="o">.</span><span class="n">issubset</span><span class="p">(</span><span class="n">new_paths</span><span class="p">):</span>
-                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                        <span class="sa">f</span><span class="s2">&quot;Router override for </span><span class="si">{</span><span class="n">prefix</span><span class="si">!r}</span><span class="s2"> is missing paths defined by &quot;</span>
-                        <span class="sa">f</span><span class="s2">&quot;the original router: </span><span class="si">{</span><span class="n">existing_paths</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="n">new_paths</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
-                    <span class="p">)</span>
-
-                <span class="n">routers</span><span class="p">[</span><span class="n">prefix</span><span class="p">]</span> <span class="o">=</span> <span class="n">router</span>
-
-    <span class="k">for</span> <span class="n">router</span> <span class="ow">in</span> <span class="n">routers</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
-        <span class="n">api_app</span><span class="o">.</span><span class="n">include_router</span><span class="p">(</span><span class="n">router</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="n">router_prefix</span><span class="p">,</span> <span class="n">dependencies</span><span class="o">=</span><span class="n">dependencies</span><span class="p">)</span>
-
-    <span class="k">return</span> <span class="n">api_app</span>
-</code></pre></div></td></tr></table></div>
-      </details>
-  </div>
-
-</div>
-
-<div class="doc doc-object doc-function">
-
-
-
 <h2 id="prefect.server.api.server.custom_internal_exception_handler" class="doc doc-heading">
 <code class="highlight language-python"><span class="n">custom_internal_exception_handler</span></code>
   
@@ -7452,8 +7532,7 @@ as a value, the default router will be dropped from the application.</p></td>
 
       <details class="quote">
         <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/server/api/server.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">181</span>
-<span class="normal">182</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">182</span>
 <span class="normal">183</span>
 <span class="normal">184</span>
 <span class="normal">185</span>
@@ -7469,7 +7548,8 @@ as a value, the default router will be dropped from the application.</p></td>
 <span class="normal">195</span>
 <span class="normal">196</span>
 <span class="normal">197</span>
-<span class="normal">198</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">custom_internal_exception_handler</span><span class="p">(</span><span class="n">request</span><span class="p">:</span> <span class="n">Request</span><span class="p">,</span> <span class="n">exc</span><span class="p">:</span> <span class="ne">Exception</span><span class="p">):</span>
+<span class="normal">198</span>
+<span class="normal">199</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">custom_internal_exception_handler</span><span class="p">(</span><span class="n">request</span><span class="p">:</span> <span class="n">Request</span><span class="p">,</span> <span class="n">exc</span><span class="p">:</span> <span class="ne">Exception</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Log a detailed exception for internal server errors before returning.</span>
 
@@ -7513,8 +7593,7 @@ as a value, the default router will be dropped from the application.</p></td>
 
       <details class="quote">
         <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/server/api/server.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">137</span>
-<span class="normal">138</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">138</span>
 <span class="normal">139</span>
 <span class="normal">140</span>
 <span class="normal">141</span>
@@ -7525,7 +7604,8 @@ as a value, the default router will be dropped from the application.</p></td>
 <span class="normal">146</span>
 <span class="normal">147</span>
 <span class="normal">148</span>
-<span class="normal">149</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">integrity_exception_handler</span><span class="p">(</span><span class="n">request</span><span class="p">:</span> <span class="n">Request</span><span class="p">,</span> <span class="n">exc</span><span class="p">:</span> <span class="ne">Exception</span><span class="p">):</span>
+<span class="normal">149</span>
+<span class="normal">150</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">integrity_exception_handler</span><span class="p">(</span><span class="n">request</span><span class="p">:</span> <span class="n">Request</span><span class="p">,</span> <span class="n">exc</span><span class="p">:</span> <span class="ne">Exception</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Capture database integrity errors.&quot;&quot;&quot;</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Encountered exception in request:&quot;</span><span class="p">,</span> <span class="n">exc_info</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">JSONResponse</span><span class="p">(</span>
@@ -7564,13 +7644,13 @@ as a value, the default router will be dropped from the application.</p></td>
 
       <details class="quote">
         <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/server/api/server.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">201</span>
-<span class="normal">202</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">202</span>
 <span class="normal">203</span>
 <span class="normal">204</span>
 <span class="normal">205</span>
 <span class="normal">206</span>
-<span class="normal">207</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">prefect_object_not_found_exception_handler</span><span class="p">(</span>
+<span class="normal">207</span>
+<span class="normal">208</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">prefect_object_not_found_exception_handler</span><span class="p">(</span>
     <span class="n">request</span><span class="p">:</span> <span class="n">Request</span><span class="p">,</span> <span class="n">exc</span><span class="p">:</span> <span class="n">ObjectNotFoundError</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return 404 status code on object not found exceptions.&quot;&quot;&quot;</span>
@@ -7603,8 +7683,7 @@ as a value, the default router will be dropped from the application.</p></td>
 
       <details class="quote">
         <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/server/api/server.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">123</span>
-<span class="normal">124</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">124</span>
 <span class="normal">125</span>
 <span class="normal">126</span>
 <span class="normal">127</span>
@@ -7614,7 +7693,8 @@ as a value, the default router will be dropped from the application.</p></td>
 <span class="normal">131</span>
 <span class="normal">132</span>
 <span class="normal">133</span>
-<span class="normal">134</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">validation_exception_handler</span><span class="p">(</span><span class="n">request</span><span class="p">:</span> <span class="n">Request</span><span class="p">,</span> <span class="n">exc</span><span class="p">:</span> <span class="n">RequestValidationError</span><span class="p">):</span>
+<span class="normal">134</span>
+<span class="normal">135</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">validation_exception_handler</span><span class="p">(</span><span class="n">request</span><span class="p">:</span> <span class="n">Request</span><span class="p">,</span> <span class="n">exc</span><span class="p">:</span> <span class="n">RequestValidationError</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Provide a detailed message for request validation errors.&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">JSONResponse</span><span class="p">(</span>
         <span class="n">status_code</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_422_UNPROCESSABLE_ENTITY</span><span class="p">,</span>
@@ -7791,9 +7871,9 @@ as a value, the default router will be dropped from the application.</p></td>
     
       <script src="../../../../assets/javascripts/bundle.10c6cd24.min.js"></script>
       
-        <script src="../../../../js/termynal.js"></script>
-      
         <script src="../../../../js/custom.js"></script>
+      
+        <script src="../../../../js/termynal.js"></script>
       
     
   </body>

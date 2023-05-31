@@ -45,7 +45,7 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,300i,400,400i,700,700i%7CSource+Code+Pro:400,400i,700,700i&display=fallback">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,300i,400,400i,700,700i%7CSource+Code+Pro:400,400i,700,700i&amp;display=fallback">
         <style>:root{--md-text-font:"Inter";--md-code-font:"Source Code Pro"}</style>
       
     
@@ -73,12 +73,92 @@
   
 
 
-  
-  
+  <script src="../../../../assets/external/cdn.amplitude.com/libs/analytics-browser-1.9.1-min.js.gz.js"></script>
+<script type="text/javascript">
+const amplitudeKey = "c97dd2acbf306ab7bf54aca0aeb7ffa1"
+const amplitudeUrl = "/2/httpapi"
 
 
-  <script id="__analytics">function __md_analytics(){function n(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],n("js",new Date),n("config","G-3M31G9B0QJ"),document.addEventListener("DOMContentLoaded",function(){document.forms.search&&document.forms.search.query.addEventListener("blur",function(){this.value&&n("event","search",{search_term:this.value})}),document$.subscribe(function(){var a=document.forms.feedback;if(void 0!==a)for(var e of a.querySelectorAll("[type=submit]"))e.addEventListener("click",function(e){e.preventDefault();var t=document.location.pathname,e=this.getAttribute("data-md-value");n("event","feedback",{page:t,data:e}),a.firstElementChild.disabled=!0;e=a.querySelector(".md-feedback__note [data-md-value='"+e+"']");e&&(e.hidden=!1)}),a.hidden=!1}),location$.subscribe(function(e){n("config","G-3M31G9B0QJ",{page_path:e.pathname})})});var e=document.createElement("script");e.async=!0,e.src="https://www.googletagmanager.com/gtag/js?id=G-3M31G9B0QJ",document.getElementById("__analytics").insertAdjacentElement("afterEnd",e)}</script>
+const addUrl = (event) => {
+  const deviceId = amplitude.getDeviceId()
+  const { href = '' } = event.target
+  const url = new URL(href)
+  url.searchParams.append('deviceId', deviceId)
+  event.target.href = url.toString()
+}
 
+const removeUrl = (event) => {
+  const { href = '' } = event.target
+  const url = new URL(href)
+  url.searchParams.delete('deviceId')
+  event.target.href = url.toString()
+}
+
+const urls = [
+  'https://app.prefect.cloud',
+  'https://app.stg.prefect.dev',
+  'https://app.prefect.dev',
+]
+
+const selector = urls.map((url) => `a[href^="${url}"]`).join(',')
+
+const addDeviceIdToAppLinks = () => {
+  const elements = document.querySelectorAll(selector)
+
+  elements.forEach((element) => {
+    element.addEventListener('mouseenter', addUrl)
+    element.addEventListener('mouseleave', removeUrl)
+    element.addEventListener('focus', addUrl)
+    element.addEventListener('blur', removeUrl)
+    element.addEventListener('touchstart', addUrl)
+    element.addEventListener('touchend', removeUrl)
+  })
+}
+
+
+const init = () => {
+  amplitude.init(amplitudeKey, undefined, {
+    useBatch: true,
+    serverUrl: amplitudeUrl,
+    attribution: {
+      disabled: false,
+      trackNewCampaigns: true,
+      trackPageViews: true,
+      resetSessionOnNewCampaign: true,
+    },
+    defaultTracking: {
+      pageViews: {
+        trackOn: function() { return true},
+        eventType: "Page View: Docs",
+        trackHistoryChanges: "all",
+      },
+      sessions: false,
+      formInteractions: true,
+      fileDownloads: true,
+    },
+  })
+}
+
+function trackPageView() {
+  amplitude.track(
+    'Page View: Docs',
+    {
+      'url': window.href,
+      'title': document.title,
+      'referrer': document.referrer,
+      'path': window.location.pathname
+    }
+  )
+}
+
+if (amplitudeKey){
+  document.addEventListener("DOMContentLoaded", function() {
+      init()
+      setTimeout(addDeviceIdToAppLinks)
+      setTimeout(trackPageView)
+  });
+}
+</script>
   
     <script>"undefined"!=typeof __md_analytics&&__md_analytics()</script>
   
@@ -6717,8 +6797,8 @@
 
         <details class="quote">
           <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/utilities/asyncutils.py</code></summary>
-          <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">340</span>
-<span class="normal">341</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">GatherIncomplete</span><span class="p">(</span><span class="ne">RuntimeError</span><span class="p">):</span>
+          <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">345</span>
+<span class="normal">346</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">GatherIncomplete</span><span class="p">(</span><span class="ne">RuntimeError</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Used to indicate retrieving gather results before completion&quot;&quot;&quot;</span>
 </code></pre></div></td></tr></table></div>
         </details>
@@ -6752,12 +6832,7 @@ interface to allow simple gathering.</p>
 
         <details class="quote">
           <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/utilities/asyncutils.py</code></summary>
-          <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">344</span>
-<span class="normal">345</span>
-<span class="normal">346</span>
-<span class="normal">347</span>
-<span class="normal">348</span>
-<span class="normal">349</span>
+          <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">349</span>
 <span class="normal">350</span>
 <span class="normal">351</span>
 <span class="normal">352</span>
@@ -6804,7 +6879,12 @@ interface to allow simple gathering.</p>
 <span class="normal">393</span>
 <span class="normal">394</span>
 <span class="normal">395</span>
-<span class="normal">396</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">GatherTaskGroup</span><span class="p">(</span><span class="n">anyio</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">TaskGroup</span><span class="p">):</span>
+<span class="normal">396</span>
+<span class="normal">397</span>
+<span class="normal">398</span>
+<span class="normal">399</span>
+<span class="normal">400</span>
+<span class="normal">401</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">GatherTaskGroup</span><span class="p">(</span><span class="n">anyio</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">TaskGroup</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A task group that gathers results.</span>
 
@@ -6893,12 +6973,12 @@ return the key instead, we just won't support this method for now.</p>
 
       <details class="quote">
         <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/utilities/asyncutils.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">371</span>
-<span class="normal">372</span>
-<span class="normal">373</span>
-<span class="normal">374</span>
-<span class="normal">375</span>
-<span class="normal">376</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fn</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">376</span>
+<span class="normal">377</span>
+<span class="normal">378</span>
+<span class="normal">379</span>
+<span class="normal">380</span>
+<span class="normal">381</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fn</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Since `start` returns the result of `task_status.started()` but here we must</span>
 <span class="sd">    return the key instead, we just won&#39;t support this method for now.</span>
@@ -6981,7 +7061,12 @@ loop is about to close.</p>
 <span class="normal">334</span>
 <span class="normal">335</span>
 <span class="normal">336</span>
-<span class="normal">337</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">add_event_loop_shutdown_callback</span><span class="p">(</span><span class="n">coroutine_fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="n">Awaitable</span><span class="p">]):</span>
+<span class="normal">337</span>
+<span class="normal">338</span>
+<span class="normal">339</span>
+<span class="normal">340</span>
+<span class="normal">341</span>
+<span class="normal">342</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">add_event_loop_shutdown_callback</span><span class="p">(</span><span class="n">coroutine_fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="n">Awaitable</span><span class="p">]):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Adds a callback to the given callable on event loop closure. The callable must be</span>
 <span class="sd">    a coroutine function. It will be awaited when the current event loop is shutting</span>
@@ -6998,6 +7083,11 @@ loop is about to close.</p>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">on_shutdown</span><span class="p">(</span><span class="n">key</span><span class="p">):</span>
+        <span class="c1"># It appears that EVENT_LOOP_GC_REFS is somehow being garbage collected early.</span>
+        <span class="c1"># We hold a reference to it so as to preserve it, at least for the lifetime of</span>
+        <span class="c1"># this coroutine. See the issue below for the initial report/discussion:</span>
+        <span class="c1"># https://github.com/PrefectHQ/prefect/issues/7709#issuecomment-1560021109</span>
+        <span class="n">_</span> <span class="o">=</span> <span class="n">EVENT_LOOP_GC_REFS</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">yield</span>
         <span class="k">except</span> <span class="ne">GeneratorExit</span><span class="p">:</span>
@@ -7037,12 +7127,12 @@ loop is about to close.</p>
 
       <details class="quote">
         <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/utilities/asyncutils.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">399</span>
-<span class="normal">400</span>
-<span class="normal">401</span>
-<span class="normal">402</span>
-<span class="normal">403</span>
-<span class="normal">404</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">create_gather_task_group</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">GatherTaskGroup</span><span class="p">:</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">404</span>
+<span class="normal">405</span>
+<span class="normal">406</span>
+<span class="normal">407</span>
+<span class="normal">408</span>
+<span class="normal">409</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">create_gather_task_group</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">GatherTaskGroup</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a new task group that gathers results&quot;&quot;&quot;</span>
     <span class="c1"># This function matches the AnyIO API which uses callables since the concrete</span>
     <span class="c1"># task group class depends on the async library being used and cannot be</span>
@@ -7076,18 +7166,18 @@ This matches <code>anyio</code> semantics.</p>
 
       <details class="quote">
         <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/utilities/asyncutils.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">407</span>
-<span class="normal">408</span>
-<span class="normal">409</span>
-<span class="normal">410</span>
-<span class="normal">411</span>
-<span class="normal">412</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">412</span>
 <span class="normal">413</span>
 <span class="normal">414</span>
 <span class="normal">415</span>
 <span class="normal">416</span>
 <span class="normal">417</span>
-<span class="normal">418</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">gather</span><span class="p">(</span><span class="o">*</span><span class="n">calls</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="n">Coroutine</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">T</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">T</span><span class="p">]:</span>
+<span class="normal">418</span>
+<span class="normal">419</span>
+<span class="normal">420</span>
+<span class="normal">421</span>
+<span class="normal">422</span>
+<span class="normal">423</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">gather</span><span class="p">(</span><span class="o">*</span><span class="n">calls</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="n">Coroutine</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">T</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">T</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Run calls concurrently and gather their results.</span>
 
@@ -7878,9 +7968,9 @@ to enter the async function.</p>
     
       <script src="../../../../assets/javascripts/bundle.10c6cd24.min.js"></script>
       
-        <script src="../../../../js/termynal.js"></script>
-      
         <script src="../../../../js/custom.js"></script>
+      
+        <script src="../../../../js/termynal.js"></script>
       
     
   </body>
