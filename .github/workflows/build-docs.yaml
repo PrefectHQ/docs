@@ -244,16 +244,21 @@ jobs:
           rm ./netlify_temp.toml
         fi
 
+      working-directory: ${{ github.workspace }}/docs/overrides/netlify
+
+    - name: Update Netlify edge functions
+      env: 
+        PREFECT_SOURCE: ${{ github.workspace }}/prefect_source
+      run: |
         echo "Updating Netlify Edge Functions..."
         rm -f ./netlify/edge-functions/*
-        cp $GITHUB_WORKSPACE/netlify/edge-functions/* ./netlify/edge-functions/
+        cp $PREFECT_SOURCE/netlify/edge-functions/* ./netlify/edge-functions/
         git add ./netlify/edge-functions
         if git diff --quiet --cached; then
           git commit -m "Update Netlify edge functions"
         fi
 
-      working-directory: ${{ github.workspace }}/docs/overrides/netlify
-
+      working-directory: ${{ github.workspace }}/docs
 
     - name: Sort docs versions
       run: |
