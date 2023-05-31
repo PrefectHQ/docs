@@ -173,21 +173,21 @@ jobs:
         # generate API docs
         prefect dev build-docs
 
-        # build versioned docs
-        mike deploy -F ./mkdocs.insiders.yml --update-aliases --branch $branch_name --prefix=versions "$display_name"
-        
         # If the release we're building docs for is the newest release, 
         # also build the 'latest' docs version. This ensures that the
         # docs site defaults to showing users docs for the most recently released 
         # Prefect version.
         newest_release=$(python utilities/get-newest-version.py --versions-file-path ./versions/versions.json --build-version "$version")
-        
+
         echo "Newest release is $newest_release. Version being built is $version."
         if [[ "$newest_release" == "$version" ]]; then
           echo "Updating 'latest' docs version with $version."
-          mike deploy -F ./mkdocs.insiders.yml --update-aliases --branch $branch_name --prefix=versions latest
+          mike deploy --config-file ./mkdocs.insiders.yml --update-aliases --branch $branch_name --prefix=versions "$display_name" latest
+        else
+          echo "Updating previous docs version with $version."
+          mike deploy --config-file ./mkdocs.insiders.yml --update-aliases --branch $branch_name --prefix=versions "$display_name"
         fi
-        
+
         # Save newest version check to GITHUB_ENV so we can use it later
         is_newest_release=false
         if [[ "$newest_release" == "$version" ]]; then
