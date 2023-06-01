@@ -7233,8 +7233,8 @@ if (amplitudeKey){
 <code class="highlight language-python"><span class="n">from_template_and_values</span></code>
   
   <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-classmethod"><code>classmethod</code></small>
       <small class="doc doc-label doc-label-async"><code>async</code></small>
+      <small class="doc doc-label doc-label-classmethod"><code>classmethod</code></small>
   </span>
 
 <a href="#prefect.workers.base.BaseJobConfiguration.from_template_and_values" class="headerlink" title="Permanent link">&para;</a></h3>
@@ -8401,24 +8401,7 @@ the flow run.</p>
 <span class="normal">1130</span>
 <span class="normal">1131</span>
 <span class="normal">1132</span>
-<span class="normal">1133</span>
-<span class="normal">1134</span>
-<span class="normal">1135</span>
-<span class="normal">1136</span>
-<span class="normal">1137</span>
-<span class="normal">1138</span>
-<span class="normal">1139</span>
-<span class="normal">1140</span>
-<span class="normal">1141</span>
-<span class="normal">1142</span>
-<span class="normal">1143</span>
-<span class="normal">1144</span>
-<span class="normal">1145</span>
-<span class="normal">1146</span>
-<span class="normal">1147</span>
-<span class="normal">1148</span>
-<span class="normal">1149</span>
-<span class="normal">1150</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@register_base_type</span>
+<span class="normal">1133</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@register_base_type</span>
 <span class="k">class</span> <span class="nc">BaseWorker</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
     <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">job_configuration</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">BaseJobConfiguration</span><span class="p">]</span> <span class="o">=</span> <span class="n">BaseJobConfiguration</span>
@@ -8640,7 +8623,6 @@ the flow run.</p>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">get_and_submit_flow_runs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">runs_response</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_scheduled_flow_runs</span><span class="p">()</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_emit_worker_poll_flow_run_event</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_last_polled_time</span> <span class="o">=</span> <span class="n">pendulum</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="s2">&quot;utc&quot;</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_submit_scheduled_flow_runs</span><span class="p">(</span><span class="n">flow_run_response</span><span class="o">=</span><span class="n">runs_response</span><span class="p">)</span>
@@ -8690,8 +8672,6 @@ the flow run.</p>
         <span class="p">)</span>
 
         <span class="n">cancelling_flow_runs</span> <span class="o">=</span> <span class="n">named_cancelling_flow_runs</span> <span class="o">+</span> <span class="n">typed_cancelling_flow_runs</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">_emit_worker_poll_cancelled_flow_run_event</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="n">cancelling_flow_runs</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
@@ -9226,20 +9206,6 @@ the flow run.</p>
             <span class="n">follows</span><span class="o">=</span><span class="n">submitted_event</span><span class="p">,</span>
         <span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_emit_worker_poll_flow_run_event</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Event</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">emit_event</span><span class="p">(</span>
-            <span class="s2">&quot;prefect.worker.poll.flow-run&quot;</span><span class="p">,</span>
-            <span class="n">resource</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_event_resource</span><span class="p">(),</span>
-            <span class="n">related</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_event_related_resources</span><span class="p">(),</span>
-        <span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">_emit_worker_poll_cancelled_flow_run_event</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Event</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">emit_event</span><span class="p">(</span>
-            <span class="s2">&quot;prefect.worker.poll.cancelled-flow-run&quot;</span><span class="p">,</span>
-            <span class="n">resource</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_event_resource</span><span class="p">(),</span>
-            <span class="n">related</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_event_related_resources</span><span class="p">(),</span>
-        <span class="p">)</span>
-
     <span class="k">async</span> <span class="k">def</span> <span class="nf">_emit_worker_started_event</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Event</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">emit_event</span><span class="p">(</span>
             <span class="s2">&quot;prefect.worker.started&quot;</span><span class="p">,</span>
@@ -9348,7 +9314,10 @@ pool, the work pool queues it is polling, and its local settings.</p>
 
       <details class="quote">
         <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/workers/base.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">878</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">875</span>
+<span class="normal">876</span>
+<span class="normal">877</span>
+<span class="normal">878</span>
 <span class="normal">879</span>
 <span class="normal">880</span>
 <span class="normal">881</span>
@@ -9360,10 +9329,7 @@ pool, the work pool queues it is polling, and its local settings.</p>
 <span class="normal">887</span>
 <span class="normal">888</span>
 <span class="normal">889</span>
-<span class="normal">890</span>
-<span class="normal">891</span>
-<span class="normal">892</span>
-<span class="normal">893</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_status</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="normal">890</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_status</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Retrieves the status of the current worker including its name, current worker</span>
 <span class="sd">    pool, the work pool queues it is polling, and its local settings.</span>
@@ -9689,16 +9655,16 @@ queues. Sends a worker heartbeat to the API.</p>
 
       <details class="quote">
         <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/workers/base.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">681</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">678</span>
+<span class="normal">679</span>
+<span class="normal">680</span>
+<span class="normal">681</span>
 <span class="normal">682</span>
 <span class="normal">683</span>
 <span class="normal">684</span>
 <span class="normal">685</span>
 <span class="normal">686</span>
-<span class="normal">687</span>
-<span class="normal">688</span>
-<span class="normal">689</span>
-<span class="normal">690</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">sync_with_backend</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="normal">687</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">sync_with_backend</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Updates the worker&#39;s local information about it&#39;s current work pool and</span>
 <span class="sd">    queues. Sends a worker heartbeat to the API.</span>
