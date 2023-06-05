@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="../../img/favicon.png">
-      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-9.1.14+insiders-4.35.1">
+      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-9.1.15+insiders-4.35.3">
     
     
       
@@ -31,10 +31,10 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.14411569.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.cac7c1ad.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.df142b89.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ecc776e4.min.css">
       
       
 
@@ -7120,6 +7120,10 @@ Hello<span class="w"> </span>Marvin!
 <p>The relationship between a child and parent flow is tracked by creating a special task run in the parent flow. This task run will mirror the state of the child flow run.</p>
 <p>A task that represents a subflow will be annotated as such in its <code>state_details</code> via the presence of a <code>child_flow_run_id</code> field.  A subflow can be identified via the presence of a <code>parent_task_run_id</code> on <code>state_details</code>.</p>
 <p>You can define multiple flows within the same file. Whether running locally or via a <a href="/concepts/deployments/">deployment</a>, you must indicate which flow is the entrypoint for a flow run.</p>
+<div class="admonition warning">
+<p class="admonition-title">Cancelling subflow runs</p>
+<p>In line subflow runs, i.e. those created without <code>run_deployment</code>, cannot be cancelled without cancelling their parent flow run. If you may need to cancel a subflow run independent of its parent flow run, we recommend deploying it separately and starting it using the <a href="/api-ref/prefect/deployments/#prefect.deployments.run_deployment">run_deployment</a> method.</p>
+</div>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
 
 <span class="nd">@task</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Print Hello&quot;</span><span class="p">)</span>
@@ -7544,7 +7548,7 @@ Completed<span class="o">(</span><span class="nv">message</span><span class="o">
 <p>When cancellation is requested, the flow run is moved to a "Cancelling" state. The agent monitors the state of flow runs and detects that cancellation has been requested. The agent then sends a signal to the flow run infrastructure, requesting termination of the run. If the run does not terminate after a grace period (default of 30 seconds), the infrastructure will be killed, ensuring the flow run exits.</p>
 <div class="admonition warning">
 <p class="admonition-title">An agent is required</p>
-<p>Flow run cancellation requires the flow run to be submitted by an agent and for an agent to be running to enforce the cancellation. Flow runs without deployments cannot be cancelled yet.</p>
+<p>Flow run cancellation requires the flow run to be submitted by an agent or worker. The agent or worker must be running to enforce the cancellation. In line subflow runs, i.e. those created without <code>run_deployment</code>, cannot be cancelled without cancelling the parent flow run. If you may need to cancel a subflow run independent of its parent flow run, we recommend deploying it separately and starting it using the <a href="/api-ref/prefect/deployments/#prefect.deployments.run_deployment">run_deployment</a> method.</p>
 </div>
 <p>Support for cancellation is included for all core library infrastructure types:</p>
 <ul>
@@ -7790,9 +7794,13 @@ To get the flow run ID, see [Inspect a flow run](#inspect-a-flow-run).
     
       <script src="../../assets/javascripts/bundle.10c6cd24.min.js"></script>
       
-        <script src="../../js/custom.js"></script>
+        
+          <script src="../../js/custom.js"></script>
+        
       
-        <script src="../../js/termynal.js"></script>
+        
+          <script src="../../js/termynal.js"></script>
+        
       
     
   </body>
