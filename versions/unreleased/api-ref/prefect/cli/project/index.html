@@ -6581,8 +6581,7 @@ if (amplitudeKey){
 
       <details class="quote">
         <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/cli/project.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">149</span>
-<span class="normal">150</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">150</span>
 <span class="normal">151</span>
 <span class="normal">152</span>
 <span class="normal">153</span>
@@ -6625,9 +6624,7 @@ if (amplitudeKey){
 <span class="normal">190</span>
 <span class="normal">191</span>
 <span class="normal">192</span>
-<span class="normal">193</span>
-<span class="normal">194</span>
-<span class="normal">195</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@project_app</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="normal">193</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@project_app</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">clone</span><span class="p">(</span>
     <span class="n">deployment_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
         <span class="kc">None</span><span class="p">,</span>
@@ -6666,14 +6663,11 @@ if (amplitudeKey){
             <span class="k">except</span> <span class="n">ObjectNotFound</span><span class="p">:</span>
                 <span class="n">exit_with_error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Deployment </span><span class="si">{</span><span class="n">deployment_id</span><span class="si">!r}</span><span class="s2"> not found!&quot;</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">deployment</span><span class="o">.</span><span class="n">pull_steps</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">deployment</span><span class="o">.</span><span class="n">pull_steps</span><span class="p">:</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="k">await</span> <span class="n">run_steps</span><span class="p">(</span><span class="n">deployment</span><span class="o">.</span><span class="n">pull_steps</span><span class="p">)</span>
+        <span class="n">app</span><span class="o">.</span><span class="n">console</span><span class="o">.</span><span class="n">out</span><span class="p">(</span><span class="n">output</span><span class="p">[</span><span class="s2">&quot;directory&quot;</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
         <span class="n">exit_with_error</span><span class="p">(</span><span class="s2">&quot;No pull steps found, exiting early.&quot;</span><span class="p">)</span>
-
-    <span class="c1"># TODO: allow for passing values between steps / stacking them</span>
-    <span class="k">for</span> <span class="n">step</span> <span class="ow">in</span> <span class="n">deployment</span><span class="o">.</span><span class="n">pull_steps</span><span class="p">:</span>
-        <span class="n">output</span> <span class="o">=</span> <span class="k">await</span> <span class="n">run_step</span><span class="p">(</span><span class="n">step</span><span class="p">)</span>
-
-    <span class="n">app</span><span class="o">.</span><span class="n">console</span><span class="o">.</span><span class="n">out</span><span class="p">(</span><span class="n">output</span><span class="p">[</span><span class="s2">&quot;directory&quot;</span><span class="p">])</span>
 </code></pre></div></td></tr></table></div>
       </details>
   </div>
@@ -6700,8 +6694,7 @@ if (amplitudeKey){
 
       <details class="quote">
         <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/cli/project.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 64</span>
-<span class="normal"> 65</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 65</span>
 <span class="normal"> 66</span>
 <span class="normal"> 67</span>
 <span class="normal"> 68</span>
@@ -6782,7 +6775,8 @@ if (amplitudeKey){
 <span class="normal">143</span>
 <span class="normal">144</span>
 <span class="normal">145</span>
-<span class="normal">146</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@project_app</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="normal">146</span>
+<span class="normal">147</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@project_app</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">init</span><span class="p">(</span>
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">recipe</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -6891,8 +6885,7 @@ if (amplitudeKey){
 
       <details class="quote">
         <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/cli/project.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">32</span>
-<span class="normal">33</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">33</span>
 <span class="normal">34</span>
 <span class="normal">35</span>
 <span class="normal">36</span>
@@ -6920,7 +6913,8 @@ if (amplitudeKey){
 <span class="normal">58</span>
 <span class="normal">59</span>
 <span class="normal">60</span>
-<span class="normal">61</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@recipe_app</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="normal">61</span>
+<span class="normal">62</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@recipe_app</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">ls</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    List available recipes.</span>
@@ -6976,7 +6970,9 @@ if (amplitudeKey){
 
       <details class="quote">
         <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/cli/project.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">198</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">196</span>
+<span class="normal">197</span>
+<span class="normal">198</span>
 <span class="normal">199</span>
 <span class="normal">200</span>
 <span class="normal">201</span>
@@ -7007,9 +7003,7 @@ if (amplitudeKey){
 <span class="normal">226</span>
 <span class="normal">227</span>
 <span class="normal">228</span>
-<span class="normal">229</span>
-<span class="normal">230</span>
-<span class="normal">231</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@project_app</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="normal">229</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@project_app</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">register_flow</span><span class="p">(</span>
     <span class="n">entrypoint</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Argument</span><span class="p">(</span>
         <span class="o">...</span><span class="p">,</span>
