@@ -3246,6 +3246,17 @@ if (amplitudeKey){
 </li>
       
         <li class="md-nav__item">
+  <a href="#prefect.projects.steps.utility.pip_install_requirements" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        pip_install_requirements()
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#prefect.projects.steps.utility.run_shell_script" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -6421,6 +6432,17 @@ if (amplitudeKey){
 </li>
       
         <li class="md-nav__item">
+  <a href="#prefect.projects.steps.utility.pip_install_requirements" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        pip_install_requirements()
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#prefect.projects.steps.utility.run_shell_script" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -6661,6 +6683,255 @@ if (amplitudeKey){
 
 </div>
 
+
+<div class="doc doc-object doc-function">
+
+
+
+<h2 id="prefect.projects.steps.utility.pip_install_requirements" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">pip_install_requirements</span></code>
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-async"><code>async</code></small>
+  </span>
+
+<a href="#prefect.projects.steps.utility.pip_install_requirements" class="headerlink" title="Permanent link">&para;</a></h2>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>Installs dependencies from a requirements.txt file.</p>
+
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>requirements_file</code></td>
+          <td>
+                <code>str</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>The requirements.txt to use for installation.</p>
+            </div>
+          </td>
+          <td>
+                <code>&#39;requirements.txt&#39;</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>directory</code></td>
+          <td>
+                <code><span title="typing.Optional">Optional</span>[str]</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>The directory the requirements.txt file is in. Defaults to
+the current working directory.</p>
+            </div>
+          </td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>stream_output</code></td>
+          <td>
+                <code>bool</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>Whether to stream the output from pip install should be
+streamed to the console</p>
+            </div>
+          </td>
+          <td>
+                <code>True</code>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>A dictionary with the keys <code>stdout</code> and <code>stderr</code> containing the output
+the <code>pip install</code> command</p>
+            </div>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+  <p><strong>Raises:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
+                <code>subprocess.<span title="subprocess.CalledProcessError">CalledProcessError</span></code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>if the pip install command fails for any reason</p>
+            </div>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+<details class="example" open>
+  <summary>Example</summary>
+  <div class="highlight"><pre><span></span><code><span class="nt">pull</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">prefect.projects.steps.git_clone_project</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">clone-step</span>
+<span class="w">        </span><span class="nt">repository</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://github.com/org/repo.git</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">prefect.projects.steps.pip_install_requirements</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">directory</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{{</span><span class="w"> </span><span class="nv">clone-step.directory</span><span class="w"> </span><span class="p p-Indicator">}}</span>
+<span class="w">        </span><span class="nt">requirements_file</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">requirements.txt</span>
+<span class="w">        </span><span class="nt">stream_output</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span>
+</code></pre></div>
+</details>
+      <details class="quote">
+        <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/projects/steps/utility.py</code></summary>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">176</span>
+<span class="normal">177</span>
+<span class="normal">178</span>
+<span class="normal">179</span>
+<span class="normal">180</span>
+<span class="normal">181</span>
+<span class="normal">182</span>
+<span class="normal">183</span>
+<span class="normal">184</span>
+<span class="normal">185</span>
+<span class="normal">186</span>
+<span class="normal">187</span>
+<span class="normal">188</span>
+<span class="normal">189</span>
+<span class="normal">190</span>
+<span class="normal">191</span>
+<span class="normal">192</span>
+<span class="normal">193</span>
+<span class="normal">194</span>
+<span class="normal">195</span>
+<span class="normal">196</span>
+<span class="normal">197</span>
+<span class="normal">198</span>
+<span class="normal">199</span>
+<span class="normal">200</span>
+<span class="normal">201</span>
+<span class="normal">202</span>
+<span class="normal">203</span>
+<span class="normal">204</span>
+<span class="normal">205</span>
+<span class="normal">206</span>
+<span class="normal">207</span>
+<span class="normal">208</span>
+<span class="normal">209</span>
+<span class="normal">210</span>
+<span class="normal">211</span>
+<span class="normal">212</span>
+<span class="normal">213</span>
+<span class="normal">214</span>
+<span class="normal">215</span>
+<span class="normal">216</span>
+<span class="normal">217</span>
+<span class="normal">218</span>
+<span class="normal">219</span>
+<span class="normal">220</span>
+<span class="normal">221</span>
+<span class="normal">222</span>
+<span class="normal">223</span>
+<span class="normal">224</span>
+<span class="normal">225</span>
+<span class="normal">226</span>
+<span class="normal">227</span>
+<span class="normal">228</span>
+<span class="normal">229</span>
+<span class="normal">230</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">pip_install_requirements</span><span class="p">(</span>
+    <span class="n">directory</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">requirements_file</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;requirements.txt&quot;</span><span class="p">,</span>
+    <span class="n">stream_output</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Installs dependencies from a requirements.txt file.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        requirements_file: The requirements.txt to use for installation.</span>
+<span class="sd">        directory: The directory the requirements.txt file is in. Defaults to</span>
+<span class="sd">            the current working directory.</span>
+<span class="sd">        stream_output: Whether to stream the output from pip install should be</span>
+<span class="sd">            streamed to the console</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        A dictionary with the keys `stdout` and `stderr` containing the output</span>
+<span class="sd">            the `pip install` command</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        subprocess.CalledProcessError: if the pip install command fails for any reason</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        ```yaml</span>
+<span class="sd">        pull:</span>
+<span class="sd">            - prefect.projects.steps.git_clone_project:</span>
+<span class="sd">                id: clone-step</span>
+<span class="sd">                repository: https://github.com/org/repo.git</span>
+<span class="sd">            - prefect.projects.steps.pip_install_requirements:</span>
+<span class="sd">                directory: {{ clone-step.directory }}</span>
+<span class="sd">                requirements_file: requirements.txt</span>
+<span class="sd">                stream_output: False</span>
+<span class="sd">        ```</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">stdout_sink</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">StringIO</span><span class="p">()</span>
+    <span class="n">stderr_sink</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">StringIO</span><span class="p">()</span>
+
+    <span class="k">async</span> <span class="k">with</span> <span class="n">open_process</span><span class="p">(</span>
+        <span class="p">[</span><span class="n">sys</span><span class="o">.</span><span class="n">executable</span><span class="p">,</span> <span class="s2">&quot;-m&quot;</span><span class="p">,</span> <span class="s2">&quot;pip&quot;</span><span class="p">,</span> <span class="s2">&quot;install&quot;</span><span class="p">,</span> <span class="s2">&quot;-r&quot;</span><span class="p">,</span> <span class="n">requirements_file</span><span class="p">],</span>
+        <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span>
+        <span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span>
+        <span class="n">cwd</span><span class="o">=</span><span class="n">directory</span><span class="p">,</span>
+    <span class="p">)</span> <span class="k">as</span> <span class="n">process</span><span class="p">:</span>
+        <span class="k">await</span> <span class="n">_stream_capture_process_output</span><span class="p">(</span>
+            <span class="n">process</span><span class="p">,</span>
+            <span class="n">stdout_sink</span><span class="o">=</span><span class="n">stdout_sink</span><span class="p">,</span>
+            <span class="n">stderr_sink</span><span class="o">=</span><span class="n">stderr_sink</span><span class="p">,</span>
+            <span class="n">stream_output</span><span class="o">=</span><span class="n">stream_output</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">await</span> <span class="n">process</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;stdout&quot;</span><span class="p">:</span> <span class="n">stdout_sink</span><span class="o">.</span><span class="n">getvalue</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span>
+        <span class="s2">&quot;stderr&quot;</span><span class="p">:</span> <span class="n">stderr_sink</span><span class="o">.</span><span class="n">getvalue</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span>
+    <span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+      </details>
+  </div>
+
+</div>
 
 <div class="doc doc-object doc-function">
 
