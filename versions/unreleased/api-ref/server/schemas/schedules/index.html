@@ -7928,10 +7928,7 @@ a 9am daily schedule with a UTC start date will maintain a 9am UTC time.</p>
 
         <details class="quote">
           <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/server/schemas/schedules.py</code></summary>
-          <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">361</span>
-<span class="normal">362</span>
-<span class="normal">363</span>
-<span class="normal">364</span>
+          <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">364</span>
 <span class="normal">365</span>
 <span class="normal">366</span>
 <span class="normal">367</span>
@@ -8156,7 +8153,14 @@ a 9am daily schedule with a UTC start date will maintain a 9am UTC time.</p>
 <span class="normal">586</span>
 <span class="normal">587</span>
 <span class="normal">588</span>
-<span class="normal">589</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">RRuleSchedule</span><span class="p">(</span><span class="n">PrefectBaseModel</span><span class="p">):</span>
+<span class="normal">589</span>
+<span class="normal">590</span>
+<span class="normal">591</span>
+<span class="normal">592</span>
+<span class="normal">593</span>
+<span class="normal">594</span>
+<span class="normal">595</span>
+<span class="normal">596</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">RRuleSchedule</span><span class="p">(</span><span class="n">PrefectBaseModel</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    RRule schedule, based on the iCalendar standard</span>
 <span class="sd">    ([RFC 5545](https://datatracker.ietf.org/doc/html/rfc5545)) as</span>
@@ -8252,7 +8256,11 @@ a 9am daily schedule with a UTC start date will maintain a 9am UTC time.</p>
 <span class="sd">        Since rrule doesn&#39;t properly serialize/deserialize timezones, we localize dates</span>
 <span class="sd">        here</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">rrule</span> <span class="o">=</span> <span class="n">dateutil</span><span class="o">.</span><span class="n">rrule</span><span class="o">.</span><span class="n">rrulestr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rrule</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">rrule</span> <span class="o">=</span> <span class="n">dateutil</span><span class="o">.</span><span class="n">rrule</span><span class="o">.</span><span class="n">rrulestr</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">rrule</span><span class="p">,</span>
+            <span class="n">dtstart</span><span class="o">=</span><span class="n">DEFAULT_ANCHOR_DATE</span><span class="p">,</span>
+            <span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="p">)</span>
         <span class="n">timezone</span> <span class="o">=</span> <span class="n">dateutil</span><span class="o">.</span><span class="n">tz</span><span class="o">.</span><span class="n">gettz</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">timezone</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">rrule</span><span class="p">,</span> <span class="n">dateutil</span><span class="o">.</span><span class="n">rrule</span><span class="o">.</span><span class="n">rrule</span><span class="p">):</span>
             <span class="n">kwargs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">dtstart</span><span class="o">=</span><span class="n">rrule</span><span class="o">.</span><span class="n">_dtstart</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">tzinfo</span><span class="o">=</span><span class="n">timezone</span><span class="p">))</span>
@@ -8503,14 +8511,7 @@ schedule's timezone.</p>
 
       <details class="quote">
         <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/server/schemas/schedules.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">511</span>
-<span class="normal">512</span>
-<span class="normal">513</span>
-<span class="normal">514</span>
-<span class="normal">515</span>
-<span class="normal">516</span>
-<span class="normal">517</span>
-<span class="normal">518</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">518</span>
 <span class="normal">519</span>
 <span class="normal">520</span>
 <span class="normal">521</span>
@@ -8524,7 +8525,14 @@ schedule's timezone.</p>
 <span class="normal">529</span>
 <span class="normal">530</span>
 <span class="normal">531</span>
-<span class="normal">532</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">get_dates</span><span class="p">(</span>
+<span class="normal">532</span>
+<span class="normal">533</span>
+<span class="normal">534</span>
+<span class="normal">535</span>
+<span class="normal">536</span>
+<span class="normal">537</span>
+<span class="normal">538</span>
+<span class="normal">539</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">get_dates</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">n</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">start</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -8569,10 +8577,7 @@ here</p>
 
       <details class="quote">
         <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/server/schemas/schedules.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">452</span>
-<span class="normal">453</span>
-<span class="normal">454</span>
-<span class="normal">455</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">455</span>
 <span class="normal">456</span>
 <span class="normal">457</span>
 <span class="normal">458</span>
@@ -8618,12 +8623,23 @@ here</p>
 <span class="normal">498</span>
 <span class="normal">499</span>
 <span class="normal">500</span>
-<span class="normal">501</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">to_rrule</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">dateutil</span><span class="o">.</span><span class="n">rrule</span><span class="o">.</span><span class="n">rrule</span><span class="p">:</span>
+<span class="normal">501</span>
+<span class="normal">502</span>
+<span class="normal">503</span>
+<span class="normal">504</span>
+<span class="normal">505</span>
+<span class="normal">506</span>
+<span class="normal">507</span>
+<span class="normal">508</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">to_rrule</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">dateutil</span><span class="o">.</span><span class="n">rrule</span><span class="o">.</span><span class="n">rrule</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Since rrule doesn&#39;t properly serialize/deserialize timezones, we localize dates</span>
 <span class="sd">    here</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">rrule</span> <span class="o">=</span> <span class="n">dateutil</span><span class="o">.</span><span class="n">rrule</span><span class="o">.</span><span class="n">rrulestr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rrule</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">rrule</span> <span class="o">=</span> <span class="n">dateutil</span><span class="o">.</span><span class="n">rrule</span><span class="o">.</span><span class="n">rrulestr</span><span class="p">(</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rrule</span><span class="p">,</span>
+        <span class="n">dtstart</span><span class="o">=</span><span class="n">DEFAULT_ANCHOR_DATE</span><span class="p">,</span>
+        <span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span>
     <span class="n">timezone</span> <span class="o">=</span> <span class="n">dateutil</span><span class="o">.</span><span class="n">tz</span><span class="o">.</span><span class="n">gettz</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">timezone</span><span class="p">)</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">rrule</span><span class="p">,</span> <span class="n">dateutil</span><span class="o">.</span><span class="n">rrule</span><span class="o">.</span><span class="n">rrule</span><span class="p">):</span>
         <span class="n">kwargs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">dtstart</span><span class="o">=</span><span class="n">rrule</span><span class="o">.</span><span class="n">_dtstart</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">tzinfo</span><span class="o">=</span><span class="n">timezone</span><span class="p">))</span>
