@@ -4103,6 +4103,8 @@ if (amplitudeKey){
       
         
       
+        
+      
     
     
     <li class="md-nav__item md-nav__item--nested">
@@ -4180,6 +4182,32 @@ if (amplitudeKey){
     
   
     prefect.cli.cloud
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api-ref/prefect/cli/cloud-webhook/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    prefect.cli.cloud_webhook
   
 
     
@@ -6771,7 +6799,33 @@ Cloud-only feature. You authenticate API calls using the standard
 <a href="/cloud/connecting#manually-configure-prefect-api-settings">authentication methods you use with Prefect
 Cloud</a>.</p>
 <h3 id="via-the-prefect-cli">Via the Prefect CLI<a class="headerlink" href="#via-the-prefect-cli" title="Permanent link">&para;</a></h3>
-<p><em>More information about using the Prefect CLI to manage webhooks coming soon!</em></p>
+<p>Webhooks can be managed and interacted with via the <code>prefect cloud webhook</code> command group.</p>
+<div class="highlight"><pre><span></span><code>prefect<span class="w"> </span>cloud<span class="w"> </span>webhook<span class="w"> </span>--help
+</code></pre></div>
+<p>You can create your first webhook by invoking <code>create</code>:</p>
+<div class="highlight"><pre><span></span><code>prefect<span class="w"> </span>cloud<span class="w"> </span>webhook<span class="w"> </span>create<span class="w"> </span>your-webhook-name<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--description<span class="w"> </span><span class="s2">&quot;Receives webhooks from your system&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--template<span class="w"> </span><span class="s1">&#39;{ &quot;event&quot;: &quot;your.event.name&quot;, &quot;resource&quot;: { &quot;prefect.resource.id&quot;: &quot;your.resource.id&quot; } }&#39;</span>
+</code></pre></div>
+<p>Note the template string, which is discussed in <a href="#webhook-templates">greater detail down below</a></p>
+<p>You can retrieve details for a specific webhook by ID using <code>get</code>, or optionally query
+all webhooks in your workspace via <code>get --all</code>:</p>
+<div class="highlight"><pre><span></span><code>prefect<span class="w"> </span>cloud<span class="w"> </span>webhook<span class="w"> </span>get<span class="w"> </span>&lt;webhook-id&gt;
+
+<span class="c1"># optionally, pass the --all flag to list all your configured webhooks</span>
+prefect<span class="w"> </span>cloud<span class="w"> </span>webhook<span class="w"> </span>get<span class="w"> </span>--all
+</code></pre></div>
+<p>If you ever need to disable an existing webhook without deleting it, use <code>toggle</code>:</p>
+<div class="highlight"><pre><span></span><code>prefect<span class="w"> </span>cloud<span class="w"> </span>webhook<span class="w"> </span>toggle<span class="w"> </span>&lt;webhook-id&gt;
+Webhook<span class="w"> </span>is<span class="w"> </span>now<span class="w"> </span>disabled
+
+prefect<span class="w"> </span>cloud<span class="w"> </span>webhook<span class="w"> </span>toggle<span class="w"> </span>&lt;webhook-id&gt;
+Webhook<span class="w"> </span>is<span class="w"> </span>now<span class="w"> </span>enabled
+</code></pre></div>
+<p>If you are concerned that your webhook endpoint may have been compromised, use <code>rotate</code> to
+generate a new, random endpoint</p>
+<div class="highlight"><pre><span></span><code>prefect<span class="w"> </span>cloud<span class="w"> </span>webhook<span class="w"> </span>toggle<span class="w"> </span>&lt;slug&gt;
+</code></pre></div>
 <h2 id="webhook-endpoints">Webhook endpoints<a class="headerlink" href="#webhook-endpoints" title="Permanent link">&para;</a></h2>
 <p>The webhook endpoints have randomly generated opaque URLs that do not divulge any
 information about your Prefect Cloud workspace.  They are rooted at
