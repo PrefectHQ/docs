@@ -6570,8 +6570,7 @@ managed as it is assumed that the caller is managing the context.</p>
 
       <details class="quote">
         <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/client/utilities.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">12</span>
-<span class="normal">13</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">13</span>
 <span class="normal">14</span>
 <span class="normal">15</span>
 <span class="normal">16</span>
@@ -6600,7 +6599,18 @@ managed as it is assumed that the caller is managing the context.</p>
 <span class="normal">39</span>
 <span class="normal">40</span>
 <span class="normal">41</span>
-<span class="normal">42</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">inject_client</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span>
+<span class="normal">52</span>
+<span class="normal">53</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">inject_client</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Simple helper to provide a context managed client to a asynchronous function.</span>
 
@@ -6612,13 +6622,23 @@ managed as it is assumed that the caller is managing the context.</p>
     <span class="nd">@wraps</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">with_injected_client</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="kn">from</span> <span class="nn">prefect.client.orchestration</span> <span class="kn">import</span> <span class="n">get_client</span>
+        <span class="kn">from</span> <span class="nn">prefect.context</span> <span class="kn">import</span> <span class="n">FlowRunContext</span><span class="p">,</span> <span class="n">TaskRunContext</span>
 
+        <span class="n">flow_run_context</span> <span class="o">=</span> <span class="n">FlowRunContext</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+        <span class="n">task_run_context</span> <span class="o">=</span> <span class="n">TaskRunContext</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
         <span class="n">client</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">client_context</span> <span class="o">=</span> <span class="n">asyncnullcontext</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="s2">&quot;client&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span> <span class="ow">and</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;client&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="c1"># Client provided in kwargs</span>
             <span class="n">client</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;client&quot;</span><span class="p">]</span>
-            <span class="n">client_context</span> <span class="o">=</span> <span class="n">asyncnullcontext</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">flow_run_context</span> <span class="ow">and</span> <span class="n">flow_run_context</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">_loop</span> <span class="o">==</span> <span class="n">get_running_loop</span><span class="p">():</span>
+            <span class="c1"># Client available from flow run context</span>
+            <span class="n">client</span> <span class="o">=</span> <span class="n">flow_run_context</span><span class="o">.</span><span class="n">client</span>
+        <span class="k">elif</span> <span class="n">task_run_context</span> <span class="ow">and</span> <span class="n">task_run_context</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">_loop</span> <span class="o">==</span> <span class="n">get_running_loop</span><span class="p">():</span>
+            <span class="c1"># Client available from task run context</span>
+            <span class="n">client</span> <span class="o">=</span> <span class="n">task_run_context</span><span class="o">.</span><span class="n">client</span>
+
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># A new client is needed</span>
             <span class="n">client_context</span> <span class="o">=</span> <span class="n">get_client</span><span class="p">()</span>
