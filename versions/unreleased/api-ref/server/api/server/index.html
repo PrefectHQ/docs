@@ -7509,7 +7509,7 @@ and services will be disabled.</p>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">stop_services</span><span class="p">():</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Ensure services are stopped before the Prefect REST API shuts down.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">app</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">services</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">app</span><span class="o">.</span><span class="n">state</span><span class="p">,</span> <span class="s2">&quot;services&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">app</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">services</span><span class="p">:</span>
             <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span><span class="o">*</span><span class="p">[</span><span class="n">service</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span> <span class="k">for</span> <span class="n">service</span> <span class="ow">in</span> <span class="n">app</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">services</span><span class="p">])</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span>
