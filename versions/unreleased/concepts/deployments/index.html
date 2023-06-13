@@ -1537,6 +1537,19 @@ if (amplitudeKey){
 </li>
         
           <li class="md-nav__item">
+  <a href="#create-a-flow-run-with-an-event-trigger" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Create a flow run with an event trigger
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#create-a-flow-run-with-prefect-ui" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -6836,6 +6849,19 @@ if (amplitudeKey){
 </li>
         
           <li class="md-nav__item">
+  <a href="#create-a-flow-run-with-an-event-trigger" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Create a flow run with an event trigger
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#create-a-flow-run-with-prefect-ui" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -7005,6 +7031,7 @@ flowchart LR
 <p>A deployment additionally enables you to:</p>
 <ul>
 <li>Schedule flow runs.</li>
+<li>Specify event triggers for flow runs.</li>
 <li>Assign a work queue name to delegate deployment flow runs to work queues.</li>
 <li>Assign one or more tags to organize your deployments and flow runs. You can use those tags as filters in the Prefect UI.</li>
 <li>Assign custom parameter values for flow runs based on the deployment.</li>
@@ -7024,9 +7051,10 @@ flowchart LR
 <p>Each deployment is associated with a single flow, but any given flow can be referenced by multiple deployments.</p>
 <p>Deployments are uniquely identified by the combination of: <code>flow_name/deployment_name</code>.</p>
 <pre class="mermaid"><code>graph LR
-    F("my_flow"):::yellow -.-&gt; A("Deployment 'daily'"):::tan --&gt; X("my_flow/daily"):::fgreen
-    F -.-&gt; B("Deployment 'weekly'"):::gold  --&gt; Y("my_flow/weekly"):::green
-    F -.-&gt; C("Deployment 'ad-hoc'"):::dgold --&gt; Z("my_flow/ad-hoc"):::dgreen
+    F("my_flow"):::yellow -.-&gt; A("Deployment 'daily'"):::tan --&gt; W("my_flow/daily"):::fgreen
+    F -.-&gt; B("Deployment 'weekly'"):::gold  --&gt; X("my_flow/weekly"):::green
+    F -.-&gt; C("Deployment 'ad-hoc'"):::dgold --&gt; Y("my_flow/ad-hoc"):::dgreen
+    F -.-&gt; D("Deployment 'trigger-based'"):::dgold --&gt; Z("my_flow/trigger-based"):::dgreen
 
     classDef gold fill:goldenrod,stroke:goldenrod,stroke-width:4px,color:white
     classDef yellow fill:gold,stroke:gold,stroke-width:4px
@@ -7035,7 +7063,7 @@ flowchart LR
     classDef fgreen fill:forestgreen,stroke:forestgreen,stroke-width:4px,color:white
     classDef green fill:green,stroke:green,stroke-width:4px,color:white
     classDef dgreen fill:darkgreen,stroke:darkgreen,stroke-width:4px,color:white</code></pre>
-<p>This enables you to run a single flow with different parameters, on multiple schedules, and in different environments. This also enables you to run different versions of the same flow for testing and production purposes.</p>
+<p>This enables you to run a single flow with different parameters, based on multiple schedules and triggers, and in different environments. This also enables you to run different versions of the same flow for testing and production purposes.</p>
 <h2 id="deployment-definition">Deployment definition<a class="headerlink" href="#deployment-definition" title="Permanent link">&para;</a></h2>
 <p>A <em>deployment definition</em> captures the settings for creating a <a href="#deployment-api-representation">deployment object</a> on the Prefect API. You can create the deployment definition by:</p>
 <ul>
@@ -7528,6 +7556,24 @@ Deployment<span class="w"> </span><span class="s1">&#39;76a9f1ac-4d8c-4a92-8869-
 <h2 id="create-a-flow-run-from-a-deployment">Create a flow run from a deployment<a class="headerlink" href="#create-a-flow-run-from-a-deployment" title="Permanent link">&para;</a></h2>
 <h3 id="create-a-flow-run-with-a-schedule">Create a flow run with a schedule<a class="headerlink" href="#create-a-flow-run-with-a-schedule" title="Permanent link">&para;</a></h3>
 <p>If you specify a schedule for a deployment, the deployment will execute its flow automatically on that schedule as long as a Prefect server and agent are running. Prefect Cloud creates schedules flow runs automatically, and they will run on schedule if an agent is configured to pick up flow runs for the deployment.</p>
+<h3 id="create-a-flow-run-with-an-event-trigger">Create a flow run with an event trigger<a class="headerlink" href="#create-a-flow-run-with-an-event-trigger" title="Permanent link">&para;</a></h3>
+<div class="admonition cloud-ad">
+<p class="admonition-title">deployment triggers are only available in Prefect Cloud</p>
+</div>
+<p>Deployments can optionally take a trigger specification, which will configure an automation to run the deployment based on the presence or absence of events, and optionally pass event data into the deployment run as parameters via jinja templating.</p>
+<div class="highlight"><pre><span></span><code><span class="nt">triggers</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">    </span><span class="nt">match</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">prefect.resource.id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">prefect.flow-run.*</span>
+<span class="w">    </span><span class="nt">expect</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">prefect.flow-run.Completed</span>
+<span class="w">    </span><span class="nt">match_related</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">prefect.resource.name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">prefect.flow.etl-flow</span>
+<span class="w">      </span><span class="nt">prefect.resource.role</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">flow</span>
+<span class="w">    </span><span class="nt">parameters</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">param_1</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{{</span><span class="nv"> </span><span class="s">event</span><span class="nv"> </span><span class="s">}}&quot;</span>
+</code></pre></div>
+<p>When applied, this deployment will execute on the completion of the upstream flow specified in the <code>match_related</code> key, with the flow run passed in as a parameter. Triggers can be configured to respond to the presence or absence of arbitrary internal or external <a href="cloud/events">events</a>. The trigger system and API are detailed in <a href="/cloud/automations/">Automations</a>.</p>
 <h3 id="create-a-flow-run-with-prefect-ui">Create a flow run with Prefect UI<a class="headerlink" href="#create-a-flow-run-with-prefect-ui" title="Permanent link">&para;</a></h3>
 <p>In the Prefect UI, you can click the <strong>Run</strong> button next to any deployment to execute an ad hoc flow run for that deployment.</p>
 <p>The <code>prefect deployment</code> CLI command provides commands for managing and running deployments locally.</p>
