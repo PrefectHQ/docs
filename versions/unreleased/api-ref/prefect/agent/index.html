@@ -6675,11 +6675,11 @@ their execution.</p>
 
         <details class="quote">
           <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/agent.py</code></summary>
-          <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">670</span>
-<span class="normal">671</span>
-<span class="normal">672</span>
+          <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">672</span>
 <span class="normal">673</span>
-<span class="normal">674</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@deprecated_callable</span><span class="p">(</span><span class="n">start_date</span><span class="o">=</span><span class="s2">&quot;Feb 2023&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Use `PrefectAgent` instead.&quot;</span><span class="p">)</span>
+<span class="normal">674</span>
+<span class="normal">675</span>
+<span class="normal">676</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@deprecated_callable</span><span class="p">(</span><span class="n">start_date</span><span class="o">=</span><span class="s2">&quot;Feb 2023&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Use `PrefectAgent` instead.&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">OrionAgent</span><span class="p">(</span><span class="n">PrefectAgent</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Deprecated. Use `PrefectAgent` instead.</span>
@@ -7332,7 +7332,9 @@ their execution.</p>
 <span class="normal">664</span>
 <span class="normal">665</span>
 <span class="normal">666</span>
-<span class="normal">667</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">PrefectAgent</span><span class="p">:</span>
+<span class="normal">667</span>
+<span class="normal">668</span>
+<span class="normal">669</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">PrefectAgent</span><span class="p">:</span>
     <span class="nd">@experimental_parameter</span><span class="p">(</span>
         <span class="s2">&quot;work_pool_name&quot;</span><span class="p">,</span> <span class="n">group</span><span class="o">=</span><span class="s2">&quot;work_pools&quot;</span><span class="p">,</span> <span class="n">when</span><span class="o">=</span><span class="k">lambda</span> <span class="n">y</span><span class="p">:</span> <span class="n">y</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
     <span class="p">)</span>
@@ -7798,7 +7800,9 @@ their execution.</p>
                 <span class="p">)</span>
                 <span class="c1"># Mark the task as started to prevent agent crash</span>
                 <span class="n">task_status</span><span class="o">.</span><span class="n">started</span><span class="p">(</span><span class="n">exc</span><span class="p">)</span>
-                <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_propose_failed_state</span><span class="p">(</span><span class="n">flow_run</span><span class="p">,</span> <span class="n">exc</span><span class="p">)</span>
+                <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_propose_crashed_state</span><span class="p">(</span>
+                    <span class="n">flow_run</span><span class="p">,</span> <span class="s2">&quot;Flow run could not be submitted to infrastructure&quot;</span>
+                <span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span>
                     <span class="sa">f</span><span class="s2">&quot;An error occured while monitoring flow run &#39;</span><span class="si">{</span><span class="n">flow_run</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">&#39;. &quot;</span>

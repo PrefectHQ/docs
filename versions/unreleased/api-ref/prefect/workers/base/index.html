@@ -7317,8 +7317,8 @@ if (amplitudeKey){
 <code class="highlight language-python"><span class="n">from_template_and_values</span></code>
   
   <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-classmethod"><code>classmethod</code></small>
       <small class="doc doc-label doc-label-async"><code>async</code></small>
+      <small class="doc doc-label doc-label-classmethod"><code>classmethod</code></small>
   </span>
 
 <a href="#prefect.workers.base.BaseJobConfiguration.from_template_and_values" class="headerlink" title="Permanent link">&para;</a></h3>
@@ -8497,7 +8497,9 @@ the flow run.</p>
 <span class="normal">1130</span>
 <span class="normal">1131</span>
 <span class="normal">1132</span>
-<span class="normal">1133</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@register_base_type</span>
+<span class="normal">1133</span>
+<span class="normal">1134</span>
+<span class="normal">1135</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@register_base_type</span>
 <span class="k">class</span> <span class="nc">BaseWorker</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
     <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">job_configuration</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">BaseJobConfiguration</span><span class="p">]</span> <span class="o">=</span> <span class="n">BaseJobConfiguration</span>
@@ -9039,7 +9041,9 @@ the flow run.</p>
                 <span class="p">)</span>
                 <span class="c1"># Mark the task as started to prevent agent crash</span>
                 <span class="n">task_status</span><span class="o">.</span><span class="n">started</span><span class="p">(</span><span class="n">exc</span><span class="p">)</span>
-                <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_propose_failed_state</span><span class="p">(</span><span class="n">flow_run</span><span class="p">,</span> <span class="n">exc</span><span class="p">)</span>
+                <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_propose_crashed_state</span><span class="p">(</span>
+                    <span class="n">flow_run</span><span class="p">,</span> <span class="s2">&quot;Flow run could not be submitted to infrastructure&quot;</span>
+                <span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">run_logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span>
                     <span class="sa">f</span><span class="s2">&quot;An error occurred while monitoring flow run &#39;</span><span class="si">{</span><span class="n">flow_run</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">&#39;. &quot;</span>
@@ -9410,9 +9414,7 @@ pool, the work pool queues it is polling, and its local settings.</p>
 
       <details class="quote">
         <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/workers/base.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">875</span>
-<span class="normal">876</span>
-<span class="normal">877</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">877</span>
 <span class="normal">878</span>
 <span class="normal">879</span>
 <span class="normal">880</span>
@@ -9425,7 +9427,9 @@ pool, the work pool queues it is polling, and its local settings.</p>
 <span class="normal">887</span>
 <span class="normal">888</span>
 <span class="normal">889</span>
-<span class="normal">890</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_status</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="normal">890</span>
+<span class="normal">891</span>
+<span class="normal">892</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_status</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Retrieves the status of the current worker including its name, current worker</span>
 <span class="sd">    pool, the work pool queues it is polling, and its local settings.</span>
