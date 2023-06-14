@@ -6804,20 +6804,20 @@ $<span class="w"> </span>prefect<span class="w"> </span>project<span class="w"> 
 <p class="admonition-title"><code>prefect.yaml</code></p>
 <p>The above process worked out-of-the-box because of the information stored within <code>prefect.yaml</code>; if you open this file up in a text editor, you'll find that is not empty.  Specifically, it contains the following <code>pull</code> step that was automatically populated when you first ran <code>prefect project init</code>:
 <div class="highlight"><pre><span></span><code><span class="nt">pull</span><span class="p">:</span>
-<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">prefect.projects.steps.git_clone_project</span><span class="p">:</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">prefect.projects.steps.git_clone</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">repository</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://github.com/PrefectHQ/hello-projects.git</span>
 <span class="w">    </span><span class="nt">branch</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">main</span>
 <span class="w">    </span><span class="nt">access_token</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span>
 </code></pre></div>
 If pulling from a private repository, your pull step might appear like below.  Note that the access_token is a "Secret" type, which will be retrieved and inferred.
 <div class="highlight"><pre><span></span><code><span class="nt">pull</span><span class="p">:</span>
-<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">prefect.projects.steps.git_clone_project</span><span class="p">:</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">prefect.projects.steps.git_clone</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">repository</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://github.com/PrivateRepo/test-private-repo.git</span>
 <span class="w">    </span><span class="nt">branch</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">main</span>
 <span class="w">    </span><span class="nt">access_token</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{{</span><span class="nv"> </span><span class="s">prefect.blocks.secret.my-github-secret</span><span class="nv"> </span><span class="s">}}&quot;</span>
 </code></pre></div>
 These <code>pull</code> steps are the instructions sent to your worker's runtime environment that allow it to clone your project in remote locations. For more information, see <a href="/concepts/projects/">the project concept documentation</a>.</p>
-<p>For more examples of configuration options available for cloning projects, see <a href="/api-ref/prefect/projects/steps/pull">the <code>git_clone_project</code> step documentation</a>.</p>
+<p>For more examples of configuration options available for cloning projects, see <a href="/api-ref/prefect/projects/steps/pull">the <code>git_clone</code> step documentation</a>.</p>
 </div>
 <h3 id="dockerized-deployment">Dockerized deployment<a class="headerlink" href="#dockerized-deployment" title="Permanent link">&para;</a></h3>
 <p>In this example, we extend the examples above by dockerizing our setup and executing runs with a Docker Worker.  Building off the <a href="#git-based-deployment">git-based example above</a>, let's switch our deployment to submit work to the <code>docker-work</code> work pool that <a href="#worker-tip">we started at the beginning</a>:</p>
@@ -6853,7 +6853,7 @@ $<span class="w"> </span>python<span class="w"> </span>flows/pandas_flow.py
 <span class="w">    </span><span class="nt">push</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
 
 <span class="nt">pull</span><span class="p">:</span>
-<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">prefect.projects.steps.git_clone_project</span><span class="p">:</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">prefect.projects.steps.git_clone</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">repository</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://github.com/PrefectHQ/hello-projects.git</span>
 <span class="w">    </span><span class="nt">branch</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">main</span>
 <span class="w">    </span><span class="nt">access_token</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span>
