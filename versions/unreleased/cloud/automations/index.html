@@ -2109,19 +2109,6 @@ if (amplitudeKey){
   
 </li>
       
-        <li class="md-nav__item">
-  <a href="#automations-api" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        <span class="md-typeset">
-          Automations API
-        </span>
-      
-    </span>
-  </a>
-  
-</li>
-      
     </ul>
   
 </nav>
@@ -6670,19 +6657,6 @@ if (amplitudeKey){
   
 </li>
       
-        <li class="md-nav__item">
-  <a href="#automations-api" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        <span class="md-typeset">
-          Automations API
-        </span>
-      
-    </span>
-  </a>
-  
-</li>
-      
     </ul>
   
 </nav>
@@ -6744,8 +6718,12 @@ if (amplitudeKey){
 </ul>
 </li>
 <li>Work queue health</li>
-<li><a href="#automations-api">Custom event</a> triggers</li>
+<li>Custom event triggers</li>
 </ul>
+<div class="admonition note">
+<p class="admonition-title">Automations API</p>
+<p>The <a href="https://app.prefect.cloud/api/docs#tag/Automations">automations API</a> enables further programatic customization of trigger and action policies based on arbitrary <a href="https://app.prefect.cloud/api/docs#tag/Events">events</a>.</p>
+</div>
 <p>Importantly, triggers can be configured not only in reaction to events, but also proactively: to trigger in the absence of an event you expect to see.</p>
 <p><img alt="Configuring a trigger for an automation in Prefect Cloud." src="/img/ui/automations-trigger.png" /></p>
 <p>For example, in the case of flow run state change triggers, you might expect production flows to finish in no longer than thirty minutes. But transient infrastructure or network issues could cause your flow to get “stuck” in a running state. A trigger could kick off an action if the flow stays in a running state for more than 30 minutes. This action could be on the flow itself, such as canceling or restarting it, or it could take the form of a notification so someone can take manual remediation steps.</p>
@@ -6770,7 +6748,7 @@ if (amplitudeKey){
 <span class="w">  </span><span class="p">],</span>
 <span class="w">  </span><span class="nt">&quot;after&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
 <span class="w">  </span><span class="nt">&quot;expect&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<span class="w">    </span><span class="s2">&quot;prefect.flow-run.Completed&quot;</span>
+<span class="w">    </span><span class="s2">&quot;prefect.flow-run.Failed&quot;</span>
 <span class="w">  </span><span class="p">],</span>
 <span class="w">  </span><span class="nt">&quot;posture&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Reactive&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;threshold&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
@@ -6809,27 +6787,15 @@ if (amplitudeKey){
 <span class="w">  </span><span class="nt">&quot;within&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1800</span>
 <span class="p">}</span>
 </code></pre></div>
-<p>Or, if you wanted your trigger to fire if your log write events passed a threshold of 100 within 10 seconds, you could paste in the following trigger configuration:</p>
-<div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;match&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;prefect.resource.id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;prefect.flow-run.*&quot;</span>
-<span class="w">  </span><span class="p">},</span>
-<span class="w">  </span><span class="nt">&quot;after&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
-<span class="w">  </span><span class="nt">&quot;expect&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<span class="w">    </span><span class="s2">&quot;prefect.log.write&quot;</span>
-<span class="w">  </span><span class="p">],</span>
-<span class="w">  </span><span class="nt">&quot;posture&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Reactive&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;threshold&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;within&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span>
-<span class="p">}</span>
-</code></pre></div>
 <h3 id="actions">Actions<a class="headerlink" href="#actions" title="Permanent link">&para;</a></h3>
 <p>Actions specify what your automation does when its trigger criteria are met. Current action types include: </p>
 <ul>
 <li>Cancel a flow run</li>
-<li>Pause or resume a deployment schedule</li>
+<li>Pause a flow run</li>
 <li>Run a deployment</li>
+<li>Pause or resume a deployment schedule</li>
 <li>Pause or resume a work queue</li>
+<li>Pause or resume an automation</li>
 <li>Send a <a href="#automation-notifications">notification</a></li>
 <li>Call a webhook</li>
 </ul>
@@ -6927,8 +6893,6 @@ Related Resources:
 {% endfor %}
 </code></pre></div>
 <p>Note that this example also illustrates the ability to use Jinja features such as iterator and for loop <a href="https://jinja.palletsprojects.com/en/3.1.x/templates/#list-of-control-structures">control structures</a> when templating notifications.</p>
-<h2 id="automations-api">Automations API<a class="headerlink" href="#automations-api" title="Permanent link">&para;</a></h2>
-<p>The <a href="https://app.prefect.cloud/api/docs#tag/Automations">automations API</a> enables further programatic customization of trigger and action policies based on arbitrary <a href="https://app.prefect.cloud/api/docs#tag/Events">events</a>.</p>
 
   
   
