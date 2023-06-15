@@ -6980,14 +6980,14 @@ if (amplitudeKey){
 </div></p>
 </div>
 <div class="highlight"><pre><span></span><code><span class="nt">build</span><span class="p">:</span>
-<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">prefect_docker.projects.steps.build_docker_image</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">requires</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">prefect-docker&gt;=0.2.0</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">prefect_docker.deployments.steps.build_docker_image</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">requires</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">prefect-docker&gt;=0.3.0</span>
 <span class="w">    </span><span class="nt">image_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">my-repo/my-image</span>
 <span class="w">    </span><span class="nt">tag</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">my-tag</span>
 <span class="w">    </span><span class="nt">dockerfile</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">auto</span>
 <span class="w">    </span><span class="nt">push</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
 </code></pre></div>
-<p>Once you've confirmed that these fields are set to their desired values, this step will automatically build a Docker image with the provided name and tag and push it to the repository referenced by the image name.  <a href="https://prefecthq.github.io/prefect-docker/projects/steps/#prefect_docker.projects.steps.BuildDockerImageResult">As the documentation notes</a>, this step produces a few fields that can optionally be used in future steps or within <code>prefect.yaml</code> as template values.  It is best practice to use <code>{{ image_name }}</code> within <code>prefect.yaml</code> (specificially the work pool's job variables section) so that you don't risk having your build step and deployment specification get out of sync with hardcoded values.  For a worked example, <a href="/concepts/deployments-ux/#dockerized-deployment">check out the deployments tutorial</a>.</p>
+<p>Once you've confirmed that these fields are set to their desired values, this step will automatically build a Docker image with the provided name and tag and push it to the repository referenced by the image name.  <a href="https://prefecthq.github.io/prefect-docker/projects/steps/#prefect_docker.deployments.steps.BuildDockerImageResult">As the documentation notes</a>, this step produces a few fields that can optionally be used in future steps or within <code>prefect.yaml</code> as template values.  It is best practice to use <code>{{ image }}</code> within <code>prefect.yaml</code> (specificially the work pool's job variables section) so that you don't risk having your build step and deployment specification get out of sync with hardcoded values.  For a worked example, <a href="/concepts/deployments-ux/#dockerized-deployment">check out the deployments tutorial</a>.</p>
 <div class="admonition note some steps require prefect integrations">
 <p class="admonition-title">Note</p>
 <p>Note that in the build step example above, we relied on the <code>prefect-docker</code> package; in cases that deal with external services, additional packages are often required and will be auto-installed for you.</p>
@@ -7000,7 +7000,7 @@ if (amplitudeKey){
 <span class="w">        </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">get-commit-hash</span>
 <span class="w">        </span><span class="nt">script</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">git rev-parse --short HEAD</span>
 <span class="w">        </span><span class="nt">stream_output</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">prefect_docker.projects.steps.build_docker_image</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">prefect_docker.deployments.steps.build_docker_image</span><span class="p">:</span>
 <span class="w">        </span><span class="nt">requires</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">prefect-docker</span>
 <span class="w">        </span><span class="nt">image_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">my-image</span>
 <span class="w">        </span><span class="nt">image_tag</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{{</span><span class="nv"> </span><span class="s">get-commit-hash.stdout</span><span class="nv"> </span><span class="s">}}&quot;</span>
@@ -7019,23 +7019,24 @@ if (amplitudeKey){
 
 <p>Inspecting our newly created <code>prefect.yaml</code> file we find that the <code>push</code> and <code>pull</code> sections have been templated out for us as follows:</p>
 <div class="highlight"><pre><span></span><code><span class="nt">push</span><span class="p">:</span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">prefect_aws.projects.steps.push_project_to_s3</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">prefect_aws.deployments.steps.push_to_s3</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">push-code</span>
 <span class="w">      </span><span class="nt">requires</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">prefect-aws&gt;=0.3.0</span>
 <span class="w">      </span><span class="nt">bucket</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">my-bucket</span>
 <span class="w">      </span><span class="nt">folder</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">project-name</span>
 <span class="w">      </span><span class="nt">credentials</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span>
 
 <span class="nt">pull</span><span class="p">:</span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">prefect_aws.projects.steps.pull_project_from_s3</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">prefect_aws.deployments.steps.pull_from_s3</span><span class="p">:</span>
 <span class="w">      </span><span class="nt">requires</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">prefect-aws&gt;=0.3.0</span>
 <span class="w">      </span><span class="nt">bucket</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">my-bucket</span>
-<span class="w">      </span><span class="nt">folder</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{{</span><span class="nv"> </span><span class="s">folder</span><span class="nv"> </span><span class="s">}}&quot;</span>
+<span class="w">      </span><span class="nt">folder</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{{</span><span class="nv"> </span><span class="s">push-code.folder</span><span class="nv"> </span><span class="s">}}&quot;</span>
 <span class="w">      </span><span class="nt">credentials</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span>
 </code></pre></div>
-<p>The bucket has been populated with our provided value (which also could have been provided with the <code>--field</code> flag); note that the <code>folder</code> property of the <code>push</code> step is a template - the <code>pull_project_from_s3</code> step outputs both a <code>bucket</code> value as well as a <code>folder</code> value that can be used to template downstream steps.  Doing this helps you keep your steps consistent across edits.</p>
+<p>The bucket has been populated with our provided value (which also could have been provided with the <code>--field</code> flag); note that the <code>folder</code> property of the <code>push</code> step is a template - the <code>pull_from_s3</code> step outputs both a <code>bucket</code> value as well as a <code>folder</code> value that can be used to template downstream steps.  Doing this helps you keep your steps consistent across edits.</p>
 <p>As discussed above, if you are using <a href="/concepts/blocks/">blocks</a>, the credentials section can be templated with a block reference for secure and dynamic credentials access:</p>
 <div class="highlight"><pre><span></span><code><span class="nt">push</span><span class="p">:</span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">prefect_aws.projects.steps.push_project_to_s3</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">prefect_aws.deployments.steps.push_to_s3</span><span class="p">:</span>
 <span class="w">      </span><span class="nt">requires</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">prefect-aws&gt;=0.3.0</span>
 <span class="w">      </span><span class="nt">bucket</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">my-bucket</span>
 <span class="w">      </span><span class="nt">folder</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">project-name</span>
@@ -7048,7 +7049,7 @@ if (amplitudeKey){
 <ul>
 <li><code>set_working_directory</code>: this step simply sets the working directory for the process prior to importing your flow</li>
 <li><code>git_clone</code>: this step clones the provided repository on the provided branch</li>
-<li><code>pull_project_from_{cloud}</code>: this step pulls the working directory from a Cloud storage location (e.g., S3)</li>
+<li><code>pull_from_{cloud}</code>: this step pulls the working directory from a Cloud storage location (e.g., S3)</li>
 </ul>
 <div class="admonition tip">
 <p class="admonition-title">Use block and variable references</p>
@@ -7065,8 +7066,8 @@ if (amplitudeKey){
 <span class="w">        </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">get-commit-hash</span>
 <span class="w">        </span><span class="nt">script</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">git rev-parse --short HEAD</span>
 <span class="w">        </span><span class="nt">stream_output</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">prefect_docker.projects.steps.build_docker_image</span><span class="p">:</span>
-<span class="w">        </span><span class="nt">requires</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">prefect-docker</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">prefect_docker.deployments.steps.build_docker_image</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">requires</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">prefect-docker&gt;=0.3.0</span>
 <span class="w">        </span><span class="nt">image_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">my-image</span>
 <span class="w">        </span><span class="nt">image_tag</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{{</span><span class="nv"> </span><span class="s">get-commit-hash.stdout</span><span class="nv"> </span><span class="s">}}&quot;</span>
 <span class="w">        </span><span class="nt">dockerfile</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">auto</span>
@@ -7093,9 +7094,9 @@ if (amplitudeKey){
 </ul>
 <p>As an example, consider the following <code>prefect.yaml</code> file:</p>
 <div class="highlight"><pre><span></span><code><span class="nt">build</span><span class="p">:</span>
-<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">prefect_docker.projects.steps.build_docker_image</span><span class="p">:</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">prefect_docker.deployments.steps.build_docker_image</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">build-image`</span>
-<span class="w">    </span><span class="nt">requires</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">prefect-docker&gt;=0.2.0</span>
+<span class="w">    </span><span class="nt">requires</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">prefect-docker&gt;=0.3.0</span>
 <span class="w">    </span><span class="nt">image_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">my-repo/my-image</span>
 <span class="w">    </span><span class="nt">tag</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">my-tag</span>
 <span class="w">    </span><span class="nt">dockerfile</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">auto</span>
@@ -7104,9 +7105,9 @@ if (amplitudeKey){
 <span class="nt">deployments</span><span class="p">:</span>
 <span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="c1"># base metadata</span>
 <span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span>
-<span class="w">    </span><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{{</span><span class="nv"> </span><span class="s">build_image.image_tag</span><span class="nv"> </span><span class="s">}}&quot;</span>
+<span class="w">    </span><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{{</span><span class="nv"> </span><span class="s">build_image.tag</span><span class="nv"> </span><span class="s">}}&quot;</span>
 <span class="w">    </span><span class="nt">tags</span><span class="p">:</span>
-<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;{{</span><span class="nv"> </span><span class="s">build_image.image_tag</span><span class="nv"> </span><span class="s">}}&quot;</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;{{</span><span class="nv"> </span><span class="s">build_image.tag</span><span class="nv"> </span><span class="s">}}&quot;</span>
 <span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;{{</span><span class="nv"> </span><span class="s">prefect.variables.some_common_tag</span><span class="nv"> </span><span class="s">}}&quot;</span>
 <span class="w">    </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span>
 <span class="w">    </span><span class="nt">schedule</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span>
@@ -7121,13 +7122,13 @@ if (amplitudeKey){
 <span class="w">        </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;my-k8s-work-pool&quot;</span>
 <span class="w">        </span><span class="nt">work_queue_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span>
 <span class="w">        </span><span class="nt">job_variables</span><span class="p">:</span>
-<span class="w">            </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{{</span><span class="nv"> </span><span class="s">build_image.image_name</span><span class="nv"> </span><span class="s">}}&quot;</span>
+<span class="w">            </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{{</span><span class="nv"> </span><span class="s">build_image.image</span><span class="nv"> </span><span class="s">}}&quot;</span>
 <span class="w">            </span><span class="nt">cluster_config</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{{</span><span class="nv"> </span><span class="s">prefect.blocks.kubernetes-cluster-config.my-favorite-config</span><span class="nv"> </span><span class="s">}}&quot;</span>
 </code></pre></div>
 <p>So long as our <code>build</code> steps produce fields called <code>image_name</code> and <code>image_tag</code>, every time we deploy a new version of our deployment these fields will be dynamically populated with the relevant values.</p>
 <div class="admonition note">
 <p class="admonition-title">Docker step</p>
-<p>The most commonly used build step is <a href="https://prefecthq.github.io/prefect-docker/projects/steps/#prefect_docker.projects.steps.build_docker_image"><code>prefect_docker.projects.steps.build_docker_image</code></a> which produces both the <code>image_name</code> and <code>image_tag</code> fields.</p>
+<p>The most commonly used build step is <a href="https://prefecthq.github.io/prefect-docker/deployments/steps/#prefect_docker.deployments.steps.build_docker_image"><code>prefect_docker.deployments.steps.build_docker_image</code></a> which produces both the <code>image_name</code> and <code>tag</code> fields.</p>
 <p>For an example, <a href="/tutorial/deployments-ux/#dockerized-deployment">check out the deployments tutorial</a>.</p>
 </div>
 <h3 id="deployment-configurations">Deployment Configurations<a class="headerlink" href="#deployment-configurations" title="Permanent link">&para;</a></h3>
@@ -7202,14 +7203,15 @@ if (amplitudeKey){
 <span class="w">            </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">my-docker-work-pool</span>
 <span class="w">            </span><span class="nt">work_queue_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">default</span>
 <span class="w">            </span><span class="nt">job_variables</span><span class="p">:</span>
-<span class="w">                </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{{</span><span class="nv"> </span><span class="s">image_name</span><span class="nv"> </span><span class="s">}}&quot;</span>
+<span class="w">                </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{{</span><span class="nv"> </span><span class="s">build-image.image</span><span class="nv"> </span><span class="s">}}&quot;</span>
 <span class="w">    </span><span class="nt">schedules</span><span class="p">:</span>
 <span class="w">        </span><span class="nt">every_ten_minutes</span><span class="p">:</span><span class="w"> </span><span class="nl">&amp;every_10_minutes</span>
 <span class="w">            </span><span class="nt">interval</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">600</span>
 <span class="w">    </span><span class="nt">actions</span><span class="p">:</span>
 <span class="w">        </span><span class="nt">docker_build</span><span class="p">:</span><span class="w"> </span><span class="nl">&amp;docker_build</span>
-<span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">prefect_docker.projects.steps.build_docker_image</span><span class="p">:</span><span class="w"> </span><span class="nl">&amp;docker_build_config</span>
-<span class="w">                </span><span class="nt">requires</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">prefect-docker&gt;=0.2.0</span>
+<span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">prefect_docker.deployments.steps.build_docker_image</span><span class="p">:</span><span class="w"> </span><span class="nl">&amp;docker_build_config</span>
+<span class="w">                </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">build-image</span>
+<span class="w">                </span><span class="nt">requires</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">prefect-docker&gt;=0.3.0</span>
 <span class="w">                </span><span class="nt">image_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">my-example-image</span>
 <span class="w">                </span><span class="nt">tag</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dev</span>
 <span class="w">                </span><span class="nt">dockerfile</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">auto</span>
@@ -7229,7 +7231,7 @@ if (amplitudeKey){
 <span class="w">    </span><span class="nt">entrypoint</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">flows/goodbye.py:my_other_flow</span>
 <span class="w">    </span><span class="nt">work_pool</span><span class="p">:</span><span class="w"> </span><span class="nv">*my_docker_work_pool</span>
 <span class="w">    </span><span class="nt">build</span><span class="p">:</span>
-<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">prefect_docker.projects.steps.build_docker_image</span><span class="p">:</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">prefect_docker.deployments.steps.build_docker_image</span><span class="p">:</span>
 <span class="w">            </span><span class="nt">&lt;&lt;</span><span class="p">:</span><span class="w"> </span><span class="nv">*docker_build_config</span><span class="w"> </span><span class="c1"># Uses the docker_build_config alias and overrides the dockerfile field</span>
 <span class="w">            </span><span class="nt">dockerfile</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Dockerfile.custom</span>
 
