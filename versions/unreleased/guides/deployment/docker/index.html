@@ -571,14 +571,6 @@ if (amplitudeKey){
       
         
       
-        
-      
-        
-      
-        
-      
-        
-      
     
     
     <li class="md-nav__item md-nav__item--nested">
@@ -635,13 +627,13 @@ if (amplitudeKey){
   
   
     <li class="md-nav__item">
-      <a href="../../../tutorial/first-steps/" class="md-nav__link">
+      <a href="../../../tutorial/flows/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
     
   
-    Flows & Tasks
+    Flows
   
 
     
@@ -661,91 +653,13 @@ if (amplitudeKey){
   
   
     <li class="md-nav__item">
-      <a href="../../../tutorial/flow-task-config/" class="md-nav__link">
+      <a href="../../../tutorial/tasks/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
     
   
-    Flow & Task Configuration
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../tutorial/execution/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    
-  
-    Execution
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../tutorial/orchestration/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    
-  
-    Orchestration
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../tutorial/deployments-ux/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    
-  
-    Deployment Management
+    Tasks
   
 
     
@@ -771,33 +685,7 @@ if (amplitudeKey){
   <span class="md-ellipsis">
     
   
-    Deployments
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../tutorial/storage/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    
-  
-    Storage & Infrastructure
+    Deploying Flows
   
 
     
@@ -2217,6 +2105,8 @@ if (amplitudeKey){
       
         
       
+        
+      
     
     
     <li class="md-nav__item md-nav__item--active md-nav__item--nested">
@@ -2496,6 +2386,32 @@ if (amplitudeKey){
     
   
     Developing a New Worker Type
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://prefecthq.github.io/prefect-aws/#using-prefect-with-aws-ecs" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    Running flow on AWS ECS
   
 
     
@@ -6693,7 +6609,7 @@ if (amplitudeKey){
 
 
 <h1 id="running-flows-with-docker">Running flows with Docker<a class="headerlink" href="#running-flows-with-docker" title="Permanent link">&para;</a></h1>
-<p>In the <a href="/tutorial/deployments/">Deployments</a> and <a href="/tutorial/storage/">Storage and Infrastructure</a> tutorials, we looked at creating configuration that enables creating flow runs via the API and with code that was uploaded to a remotely accessible location.  </p>
+<p>In the <a href="/tutorial/deployments/">Deployments</a> tutorial, we looked at creating configuration that enables creating flow runs via the API and with code that was uploaded to a remotely accessible location.  </p>
 <p>In this guide, we'll further configure the deployment so flow runs are executed in a Docker container. We'll run our Docker instance locally, but you can extend this guide to run it on remote machines.</p>
 <p>In this guide we'll:</p>
 <ul>
@@ -6705,7 +6621,6 @@ if (amplitudeKey){
 <p>To run a deployed flow in a Docker container, you'll need the following:</p>
 <ul>
 <li>We'll use the flow script and deployment from the <a href="/tutorial/deployments/">Deployments</a> tutorial. </li>
-<li>We'll also use the remote storage block created in the <a href="/tutorial/storage/">Storage and Infrastructure</a> tutorial.</li>
 <li>You must run a standalone Prefect server (<code>prefect server start</code>) or use Prefect Cloud.</li>
 <li>You'll need <a href="https://docs.docker.com/engine/">Docker Engine</a> installed and running on the same machine as your agent.</li>
 </ul>
@@ -6725,14 +6640,12 @@ if (amplitudeKey){
 <p>To configure this Docker Container block to run the <code>log_flow.py</code> deployment, we just need to add two pieces of information.</p>
 <p>First, give the block a <strong>Block Name</strong>. We used "log-tutorial".</p>
 <p>Second, we need to make sure the container includes any additional files, libraries, or configuration to run <code>log_flow.py</code>. By default, Prefect uses a preconfigured container that includes installations of Python and Prefect.</p>
-<p>In the <a href="/tutorial/storage/">Storage and Infrastructure</a> tutorial, recall that we needed to <code>pip install s3fs</code> the library for an S3 storage block. You'll need to include the same command in the configuration of the Docker Container infrastructure block. When the agent spins up a container for a flow run, it will know to install the <code>s3fs</code> package before starting the flow run.</p>
 <p>As a convenience, Prefect base images check the <a href="/concepts/infrastructure/#installing-extra-dependencies-at-runtime"><code>EXTRA_PIP_PACKAGES</code> environment variable</a> to install dependencies at runtime. If defined, <code>pip install ${EXTRA_PIP_PACKAGES}</code> is executed before the flow run starts.</p>
 <p>In the <strong>Env (Optional)</strong> box, enter the following to specify that the <code>s3fs</code> package should be installed. Note that we use JSON formatting to specify the environment variable (key) and packages to install (value).</p>
-<p><div class="highlight"><pre><span></span><code><span class="p">{</span>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;EXTRA_PIP_PACKAGES&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;s3fs&quot;</span>
 <span class="p">}</span>
 </code></pre></div>
-If you defined a different type of storage block, such as Azure or GCS, you'll need to specify the relevant storage library. See the <a href="/tutorial/storage/#prerequisites">Prerequisites section of the Storage tutorial</a> for details.</p>
 <p><img alt="Configuring a new Docker Container infrastructure block in the Prefect UI" src="/img/guides/docker-tutorial-block.png" /></p>
 <h2 id="using-infrastructure-blocks-with-deployments">Using infrastructure blocks with deployments<a class="headerlink" href="#using-infrastructure-blocks-with-deployments" title="Permanent link">&para;</a></h2>
 <p>To use an infrastructure block when building a deployment, the process is similar to using a storage block. You can specify a custom infrastructure block to the <code>prefect deployment build</code> command with the <code>-ib</code> or <code>--infra-block</code> options, passing the type and name of the block in the in the format <code>type/name</code>, with <code>type</code> and <code>name</code> separated by a forward slash. </p>
@@ -6742,11 +6655,7 @@ If you defined a different type of storage block, such as Azure or GCS, you'll n
 </ul>
 <p>The <code>prefect deployment build</code> command also supports specifying a built-in infrastructure type prepopulated with defaults by using the <code>--infra</code> or <code>-i</code> options and passing the name of the infrastructure type: <code>docker-container</code>, <code>kubernetes-job</code>, or <code>process</code>.</p>
 <h2 id="build-a-deployment-with-docker-infrastructure">Build a deployment with Docker infrastructure<a class="headerlink" href="#build-a-deployment-with-docker-infrastructure" title="Permanent link">&para;</a></h2>
-<p>To demonstrate using an infrastructure block, we'll create a new variation of the deployment for the <code>log_flow</code> example from the <a href="/tutorial/deployments/">deployments tutorial</a>. For this deployment, we'll include the following options to the <code>prefect deployment build</code> command:</p>
-<ul>
-<li>Use the storage block created in the <a href="/tutorial/storage/">Storage and Infrastructure</a> tutorial by passing <code>-sb s3/log-test</code> or <code>--storage-block s3/log-test</code>.</li>
-<li>Use the infrastructure block created earlier by passing <code>-ib docker-container/log-tutorial</code> or <code>--infra-block docker-container/log-tutorial</code>.</li>
-</ul>
+<p>To demonstrate using an infrastructure block, we'll create a new variation of the deployment for the <code>log_flow</code> example from the <a href="/tutorial/deployments/">deployments tutorial</a>.</p>
 <div class="terminal">
 <div class="highlight"><pre><span></span><code>$<span class="w"> </span>prefect<span class="w"> </span>deployment<span class="w"> </span>build<span class="w"> </span>./log_flow.py:log_flow<span class="w"> </span>-n<span class="w"> </span>log-flow-docker<span class="w"> </span>-sb<span class="w"> </span>s3/log-test<span class="w"> </span>-ib<span class="w"> </span>docker-container/log-tutorial<span class="w"> </span>-q<span class="w"> </span><span class="nb">test</span><span class="w"> </span>-o<span class="w"> </span>log-flow-docker-deployment.yaml
 Found<span class="w"> </span>flow<span class="w"> </span><span class="s1">&#39;log-flow&#39;</span>
