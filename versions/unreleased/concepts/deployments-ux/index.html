@@ -7029,6 +7029,25 @@ if (amplitudeKey){
 <span class="w">        </span><span class="nt">requirements_file</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">requirements.txt</span>
 <span class="w">        </span><span class="nt">stream_output</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span>
 </code></pre></div>
+<p>Below is an example that retrieves an access token from a 3rd party Key Vault and uses it in a private clone step:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">pull</span><span class="p">:</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">prefect.deployments.steps.run_shell_script</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">get-access-token</span>
+<span class="w">    </span><span class="nt">script</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">az keyvault secret show --name &lt;secret name&gt; --vault-name &lt;secret vault&gt; --query &quot;value&quot; --output tsv</span>
+<span class="w">    </span><span class="nt">stream_output</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">prefect.deployments.steps.git_clone</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">repository</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://bitbucket.org/samples/deployments.git</span>
+<span class="w">    </span><span class="nt">branch</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">master</span>
+<span class="w">    </span><span class="nt">access_token</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{{</span><span class="nv"> </span><span class="s">get-access-token.stdout</span><span class="nv"> </span><span class="s">}}&quot;</span>
+</code></pre></div>
+<p>You can also run custom steps by packaging them. In the example below, <code>retrieve_secrets</code> is a custom python module that has been packaged into the default working directory of a docker image (which is /opt/prefect by default). <code>main</code> is the function entry point, which returns an access token (e.g. <code>return {"access_token": access_token}</code>) like the preceding example, but utilizing the Azure Python SDK for retrieval.</p>
+<div class="highlight"><pre><span></span><code><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">retrieve_secrets.main</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">get-access-token</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">prefect.deployments.steps.git_clone</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">repository</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://bitbucket.org/samples/deployments.git</span>
+<span class="w">    </span><span class="nt">branch</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">master</span>
+<span class="w">    </span><span class="nt">access_token</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;{{</span><span class="nv"> </span><span class="s">get-access-token.access_token</span><span class="nv"> </span><span class="s">}}&#39;</span>
+</code></pre></div>
 <h3 id="templating-options">Templating Options<a class="headerlink" href="#templating-options" title="Permanent link">&para;</a></h3>
 <p>Values that you place within your <code>prefect.yaml</code> file can reference dynamic values in two different ways:</p>
 <ul>
