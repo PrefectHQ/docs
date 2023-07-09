@@ -33,7 +33,7 @@ def get_newest_version(versions: "list[dict]", build_version: str) -> str:
     Returns:
         dict: A dict containing the versions JSON file with sorted versions
     """
-    excluded_versions = ["latest", "unreleased"]
+    excluded_versions = ["latest", "unreleased", "mkdocs"]
 
     if len(versions) == 0:
         return build_version
