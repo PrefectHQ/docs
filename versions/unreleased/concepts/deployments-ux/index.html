@@ -7089,11 +7089,12 @@ if (amplitudeKey){
 <span class="w">    </span><span class="nt">access_token</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;{{</span><span class="nv"> </span><span class="s">get-access-token.access_token</span><span class="nv"> </span><span class="s">}}&#39;</span>
 </code></pre></div>
 <h3 id="templating-options">Templating Options<a class="headerlink" href="#templating-options" title="Permanent link">&para;</a></h3>
-<p>Values that you place within your <code>prefect.yaml</code> file can reference dynamic values in two different ways:</p>
+<p>Values that you place within your <code>prefect.yaml</code> file can reference dynamic values in several different ways:</p>
 <ul>
 <li><strong>step outputs</strong>: every step of both <code>build</code> and <code>push</code> produce named fields such as <code>image_name</code>; you can reference these fields within <code>prefect.yaml</code> and <code>prefect deploy</code> will populate them with each call.  References must be enclosed in double brackets and be of the form <code>"{{ field_name }}"</code></li>
 <li><strong>blocks</strong>: <a href="/concepts/blocks">Prefect blocks</a> can also be referenced with the special syntax <code>{{ prefect.blocks.block_type.block_slug }}</code>; it is highly recommended that you use block references for any sensitive information (such as a GitHub access token or any credentials) to avoid hardcoding these values in plaintext</li>
 <li><strong>variables</strong>: <a href="/concepts/variables">Prefect variables</a> can also be referenced with the special syntax <code>{{ prefect.variables.variable_name }}</code>. Variables can be used to reference non-sensitive, reusable pieces of information such as a default image name or a default work pool name.</li>
+<li><strong>environment variables</strong>: you can also reference environment variables with the special syntax <code>{{ $MY_ENV_VAR }}</code>. This is especially useful for referencing environment variables that are set at runtime.</li>
 </ul>
 <p>As an example, consider the following <code>prefect.yaml</code> file:</p>
 <div class="highlight"><pre><span></span><code><span class="nt">build</span><span class="p">:</span>
@@ -7108,9 +7109,9 @@ if (amplitudeKey){
 <span class="nt">deployments</span><span class="p">:</span>
 <span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="c1"># base metadata</span>
 <span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span>
-<span class="w">    </span><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{{</span><span class="nv"> </span><span class="s">build_image.tag</span><span class="nv"> </span><span class="s">}}&quot;</span>
+<span class="w">    </span><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{{</span><span class="nv"> </span><span class="s">build-image.tag</span><span class="nv"> </span><span class="s">}}&quot;</span>
 <span class="w">    </span><span class="nt">tags</span><span class="p">:</span>
-<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;{{</span><span class="nv"> </span><span class="s">build_image.tag</span><span class="nv"> </span><span class="s">}}&quot;</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;{{</span><span class="nv"> </span><span class="s">$my_deployment_tag</span><span class="nv"> </span><span class="s">}}&quot;</span>
 <span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;{{</span><span class="nv"> </span><span class="s">prefect.variables.some_common_tag</span><span class="nv"> </span><span class="s">}}&quot;</span>
 <span class="w">    </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span>
 <span class="w">    </span><span class="nt">schedule</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span>
@@ -7125,7 +7126,7 @@ if (amplitudeKey){
 <span class="w">        </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;my-k8s-work-pool&quot;</span>
 <span class="w">        </span><span class="nt">work_queue_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span>
 <span class="w">        </span><span class="nt">job_variables</span><span class="p">:</span>
-<span class="w">            </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{{</span><span class="nv"> </span><span class="s">build_image.image</span><span class="nv"> </span><span class="s">}}&quot;</span>
+<span class="w">            </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{{</span><span class="nv"> </span><span class="s">build-image.image</span><span class="nv"> </span><span class="s">}}&quot;</span>
 <span class="w">            </span><span class="nt">cluster_config</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{{</span><span class="nv"> </span><span class="s">prefect.blocks.kubernetes-cluster-config.my-favorite-config</span><span class="nv"> </span><span class="s">}}&quot;</span>
 </code></pre></div>
 <p>So long as our <code>build</code> steps produce fields called <code>image_name</code> and <code>image_tag</code>, every time we deploy a new version of our deployment these fields will be dynamically populated with the relevant values.</p>
