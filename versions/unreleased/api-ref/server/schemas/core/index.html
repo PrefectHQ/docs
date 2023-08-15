@@ -9548,7 +9548,9 @@ to preserve orchestration behavior.</p>
 <span class="normal">1115</span>
 <span class="normal">1116</span>
 <span class="normal">1117</span>
-<span class="normal">1118</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">WorkPool</span><span class="p">(</span><span class="n">ORMBaseModel</span><span class="p">):</span>
+<span class="normal">1118</span>
+<span class="normal">1119</span>
+<span class="normal">1120</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">WorkPool</span><span class="p">(</span><span class="n">ORMBaseModel</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;An ORM representation of a work pool&quot;&quot;&quot;</span>
 
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
@@ -9618,7 +9620,9 @@ to preserve orchestration behavior.</p>
             <span class="c1"># e.g. &quot;{{ var1 }}.{{var2}}&quot; -&gt; [&quot;var1&quot;, &quot;var2&quot;]</span>
             <span class="c1"># convert to json string to handle nested objects and lists</span>
             <span class="n">found_variables</span> <span class="o">=</span> <span class="n">find_placeholders</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">template</span><span class="p">))</span>
-            <span class="n">template_variables</span> <span class="o">=</span> <span class="p">{</span><span class="n">placeholder</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">placeholder</span> <span class="ow">in</span> <span class="n">found_variables</span><span class="p">}</span>
+            <span class="n">template_variables</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+                <span class="p">{</span><span class="n">placeholder</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">placeholder</span> <span class="ow">in</span> <span class="n">found_variables</span><span class="p">}</span>
+            <span class="p">)</span>
 
         <span class="n">provided_variables</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;properties&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">template_variables</span><span class="o">.</span><span class="n">issubset</span><span class="p">(</span><span class="n">provided_variables</span><span class="p">):</span>
@@ -10131,16 +10135,16 @@ message will help users understand that they should use the
 
             <details class="quote">
               <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/server/schemas/core.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1121</span>
-<span class="normal">1122</span>
-<span class="normal">1123</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1123</span>
 <span class="normal">1124</span>
 <span class="normal">1125</span>
 <span class="normal">1126</span>
 <span class="normal">1127</span>
 <span class="normal">1128</span>
 <span class="normal">1129</span>
-<span class="normal">1130</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">Worker</span><span class="p">(</span><span class="n">ORMBaseModel</span><span class="p">):</span>
+<span class="normal">1130</span>
+<span class="normal">1131</span>
+<span class="normal">1132</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">Worker</span><span class="p">(</span><span class="n">ORMBaseModel</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;An ORM representation of a worker&quot;&quot;&quot;</span>
 
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;The name of the worker.&quot;</span><span class="p">)</span>

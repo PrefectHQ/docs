@@ -7522,10 +7522,7 @@ remote worker:
 
           <details class="quote">
             <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/engine.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1471</span>
-<span class="normal">1472</span>
-<span class="normal">1473</span>
-<span class="normal">1474</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1474</span>
 <span class="normal">1475</span>
 <span class="normal">1476</span>
 <span class="normal">1477</span>
@@ -7630,7 +7627,10 @@ remote worker:
 <span class="normal">1576</span>
 <span class="normal">1577</span>
 <span class="normal">1578</span>
-<span class="normal">1579</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">begin_task_run</span><span class="p">(</span>
+<span class="normal">1579</span>
+<span class="normal">1580</span>
+<span class="normal">1581</span>
+<span class="normal">1582</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">begin_task_run</span><span class="p">(</span>
     <span class="n">task</span><span class="p">:</span> <span class="n">Task</span><span class="p">,</span>
     <span class="n">task_run</span><span class="p">:</span> <span class="n">TaskRun</span><span class="p">,</span>
     <span class="n">parameters</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
@@ -7816,7 +7816,10 @@ found.</p>
 <span class="normal">1280</span>
 <span class="normal">1281</span>
 <span class="normal">1282</span>
-<span class="normal">1283</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">collect_task_run_inputs</span><span class="p">(</span><span class="n">expr</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">max_depth</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Set</span><span class="p">[</span><span class="n">TaskRunInput</span><span class="p">]:</span>
+<span class="normal">1283</span>
+<span class="normal">1284</span>
+<span class="normal">1285</span>
+<span class="normal">1286</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">collect_task_run_inputs</span><span class="p">(</span><span class="n">expr</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">max_depth</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Set</span><span class="p">[</span><span class="n">TaskRunInput</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This function recurses through an expression to generate a set of any discernable</span>
 <span class="sd">    task run inputs it finds in the data structure. It produces a set of all inputs</span>
@@ -7840,6 +7843,9 @@ found.</p>
         <span class="k">elif</span> <span class="n">is_state</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">obj</span><span class="o">.</span><span class="n">state_details</span><span class="o">.</span><span class="n">task_run_id</span><span class="p">:</span>
                 <span class="n">inputs</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">TaskRunResult</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">obj</span><span class="o">.</span><span class="n">state_details</span><span class="o">.</span><span class="n">task_run_id</span><span class="p">))</span>
+        <span class="c1"># Expressions inside quotes should not be traversed</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">quote</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">StopVisiting</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">state</span> <span class="o">=</span> <span class="n">get_state_for_result</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">state</span> <span class="ow">and</span> <span class="n">state</span><span class="o">.</span><span class="n">state_details</span><span class="o">.</span><span class="n">task_run_id</span><span class="p">:</span>
@@ -8782,15 +8788,15 @@ loop as this should be called from a fresh process.</p>
 
           <details class="quote">
             <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/engine.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2203</span>
-<span class="normal">2204</span>
-<span class="normal">2205</span>
-<span class="normal">2206</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2206</span>
 <span class="normal">2207</span>
 <span class="normal">2208</span>
 <span class="normal">2209</span>
 <span class="normal">2210</span>
-<span class="normal">2211</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_state_for_result</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">State</span><span class="p">]:</span>
+<span class="normal">2211</span>
+<span class="normal">2212</span>
+<span class="normal">2213</span>
+<span class="normal">2214</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_state_for_result</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">State</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get the state related to a result object.</span>
 
@@ -8849,10 +8855,7 @@ We do not hash the result because:
 
           <details class="quote">
             <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/engine.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2214</span>
-<span class="normal">2215</span>
-<span class="normal">2216</span>
-<span class="normal">2217</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2217</span>
 <span class="normal">2218</span>
 <span class="normal">2219</span>
 <span class="normal">2220</span>
@@ -8903,7 +8906,10 @@ We do not hash the result because:
 <span class="normal">2265</span>
 <span class="normal">2266</span>
 <span class="normal">2267</span>
-<span class="normal">2268</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">link_state_to_result</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">State</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="normal">2268</span>
+<span class="normal">2269</span>
+<span class="normal">2270</span>
+<span class="normal">2271</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">link_state_to_result</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">State</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Caches a link between a state and a result and its components using</span>
 <span class="sd">    the `id` of the components to map to the state. The cache is persisted to the</span>
@@ -9505,10 +9511,7 @@ here instead of receiving it already populated since we may be in a new environm
 
           <details class="quote">
             <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/engine.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1582</span>
-<span class="normal">1583</span>
-<span class="normal">1584</span>
-<span class="normal">1585</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1585</span>
 <span class="normal">1586</span>
 <span class="normal">1587</span>
 <span class="normal">1588</span>
@@ -9742,7 +9745,10 @@ here instead of receiving it already populated since we may be in a new environm
 <span class="normal">1816</span>
 <span class="normal">1817</span>
 <span class="normal">1818</span>
-<span class="normal">1819</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">orchestrate_task_run</span><span class="p">(</span>
+<span class="normal">1819</span>
+<span class="normal">1820</span>
+<span class="normal">1821</span>
+<span class="normal">1822</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">orchestrate_task_run</span><span class="p">(</span>
     <span class="n">task</span><span class="p">:</span> <span class="n">Task</span><span class="p">,</span>
     <span class="n">task_run</span><span class="p">:</span> <span class="n">TaskRun</span><span class="p">,</span>
     <span class="n">parameters</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
@@ -10365,10 +10371,7 @@ the Prefect API</p>
 
           <details class="quote">
             <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/engine.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2085</span>
-<span class="normal">2086</span>
-<span class="normal">2087</span>
-<span class="normal">2088</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2088</span>
 <span class="normal">2089</span>
 <span class="normal">2090</span>
 <span class="normal">2091</span>
@@ -10463,7 +10466,10 @@ the Prefect API</p>
 <span class="normal">2180</span>
 <span class="normal">2181</span>
 <span class="normal">2182</span>
-<span class="normal">2183</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">propose_state</span><span class="p">(</span>
+<span class="normal">2183</span>
+<span class="normal">2184</span>
+<span class="normal">2185</span>
+<span class="normal">2186</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">propose_state</span><span class="p">(</span>
     <span class="n">client</span><span class="p">:</span> <span class="n">PrefectClient</span><span class="p">,</span>
     <span class="n">state</span><span class="p">:</span> <span class="n">State</span><span class="p">,</span>
     <span class="n">force</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -10591,10 +10597,7 @@ state.</p>
 
           <details class="quote">
             <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/engine.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1901</span>
-<span class="normal">1902</span>
-<span class="normal">1903</span>
-<span class="normal">1904</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1904</span>
 <span class="normal">1905</span>
 <span class="normal">1906</span>
 <span class="normal">1907</span>
@@ -10626,7 +10629,10 @@ state.</p>
 <span class="normal">1933</span>
 <span class="normal">1934</span>
 <span class="normal">1935</span>
-<span class="normal">1936</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@asynccontextmanager</span>
+<span class="normal">1936</span>
+<span class="normal">1937</span>
+<span class="normal">1938</span>
+<span class="normal">1939</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@asynccontextmanager</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">report_flow_run_crashes</span><span class="p">(</span><span class="n">flow_run</span><span class="p">:</span> <span class="n">FlowRun</span><span class="p">,</span> <span class="n">client</span><span class="p">:</span> <span class="n">PrefectClient</span><span class="p">,</span> <span class="n">flow</span><span class="p">:</span> <span class="n">Flow</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Detect flow run crashes during this context and update the run to a proper final</span>
@@ -10691,10 +10697,7 @@ state.</p>
 
           <details class="quote">
             <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/engine.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1939</span>
-<span class="normal">1940</span>
-<span class="normal">1941</span>
-<span class="normal">1942</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1942</span>
 <span class="normal">1943</span>
 <span class="normal">1944</span>
 <span class="normal">1945</span>
@@ -10720,7 +10723,10 @@ state.</p>
 <span class="normal">1965</span>
 <span class="normal">1966</span>
 <span class="normal">1967</span>
-<span class="normal">1968</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@asynccontextmanager</span>
+<span class="normal">1968</span>
+<span class="normal">1969</span>
+<span class="normal">1970</span>
+<span class="normal">1971</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@asynccontextmanager</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">report_task_run_crashes</span><span class="p">(</span><span class="n">task_run</span><span class="p">:</span> <span class="n">TaskRun</span><span class="p">,</span> <span class="n">client</span><span class="p">:</span> <span class="n">PrefectClient</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Detect task run crashes during this context and update the run to a proper final</span>
@@ -10826,10 +10832,7 @@ data.</p>
 
           <details class="quote">
             <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/engine.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1971</span>
-<span class="normal">1972</span>
-<span class="normal">1973</span>
-<span class="normal">1974</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1974</span>
 <span class="normal">1975</span>
 <span class="normal">1976</span>
 <span class="normal">1977</span>
@@ -10937,7 +10940,10 @@ data.</p>
 <span class="normal">2079</span>
 <span class="normal">2080</span>
 <span class="normal">2081</span>
-<span class="normal">2082</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">resolve_inputs</span><span class="p">(</span>
+<span class="normal">2082</span>
+<span class="normal">2083</span>
+<span class="normal">2084</span>
+<span class="normal">2085</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">resolve_inputs</span><span class="p">(</span>
     <span class="n">parameters</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">return_data</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">max_depth</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
