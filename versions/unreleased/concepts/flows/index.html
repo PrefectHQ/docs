@@ -1528,6 +1528,19 @@ if (amplitudeKey){
 </li>
       
         <li class="md-nav__item">
+  <a href="#visualizing-flow-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Visualizing Flow Structure <span class="badge experimental"></span>
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#composing-flows" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -6630,6 +6643,19 @@ if (amplitudeKey){
 </li>
       
         <li class="md-nav__item">
+  <a href="#visualizing-flow-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Visualizing Flow Structure <span class="badge experimental"></span>
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#composing-flows" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -7060,6 +7086,53 @@ Hello<span class="w"> </span>Marvin!
 </code></pre></div>
 </div>
 
+<h2 id="visualizing-flow-structure">Visualizing Flow Structure <span class="badge experimental"></span><a class="headerlink" href="#visualizing-flow-structure" title="Permanent link">&para;</a></h2>
+<p>You can get a quick sense of the structure of your flow using the <code>.visualize()</code> method on your flow. Calling this method will attempt to produce a schematic diagram of your flow and tasks without actually running your flow code.</p>
+<div class="admonition warning">
+<p class="admonition-title">To use the <code>visualize()</code> method, Graphviz must be installed and on your PATH. Please install Graphviz from http://www.graphviz.org/download/. And note: just installing the <code>graphviz</code> python package is not sufficient.</p>
+</div>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
+
+<span class="nd">@task</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Print Hello&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">print_hello</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+    <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Hello </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">!&quot;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">msg</span>
+
+<span class="nd">@task</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Print Hello Again&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">print_hello_again</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+    <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Hello </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">!&quot;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">msg</span>
+
+<span class="nd">@flow</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Hello Flow&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">hello_world</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;world&quot;</span><span class="p">):</span>
+    <span class="n">message</span> <span class="o">=</span> <span class="n">print_hello</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+    <span class="n">message2</span> <span class="o">=</span> <span class="n">print_hello_again</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+
+<span class="n">hello_world</span><span class="o">.</span><span class="n">visualize</span><span class="p">()</span>
+</code></pre></div>
+<p><img alt="A simple flow visualized with the .visualize() method" src="/img/orchestration/hello-flow-viz.png" /></p>
+<p>Prefect cannot automatically produce a schematic for dynamic workflows, such as those with loops or if/else control flow. In this case, you can provide tasks with mock return values for use in the <code>visualize()</code> call.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
+<span class="nd">@task</span><span class="p">(</span><span class="n">viz_return_value</span><span class="o">=</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">get_list</span><span class="p">():</span>
+    <span class="k">return</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+
+<span class="nd">@task</span>
+<span class="k">def</span> <span class="nf">append_one</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">n</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>
+
+<span class="nd">@flow</span>
+<span class="k">def</span> <span class="nf">viz_return_value_tracked</span><span class="p">():</span>
+    <span class="n">l</span> <span class="o">=</span> <span class="n">get_list</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">num</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+        <span class="n">l</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+        <span class="n">append_one</span><span class="p">()</span>
+
+<span class="n">viz_return_value_tracked</span><span class="o">.</span><span class="n">visualize</span><span class="p">()</span>
+</code></pre></div>
+<p><img alt="A flow with return values visualized with the .visualize() method" src="/img/orchestration/viz-return-value-tracked.png" /></p>
 <h2 id="composing-flows">Composing flows<a class="headerlink" href="#composing-flows" title="Permanent link">&para;</a></h2>
 <p>A <em>subflow</em> run is created when a flow function is called inside the execution of another flow. The primary flow is the "parent" flow. The flow created within the parent is the "child" flow or "subflow."</p>
 <p>Subflow runs behave like normal flow runs. There is a full representation of the flow run in the backend as if it had been called separately. When a subflow starts, it will create a new <a href="/concepts/task-runners/">task runner</a> for tasks within the subflow. When the subflow completes, the task runner is shut down.</p>

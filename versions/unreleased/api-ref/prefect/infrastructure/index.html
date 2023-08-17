@@ -10273,7 +10273,22 @@ before marking it as crashed. Defaults to <code>None</code>, which means no time
 <span class="normal">860</span>
 <span class="normal">861</span>
 <span class="normal">862</span>
-<span class="normal">863</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">KubernetesJob</span><span class="p">(</span><span class="n">Infrastructure</span><span class="p">):</span>
+<span class="normal">863</span>
+<span class="normal">864</span>
+<span class="normal">865</span>
+<span class="normal">866</span>
+<span class="normal">867</span>
+<span class="normal">868</span>
+<span class="normal">869</span>
+<span class="normal">870</span>
+<span class="normal">871</span>
+<span class="normal">872</span>
+<span class="normal">873</span>
+<span class="normal">874</span>
+<span class="normal">875</span>
+<span class="normal">876</span>
+<span class="normal">877</span>
+<span class="normal">878</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">KubernetesJob</span><span class="p">(</span><span class="n">Infrastructure</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Runs a command as a Kubernetes Job.</span>
 
@@ -10930,9 +10945,9 @@ before marking it as crashed. Defaults to <code>None</code>, which means no time
                         <span class="n">watch</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
                         <span class="k">break</span>
 
-        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_client</span><span class="p">()</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_client</span><span class="p">()</span> <span class="k">as</span> <span class="n">core_client</span><span class="p">:</span>
             <span class="c1"># Get all pods for the job</span>
-            <span class="n">pods</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">list_namespaced_pod</span><span class="p">(</span>
+            <span class="n">pods</span> <span class="o">=</span> <span class="n">core_client</span><span class="o">.</span><span class="n">list_namespaced_pod</span><span class="p">(</span>
                 <span class="n">namespace</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">namespace</span><span class="p">,</span> <span class="n">label_selector</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;job-name=</span><span class="si">{</span><span class="n">job_name</span><span class="si">}</span><span class="s2">&quot;</span>
             <span class="p">)</span>
             <span class="c1"># Get the status for only the most recently used pod</span>
@@ -10947,6 +10962,21 @@ before marking it as crashed. Defaults to <code>None</code>, which means no time
             <span class="p">)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">first_container_status</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Job </span><span class="si">{</span><span class="n">job_name</span><span class="si">!r}</span><span class="s2">: No pods found for job.&quot;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="o">-</span><span class="mi">1</span>
+
+            <span class="c1"># In some cases, such as spot instance evictions, the pod will be forcibly</span>
+            <span class="c1"># terminated and not report a status correctly.</span>
+            <span class="k">elif</span> <span class="p">(</span>
+                <span class="n">first_container_status</span><span class="o">.</span><span class="n">state</span> <span class="ow">is</span> <span class="kc">None</span>
+                <span class="ow">or</span> <span class="n">first_container_status</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">terminated</span> <span class="ow">is</span> <span class="kc">None</span>
+                <span class="ow">or</span> <span class="n">first_container_status</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">terminated</span><span class="o">.</span><span class="n">exit_code</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Could not determine exit code for </span><span class="si">{</span><span class="n">job_name</span><span class="si">!r}</span><span class="s2">.&quot;</span>
+                    <span class="s2">&quot;Exit code will be reported as -1.&quot;</span>
+                    <span class="s2">&quot;First container status info did not report an exit code.&quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;First container info: </span><span class="si">{</span><span class="n">first_container_status</span><span class="si">}</span><span class="s2">.&quot;</span>
+                <span class="p">)</span>
                 <span class="k">return</span> <span class="o">-</span><span class="mi">1</span>
 
         <span class="k">return</span> <span class="n">first_container_status</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">terminated</span><span class="o">.</span><span class="n">exit_code</span>
