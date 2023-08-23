@@ -6889,7 +6889,10 @@ Admin access is only necessary during the initial setup and can be downgraded af
 <div class="tabbed-set tabbed-alternate" data-tabs="1:1"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">AWS</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
-<p>One easy way to get set up with a cluster in EKS is with <a href="https://eksctl.io/"><code>eksctl</code></a>. Node pools can be backed by either EC2 instances or FARGATE. Let's choose FARGATE so there's less to manage. The following command takes around 15 minutes and must not be interrupted:</p>
+<p>One easy way to get set up with a cluster in EKS is with <a href="https://eksctl.io/"><code>eksctl</code></a>. 
+Node pools can be backed by either EC2 instances or FARGATE. 
+Let's choose FARGATE so there's less to manage. 
+The following command takes around 15 minutes and must not be interrupted:</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># Replace the cluster name with your own value</span>
 eksctl<span class="w"> </span>create<span class="w"> </span>cluster<span class="w"> </span>--fargate<span class="w"> </span>--name<span class="w"> </span>&lt;CLUSTER-NAME&gt;
 </code></pre></div>
@@ -6915,7 +6918,8 @@ aws<span class="w"> </span>ecr<span class="w"> </span>create-repository<span cla
 
 <span class="c1"># Login to ECR</span>
 <span class="c1"># Replace the region and account ID with your own values</span>
-aws<span class="w"> </span>ecr<span class="w"> </span>get-login-password<span class="w"> </span>--region<span class="w"> </span>&lt;REGION&gt;<span class="w"> </span><span class="p">|</span><span class="w"> </span>docker<span class="w"> </span>login<span class="w"> </span>--username<span class="w"> </span>AWS<span class="w"> </span>--password-stdin<span class="w"> </span>&lt;AWS_ACCOUNT_ID&gt;.dkr.ecr.&lt;REGION&gt;.amazonaws.com
+aws<span class="w"> </span>ecr<span class="w"> </span>get-login-password<span class="w"> </span>--region<span class="w"> </span>&lt;REGION&gt;<span class="w"> </span><span class="p">|</span><span class="w"> </span>docker<span class="w"> </span>login<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--username<span class="w"> </span>AWS<span class="w"> </span>--password-stdin<span class="w"> </span>&lt;AWS_ACCOUNT_ID&gt;.dkr.ecr.&lt;REGION&gt;.amazonaws.com
 </code></pre></div>
 </div>
 </div>
@@ -6946,7 +6950,8 @@ helm<span class="w"> </span>repo<span class="w"> </span>update
 <div class="highlight"><pre><span></span><code>kubectl<span class="w"> </span>create<span class="w"> </span>namespace<span class="w"> </span>prefect
 </code></pre></div>
 <h3 id="create-a-kubernetes-secret-for-the-prefect-api-key">Create a Kubernetes secret for the Prefect API key<a class="headerlink" href="#create-a-kubernetes-secret-for-the-prefect-api-key" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code>kubectl<span class="w"> </span>create<span class="w"> </span>secret<span class="w"> </span>generic<span class="w"> </span>prefect-api-key-secret<span class="w"> </span>--namespace<span class="o">=</span>prefect<span class="w"> </span>--from-literal<span class="o">=</span><span class="nv">key</span><span class="o">=</span>your-prefect-cloud-api-key
+<div class="highlight"><pre><span></span><code>kubectl<span class="w"> </span>create<span class="w"> </span>secret<span class="w"> </span>generic<span class="w"> </span>prefect-api-key-secret<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--namespace<span class="o">=</span>prefect<span class="w"> </span>--from-literal<span class="o">=</span><span class="nv">key</span><span class="o">=</span>your-prefect-cloud-api-key
 </code></pre></div>
 <h3 id="configure-helm-chart-values">Configure Helm chart values<a class="headerlink" href="#configure-helm-chart-values" title="Permanent link">&para;</a></h3>
 <p>Create a <code>values.yaml</code> file to customize the Prefect worker configuration.
@@ -7050,7 +7055,8 @@ Also note that we are specifically building for the <code>linux/amd64</code> pla
 This specification is often necessary when images are built on Macs with M series chips but run on cloud provider instances.</p>
 <div class="admonition note">
 <p class="admonition-title">Deployment specific build, push, and pull</p>
-<p>The build, push, and pull steps can be overridden for each deployment. This allows for more custom behavior, such as specifying a different image for each deployment.</p>
+<p>The build, push, and pull steps can be overridden for each deployment. 
+This allows for more custom behavior, such as specifying a different image for each deployment.</p>
 </div>
 <p>Let's make sure we define our requirements in a <code>requirements.txt</code> file:</p>
 <div class="highlight"><pre><span></span><code>prefect&gt;=2.11.0
@@ -7064,7 +7070,9 @@ prefect-kubernetes&gt;=0.2.11
 └── requirements.txt
 </code></pre></div>
 <h3 id="tag-images-with-a-git-sha">Tag images with a Git SHA<a class="headerlink" href="#tag-images-with-a-git-sha" title="Permanent link">&para;</a></h3>
-<p>If your code is stored in a GitHub repository, it's good practice to tag your images with the Git SHA of the code used to build it. This can be done in the <code>prefect.yaml</code> file with a few minor modifications. Let's use the <code>run_shell_script</code> command to grab the SHA and pass it to the <code>tag</code> parameter of <code>build_docker_image</code>:</p>
+<p>If your code is stored in a GitHub repository, it's good practice to tag your images with the Git SHA of the code used to build it. 
+This can be done in the <code>prefect.yaml</code> file with a few minor modifications. 
+Let's use the <code>run_shell_script</code> command to grab the SHA and pass it to the <code>tag</code> parameter of <code>build_docker_image</code>:</p>
 <div class="highlight"><pre><span></span><code><span class="nt">build</span><span class="p">:</span>
 <span class="hll"><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">prefect.deployments.steps.run_shell_script</span><span class="p">:</span>
 </span><span class="hll"><span class="w">    </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">get-commit-hash</span>
@@ -7089,7 +7097,9 @@ prefect-kubernetes&gt;=0.2.11
 <span class="w">      </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{{</span><span class="nv"> </span><span class="s">build-image.image</span><span class="nv"> </span><span class="s">}}&quot;</span>
 </code></pre></div>
 <h2 id="deploy-the-flows">Deploy the flows<a class="headerlink" href="#deploy-the-flows" title="Permanent link">&para;</a></h2>
-<p>Now we're ready to deploy our flows which will build our images. The image name determines which registry it will end up in. We have configured our <code>prefect.yaml</code> file to get the image name from the <code>PREFECT_IMAGE_NAME</code> environment variable, so let's set that first:</p>
+<p>Now we're ready to deploy our flows which will build our images. 
+The image name determines which registry it will end up in. 
+We have configured our <code>prefect.yaml</code> file to get the image name from the <code>PREFECT_IMAGE_NAME</code> environment variable, so let's set that first:</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="3:1"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">AWS</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
