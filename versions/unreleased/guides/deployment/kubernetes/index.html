@@ -1175,6 +1175,19 @@ if (amplitudeKey){
 </li>
       
         <li class="md-nav__item">
+  <a href="#authenticate-to-prefect" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Authenticate to Prefect
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#deploy-the-flows" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -6770,6 +6783,19 @@ if (amplitudeKey){
 </li>
       
         <li class="md-nav__item">
+  <a href="#authenticate-to-prefect" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Authenticate to Prefect
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#deploy-the-flows" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -6886,7 +6912,7 @@ Admin access is only necessary during the initial setup and can be downgraded af
 </div>
 <h2 id="create-a-cluster">Create a cluster<a class="headerlink" href="#create-a-cluster" title="Permanent link">&para;</a></h2>
 <p>Let's start by creating a new cluster. If you already have one, skip ahead to the next section.</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="1:1"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">AWS</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">AWS</label><label for="__tabbed_1_2">GCP</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <p>One easy way to get set up with a cluster in EKS is with <a href="https://eksctl.io/"><code>eksctl</code></a>. 
@@ -6895,21 +6921,57 @@ Let's choose FARGATE so there's less to manage.
 The following command takes around 15 minutes and must not be interrupted:</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># Replace the cluster name with your own value</span>
 eksctl<span class="w"> </span>create<span class="w"> </span>cluster<span class="w"> </span>--fargate<span class="w"> </span>--name<span class="w"> </span>&lt;CLUSTER-NAME&gt;
+
+<span class="c1"># Authenticate to the cluster.</span>
+aws<span class="w"> </span>eks<span class="w"> </span>update-kubeconfig<span class="w"> </span>--name<span class="w"> </span>&lt;CLUSTER-NAME&gt;
 </code></pre></div>
 </div>
-</div>
-</div>
-<!-- === "GCP"
-    TODO
+<div class="tabbed-block">
+<p>You can easily get a GKE cluster up and running with a few short commands using the <a href="https://cloud.google.com/sdk/docs/install"><code>gcloud</code> CLI</a>. This will build a barebones cluster that is accessible over the open internet - this should <strong>not</strong> be used in a production environment. In order to deploy the cluster, your project must have a VPC network configured.</p>
+<p>First, authenticate to GCP by setting the following configuration options.</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Authenticate to gcloud</span>
+gcloud<span class="w"> </span>auth<span class="w"> </span>login
 
-=== "Azure"
+<span class="c1"># Specify the project &amp; zone to deploy the cluster to</span>
+<span class="c1"># Replace the project name with your GCP project name</span>
+gcloud<span class="w"> </span>config<span class="w"> </span><span class="nb">set</span><span class="w"> </span>project<span class="w"> </span>&lt;GCP-PROJECT-NAME&gt;
+gcloud<span class="w"> </span>config<span class="w"> </span><span class="nb">set</span><span class="w"> </span>compute/zone<span class="w"> </span>&lt;AVAILABILITY-ZONE&gt;
+</code></pre></div>
+<p>Next, deploy the cluster - this command will take ~15 minutes to complete. Once the cluster has been created, authenticate to the cluster.</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Create cluster</span>
+<span class="c1"># Replace the cluster name with your own value</span>
+gcloud<span class="w"> </span>container<span class="w"> </span>clusters<span class="w"> </span>create<span class="w"> </span>&lt;CLUSTER-NAME&gt;<span class="w"> </span>--num-nodes<span class="o">=</span><span class="m">1</span><span class="w"> </span><span class="se">\</span>
+--machine-type<span class="o">=</span>n1-standard-2
+
+<span class="c1"># Authenticate to the cluster</span>
+gcloud<span class="w"> </span>container<span class="w"> </span>clusters<span class="w"> </span>&lt;CLUSTER-NAME&gt;<span class="w"> </span>--region<span class="w"> </span>&lt;AVAILABILITY-ZONE&gt;
+</code></pre></div>
+<p><details>
+  <summary>GCP Gotchas</summary></p>
+<ul>
+<li>
+<p>You'll need to enable the default service account in the IAM console, or specify a different service account with the appropriate permissions to be used.
+  <div class="highlight"><pre><span></span><code>ERROR: (gcloud.container.clusters.create) ResponseError: code=400, message=Service account &quot;000000000000-compute@developer.gserviceaccount.com&quot; is disabled.
+</code></pre></div></p>
+</li>
+<li>
+<p>Organization policy blocks creation of external (public) IPs. You can override this policy (if you have the appropriate permissions) under the <code>Organizational Policy</code> page within IAM.
+  <div class="highlight"><pre><span></span><code>creation failed: Constraint constraints/compute.vmExternalIpAccess violated for project 000000000000. Add instance projects/&lt;GCP-PROJECT-NAME&gt;/zones/us-east1-b/instances/gke-gke-guide-1-default-pool-c369c84d-wcfl to the constraint to use external IP with it.&quot;
+</code></pre></div></p>
+</li>
+</ul>
+</details>
+</div>
+</div>
+</div>
+<!-- === "Azure"
     TODO -->
 
 <h2 id="create-a-container-registry">Create a container registry<a class="headerlink" href="#create-a-container-registry" title="Permanent link">&para;</a></h2>
 <p>Besides a cluster, the other critical resource we'll need is a container registry.
 A registry is not strictly required, but in most cases you'll want to use custom images and/or have more control over where images are stored.
 If you already have a registry, skip ahead to the next section.</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="2:1"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">AWS</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">AWS</label><label for="__tabbed_2_2">GCP</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <p>Let's create a registry using the AWS CLI and authenticate the docker daemon to said registry:</p>
@@ -6922,12 +6984,21 @@ aws<span class="w"> </span>ecr<span class="w"> </span>get-login-password<span cl
 <span class="w">  </span>--username<span class="w"> </span>AWS<span class="w"> </span>--password-stdin<span class="w"> </span>&lt;AWS_ACCOUNT_ID&gt;.dkr.ecr.&lt;REGION&gt;.amazonaws.com
 </code></pre></div>
 </div>
-</div>
-</div>
-<!-- === "GCP"
-    TODO
+<div class="tabbed-block">
+<p>Let's create a registry using the gcloud CLI and authenticate the docker daemon to said registry:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Create artifact registry repository to host your custom image</span>
+<span class="c1"># Replace the repository name with your own value; it can be the </span>
+<span class="c1"># same name as your image</span>
+gcloud<span class="w"> </span>artifacts<span class="w"> </span>repositories<span class="w"> </span>create<span class="w"> </span>&lt;REPOSITORY-NAME&gt;<span class="w"> </span><span class="se">\</span>
+--repository-format<span class="o">=</span>docker<span class="w"> </span>--location<span class="o">=</span>us
 
-=== "Azure"
+<span class="c1"># Authenticate to artifact registry</span>
+gcloud<span class="w"> </span>auth<span class="w"> </span>configure-docker<span class="w"> </span>us-docker.pkg.dev
+</code></pre></div>
+</div>
+</div>
+</div>
+<!-- === "Azure"
     TODO -->
 
 <h2 id="create-a-work-pool">Create a work pool<a class="headerlink" href="#create-a-work-pool" title="Permanent link">&para;</a></h2>
@@ -6950,8 +7021,8 @@ helm<span class="w"> </span>repo<span class="w"> </span>update
 <div class="highlight"><pre><span></span><code>kubectl<span class="w"> </span>create<span class="w"> </span>namespace<span class="w"> </span>prefect
 </code></pre></div>
 <h3 id="create-a-kubernetes-secret-for-the-prefect-api-key">Create a Kubernetes secret for the Prefect API key<a class="headerlink" href="#create-a-kubernetes-secret-for-the-prefect-api-key" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code>kubectl<span class="w"> </span>create<span class="w"> </span>secret<span class="w"> </span>generic<span class="w"> </span>prefect-api-key-secret<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--namespace<span class="o">=</span>prefect<span class="w"> </span>--from-literal<span class="o">=</span><span class="nv">key</span><span class="o">=</span>your-prefect-cloud-api-key
+<div class="highlight"><pre><span></span><code>kubectl<span class="w"> </span>create<span class="w"> </span>secret<span class="w"> </span>generic<span class="w"> </span>prefect-api-key<span class="w"> </span><span class="se">\</span>
+--namespace<span class="o">=</span>prefect<span class="w"> </span>--from-literal<span class="o">=</span><span class="nv">key</span><span class="o">=</span>your-prefect-cloud-api-key
 </code></pre></div>
 <h3 id="configure-helm-chart-values">Configure Helm chart values<a class="headerlink" href="#configure-helm-chart-values" title="Permanent link">&para;</a></h3>
 <p>Create a <code>values.yaml</code> file to customize the Prefect worker configuration.
@@ -7096,25 +7167,40 @@ Let's use the <code>run_shell_script</code> command to grab the SHA and pass it 
 <span class="w">    </span><span class="nt">job_variables</span><span class="p">:</span>
 <span class="w">      </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{{</span><span class="nv"> </span><span class="s">build-image.image</span><span class="nv"> </span><span class="s">}}&quot;</span>
 </code></pre></div>
+<h2 id="authenticate-to-prefect">Authenticate to Prefect<a class="headerlink" href="#authenticate-to-prefect" title="Permanent link">&para;</a></h2>
+<p>Before we deploy the flows to Prefect, we will need to authenticate via the Prefect CLI. We will also need to ensure that all of our flow's dependencies are present at <code>deploy</code> time. </p>
+<p>This example uses a virtual environment to ensure consistency across environments.</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Create a virtualenv &amp; activate it</span>
+virtualenv<span class="w"> </span>prefect-demo
+<span class="nb">source</span><span class="w"> </span>prefect-demo/bin/activate
+
+<span class="c1"># Install your flow&#39;s dependencies</span>
+prefect-demo/bin/pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>requirements.txt
+
+<span class="c1"># Authenticate to Prefect &amp; select the appropriate </span>
+<span class="c1"># workspace to deploy your flows to</span>
+prefect-demo/bin/prefect<span class="w"> </span>cloud<span class="w"> </span>login
+</code></pre></div>
 <h2 id="deploy-the-flows">Deploy the flows<a class="headerlink" href="#deploy-the-flows" title="Permanent link">&para;</a></h2>
 <p>Now we're ready to deploy our flows which will build our images. 
 The image name determines which registry it will end up in. 
 We have configured our <code>prefect.yaml</code> file to get the image name from the <code>PREFECT_IMAGE_NAME</code> environment variable, so let's set that first:</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="3:1"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">AWS</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="3:2"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">AWS</label><label for="__tabbed_3_2">GCP</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">PREFECT_IMAGE_NAME</span><span class="o">=</span>&lt;AWS_ACCOUNT_ID&gt;.dkr.ecr.&lt;REGION&gt;.amazonaws.com/&lt;IMAGE-NAME&gt;
 </code></pre></div>
 </div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">PREFECT_IMAGE_NAME</span><span class="o">=</span>us-docker.pkg.dev/&lt;GCP-PROJECT-NAME&gt;/&lt;REPOSITORY-NAME&gt;/&lt;IMAGE-NAME&gt;
+</code></pre></div>
 </div>
 </div>
-<!-- === "GCP"
-    TODO
-
-=== "Azure"
+</div>
+<!-- === "Azure"
     TODO -->
 
-<p>Deploy all the flows with <code>prefect deploy --all</code> or deploy them individually by name: <code>prefect deploy -n hello/default</code> or <code>prefect deploy -n hello/arthur</code></p>
+<p>In order to deploy your flows, ensure your Docker daemon is running first. Deploy all the flows with <code>prefect deploy --all</code> or deploy them individually by name: <code>prefect deploy -n hello/default</code> or <code>prefect deploy -n hello/arthur</code>.</p>
 <h2 id="run-the-flows">Run the flows<a class="headerlink" href="#run-the-flows" title="Permanent link">&para;</a></h2>
 <p>Once successfully deployed we can run the flows from the UI or the CLI:</p>
 <div class="highlight"><pre><span></span><code>prefect<span class="w"> </span>deployment<span class="w"> </span>run<span class="w"> </span>hello/default
