@@ -457,6 +457,8 @@ if (amplitudeKey){
       
         
       
+        
+      
     
     
     <li class="md-nav__item md-nav__item--nested">
@@ -533,6 +535,32 @@ if (amplitudeKey){
 
               
             
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/quickstart/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    Quickstart
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -552,6 +580,8 @@ if (amplitudeKey){
       
         
           
+        
+      
         
       
         
@@ -795,6 +825,32 @@ if (amplitudeKey){
 
               
             
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../workers/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    Workers & Work Pools
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -930,7 +986,7 @@ if (amplitudeKey){
   <span class="md-ellipsis">
     
   
-    Deployment
+    Worker Deployment
   
 
     
@@ -946,7 +1002,7 @@ if (amplitudeKey){
             <span class="md-nav__icon md-icon"></span>
             
   
-    Deployment
+    Worker Deployment
   
 
           </label>
@@ -1525,8 +1581,6 @@ if (amplitudeKey){
       
         
       
-        
-      
     
     
     <li class="md-nav__item md-nav__item--nested">
@@ -1894,32 +1948,6 @@ if (amplitudeKey){
   
   
   
-    <li class="md-nav__item">
-      <a href="../../concepts/filesystems/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    
-  
-    Filesystems
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
     
     
       
@@ -1939,9 +1967,9 @@ if (amplitudeKey){
         
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_15" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_14" >
         
-          <label class="md-nav__link" for="__nav_4_15" id="__nav_4_15_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_4_14" id="__nav_4_14_label" tabindex="0">
             
   
   <span class="md-ellipsis">
@@ -1958,8 +1986,8 @@ if (amplitudeKey){
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_15_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_15">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_14_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_14">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -2671,7 +2699,7 @@ if (amplitudeKey){
   <span class="md-ellipsis">
     
   
-    API References
+    API Reference
   
 
     
@@ -2692,7 +2720,7 @@ if (amplitudeKey){
             <span class="md-nav__icon md-icon"></span>
             
   
-    API References
+    API Reference
   
 
           </label>
@@ -2775,7 +2803,7 @@ if (amplitudeKey){
   <span class="md-ellipsis">
     
   
-    Python SDK API
+    Python SDK
   
 
     
@@ -2796,7 +2824,7 @@ if (amplitudeKey){
             <span class="md-nav__icon md-icon"></span>
             
   
-    Python SDK API
+    Python SDK
   
 
           </label>
@@ -6518,7 +6546,10 @@ if (amplitudeKey){
   <h1>Tasks</h1>
 
 <h2 id="what-is-a-task">What is a task?<a class="headerlink" href="#what-is-a-task" title="Permanent link">&para;</a></h2>
-<p>A <a href="/concepts/tasks/">task</a> is a Python function decorated with a <code>@task</code> decorator. Tasks are atomic pieces of work that are executed independently within a flow. Tasks, and the dependencies between them, are displayed in the flow run graph, enabling you to break down a complex flow into something you can observe and understand. When a function becomes a task, it can be executed concurrently and its return value can be cached.</p>
+<p>A <a href="/concepts/tasks/">task</a> is any Python function decorated with a <code>@task</code> decorator called within a flow. 
+You can think of a flow as a recipe for connecting a known sequence of tasks together. 
+Tasks, and the dependencies between them, are displayed in the flow run graph, enabling you to break down a complex flow into something you can observe, understand and control at a more granular level.<br />
+When a function becomes a task, it can be executed concurrently and its return value can be cached.</p>
 <p>Flows and tasks share some common features:</p>
 <ul>
 <li>Both are defined easily using their respective decorator, which accepts settings for that flow / task (see all <a href="/concepts/tasks/#task-arguments">task settings</a> / <a href="/concepts/flows/#flow-settings">flow settings</a>).</li>
@@ -6535,8 +6566,8 @@ if (amplitudeKey){
 <p>Not all functions in a flow need be tasks. Use them only when their features are useful.</p>
 </div>
 <p>Let's take our flow from before and move the request into a task:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">httpx</span>
-<span class="hll"><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span><span class="p">,</span> <span class="n">get_run_logger</span>
+<div class="highlight"><span class="filename">repo_info.py</span><pre><span></span><code><span class="kn">import</span> <span class="nn">httpx</span>
+<span class="hll"><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
 </span>
 
 <span class="hll"><span class="nd">@task</span>
@@ -6546,17 +6577,13 @@ if (amplitudeKey){
 </span><span class="hll">    <span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
 </span>
 
-<span class="nd">@flow</span><span class="p">(</span><span class="n">retries</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">retry_delay_seconds</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<span class="nd">@flow</span><span class="p">(</span><span class="n">retries</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">retry_delay_seconds</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">log_prints</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">get_repo_info</span><span class="p">(</span><span class="n">repo_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;PrefectHQ/prefect&quot;</span><span class="p">):</span>
-    <span class="n">repo</span> <span class="o">=</span> <span class="n">get_url</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;https://api.github.com/repos/</span><span class="si">{</span><span class="n">repo_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="n">logger</span> <span class="o">=</span> <span class="n">get_run_logger</span><span class="p">()</span>
-<span class="hll">    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;PrefectHQ/prefect repository statistics 🤓:&quot;</span><span class="p">)</span>
-</span>    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Stars 🌠 : </span><span class="si">{</span><span class="n">repo</span><span class="p">[</span><span class="s1">&#39;stargazers_count&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Forks 🍴 : </span><span class="si">{</span><span class="n">repo</span><span class="p">[</span><span class="s1">&#39;forks_count&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
-
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-    <span class="n">get_repo_info</span><span class="p">()</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;https://api.github.com/repos/</span><span class="si">{</span><span class="n">repo_name</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="hll">    <span class="n">repo_stats</span> <span class="o">=</span> <span class="n">get_url</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+</span>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">repo_name</span><span class="si">}</span><span class="s2"> repository statistics 🤓:&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Stars 🌠 : </span><span class="si">{</span><span class="n">repo_stats</span><span class="p">[</span><span class="s1">&#39;stargazers_count&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Forks 🍴 : </span><span class="si">{</span><span class="n">repo_stats</span><span class="p">[</span><span class="s1">&#39;forks_count&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </code></pre></div>
 <p>Running the flow in your terminal will result in something like this:</p>
 <div class="terminal">
@@ -6571,8 +6598,10 @@ if (amplitudeKey){
 </code></pre></div>
 </div>
 
+<p>And you should now see this task run tracked in the UI as well.</p>
 <h2 id="caching">Caching<a class="headerlink" href="#caching" title="Permanent link">&para;</a></h2>
-<p>Tasks support the ability to cache their return value. This allows you to efficiently reuse <a href="/concepts/results/">results</a> of tasks that may be expensive to reproduce with every flow run, or reuse cached results if the inputs to a task have not changed.</p>
+<p>Tasks support the ability to cache their return value. 
+Caching allows you to efficiently reuse <a href="/concepts/results/">results</a> of tasks that may be expensive to reproduce with every flow run, or reuse cached results if the inputs to a task have not changed.</p>
 <p>To enable caching, specify a <code>cache_key_fn</code> — a function that returns a cache key — on your task. You may optionally provide a <code>cache_expiration</code> timedelta indicating when the cache expires. You can define a task that is cached based on its inputs by using the Prefect <a href="/api-ref/prefect/tasks/#prefect.tasks.task_input_hash"><code>task_input_hash</code></a>. Let's add caching to our <code>get_url</code> task:</p>
 <div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">httpx</span>
 <span class="hll"><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">timedelta</span>
@@ -6580,21 +6609,24 @@ if (amplitudeKey){
 <span class="hll"><span class="kn">from</span> <span class="nn">prefect.tasks</span> <span class="kn">import</span> <span class="n">task_input_hash</span>
 </span>
 
-<span class="hll"><span class="nd">@task</span><span class="p">(</span><span class="n">cache_key_fn</span><span class="o">=</span><span class="n">task_input_hash</span><span class="p">,</span> <span class="n">cache_expiration</span><span class="o">=</span><span class="n">timedelta</span><span class="p">(</span><span class="n">hours</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
-</span><span class="k">def</span> <span class="nf">get_url</span><span class="p">(</span><span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="hll"><span class="nd">@task</span><span class="p">(</span><span class="n">cache_key_fn</span><span class="o">=</span><span class="n">task_input_hash</span><span class="p">,</span> 
+</span>      <span class="n">cache_expiration</span><span class="o">=</span><span class="n">timedelta</span><span class="p">(</span><span class="n">hours</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+      <span class="p">)</span>
+<span class="k">def</span> <span class="nf">get_url</span><span class="p">(</span><span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
     <span class="n">response</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
     <span class="n">response</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
 </code></pre></div>
+<p>You can test this caching behavior by using a personal repository as your workflow parameter - give it a star, or remove a star and see how the output of this task changes (or doesn't) by running your flow multiple times.</p>
 <div class="admonition warning">
 <p class="admonition-title">Task results and caching</p>
 <p>Task results are cached in memory during a flow run and persisted to your home directory by default. Prefect Cloud only stores the cache key, not the data itself.</p>
 </div>
 <h2 id="concurrency">Concurrency<a class="headerlink" href="#concurrency" title="Permanent link">&para;</a></h2>
 <p>Tasks enable concurrency, allowing you to execute multiple tasks asynchronously. This concurrency can greatly enhance the efficiency and performance of your workflows. Let's expand our script to calculate the average open issues per user. This will require making more requests:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">httpx</span>
+<div class="highlight"><span class="filename">repo_info.py</span><pre><span></span><code><span class="kn">import</span> <span class="nn">httpx</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">timedelta</span>
-<span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span><span class="p">,</span> <span class="n">get_run_logger</span>
+<span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
 <span class="kn">from</span> <span class="nn">prefect.tasks</span> <span class="kn">import</span> <span class="n">task_input_hash</span>
 
 
@@ -6618,23 +6650,16 @@ if (amplitudeKey){
 </span><span class="hll">    <span class="k">return</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">issues</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">p</span><span class="p">]</span>
 </span>
 
-<span class="nd">@flow</span><span class="p">(</span><span class="n">retries</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">retry_delay_seconds</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">get_repo_info</span><span class="p">(</span>
-    <span class="n">repo_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;PrefectHQ/prefect&quot;</span>
-<span class="p">):</span>
-    <span class="n">repo</span> <span class="o">=</span> <span class="n">get_url</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;https://api.github.com/repos/</span><span class="si">{</span><span class="n">repo_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nd">@flow</span><span class="p">(</span><span class="n">retries</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">retry_delay_seconds</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">log_prints</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">get_repo_info</span><span class="p">(</span><span class="n">repo_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;PrefectHQ/prefect&quot;</span><span class="p">):</span>
+    <span class="n">repo_stats</span> <span class="o">=</span> <span class="n">get_url</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;https://api.github.com/repos/</span><span class="si">{</span><span class="n">repo_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 <span class="hll">    <span class="n">issues</span> <span class="o">=</span> <span class="n">get_open_issues</span><span class="p">(</span><span class="n">repo_name</span><span class="p">,</span> <span class="n">repo</span><span class="p">[</span><span class="s2">&quot;open_issues_count&quot;</span><span class="p">])</span>
 </span><span class="hll">    <span class="n">issues_per_user</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">issues</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">([</span><span class="n">i</span><span class="p">[</span><span class="s2">&quot;user&quot;</span><span class="p">][</span><span class="s2">&quot;id&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">issues</span><span class="p">]))</span>
-</span>    <span class="n">logger</span> <span class="o">=</span> <span class="n">get_run_logger</span><span class="p">()</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;PrefectHQ/prefect repository statistics 🤓:&quot;</span><span class="p">)</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Stars 🌠 : </span><span class="si">{</span><span class="n">repo</span><span class="p">[</span><span class="s1">&#39;stargazers_count&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Forks 🍴 : </span><span class="si">{</span><span class="n">repo</span><span class="p">[</span><span class="s1">&#39;forks_count&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="hll">    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Average open issues per user 💌 : </span><span class="si">{</span><span class="n">issues_per_user</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-</span>
-
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-    <span class="n">get_repo_info</span><span class="p">()</span>
-</code></pre></div>
+</span>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">repo_name</span><span class="si">}</span><span class="s2"> repository statistics 🤓:&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Stars 🌠 : </span><span class="si">{</span><span class="n">repo_stats</span><span class="p">[</span><span class="s1">&#39;stargazers_count&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Forks 🍴 : </span><span class="si">{</span><span class="n">repo_stats</span><span class="p">[</span><span class="s1">&#39;forks_count&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="hll">    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Average open issues per user 💌 : </span><span class="si">{</span><span class="n">issues_per_user</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span></code></pre></div>
 <p>Now we're fetching the data we need, but the requests are happening sequentially. Tasks expose a <a href="/api-ref/prefect/tasks/#prefect.tasks.Task.submit"><code>submit</code></a> method which changes the execution from sequential to concurrent. In our specific example, we also need to use the <a href="/api-ref/prefect/futures/#prefect.futures.PrefectFuture.result"><code>result</code></a> method since we are unpacking a list of return values:</p>
 <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">get_open_issues</span><span class="p">(</span><span class="n">repo_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">open_issues_count</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">per_page</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">):</span>
     <span class="n">issues</span> <span class="o">=</span> <span class="p">[]</span>
@@ -6699,7 +6724,7 @@ Average<span class="w"> </span>open<span class="w"> </span>issues<span class="w"
 </code></pre></div>
 <p>Whenever we run the parent flow, a new run will be generated for related functions within that as well. Not only is this run tracked as a subflow run of the main flow, but you can also inspect it independently in the UI!</p>
 <h2 id="next-deployments"><a href="/tutorial/deployments/">Next: Deployments</a><a class="headerlink" href="#next-deployments" title="Permanent link">&para;</a></h2>
-<p>We now have a flow with tasks, subflows, retries, logging, caching, and concurrent execution. In the next section, we'll see how we can deploy this flow in order to run it on a schedule and/or external infrastructure.</p>
+<p>We now have a flow with tasks, subflows, retries, logging, caching, and concurrent execution. In the next section, we'll see how we can deploy this flow in order to run it on a schedule and/or external infrastructure - <a href="/tutorial/deployments/">click here to learn how to create your first deployment</a>.</p>
 
   
   
