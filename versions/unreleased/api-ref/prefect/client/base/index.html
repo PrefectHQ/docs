@@ -3812,6 +3812,23 @@ if (amplitudeKey){
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="PrefectHttpxClient">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#prefect.client.base.PrefectHttpxClient.send" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        send()
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -6502,6 +6519,23 @@ if (amplitudeKey){
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="PrefectHttpxClient">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#prefect.client.base.PrefectHttpxClient.send" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        send()
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -6852,11 +6886,7 @@ everything else about the original Response instance intact.</p>
 
   
       <p>A Prefect wrapper for the async httpx client with support for retry-after headers
-for:</p>
-<ul>
-<li>429 CloudFlare-style rate limiting</li>
-<li>503 Service unavailable</li>
-</ul>
+for the provided status codes (typically 429, 502 and 503).</p>
 <p>Additionally, this client will always call <code>raise_for_status</code> on responses.</p>
 <p>For more details on rate limit headers, see:
 <a href="https://support.cloudflare.com/hc/en-us/articles/115001635128-Configuring-Rate-Limiting-from-UI">Configuring Cloudflare Rate Limiting</a></p>
@@ -6991,13 +7021,15 @@ for:</p>
 <span class="normal">279</span>
 <span class="normal">280</span>
 <span class="normal">281</span>
-<span class="normal">282</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">PrefectHttpxClient</span><span class="p">(</span><span class="n">httpx</span><span class="o">.</span><span class="n">AsyncClient</span><span class="p">):</span>
+<span class="normal">282</span>
+<span class="normal">283</span>
+<span class="normal">284</span>
+<span class="normal">285</span>
+<span class="normal">286</span>
+<span class="normal">287</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">PrefectHttpxClient</span><span class="p">(</span><span class="n">httpx</span><span class="o">.</span><span class="n">AsyncClient</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A Prefect wrapper for the async httpx client with support for retry-after headers</span>
-<span class="sd">    for:</span>
-
-<span class="sd">    - 429 CloudFlare-style rate limiting</span>
-<span class="sd">    - 503 Service unavailable</span>
+<span class="sd">    for the provided status codes (typically 429, 502 and 503).</span>
 
 <span class="sd">    Additionally, this client will always call `raise_for_status` on responses.</span>
 
@@ -7086,6 +7118,14 @@ for:</p>
         <span class="k">return</span> <span class="n">response</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">send</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Response</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Send a request with automatic retry behavior for the following status codes:</span>
+
+<span class="sd">        - 429 CloudFlare-style rate limiting</span>
+<span class="sd">        - 502 Bad Gateway</span>
+<span class="sd">        - 503 Service unavailable</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="n">api_request</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">send</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="n">response</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_send_with_retry</span><span class="p">(</span>
@@ -7134,6 +7174,124 @@ for:</p>
 
 
 
+
+
+<div class="doc doc-object doc-function">
+
+
+
+
+<h3 id="prefect.client.base.PrefectHttpxClient.send" class="doc doc-heading">
+          <code class="highlight language-python"><span class="n">send</span></code>
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-async"><code>async</code></small>
+  </span>
+
+<a href="#prefect.client.base.PrefectHttpxClient.send" class="headerlink" title="Permanent link">&para;</a></h3>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>Send a request with automatic retry behavior for the following status codes:</p>
+<ul>
+<li>429 CloudFlare-style rate limiting</li>
+<li>502 Bad Gateway</li>
+<li>503 Service unavailable</li>
+</ul>
+
+          <details class="quote">
+            <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/client/base.py</code></summary>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">245</span>
+<span class="normal">246</span>
+<span class="normal">247</span>
+<span class="normal">248</span>
+<span class="normal">249</span>
+<span class="normal">250</span>
+<span class="normal">251</span>
+<span class="normal">252</span>
+<span class="normal">253</span>
+<span class="normal">254</span>
+<span class="normal">255</span>
+<span class="normal">256</span>
+<span class="normal">257</span>
+<span class="normal">258</span>
+<span class="normal">259</span>
+<span class="normal">260</span>
+<span class="normal">261</span>
+<span class="normal">262</span>
+<span class="normal">263</span>
+<span class="normal">264</span>
+<span class="normal">265</span>
+<span class="normal">266</span>
+<span class="normal">267</span>
+<span class="normal">268</span>
+<span class="normal">269</span>
+<span class="normal">270</span>
+<span class="normal">271</span>
+<span class="normal">272</span>
+<span class="normal">273</span>
+<span class="normal">274</span>
+<span class="normal">275</span>
+<span class="normal">276</span>
+<span class="normal">277</span>
+<span class="normal">278</span>
+<span class="normal">279</span>
+<span class="normal">280</span>
+<span class="normal">281</span>
+<span class="normal">282</span>
+<span class="normal">283</span>
+<span class="normal">284</span>
+<span class="normal">285</span>
+<span class="normal">286</span>
+<span class="normal">287</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">send</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Response</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Send a request with automatic retry behavior for the following status codes:</span>
+
+<span class="sd">    - 429 CloudFlare-style rate limiting</span>
+<span class="sd">    - 502 Bad Gateway</span>
+<span class="sd">    - 503 Service unavailable</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">api_request</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">send</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="n">response</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_send_with_retry</span><span class="p">(</span>
+        <span class="n">request</span><span class="o">=</span><span class="n">api_request</span><span class="p">,</span>
+        <span class="n">retry_codes</span><span class="o">=</span><span class="p">{</span>
+            <span class="n">status</span><span class="o">.</span><span class="n">HTTP_429_TOO_MANY_REQUESTS</span><span class="p">,</span>
+            <span class="n">status</span><span class="o">.</span><span class="n">HTTP_503_SERVICE_UNAVAILABLE</span><span class="p">,</span>
+            <span class="n">status</span><span class="o">.</span><span class="n">HTTP_502_BAD_GATEWAY</span><span class="p">,</span>
+            <span class="o">*</span><span class="n">PREFECT_CLIENT_RETRY_EXTRA_CODES</span><span class="o">.</span><span class="n">value</span><span class="p">(),</span>
+        <span class="p">},</span>
+        <span class="n">retry_exceptions</span><span class="o">=</span><span class="p">(</span>
+            <span class="n">httpx</span><span class="o">.</span><span class="n">ReadTimeout</span><span class="p">,</span>
+            <span class="n">httpx</span><span class="o">.</span><span class="n">PoolTimeout</span><span class="p">,</span>
+            <span class="n">httpx</span><span class="o">.</span><span class="n">ConnectTimeout</span><span class="p">,</span>
+            <span class="c1"># `ConnectionResetError` when reading socket raises as a `ReadError`</span>
+            <span class="n">httpx</span><span class="o">.</span><span class="n">ReadError</span><span class="p">,</span>
+            <span class="c1"># Sockets can be closed during writes resulting in a `WriteError`</span>
+            <span class="n">httpx</span><span class="o">.</span><span class="n">WriteError</span><span class="p">,</span>
+            <span class="c1"># Uvicorn bug, see https://github.com/PrefectHQ/prefect/issues/7512</span>
+            <span class="n">httpx</span><span class="o">.</span><span class="n">RemoteProtocolError</span><span class="p">,</span>
+            <span class="c1"># HTTP2 bug, see https://github.com/PrefectHQ/prefect/issues/7442</span>
+            <span class="n">httpx</span><span class="o">.</span><span class="n">LocalProtocolError</span><span class="p">,</span>
+        <span class="p">),</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Convert to a Prefect response to add nicer errors messages</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">PrefectResponse</span><span class="o">.</span><span class="n">from_httpx_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+
+    <span class="c1"># Always raise bad responses</span>
+    <span class="c1"># NOTE: We may want to remove this and handle responses per route in the</span>
+    <span class="c1">#       `PrefectClient`</span>
+    <span class="n">response</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">response</span>
+</code></pre></div></td></tr></table></div>
+          </details>
+  </div>
+
+</div>
 
 
 
