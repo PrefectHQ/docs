@@ -1885,6 +1885,38 @@ if (amplitudeKey){
 </li>
       
         <li class="md-nav__item">
+  <a href="#serving-a-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Serving a flow
+        </span>
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Serving a flow">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#serving-multiple-flows-at-once" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Serving multiple flows at once
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#pause-a-flow-run" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -7002,6 +7034,38 @@ if (amplitudeKey){
 </li>
       
         <li class="md-nav__item">
+  <a href="#serving-a-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Serving a flow
+        </span>
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Serving a flow">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#serving-multiple-flows-at-once" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Serving multiple flows at once
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#pause-a-flow-run" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -7090,27 +7154,28 @@ if (amplitudeKey){
 
 
 <h1 id="flows">Flows<a class="headerlink" href="#flows" title="Permanent link">&para;</a></h1>
-<p>Flows are the most basic Prefect object. Flows are the only Prefect abstraction that can be interacted with, displayed, and run without needing to reference any other aspect of the Prefect engine. A flow is a container for workflow logic and allows users to interact with and reason about the state of their workflows. It is represented in Python as a single function.</p>
+<p>Flows are the most central Prefect object. A flow is a container for workflow logic as-code and allows users to configure how their workflows behave. Flows are defined as Python functions, and any Python function is eligible to be a flow.</p>
 <h2 id="flows-overview">Flows overview<a class="headerlink" href="#flows-overview" title="Permanent link">&para;</a></h2>
-<p>Flows are like functions. They can take inputs, perform work, and return an output. In fact, you can turn any function into a Prefect flow by adding the <code>@flow</code> decorator. When a function becomes a flow, its behavior changes, giving it the following advantages:</p>
+<p>Flows can be thought of as special types of functions. They can take inputs, perform work, and return an output. In fact, you can turn any function into a Prefect flow by adding the <code>@flow</code> decorator. When a function becomes a flow, its behavior changes, giving it the following advantages:</p>
 <ul>
-<li>State transitions are reported to the API, allowing observation of flow execution.</li>
-<li>Input arguments types can be validated.</li>
+<li>Every invocation of this function is tracked and all state transitions are reported to the API, allowing observation of flow execution.</li>
+<li>Input arguments are automatically type checked and coerced to the appropriate types.</li>
 <li>Retries can be performed on failure.</li>
 <li>Timeouts can be enforced to prevent unintentional, long-running workflows.</li>
 </ul>
-<p>Flows also take advantage of automatic Prefect logging to capture details about <a href="#flow-runs">flow runs</a> such as run time, task tags, and final state.</p>
-<p>All workflows are defined within the context of a flow. Flows can include calls to <a href="/concepts/tasks/">tasks</a> as well as to other flows, which we call <a href="#composing-flows">"subflows"</a> in this context. Flows may be defined within modules and imported for use as subflows in your flow definitions.</p>
-<p>Flows are required for <a href="/concepts/deployments/">deployments</a> &mdash; every deployment points to a specific flow as the entrypoint for a flow run.</p>
+<p>Flows also take advantage of automatic Prefect logging to capture details about <a href="#flow-runs">flow runs</a> such as run time and final state.</p>
+<p>Flows can include calls to <a href="/concepts/tasks/">tasks</a> as well as to other flows, which Prefect calls <a href="#composing-flows">"subflows"</a> in this context. Flows may be defined within modules and imported for use as subflows in your flow definitions.</p>
+<p><a href="/concepts/deployments/">Deployments</a> elevate individual workflows from functions that you call manually to API-managed entities.</p>
 <div class="admonition warning">
 <p class="admonition-title">Tasks must be called from flows</p>
 <p>All tasks must be called from within a flow. Tasks may not be called from other tasks.</p>
 </div>
 <h2 id="flow-runs">Flow runs<a class="headerlink" href="#flow-runs" title="Permanent link">&para;</a></h2>
 <p>A <em>flow run</em> represents a single execution of the flow.</p>
-<p>You can create a flow run by calling the flow. For example, by running a Python script or importing the flow into an interactive session.</p>
+<p>You can create a flow run by calling the flow manually. For example, by running a Python script or importing the flow into an interactive session and calling it.</p>
 <p>You can also create a flow run by:</p>
 <ul>
+<li>Using external schedulers such as <code>cron</code> to invoke a flow function</li>
 <li>Creating a <a href="/concepts/deployments/">deployment</a> on Prefect Cloud or a locally run Prefect server.</li>
 <li>Creating a flow run for the deployment via a schedule, the Prefect UI, or the Prefect API.</li>
 </ul>
@@ -7118,19 +7183,20 @@ if (amplitudeKey){
 <p>When you run a flow that contains tasks or additional flows, Prefect will track the relationship of each child run to the parent flow run.</p>
 <p><img alt="Prefect UI" src="/img/ui/prefect-dashboard.png" /></p>
 <h2 id="writing-flows">Writing flows<a class="headerlink" href="#writing-flows" title="Permanent link">&para;</a></h2>
-<p>For most use cases, we recommend using the <a class="autorefs autorefs-internal" href="../../api-ref/prefect/flows/#prefect.flows.flow"><code>@flow</code></a> decorator to designate a flow:</p>
+<p>The <a class="autorefs autorefs-internal" href="../../api-ref/prefect/flows/#prefect.flows.flow"><code>@flow</code></a> decorator is used to designate a flow:</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span>
 
 <span class="hll"><span class="nd">@flow</span>
 </span><span class="k">def</span> <span class="nf">my_flow</span><span class="p">():</span>
     <span class="k">return</span>
 </code></pre></div>
+<p>There are no rigid rules for what code you include within a flow definition - all valid Python is acceptable.</p>
 <p>Flows are uniquely identified by name. You can provide a <code>name</code> parameter value for the flow. If you don't provide a name, Prefect uses the flow function name.</p>
 <div class="highlight"><pre><span></span><code><span class="hll"><span class="nd">@flow</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;My Flow&quot;</span><span class="p">)</span>
 </span><span class="k">def</span> <span class="nf">my_flow</span><span class="p">():</span>
     <span class="k">return</span>
 </code></pre></div>
-<p>Flows can call tasks to do specific work:</p>
+<p>Flows can call tasks to allow Prefect to orchestrate and track more granular units of work:</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
 
 <span class="nd">@task</span>
@@ -7146,7 +7212,7 @@ if (amplitudeKey){
 <p>There's nothing stopping you from putting all of your code in a single flow function &mdash; Prefect will happily run it!</p>
 <p>However, organizing your workflow code into smaller flow and task units lets you take advantage of Prefect features like retries, more granular visibility into runtime state, the ability to determine final state regardless of individual task state, and more.</p>
 <p>In addition, if you put all of your workflow logic in a single flow function and any line of code fails, the entire flow will fail and must be retried from the beginning. This can be avoided by breaking up the code into multiple tasks.</p>
-<p>Each Prefect workflow must contain one primary, entrypoint <code>@flow</code> function. From that flow function, you may call any number of other tasks, subflows, and even regular Python functions. You can pass parameters to your entrypoint flow function that will be used elsewhere in the workflow, and the <a href="#final-state-determination">final state</a> of that entrypoint flow function determines the final state of your workflow.</p>
+<p>You may call any number of other tasks, subflows, and even regular Python functions within your flow. You can pass parameters to your flow function that will be used elsewhere in the workflow, and Prefect will report on the progress and <a href="#final-state-determination">final state</a> of any invocation.</p>
 <p>Prefect encourages "small tasks" &mdash; each one should represent a single logical step of your workflow. This allows Prefect to better contain task failures.</p>
 </div>
 <h2 id="flow-settings">Flow settings<a class="headerlink" href="#flow-settings" title="Permanent link">&para;</a></h2>
@@ -7718,8 +7784,71 @@ Completed<span class="o">(</span><span class="nv">message</span><span class="o">
 </code></pre></div>
 </div>
 
+<h2 id="serving-a-flow">Serving a flow<a class="headerlink" href="#serving-a-flow" title="Permanent link">&para;</a></h2>
+<p>The simplest way to create a <a href="/concepts/deployments/">deployment</a> for your flow is by calling its <a href="/api-ref/prefect/flows/#prefect.flows.Flow.serve"><code>serve</code> method</a>. This method creates a deployment for the flow and starts a long-running process that monitors for work from the Prefect server. When work is found, it is executed within its own isolated subprocess.</p>
+<div class="highlight"><span class="filename">hello_world.py</span><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span>
+
+
+<span class="nd">@flow</span><span class="p">(</span><span class="n">log_prints</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">hello_world</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;world&quot;</span><span class="p">,</span> <span class="n">goodbye</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Hello </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> from Prefect! 🤗&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">goodbye</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Goodbye </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">!&quot;</span><span class="p">)</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="c1"># creates a deployment and stays running to monitor for work instructions generated on the server</span>
+
+    <span class="n">hello_world</span><span class="o">.</span><span class="n">serve</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;my-first-deployment&quot;</span><span class="p">,</span>
+                      <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;onboarding&quot;</span><span class="p">],</span>
+                      <span class="n">parameters</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;goodbye&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">},</span>
+                      <span class="n">interval</span><span class="o">=</span><span class="mi">60</span><span class="p">)</span>
+</code></pre></div>
+<p>This interface provides all of the configuration needed for a deployment with no strong infrastructure requirements:</p>
+<ul>
+<li>schedules</li>
+<li>event triggers</li>
+<li>metadata such as tags and description</li>
+<li>default parameter values</li>
+</ul>
+<div class="admonition tip">
+<p class="admonition-title">Schedules are auto-paused on shutdown</p>
+<p>By default, stopping the process running <code>flow.serve</code> will pause the schedule for the deployment (if it has one). When running this in environments where restarts are expected use the <code>pause_on_shutdown=False</code> flag to prevent this behavior:</p>
+<div class="highlight"><pre><span></span><code><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">hello_world</span><span class="o">.</span><span class="n">serve</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;my-first-deployment&quot;</span><span class="p">,</span>
+                      <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;onboarding&quot;</span><span class="p">],</span>
+                      <span class="n">parameters</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;goodbye&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">},</span>
+<span class="hll">                      <span class="n">pause_on_shutdown</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+</span>                      <span class="n">interval</span><span class="o">=</span><span class="mi">60</span><span class="p">)</span>
+</code></pre></div>
+</div>
+<h3 id="serving-multiple-flows-at-once">Serving multiple flows at once<a class="headerlink" href="#serving-multiple-flows-at-once" title="Permanent link">&para;</a></h3>
+<p>You can take this further and serve multiple flows with the same process using the <a href="/api-ref/prefect/runner/#prefect.runner.serve"><code>serve</code></a> utility along with the <code>to_deployment</code> method of flows:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">serve</span>
+
+
+<span class="nd">@flow</span>
+<span class="k">def</span> <span class="nf">slow_flow</span><span class="p">(</span><span class="n">sleep</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">60</span><span class="p">):</span>
+    <span class="s2">&quot;Sleepy flow - sleeps the provided amount of time (in seconds).&quot;</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">sleep</span><span class="p">)</span>
+
+
+<span class="nd">@flow</span>
+<span class="k">def</span> <span class="nf">fast_flow</span><span class="p">():</span>
+    <span class="s2">&quot;Fastest flow this side of the Mississippi.&quot;</span>
+    <span class="k">return</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">slow_deploy</span> <span class="o">=</span> <span class="n">slow_flow</span><span class="o">.</span><span class="n">to_deployment</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;sleeper&quot;</span><span class="p">,</span> <span class="n">interval</span><span class="o">=</span><span class="mi">45</span><span class="p">)</span>
+    <span class="n">fast_deploy</span> <span class="o">=</span> <span class="n">fast_flow</span><span class="o">.</span><span class="n">to_deployment</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;fast&quot;</span><span class="p">)</span>
+    <span class="n">serve</span><span class="p">(</span><span class="n">slow_deploy</span><span class="p">,</span> <span class="n">fast_deploy</span><span class="p">)</span>
+</code></pre></div>
+<p>The behavior and interfaces are identical to the single flow case.</p>
 <h2 id="pause-a-flow-run">Pause a flow run<a class="headerlink" href="#pause-a-flow-run" title="Permanent link">&para;</a></h2>
-<p>Prefect enables pausing an in-progress flow run for manual approval. Prefect exposes this functionality via the <a href="/api-ref/prefect/engine/#prefect.engine.pause_flow_run"><code>pause_flow_run</code></a> and <a href="/api-ref/prefect/engine/#prefect.engine.resume_flow_run"><code>resume_flow_run</code></a> functions, as well as the Prefect server or Prefect Cloud UI.</p>
+<p>Prefect enables pausing an in-progress flow run for manual approval. Prefect exposes this functionality via the <a href="/api-ref/prefect/engine/#prefect.engine.pause_flow_run"><code>pause_flow_run</code></a> and <a href="/api-ref/prefect/engine/#prefect.engine.resume_flow_run"><code>resume_flow_run</code></a> functions, as well as the Prefect UI.</p>
 <p>Most simply, <code>pause_flow_run</code> can be called inside a flow. A timeout option can be supplied as well &mdash; after the specified number of seconds, the flow will fail if it hasn't been resumed.</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">task</span><span class="p">,</span> <span class="n">flow</span><span class="p">,</span> <span class="n">pause_flow_run</span><span class="p">,</span> <span class="n">resume_flow_run</span>
 
@@ -7797,8 +7926,8 @@ Completed<span class="o">(</span><span class="nv">message</span><span class="o">
 <p>You may cancel a scheduled or in-progress flow run from the CLI, UI, REST API, or Python client.</p>
 <p>When cancellation is requested, the flow run is moved to a "Cancelling" state. The agent monitors the state of flow runs and detects that cancellation has been requested. The agent then sends a signal to the flow run infrastructure, requesting termination of the run. If the run does not terminate after a grace period (default of 30 seconds), the infrastructure will be killed, ensuring the flow run exits.</p>
 <div class="admonition warning">
-<p class="admonition-title">A worker or agent is required</p>
-<p>Flow run cancellation requires the flow run to be submitted by a worker or agent. The worker or agent must be running to enforce the cancellation. In line subflow runs, i.e. those created without <code>run_deployment</code>, cannot be cancelled without cancelling the parent flow run. If you may need to cancel a subflow run independent of its parent flow run, we recommend deploying it separately and starting it using the <a href="/api-ref/prefect/deployments/deployments/#prefect.deployments.run_deployment">run_deployment</a> method.</p>
+<p class="admonition-title">A deployment is required</p>
+<p>Flow run cancellation requires the flow run to be associated with a <a href="#serving-a-flow">deployment</a>. A monitoring process must be running to enforce the cancellation. Inline subflow runs, i.e. those created without <code>run_deployment</code>, cannot be cancelled without cancelling the parent flow run. If you may need to cancel a subflow run independent of its parent flow run, we recommend deploying it separately and starting it using the <a href="/api-ref/prefect/deployments/deployments/#prefect.deployments.run_deployment">run_deployment</a> method.</p>
 </div>
 <p>Support for cancellation is included for all core library infrastructure types:</p>
 <ul>

@@ -7619,7 +7619,10 @@ either <code>flow.serve</code> or the <code>serve</code> utility.</p>
 <span class="normal">860</span>
 <span class="normal">861</span>
 <span class="normal">862</span>
-<span class="normal">863</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">Runner</span><span class="p">:</span>
+<span class="normal">863</span>
+<span class="normal">864</span>
+<span class="normal">865</span>
+<span class="normal">866</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">Runner</span><span class="p">:</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -7669,7 +7672,7 @@ either <code>flow.serve</code> or the <code>serve</code> utility.</p>
         <span class="k">if</span> <span class="n">name</span> <span class="ow">and</span> <span class="p">(</span><span class="s2">&quot;/&quot;</span> <span class="ow">in</span> <span class="n">name</span> <span class="ow">or</span> <span class="s2">&quot;%&quot;</span> <span class="ow">in</span> <span class="n">name</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Runner name cannot contain &#39;/&#39; or &#39;%&#39;&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">stem</span> <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="sa">f</span><span class="s2">&quot;runner-</span><span class="si">{</span><span class="n">uuid4</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span> <span class="o">=</span> <span class="n">get_logger</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span> <span class="o">=</span> <span class="n">get_logger</span><span class="p">(</span><span class="s2">&quot;runner&quot;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">started</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">pause_on_shutdown</span> <span class="o">=</span> <span class="n">pause_on_shutdown</span>
@@ -7779,8 +7782,8 @@ either <code>flow.serve</code> or the <code>serve</code> utility.</p>
 <span class="sd">            run_once: If True, the runner will through one query loop and then exit.</span>
 
 <span class="sd">        Examples:</span>
-
 <span class="sd">            Initialize a Runner, add two flows, and serve them by starting the Runner:</span>
+
 <span class="sd">            ```python</span>
 <span class="sd">            from prefect import flow, Runner</span>
 
@@ -8013,8 +8016,11 @@ either <code>flow.serve</code> or the <code>serve</code> utility.</p>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Pauses all deployment schedules.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Pausing schedules for all deployments...&quot;</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">deployment_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_deployment_ids</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Pausing schedule for deployment &#39;</span><span class="si">{</span><span class="n">deployment_id</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
             <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">update_schedule</span><span class="p">(</span><span class="n">deployment_id</span><span class="p">,</span> <span class="n">active</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;All deployment schedules have been paused!&quot;</span><span class="p">)</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">_get_and_submit_flow_runs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">runs_response</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_scheduled_flow_runs</span><span class="p">()</span>
@@ -8965,9 +8971,12 @@ the flow run process has exited.</p>
         </tr>
     </tbody>
   </table>
-      <div class="codehilite"><pre><span></span><code><span class="n">Initialize</span> <span class="n">a</span> <span class="n">Runner</span><span class="p">,</span> <span class="n">add</span> <span class="n">two</span> <span class="n">flows</span><span class="p">,</span> <span class="ow">and</span> <span class="n">serve</span> <span class="n">them</span> <span class="n">by</span> <span class="n">starting</span> <span class="n">the</span> <span class="n">Runner</span><span class="p">:</span>
-<span class="err">```</span><span class="n">python</span>
-<span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">Runner</span>
+
+
+
+<p><strong>Examples:</strong></p>
+    <p>Initialize a Runner, add two flows, and serve them by starting the Runner:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">Runner</span>
 
 <span class="nd">@flow</span>
 <span class="k">def</span> <span class="nf">hello_flow</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
@@ -8987,7 +8996,6 @@ the flow run process has exited.</p>
     <span class="n">runner</span><span class="o">.</span><span class="n">add_flow</span><span class="p">(</span><span class="n">goodbye_flow</span><span class="p">,</span> <span class="n">schedule</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;cron&quot;</span><span class="p">:</span> <span class="s2">&quot;0 * * * *&quot;</span><span class="p">})</span>
 
     <span class="n">runner</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
-<span class="err">```</span>
 </code></pre></div>
 
           <details class="quote">
@@ -9058,8 +9066,8 @@ the flow run process has exited.</p>
 <span class="sd">        run_once: If True, the runner will through one query loop and then exit.</span>
 
 <span class="sd">    Examples:</span>
-
 <span class="sd">        Initialize a Runner, add two flows, and serve them by starting the Runner:</span>
+
 <span class="sd">        ```python</span>
 <span class="sd">        from prefect import flow, Runner</span>
 
@@ -9235,12 +9243,39 @@ deployment schedules on shutdown.</p>
     </tbody>
   </table>
 
+
+
+<p><strong>Examples:</strong></p>
+    <p>Prepare two deployments and serve them:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">datetime</span>
+
+<span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">serve</span>
+
+<span class="nd">@flow</span>
+<span class="k">def</span> <span class="nf">my_flow</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;hello </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="nd">@flow</span>
+<span class="k">def</span> <span class="nf">my_other_flow</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;goodbye </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="c1"># Run once a day</span>
+    <span class="n">hello_deploy</span> <span class="o">=</span> <span class="n">my_flow</span><span class="o">.</span><span class="n">to_deployment</span><span class="p">(</span>
+        <span class="s2">&quot;hello&quot;</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;dev&quot;</span><span class="p">],</span> <span class="n">interval</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Run every Sunday at 4:00 AM</span>
+    <span class="n">bye_deploy</span> <span class="o">=</span> <span class="n">my_other_flow</span><span class="o">.</span><span class="n">to_deployment</span><span class="p">(</span>
+        <span class="s2">&quot;goodbye&quot;</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;dev&quot;</span><span class="p">],</span> <span class="n">cron</span><span class="o">=</span><span class="s2">&quot;0 4 * * sun&quot;</span>
+    <span class="p">)</span>
+
+    <span class="n">serve</span><span class="p">(</span><span class="n">hello_deploy</span><span class="p">,</span> <span class="n">bye_deploy</span><span class="p">)</span>
+</code></pre></div>
+
           <details class="quote">
             <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/runner.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">885</span>
-<span class="normal">886</span>
-<span class="normal">887</span>
-<span class="normal">888</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">888</span>
 <span class="normal">889</span>
 <span class="normal">890</span>
 <span class="normal">891</span>
@@ -9284,7 +9319,40 @@ deployment schedules on shutdown.</p>
 <span class="normal">929</span>
 <span class="normal">930</span>
 <span class="normal">931</span>
-<span class="normal">932</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@sync_compatible</span>
+<span class="normal">932</span>
+<span class="normal">933</span>
+<span class="normal">934</span>
+<span class="normal">935</span>
+<span class="normal">936</span>
+<span class="normal">937</span>
+<span class="normal">938</span>
+<span class="normal">939</span>
+<span class="normal">940</span>
+<span class="normal">941</span>
+<span class="normal">942</span>
+<span class="normal">943</span>
+<span class="normal">944</span>
+<span class="normal">945</span>
+<span class="normal">946</span>
+<span class="normal">947</span>
+<span class="normal">948</span>
+<span class="normal">949</span>
+<span class="normal">950</span>
+<span class="normal">951</span>
+<span class="normal">952</span>
+<span class="normal">953</span>
+<span class="normal">954</span>
+<span class="normal">955</span>
+<span class="normal">956</span>
+<span class="normal">957</span>
+<span class="normal">958</span>
+<span class="normal">959</span>
+<span class="normal">960</span>
+<span class="normal">961</span>
+<span class="normal">962</span>
+<span class="normal">963</span>
+<span class="normal">964</span>
+<span class="normal">965</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@sync_compatible</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">serve</span><span class="p">(</span>
     <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">RunnerDeployment</span><span class="p">,</span>
     <span class="n">pause_on_shutdown</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
@@ -9299,6 +9367,36 @@ deployment schedules on shutdown.</p>
 <span class="sd">        pause_on_shutdown: A boolean for whether or not to automatically pause</span>
 <span class="sd">            deployment schedules on shutdown.</span>
 <span class="sd">        **kwargs: Additional keyword arguments to pass to the runner.</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        Prepare two deployments and serve them:</span>
+
+<span class="sd">        ```python</span>
+<span class="sd">        import datetime</span>
+
+<span class="sd">        from prefect import flow, serve</span>
+
+<span class="sd">        @flow</span>
+<span class="sd">        def my_flow(name):</span>
+<span class="sd">            print(f&quot;hello {name}&quot;)</span>
+
+<span class="sd">        @flow</span>
+<span class="sd">        def my_other_flow(name):</span>
+<span class="sd">            print(f&quot;goodbye {name}&quot;)</span>
+
+<span class="sd">        if __name__ == &quot;__main__&quot;:</span>
+<span class="sd">            # Run once a day</span>
+<span class="sd">            hello_deploy = my_flow.to_deployment(</span>
+<span class="sd">                &quot;hello&quot;, tags=[&quot;dev&quot;], interval=datetime.timedelta(days=1)</span>
+<span class="sd">            )</span>
+
+<span class="sd">            # Run every Sunday at 4:00 AM</span>
+<span class="sd">            bye_deploy = my_other_flow.to_deployment(</span>
+<span class="sd">                &quot;goodbye&quot;, tags=[&quot;dev&quot;], cron=&quot;0 4 * * sun&quot;</span>
+<span class="sd">            )</span>
+
+<span class="sd">            serve(hello_deploy, bye_deploy)</span>
+<span class="sd">        ```</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">runner</span> <span class="o">=</span> <span class="n">Runner</span><span class="p">(</span><span class="n">pause_on_shutdown</span><span class="o">=</span><span class="n">pause_on_shutdown</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">deployment</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
