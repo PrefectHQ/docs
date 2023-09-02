@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="../../../img/favicon.png">
-      <meta name="generator" content="mkdocs-1.5.2, mkdocs-material-9.2.5+insiders-4.40.1">
+      <meta name="generator" content="mkdocs-1.5.2, mkdocs-material-9.2.6+insiders-4.40.2">
     
     
       
@@ -825,6 +825,8 @@ if (amplitudeKey){
       
         
       
+        
+      
     
     
     <li class="md-nav__item md-nav__item--nested">
@@ -1006,6 +1008,32 @@ if (amplitudeKey){
     
   
     Variables
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../guides/docker/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    Running flows with Docker
   
 
     
@@ -1215,8 +1243,6 @@ if (amplitudeKey){
       
         
       
-        
-      
     
     
     <li class="md-nav__item md-nav__item--nested">
@@ -1294,32 +1320,6 @@ if (amplitudeKey){
     
   
     Storage
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../guides/deployment/docker/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    
-  
-    Docker
   
 
     
@@ -6850,8 +6850,7 @@ either <code>flow.serve</code> or the <code>serve</code> utility.</p>
 
             <details class="quote">
               <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/runner.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 94</span>
-<span class="normal"> 95</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 95</span>
 <span class="normal"> 96</span>
 <span class="normal"> 97</span>
 <span class="normal"> 98</span>
@@ -7622,7 +7621,31 @@ either <code>flow.serve</code> or the <code>serve</code> utility.</p>
 <span class="normal">863</span>
 <span class="normal">864</span>
 <span class="normal">865</span>
-<span class="normal">866</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">Runner</span><span class="p">:</span>
+<span class="normal">866</span>
+<span class="normal">867</span>
+<span class="normal">868</span>
+<span class="normal">869</span>
+<span class="normal">870</span>
+<span class="normal">871</span>
+<span class="normal">872</span>
+<span class="normal">873</span>
+<span class="normal">874</span>
+<span class="normal">875</span>
+<span class="normal">876</span>
+<span class="normal">877</span>
+<span class="normal">878</span>
+<span class="normal">879</span>
+<span class="normal">880</span>
+<span class="normal">881</span>
+<span class="normal">882</span>
+<span class="normal">883</span>
+<span class="normal">884</span>
+<span class="normal">885</span>
+<span class="normal">886</span>
+<span class="normal">887</span>
+<span class="normal">888</span>
+<span class="normal">889</span>
+<span class="normal">890</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">Runner</span><span class="p">:</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -7676,13 +7699,15 @@ either <code>flow.serve</code> or the <code>serve</code> utility.</p>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">started</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">pause_on_shutdown</span> <span class="o">=</span> <span class="n">pause_on_shutdown</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">limit</span> <span class="o">=</span> <span class="n">limit</span> <span class="ow">or</span> <span class="n">PREFECT_RUNNER_PROCESS_LIMIT</span><span class="o">.</span><span class="n">value</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_query_seconds</span> <span class="o">=</span> <span class="n">query_seconds</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_prefetch_seconds</span> <span class="o">=</span> <span class="n">prefetch_seconds</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_runs_task_group</span><span class="p">:</span> <span class="n">anyio</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">TaskGroup</span> <span class="o">=</span> <span class="n">anyio</span><span class="o">.</span><span class="n">create_task_group</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_loops_task_group</span><span class="p">:</span> <span class="n">anyio</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">TaskGroup</span> <span class="o">=</span> <span class="n">anyio</span><span class="o">.</span><span class="n">create_task_group</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_limiter</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">anyio</span><span class="o">.</span><span class="n">CapacityLimiter</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">anyio</span><span class="o">.</span><span class="n">CapacityLimiter</span><span class="p">(</span><span class="n">limit</span><span class="p">)</span> <span class="k">if</span> <span class="n">limit</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_limiter</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">anyio</span><span class="o">.</span><span class="n">CapacityLimiter</span><span class="p">]</span> <span class="o">=</span> <span class="n">anyio</span><span class="o">.</span><span class="n">CapacityLimiter</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">limit</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_client</span> <span class="o">=</span> <span class="n">get_client</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_submitting_flow_run_ids</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
@@ -7845,6 +7870,9 @@ either <code>flow.serve</code> or the <code>serve</code> utility.</p>
 <span class="sd">        the flow run process has exited.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">async</span> <span class="k">with</span> <span class="bp">self</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_acquire_limit_slot</span><span class="p">(</span><span class="n">flow_run_id</span><span class="p">):</span>
+                <span class="k">return</span>
+
             <span class="k">async</span> <span class="k">with</span> <span class="n">anyio</span><span class="o">.</span><span class="n">create_task_group</span><span class="p">()</span> <span class="k">as</span> <span class="n">tg</span><span class="p">:</span>
                 <span class="k">with</span> <span class="n">anyio</span><span class="o">.</span><span class="n">CancelScope</span><span class="p">():</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_submitting_flow_run_ids</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">flow_run_id</span><span class="p">)</span>
@@ -8154,6 +8182,32 @@ either <code>flow.serve</code> or the <code>serve</code> utility.</p>
         <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Discovered </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">scheduled_flow_runs</span><span class="p">)</span><span class="si">}</span><span class="s2"> scheduled_flow_runs&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">scheduled_flow_runs</span>
 
+    <span class="k">def</span> <span class="nf">_acquire_limit_slot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flow_run_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Enforces flow run limit set on runner.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            - bool: True if a slot was acquired, False otherwise.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_limiter</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_limiter</span><span class="o">.</span><span class="n">acquire_on_behalf_of_nowait</span><span class="p">(</span><span class="n">flow_run_id</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">except</span> <span class="n">anyio</span><span class="o">.</span><span class="n">WouldBlock</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Flow run limit reached; </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_limiter</span><span class="o">.</span><span class="n">borrowed_tokens</span><span class="si">}</span><span class="s2"> flow runs&quot;</span>
+                <span class="s2">&quot; in progress. You can control this limit by adjusting the&quot;</span>
+                <span class="s2">&quot; PREFECT_RUNNER_PROCESS_LIMIT setting.&quot;</span>
+            <span class="p">)</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="k">def</span> <span class="nf">_release_limit_slot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flow_run_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Frees up a slot taken by the given flow run id.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_limiter</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_limiter</span><span class="o">.</span><span class="n">release_on_behalf_of</span><span class="p">(</span><span class="n">flow_run_id</span><span class="p">)</span>
+
     <span class="k">async</span> <span class="k">def</span> <span class="nf">_submit_scheduled_flow_runs</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">flow_run_response</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="s2">&quot;FlowRun&quot;</span><span class="p">]</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="s2">&quot;FlowRun&quot;</span><span class="p">]:</span>
@@ -8166,16 +8220,8 @@ either <code>flow.serve</code> or the <code>serve</code> utility.</p>
         <span class="k">for</span> <span class="n">flow_run</span> <span class="ow">in</span> <span class="n">submittable_flow_runs</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">flow_run</span><span class="o">.</span><span class="n">id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_submitting_flow_run_ids</span><span class="p">:</span>
                 <span class="k">continue</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_limiter</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_limiter</span><span class="o">.</span><span class="n">acquire_on_behalf_of_nowait</span><span class="p">(</span><span class="n">flow_run</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
-            <span class="k">except</span> <span class="n">anyio</span><span class="o">.</span><span class="n">WouldBlock</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;Flow run limit reached; </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_limiter</span><span class="o">.</span><span class="n">borrowed_tokens</span><span class="si">}</span><span class="s2"> flow runs&quot;</span>
-                    <span class="s2">&quot; in progress.&quot;</span>
-                <span class="p">)</span>
-                <span class="k">break</span>
-            <span class="k">else</span><span class="p">:</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_acquire_limit_slot</span><span class="p">(</span><span class="n">flow_run</span><span class="o">.</span><span class="n">id</span><span class="p">):</span>
                 <span class="n">run_logger</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_flow_run_logger</span><span class="p">(</span><span class="n">flow_run</span><span class="p">)</span>
                 <span class="n">run_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
                     <span class="sa">f</span><span class="s2">&quot;Runner &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39; submitting flow run &#39;</span><span class="si">{</span><span class="n">flow_run</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">&#39;&quot;</span>
@@ -8185,6 +8231,8 @@ either <code>flow.serve</code> or the <code>serve</code> utility.</p>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_submit_run</span><span class="p">,</span>
                     <span class="n">flow_run</span><span class="p">,</span>
                 <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">break</span>
 
         <span class="k">return</span> <span class="nb">list</span><span class="p">(</span>
             <span class="nb">filter</span><span class="p">(</span>
@@ -8212,8 +8260,7 @@ either <code>flow.serve</code> or the <code>serve</code> utility.</p>
             <span class="n">run_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Completed submission of flow run &#39;</span><span class="si">{</span><span class="n">flow_run</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># If the run is not ready to submit, release the concurrency slot</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_limiter</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_limiter</span><span class="o">.</span><span class="n">release_on_behalf_of</span><span class="p">(</span><span class="n">flow_run</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_release_limit_slot</span><span class="p">(</span><span class="n">flow_run</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_submitting_flow_run_ids</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">flow_run</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
 
@@ -8246,8 +8293,7 @@ either <code>flow.serve</code> or the <code>serve</code> utility.</p>
                 <span class="p">)</span>
             <span class="k">return</span> <span class="n">exc</span>
         <span class="k">finally</span><span class="p">:</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_limiter</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_limiter</span><span class="o">.</span><span class="n">release_on_behalf_of</span><span class="p">(</span><span class="n">flow_run</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_release_limit_slot</span><span class="p">(</span><span class="n">flow_run</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_flow_run_process_map</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">flow_run</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">status_code</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
@@ -8463,10 +8509,7 @@ the runner is started.</p>
 
           <details class="quote">
             <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/runner.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">163</span>
-<span class="normal">164</span>
-<span class="normal">165</span>
-<span class="normal">166</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">166</span>
 <span class="normal">167</span>
 <span class="normal">168</span>
 <span class="normal">169</span>
@@ -8478,7 +8521,10 @@ the runner is started.</p>
 <span class="normal">175</span>
 <span class="normal">176</span>
 <span class="normal">177</span>
-<span class="normal">178</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@sync_compatible</span>
+<span class="normal">178</span>
+<span class="normal">179</span>
+<span class="normal">180</span>
+<span class="normal">181</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@sync_compatible</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">add_deployment</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">deployment</span><span class="p">:</span> <span class="n">RunnerDeployment</span><span class="p">,</span>
@@ -8699,10 +8745,7 @@ purposes.</p>
 
           <details class="quote">
             <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/runner.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">180</span>
-<span class="normal">181</span>
-<span class="normal">182</span>
-<span class="normal">183</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">183</span>
 <span class="normal">184</span>
 <span class="normal">185</span>
 <span class="normal">186</span>
@@ -8760,7 +8803,10 @@ purposes.</p>
 <span class="normal">238</span>
 <span class="normal">239</span>
 <span class="normal">240</span>
-<span class="normal">241</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@sync_compatible</span>
+<span class="normal">241</span>
+<span class="normal">242</span>
+<span class="normal">243</span>
+<span class="normal">244</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@sync_compatible</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">add_flow</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">flow</span><span class="p">:</span> <span class="n">Flow</span><span class="p">,</span>
@@ -8852,10 +8898,7 @@ the flow run process has exited.</p>
 
           <details class="quote">
             <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/runner.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">309</span>
-<span class="normal">310</span>
-<span class="normal">311</span>
-<span class="normal">312</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">312</span>
 <span class="normal">313</span>
 <span class="normal">314</span>
 <span class="normal">315</span>
@@ -8883,7 +8926,13 @@ the flow run process has exited.</p>
 <span class="normal">337</span>
 <span class="normal">338</span>
 <span class="normal">339</span>
-<span class="normal">340</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">execute_flow_run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flow_run_id</span><span class="p">:</span> <span class="n">UUID</span><span class="p">):</span>
+<span class="normal">340</span>
+<span class="normal">341</span>
+<span class="normal">342</span>
+<span class="normal">343</span>
+<span class="normal">344</span>
+<span class="normal">345</span>
+<span class="normal">346</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">execute_flow_run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flow_run_id</span><span class="p">:</span> <span class="n">UUID</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Executes a single flow run with the given ID.</span>
 
@@ -8891,6 +8940,9 @@ the flow run process has exited.</p>
 <span class="sd">    the flow run process has exited.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">async</span> <span class="k">with</span> <span class="bp">self</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_acquire_limit_slot</span><span class="p">(</span><span class="n">flow_run_id</span><span class="p">):</span>
+            <span class="k">return</span>
+
         <span class="k">async</span> <span class="k">with</span> <span class="n">anyio</span><span class="o">.</span><span class="n">create_task_group</span><span class="p">()</span> <span class="k">as</span> <span class="n">tg</span><span class="p">:</span>
             <span class="k">with</span> <span class="n">anyio</span><span class="o">.</span><span class="n">CancelScope</span><span class="p">():</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_submitting_flow_run_ids</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">flow_run_id</span><span class="p">)</span>
@@ -9000,10 +9052,7 @@ the flow run process has exited.</p>
 
           <details class="quote">
             <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/runner.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">243</span>
-<span class="normal">244</span>
-<span class="normal">245</span>
-<span class="normal">246</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">246</span>
 <span class="normal">247</span>
 <span class="normal">248</span>
 <span class="normal">249</span>
@@ -9055,7 +9104,10 @@ the flow run process has exited.</p>
 <span class="normal">295</span>
 <span class="normal">296</span>
 <span class="normal">297</span>
-<span class="normal">298</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@sync_compatible</span>
+<span class="normal">298</span>
+<span class="normal">299</span>
+<span class="normal">300</span>
+<span class="normal">301</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@sync_compatible</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">run_once</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Starts a runner.</span>
@@ -9135,14 +9187,14 @@ the flow run process has exited.</p>
 
           <details class="quote">
             <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/runner.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">300</span>
-<span class="normal">301</span>
-<span class="normal">302</span>
-<span class="normal">303</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">303</span>
 <span class="normal">304</span>
 <span class="normal">305</span>
 <span class="normal">306</span>
-<span class="normal">307</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="normal">307</span>
+<span class="normal">308</span>
+<span class="normal">309</span>
+<span class="normal">310</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Stops the runner&#39;s polling cycle.&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">started</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
@@ -9275,31 +9327,7 @@ deployment schedules on shutdown.</p>
 
           <details class="quote">
             <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/runner.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">888</span>
-<span class="normal">889</span>
-<span class="normal">890</span>
-<span class="normal">891</span>
-<span class="normal">892</span>
-<span class="normal">893</span>
-<span class="normal">894</span>
-<span class="normal">895</span>
-<span class="normal">896</span>
-<span class="normal">897</span>
-<span class="normal">898</span>
-<span class="normal">899</span>
-<span class="normal">900</span>
-<span class="normal">901</span>
-<span class="normal">902</span>
-<span class="normal">903</span>
-<span class="normal">904</span>
-<span class="normal">905</span>
-<span class="normal">906</span>
-<span class="normal">907</span>
-<span class="normal">908</span>
-<span class="normal">909</span>
-<span class="normal">910</span>
-<span class="normal">911</span>
-<span class="normal">912</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">912</span>
 <span class="normal">913</span>
 <span class="normal">914</span>
 <span class="normal">915</span>
@@ -9352,7 +9380,31 @@ deployment schedules on shutdown.</p>
 <span class="normal">962</span>
 <span class="normal">963</span>
 <span class="normal">964</span>
-<span class="normal">965</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@sync_compatible</span>
+<span class="normal">965</span>
+<span class="normal">966</span>
+<span class="normal">967</span>
+<span class="normal">968</span>
+<span class="normal">969</span>
+<span class="normal">970</span>
+<span class="normal">971</span>
+<span class="normal">972</span>
+<span class="normal">973</span>
+<span class="normal">974</span>
+<span class="normal">975</span>
+<span class="normal">976</span>
+<span class="normal">977</span>
+<span class="normal">978</span>
+<span class="normal">979</span>
+<span class="normal">980</span>
+<span class="normal">981</span>
+<span class="normal">982</span>
+<span class="normal">983</span>
+<span class="normal">984</span>
+<span class="normal">985</span>
+<span class="normal">986</span>
+<span class="normal">987</span>
+<span class="normal">988</span>
+<span class="normal">989</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@sync_compatible</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">serve</span><span class="p">(</span>
     <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">RunnerDeployment</span><span class="p">,</span>
     <span class="n">pause_on_shutdown</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
