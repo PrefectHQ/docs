@@ -7344,33 +7344,27 @@ Typically this setting is used when a worker is deployed to a cluster that is di
 <p>Want to modify the default base job template to add other fields or delete existing fields?</p>
 <p>Select the <strong>Advanced</strong> tab and edit the JSON representation of the base job template.</p>
 <p>For example, to set a CPU request, add the following section under variables:</p>
-<div class="codehilite"><pre><span></span><code><span class="err">```</span><span class="nx">json</span>
-<span class="w">  </span><span class="s">&quot;cpu_request&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="s">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;CPU Request&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="s">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;The CPU allocation to request for this pod.&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="s">&quot;default&quot;</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;default&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="s">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;string&quot;</span>
-<span class="w">  </span><span class="p">},</span>
-<span class="err">```</span>
+<div class="highlight"><pre><span></span><code><span class="nt">&quot;cpu_request&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;CPU Request&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;The CPU allocation to request for this pod.&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;default&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;default&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span>
+<span class="p">},</span>
 </code></pre></div>
-
 <p>Next add the following to the first <code>containers</code> item under <code>job_configuration</code>:</p>
-<div class="codehilite"><pre><span></span><code><span class="x">```json</span>
-<span class="x">        ...</span>
-<span class="x">        &quot;containers&quot;: [</span>
-<span class="x">          {</span>
-<span class="x">            ...,</span>
-<span class="x">            &quot;resources&quot;: {</span>
-<span class="x">              &quot;requests&quot;: {</span>
-<span class="x">                &quot;cpu&quot;: </span><span class="cp">{{</span> <span class="nv">cpu_request</span> <span class="cp">}}</span><span class="x">&quot;</span>
-<span class="x">              }</span>
-<span class="x">            }</span>
-<span class="x">          }</span>
-<span class="x">        ],</span>
-<span class="x">        ...</span>
-<span class="x">```</span>
+<div class="highlight"><pre><span></span><code><span class="err">...</span>
+<span class="nt">&quot;containers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">  </span><span class="p">{</span>
+<span class="w">    </span><span class="err">...</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;resources&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;requests&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;cpu&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;{{ cpu_request }}&quot;</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">],</span>
+<span class="err">...</span>
 </code></pre></div>
-
 <p>Running deployments with this work pool will now request the specified CPU.</p>
 <p>After configuring the work pool settings, move to the next screen.</p>
 <p>Give the work pool a name and save.</p>
