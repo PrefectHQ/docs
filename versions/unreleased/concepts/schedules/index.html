@@ -1870,11 +1870,11 @@ if (amplitudeKey){
 </li>
       
         <li class="md-nav__item">
-  <a href="#creating-schedules-through-the-cli-with-the-deployment-build-command" class="md-nav__link">
+  <a href="#creating-schedules-through-the-serve-method" class="md-nav__link">
     <span class="md-ellipsis">
       
         <span class="md-typeset">
-          Creating schedules through the CLI with the <code>deployment build</code> command
+          Creating schedules through the <code>serve</code> method
         </span>
       
     </span>
@@ -1883,11 +1883,11 @@ if (amplitudeKey){
 </li>
       
         <li class="md-nav__item">
-  <a href="#creating-schedules-through-a-python-deployment-file" class="md-nav__link">
+  <a href="#creating-schedules-through-the-interactive-prefect-deploy-command" class="md-nav__link">
     <span class="md-ellipsis">
       
         <span class="md-typeset">
-          Creating schedules through a Python deployment file
+          Creating schedules through the interactive <code>prefect deploy</code> command
         </span>
       
     </span>
@@ -1896,11 +1896,11 @@ if (amplitudeKey){
 </li>
       
         <li class="md-nav__item">
-  <a href="#creating-schedules-through-a-deployment-yaml-files-schedule-section" class="md-nav__link">
+  <a href="#creating-schedules-through-a-prefectyaml-files-deployments-schedule-section" class="md-nav__link">
     <span class="md-ellipsis">
       
         <span class="md-typeset">
-          Creating schedules through a deployment YAML file's <code>schedule</code> section
+          Creating schedules through a <code>prefect.yaml</code> file's <code>deployments</code> -&gt; <code>schedule</code> section
         </span>
       
     </span>
@@ -1940,6 +1940,19 @@ if (amplitudeKey){
       
         <span class="md-typeset">
           RRule
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#creating-schedules-through-a-python-deployment-file" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Creating schedules through a Python deployment file
         </span>
       
     </span>
@@ -6741,11 +6754,11 @@ if (amplitudeKey){
 </li>
       
         <li class="md-nav__item">
-  <a href="#creating-schedules-through-the-cli-with-the-deployment-build-command" class="md-nav__link">
+  <a href="#creating-schedules-through-the-serve-method" class="md-nav__link">
     <span class="md-ellipsis">
       
         <span class="md-typeset">
-          Creating schedules through the CLI with the <code>deployment build</code> command
+          Creating schedules through the <code>serve</code> method
         </span>
       
     </span>
@@ -6754,11 +6767,11 @@ if (amplitudeKey){
 </li>
       
         <li class="md-nav__item">
-  <a href="#creating-schedules-through-a-python-deployment-file" class="md-nav__link">
+  <a href="#creating-schedules-through-the-interactive-prefect-deploy-command" class="md-nav__link">
     <span class="md-ellipsis">
       
         <span class="md-typeset">
-          Creating schedules through a Python deployment file
+          Creating schedules through the interactive <code>prefect deploy</code> command
         </span>
       
     </span>
@@ -6767,11 +6780,11 @@ if (amplitudeKey){
 </li>
       
         <li class="md-nav__item">
-  <a href="#creating-schedules-through-a-deployment-yaml-files-schedule-section" class="md-nav__link">
+  <a href="#creating-schedules-through-a-prefectyaml-files-deployments-schedule-section" class="md-nav__link">
     <span class="md-ellipsis">
       
         <span class="md-typeset">
-          Creating schedules through a deployment YAML file's <code>schedule</code> section
+          Creating schedules through a <code>prefect.yaml</code> file's <code>deployments</code> -&gt; <code>schedule</code> section
         </span>
       
     </span>
@@ -6811,6 +6824,19 @@ if (amplitudeKey){
       
         <span class="md-typeset">
           RRule
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#creating-schedules-through-a-python-deployment-file" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Creating schedules through a Python deployment file
         </span>
       
     </span>
@@ -6862,22 +6888,29 @@ if (amplitudeKey){
 
 
 <h1 id="schedules">Schedules<a class="headerlink" href="#schedules" title="Permanent link">&para;</a></h1>
+<p>Scheduling is one of the primary reasons for using an orchestrator such as Prefect.
+Prefect allows you to use schedules to automatically create new flow runs for deployments.</p>
+<p>Prefect Cloud can also schedule flow runs through event-driven <a href="/concepts/automations/">automations</a>.</p>
 <p>Schedules tell the Prefect API how to create new flow runs for you automatically on a specified cadence.</p>
-<p>You can add a schedule to any flow <a href="/concepts/deployments/">deployment</a>. The Prefect <code>Scheduler</code> service periodically reviews every deployment and creates new flow runs according to the schedule configured for the deployment.</p>
-<p>There are four recommended ways to create a schedule for a deployment:</p>
+<p>You can add a schedule to any flow <a href="/concepts/deployments/">deployment</a>.
+The Prefect <code>Scheduler</code> service periodically reviews every deployment and creates new flow runs according to the schedule configured for the deployment.</p>
+<p>There are several recommended ways to create a schedule for a deployment:</p>
 <ul>
-<li>Use the Prefect UI</li>
-<li>Use the <code>cron</code>, <code>interval</code>, or <code>rrule</code> flags with the CLI  <code>deployment build</code> command</li>
-<li>Use the <code>schedule</code> parameter with a Python deployment file</li>
-<li>Manually edit the deployment YAML file's <code>schedule</code> section</li>
+<li>Through the Prefect UI</li>
+<li>Via a the <code>cron</code>, <code>interval</code>, or <code>rrule</code> parameters if building your deployment via the <a href="/concepts/flows/#serving-a-flow"><code>serve</code> method</a> of the <code>Flow</code> object or <a href="/concepts/flows/#serving-multiple-flows-at-once">the <code>serve</code> utility</a> for managing multiple flows simultaneously</li>
+<li>If using <a href="/concepts/work-pools/">worker-based deployments</a></li>
+<li>Through the interactive <code>prefect deploy</code> command</li>
+<li>With the <code>deployments</code> -&gt; <code>schedule</code> section of the <code>prefect.yaml</code> file )</li>
 </ul>
 <h2 id="creating-schedules-through-the-ui">Creating schedules through the UI<a class="headerlink" href="#creating-schedules-through-the-ui" title="Permanent link">&para;</a></h2>
-<p>You can add, modify, and view schedules by selecting <strong>Edit</strong> under the three dot menu next to a Deployment in the <strong>Deployments</strong> tab of the <a href="/ui/overview/">Prefect UI</a>. </p>
-<p><img alt="Deployment edit button" src="/img/concepts/edit-schedule-callout.png" /></p>
-<p>To create a schedule from the UI, select <strong>Add</strong>. </p>
-<p><img alt="Prefect UI with Add button called out under Scheduling heading" src="/img/concepts/add-schedule-callout.png" /></p>
+<p>You can add a schedule on the <strong>Deployments</strong> tab of the UI.</p>
+<p>Under <strong>Schedule</strong> select the <strong>Add</strong> button.
+If you don't see the <strong>Schedule</strong> section, expand the three dot menu on the top right of the page.</p>
 <p>Then select <strong>Interval</strong> or <strong>Cron</strong> to create a schedule.</p>
-<p><img alt="Prefect UI with Interval button selected" src="/img/concepts/interval-schedule.png" /></p>
+<p><img alt="Prefect UI with Interval button selected" src="/img/ui/interval-schedule.png" /></p>
+<p>Once a schedule has been created, a number of scheduled flow runs will be visible in the UI.
+The schedule is viewable in human-friendly text on the <strong>Deployments</strong> page.
+You can edit the schedule by selecting the <strong>Edit</strong> button on the <strong>Deployment</strong> page.</p>
 <h2 id="schedule-types">Schedule types<a class="headerlink" href="#schedule-types" title="Permanent link">&para;</a></h2>
 <p>Prefect supports several types of schedules that cover a wide range of use cases and offer a large degree of customization:</p>
 <ul>
@@ -6885,31 +6918,19 @@ if (amplitudeKey){
 <li><a href="#interval"><code>Interval</code></a> is best suited for deployments that need to run at some consistent cadence that isn't related to absolute time.</li>
 <li><a href="#rrule"><code>RRule</code></a> is best suited for deployments that rely on calendar logic for simple recurring schedules, irregular intervals, exclusions, or day-of-month adjustments.</li>
 </ul>
-<h2 id="creating-schedules-through-the-cli-with-the-deployment-build-command">Creating schedules through the CLI with the <code>deployment build</code> command<a class="headerlink" href="#creating-schedules-through-the-cli-with-the-deployment-build-command" title="Permanent link">&para;</a></h2>
-<p>When you build a deployment from the CLI you can use <code>cron</code>, <code>interval</code>, or <code>rrule</code> flags to set a schedule. </p>
-<div class="terminal">
-<div class="highlight"><pre><span></span><code>prefect<span class="w"> </span>deployment<span class="w"> </span>build<span class="w"> </span>demo.py:pipeline<span class="w"> </span>-n<span class="w"> </span>etl<span class="w"> </span>--cron<span class="w"> </span><span class="s2">&quot;0 0 * * *&quot;</span>
-</code></pre></div>
-</div>
-
-<p>This schedule will create flow runs for this deployment every day at midnight. </p>
-<p><code>interval</code> and <code>rrule</code> are the other two command line schedule flags.</p>
-<h2 id="creating-schedules-through-a-python-deployment-file">Creating schedules through a Python deployment file<a class="headerlink" href="#creating-schedules-through-a-python-deployment-file" title="Permanent link">&para;</a></h2>
-<p>Here's how you create the equivalent schedule in a Python deployment file, with a timezone specified.</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect.server.schemas.schedules</span> <span class="kn">import</span> <span class="n">CronSchedule</span>
-
-<span class="n">cron_demo</span> <span class="o">=</span> <span class="n">Deployment</span><span class="o">.</span><span class="n">build_from_flow</span><span class="p">(</span>
-    <span class="n">pipeline</span><span class="p">,</span>
-    <span class="s2">&quot;etl&quot;</span><span class="p">,</span>
-    <span class="n">schedule</span><span class="o">=</span><span class="p">(</span><span class="n">CronSchedule</span><span class="p">(</span><span class="n">cron</span><span class="o">=</span><span class="s2">&quot;0 0 * * *&quot;</span><span class="p">,</span> <span class="n">timezone</span><span class="o">=</span><span class="s2">&quot;America/Chicago&quot;</span><span class="p">))</span>
-<span class="p">)</span>
-</code></pre></div>
-<p><code>IntervalSchedule</code> and <code>RRuleSchedule</code> are the other two Python class schedule options.</p>
-<h2 id="creating-schedules-through-a-deployment-yaml-files-schedule-section">Creating schedules through a deployment YAML file's <code>schedule</code> section<a class="headerlink" href="#creating-schedules-through-a-deployment-yaml-files-schedule-section" title="Permanent link">&para;</a></h2>
-<p>Alternatively, you can edit the <code>schedule</code> section of the <a href="/concepts/deployments/#deploymentyaml">deployment YAML file</a>. </p>
-<div class="highlight"><pre><span></span><code><span class="nt">schedule</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">cron</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0 0 * * *</span>
-<span class="w">  </span><span class="nt">timezone</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">America/Chicago</span>
+<h2 id="creating-schedules-through-the-serve-method">Creating schedules through the <code>serve</code> method<a class="headerlink" href="#creating-schedules-through-the-serve-method" title="Permanent link">&para;</a></h2>
+<p>As seen in the <a href="/getting-started/quickstart/#step-5-add-a-schedule">Quickstart</a>, you can create a schedule by passing a <code>cron</code>, <code>interval</code>, or <code>rrule</code> parameters to the <code>Flow.serve</code> method or the <code>serve</code> utility.</p>
+<h2 id="creating-schedules-through-the-interactive-prefect-deploy-command">Creating schedules through the interactive <code>prefect deploy</code> command<a class="headerlink" href="#creating-schedules-through-the-interactive-prefect-deploy-command" title="Permanent link">&para;</a></h2>
+<p>If you are using <a href="/concepts/work-pools/">worker-based deployments</a>, you can create a schedule through the interactive <code>prefect deploy</code> command.
+You will be prompted to choose which type of schedule to create.</p>
+<h2 id="creating-schedules-through-a-prefectyaml-files-deployments-schedule-section">Creating schedules through a <code>prefect.yaml</code> file's <code>deployments</code> -&gt; <code>schedule</code> section<a class="headerlink" href="#creating-schedules-through-a-prefectyaml-files-deployments-schedule-section" title="Permanent link">&para;</a></h2>
+<p>If you save the <code>prefect.yaml</code> file from the <code>prefect deploy</code> command, you will see it has a <code>schedule</code> section for your deployment.
+Alternatively, you can create a <code>prefect.yaml</code> file from a recipe or from scratch and add a <code>schedule</code> section to it.</p>
+<div class="highlight"><pre><span></span><code><span class="nt">deployments</span><span class="p">:</span>
+<span class="w">  </span><span class="l l-Scalar l-Scalar-Plain">...</span>
+<span class="w">  </span><span class="l l-Scalar l-Scalar-Plain">schedule</span><span class="p p-Indicator">:</span>
+<span class="w">    </span><span class="nt">cron</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0 0 * * *</span>
+<span class="w">    </span><span class="nt">timezone</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">America/Chicago</span>
 </code></pre></div>
 <p>Let's discuss the three schedule types in more detail.</p>
 <h2 id="cron">Cron<a class="headerlink" href="#cron" title="Permanent link">&para;</a></h2>
@@ -6938,18 +6959,20 @@ if (amplitudeKey){
 </tr>
 </tbody>
 </table>
-<p>The <code>day_or</code> property defaults to <code>True</code>, matching <code>cron</code>, which connects those values using <code>OR</code>. If <code>False</code>, the values are connected using <code>AND</code>. This behaves like <code>fcron</code> and enables you to, for example, define a job that executes each 2nd Friday of a month by setting the days of month and the weekday.</p>
+<p>The <code>day_or</code> property defaults to <code>True</code>, matching <code>cron</code>, which connects those values using <code>OR</code>.
+If <code>False</code>, the values are connected using <code>AND</code>.
+This behaves like <code>fcron</code> and enables you to, for example, define a job that executes each 2nd Friday of a month by setting the days of month and the weekday.</p>
 <div class="admonition tip">
 <p class="admonition-title">Supported <code>croniter</code> features</p>
 <p>While Prefect supports most features of <code>croniter</code> for creating <code>cron</code>-like schedules, we do not currently support "R" random or "H" hashed keyword expressions or the schedule jittering possible with those expressions.</p>
 </div>
 <div class="admonition info">
 <p class="admonition-title">Daylight saving time considerations</p>
-<p>If the <code>timezone</code> is a DST-observing one, then the schedule will adjust itself appropriately. </p>
-<p>The <code>cron</code> rules for DST are based on schedule times, not intervals. This means that an hourly <code>cron</code> schedule fires on every new schedule hour, not every elapsed hour. For example, when clocks are set back, this results in a two-hour pause as the schedule will fire <em>the first time</em> 1am is reached and <em>the first time</em> 2am is reached, 120 minutes later. </p>
+<p>If the <code>timezone</code> is a DST-observing one, then the schedule will adjust itself appropriately.</p>
+<p>The <code>cron</code> rules for DST are based on schedule times, not intervals. This means that an hourly <code>cron</code> schedule fires on every new schedule hour, not every elapsed hour. 
+For example, when clocks are set back, this results in a two-hour pause as the schedule will fire <em>the first time</em> 1am is reached and <em>the first time</em> 2am is reached, 120 minutes later. </p>
 <p>Longer schedules, such as one that fires at 9am every morning, will adjust for DST automatically.</p>
 </div>
-<p>See the Python <a href="/api-ref/server/schemas/schedules/#prefect.server.schemas.schedules.CronSchedule">CronSchedule class docs</a> for more information. </p>
 <h2 id="interval">Interval<a class="headerlink" href="#interval" title="Permanent link">&para;</a></h2>
 <p>An <code>Interval</code> schedule creates new flow runs on a regular interval measured in seconds. Intervals are computed from an optional <code>anchor_date</code>. For example, here's how you can create a schedule for every 10 minutes in the deployment YAML file.</p>
 <div class="highlight"><pre><span></span><code><span class="nt">schedule</span><span class="p">:</span>
@@ -6979,21 +7002,24 @@ if (amplitudeKey){
 </tr>
 </tbody>
 </table>
-<p>Note that the <code>anchor_date</code> does not indicate a "start time" for the schedule, but rather a fixed point in time from which to compute intervals. If the anchor date is in the future, then schedule dates are computed by subtracting the <code>interval</code> from it. Note that in this example, we import the <a href="https://pendulum.eustace.io/">Pendulum</a> Python package for easy datetime manipulation. Pendulum isn’t required, but it’s a useful tool for specifying dates.</p>
+<p>Note that the <code>anchor_date</code> does not indicate a "start time" for the schedule, but rather a fixed point in time from which to compute intervals.
+If the anchor date is in the future, then schedule dates are computed by subtracting the <code>interval</code> from it.
+Note that in this example, we import the <a href="https://pendulum.eustace.io/">Pendulum</a> Python package for easy datetime manipulation. Pendulum isn’t required, but it’s a useful tool for specifying dates.</p>
 <div class="admonition info">
 <p class="admonition-title">Daylight saving time considerations</p>
-<p>If the schedule's <code>anchor_date</code> or <code>timezone</code> are provided with a DST-observing timezone, then the schedule will adjust itself appropriately. Intervals greater than 24 hours will follow DST conventions, while intervals of less than 24 hours will follow UTC intervals. </p>
+<p>If the schedule's <code>anchor_date</code> or <code>timezone</code> are provided with a DST-observing timezone, then the schedule will adjust itself appropriately.
+Intervals greater than 24 hours will follow DST conventions, while intervals of less than 24 hours will follow UTC intervals.</p>
 <p>For example, an hourly schedule will fire every UTC hour, even across DST boundaries. When clocks are set back, this will result in two runs that <em>appear</em> to both be scheduled for 1am local time, even though they are an hour apart in UTC time. </p>
-<p>For longer intervals, like a daily schedule, the interval schedule will adjust for DST boundaries so that the clock-hour remains constant. This means that a daily schedule that always fires at 9am will observe DST and continue to fire at 9am in the local time zone.</p>
+<p>For longer intervals, like a daily schedule, the interval schedule will adjust for DST boundaries so that the clock-hour remains constant. 
+This means that a daily schedule that always fires at 9am will observe DST and continue to fire at 9am in the local time zone.</p>
 </div>
-<p>See the Python <a href="/api-ref/server/schemas/schedules/#prefect.server.schemas.schedules.IntervalSchedule">IntervalSchedule class docs</a> for more information. </p>
 <h2 id="rrule">RRule<a class="headerlink" href="#rrule" title="Permanent link">&para;</a></h2>
 <p>An <code>RRule</code> scheduling supports <a href="https://icalendar.org/iCalendar-RFC-5545/3-8-5-3-recurrence-rule.html">iCal recurrence rules</a> (RRules), which provide convenient syntax for creating repetitive schedules. Schedules can repeat on a frequency from yearly down to every minute.</p>
 <p><code>RRule</code> uses the <a href="https://dateutil.readthedocs.io/en/stable/rrule.html">dateutil rrule</a> module to specify iCal recurrence rules.</p>
-<p>RRules are appropriate for any kind of calendar-date manipulation, including simple repetition, irregular intervals, exclusions, week day or day-of-month adjustments, and more. RRules can represent complex logic like: </p>
+<p>RRules are appropriate for any kind of calendar-date manipulation, including simple repetition, irregular intervals, exclusions, week day or day-of-month adjustments, and more. RRules can represent complex logic like:</p>
 <ul>
-<li>The last weekday of each month </li>
-<li>The fourth Thursday of November </li>
+<li>The last weekday of each month</li>
+<li>The fourth Thursday of November</li>
 <li>Every other day of the week</li>
 </ul>
 <p><code>RRule</code> properties include:</p>
@@ -7026,12 +7052,27 @@ if (amplitudeKey){
 </div>
 <div class="admonition info">
 <p class="admonition-title">Daylight saving time considerations</p>
-<p>Note that as a calendar-oriented standard, <code>RRules</code> are sensitive to the initial timezone provided. A 9am daily schedule with a DST-aware start date will maintain a local 9am time through DST boundaries. A 9am daily schedule with a UTC start date will maintain a 9am UTC time.</p>
+<p>Note that as a calendar-oriented standard, <code>RRules</code> are sensitive to the initial timezone provided.
+A 9am daily schedule with a DST-aware start date will maintain a local 9am time through DST boundaries. A 9am daily schedule with a UTC start date will maintain a 9am UTC time.</p>
 </div>
-<p>See the Python <a href="/api-ref/server/schemas/schedules/#prefect.server.schemas.schedules.RRuleSchedule">RRuleSchedule class docs</a> for more information. </p>
+<h2 id="creating-schedules-through-a-python-deployment-file">Creating schedules through a Python deployment file<a class="headerlink" href="#creating-schedules-through-a-python-deployment-file" title="Permanent link">&para;</a></h2>
+<p>Block and agent-based deployments with Python files are not a recommended way to create deployments.
+However, you can create a schedule by passing a <code>schedule</code> parameter to the <code>Deployment.build_from_flow</code> method.</p>
+<p>Here's how you create the equivalent schedule in a Python deployment file, with a timezone specified.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect.server.schemas.schedules</span> <span class="kn">import</span> <span class="n">CronSchedule</span>
+
+<span class="n">cron_demo</span> <span class="o">=</span> <span class="n">Deployment</span><span class="o">.</span><span class="n">build_from_flow</span><span class="p">(</span>
+    <span class="n">pipeline</span><span class="p">,</span>
+    <span class="s2">&quot;etl&quot;</span><span class="p">,</span>
+    <span class="n">schedule</span><span class="o">=</span><span class="p">(</span><span class="n">CronSchedule</span><span class="p">(</span><span class="n">cron</span><span class="o">=</span><span class="s2">&quot;0 0 * * *&quot;</span><span class="p">,</span> <span class="n">timezone</span><span class="o">=</span><span class="s2">&quot;America/Chicago&quot;</span><span class="p">))</span>
+<span class="p">)</span>
+</code></pre></div>
+<p><code>IntervalSchedule</code> and <code>RRuleSchedule</code> are the other two Python class schedule options.</p>
 <h2 id="the-scheduler-service">The <code>Scheduler</code> service<a class="headerlink" href="#the-scheduler-service" title="Permanent link">&para;</a></h2>
-<p>The <code>Scheduler</code> service is started automatically when <code>prefect server start</code> is run and it is a built-in service of Prefect Cloud. </p>
-<p>By default, the <code>Scheduler</code> service visits deployments on a 60-second loop, though recently-modified deployments will be visited more frequently. The <code>Scheduler</code> evaluates each deployment's schedule and creates new runs appropriately. For typical deployments, it will create the next three runs, though more runs will be scheduled if the next 3 would all start in the next hour. </p>
+<p>The <code>Scheduler</code> service is started automatically when <code>prefect server start</code> is run and it is a built-in service of Prefect Cloud.</p>
+<p>By default, the <code>Scheduler</code> service visits deployments on a 60-second loop, though recently-modified deployments will be visited more frequently.
+The <code>Scheduler</code> evaluates each deployment's schedule and creates new runs appropriately.
+For typical deployments, it will create the next three runs, though more runs will be scheduled if the next 3 would all start in the next hour.</p>
 <p>More specifically, the <code>Scheduler</code> tries to create the smallest number of runs that satisfy the following constraints, in order:</p>
 <ul>
 <li>No more than 100 runs will be scheduled.</li>
@@ -7041,25 +7082,27 @@ if (amplitudeKey){
 </ul>
 <p>These behaviors can all be adjusted through the relevant settings that can be viewed with the terminal command <code>prefect config view --show-defaults</code>:</p>
 <div class='terminal'>
-<div class="highlight"><pre><span></span><code><span class="nv">PREFECT_API_SERVICES_SCHEDULER_DEPLOYMENT_BATCH_SIZE</span><span class="o">=</span><span class="s1">&#39;100&#39;</span><span class="w"> </span>
-<span class="nv">PREFECT_API_SERVICES_SCHEDULER_ENABLED</span><span class="o">=</span><span class="s1">&#39;True&#39;</span><span class="w"> </span>
-<span class="nv">PREFECT_API_SERVICES_SCHEDULER_INSERT_BATCH_SIZE</span><span class="o">=</span><span class="s1">&#39;500&#39;</span><span class="w"> </span>
-<span class="nv">PREFECT_API_SERVICES_SCHEDULER_LOOP_SECONDS</span><span class="o">=</span><span class="s1">&#39;60.0&#39;</span><span class="w"> </span>
-<span class="nv">PREFECT_API_SERVICES_SCHEDULER_MIN_RUNS</span><span class="o">=</span><span class="s1">&#39;3&#39;</span><span class="w"> </span>
-<span class="nv">PREFECT_API_SERVICES_SCHEDULER_MAX_RUNS</span><span class="o">=</span><span class="s1">&#39;100&#39;</span><span class="w"> </span>
-<span class="nv">PREFECT_API_SERVICES_SCHEDULER_MIN_SCHEDULED_TIME</span><span class="o">=</span><span class="s1">&#39;1:00:00&#39;</span><span class="w"> </span>
-<span class="nv">PREFECT_API_SERVICES_SCHEDULER_MAX_SCHEDULED_TIME</span><span class="o">=</span><span class="s1">&#39;100 days, 0:00:00&#39;</span><span class="w"> </span>
+<div class="highlight"><pre><span></span><code><span class="nv">PREFECT_API_SERVICES_SCHEDULER_DEPLOYMENT_BATCH_SIZE</span><span class="o">=</span><span class="s1">&#39;100&#39;</span>
+<span class="nv">PREFECT_API_SERVICES_SCHEDULER_ENABLED</span><span class="o">=</span><span class="s1">&#39;True&#39;</span>
+<span class="nv">PREFECT_API_SERVICES_SCHEDULER_INSERT_BATCH_SIZE</span><span class="o">=</span><span class="s1">&#39;500&#39;</span>
+<span class="nv">PREFECT_API_SERVICES_SCHEDULER_LOOP_SECONDS</span><span class="o">=</span><span class="s1">&#39;60.0&#39;</span>
+<span class="nv">PREFECT_API_SERVICES_SCHEDULER_MIN_RUNS</span><span class="o">=</span><span class="s1">&#39;3&#39;</span>
+<span class="nv">PREFECT_API_SERVICES_SCHEDULER_MAX_RUNS</span><span class="o">=</span><span class="s1">&#39;100&#39;</span>
+<span class="nv">PREFECT_API_SERVICES_SCHEDULER_MIN_SCHEDULED_TIME</span><span class="o">=</span><span class="s1">&#39;1:00:00&#39;</span>
+<span class="nv">PREFECT_API_SERVICES_SCHEDULER_MAX_SCHEDULED_TIME</span><span class="o">=</span><span class="s1">&#39;100 days, 0:00:00&#39;</span>
 </code></pre></div>
 </div>
 
 <p>See the <a href="/concepts/settings/">Settings docs</a> for more information on altering your settings.</p>
-<p>These settings mean that if a deployment has an hourly schedule, the default settings will create runs for the next 4 days (or 100 hours). If it has a weekly schedule, the default settings will maintain the next 14 runs (up to 100 days in the future).</p>
+<p>These settings mean that if a deployment has an hourly schedule, the default settings will create runs for the next 4 days (or 100 hours).
+If it has a weekly schedule, the default settings will maintain the next 14 runs (up to 100 days in the future).</p>
 <div class="admonition tip">
 <p class="admonition-title">The <code>Scheduler</code> does not affect execution</p>
-<p>The Prefect <code>Scheduler</code> service only creates new flow runs and places them in <code>Scheduled</code> states. It is not involved in flow or task execution. </p>
+<p>The Prefect <code>Scheduler</code> service only creates new flow runs and places them in <code>Scheduled</code> states.
+It is not involved in flow or task execution.</p>
 </div>
 <p>If you change a schedule, previously scheduled flow runs that have not started are removed, and new scheduled flow runs are created to reflect the new schedule.</p>
-<p>To remove all scheduled runs for a flow deployment, update the deployment YAML with no <code>schedule</code> value. Alternatively, remove the schedule via the UI.</p>
+<p>To remove all scheduled runs for a flow deployment, you can remove the schedule via the UI.</p>
 
   
   
