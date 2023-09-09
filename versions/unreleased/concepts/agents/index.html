@@ -6852,36 +6852,26 @@ if (amplitudeKey){
 </div>
 <h3 id="starting-an-agent">Starting an agent<a class="headerlink" href="#starting-an-agent" title="Permanent link">&para;</a></h3>
 <p>Use the <code>prefect agent start</code> CLI command to start an agent. You must pass at least one work pool name or match string that the agent will poll for work. If the work pool does not exist, it will be created.</p>
-<div class="terminal">
-<div class="highlight"><pre><span></span><code>$<span class="w"> </span>prefect<span class="w"> </span>agent<span class="w"> </span>start<span class="w"> </span>-p<span class="w"> </span><span class="o">[</span>work<span class="w"> </span>pool<span class="w"> </span>name<span class="o">]</span>
+<div class="highlight"><pre><span></span><code>prefect<span class="w"> </span>agent<span class="w"> </span>start<span class="w"> </span>-p<span class="w"> </span><span class="o">[</span>work<span class="w"> </span>pool<span class="w"> </span>name<span class="o">]</span>
 </code></pre></div>
-</div>
-
 <p>For example:</p>
-<div class="terminal">
-<div class="highlight"><pre><span></span><code>$<span class="w"> </span>prefect<span class="w"> </span>agent<span class="w"> </span>start<span class="w"> </span>-p<span class="w"> </span><span class="s2">&quot;my-pool&quot;</span>
-Starting<span class="w"> </span>agent<span class="w"> </span>with<span class="w"> </span>ephemeral<span class="w"> </span>API...
-<span class="w">  </span>___<span class="w"> </span>___<span class="w"> </span>___<span class="w"> </span>___<span class="w"> </span>___<span class="w"> </span>___<span class="w"> </span>_____<span class="w">     </span>_<span class="w">   </span>___<span class="w"> </span>___<span class="w"> </span>_<span class="w">  </span>_<span class="w"> </span>_____
-<span class="w"> </span><span class="p">|</span><span class="w"> </span>_<span class="w"> </span><span class="se">\ </span>_<span class="w"> </span><span class="se">\ </span>__<span class="p">|</span><span class="w"> </span>__<span class="p">|</span><span class="w"> </span>__/<span class="w"> </span>__<span class="p">|</span>_<span class="w">   </span>_<span class="p">|</span><span class="w">   </span>/_<span class="se">\ </span>/<span class="w"> </span>__<span class="p">|</span><span class="w"> </span>__<span class="p">|</span><span class="w"> </span><span class="se">\|</span><span class="w"> </span><span class="p">|</span>_<span class="w">   </span>_<span class="p">|</span>
-<span class="w"> </span><span class="p">|</span><span class="w">  </span>_/<span class="w">   </span>/<span class="w"> </span>_<span class="o">||</span><span class="w"> </span>_<span class="o">||</span><span class="w"> </span>_<span class="p">|</span><span class="w"> </span><span class="o">(</span>__<span class="w">  </span><span class="p">|</span><span class="w"> </span><span class="p">|</span><span class="w">    </span>/<span class="w"> </span>_<span class="w"> </span><span class="se">\ </span><span class="o">(</span>_<span class="w"> </span><span class="p">|</span><span class="w"> </span>_<span class="o">||</span><span class="w"> </span>.<span class="sb">`</span><span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="p">|</span>
-<span class="w"> </span><span class="p">|</span>_<span class="p">|</span><span class="w"> </span><span class="p">|</span>_<span class="p">|</span>_<span class="se">\_</span>__<span class="p">|</span>_<span class="p">|</span><span class="w"> </span><span class="p">|</span>___<span class="se">\_</span>__<span class="p">|</span><span class="w"> </span><span class="p">|</span>_<span class="p">|</span><span class="w">   </span>/_/<span class="w"> </span><span class="se">\_\_</span>__<span class="p">|</span>___<span class="p">|</span>_<span class="p">|</span><span class="se">\_</span><span class="p">|</span><span class="w"> </span><span class="p">|</span>_<span class="p">|</span>
+<div class="no-copy highlight"><pre><span></span><code><span class="go">Starting agent with ephemeral API...</span>
+<span class="go">  ___ ___ ___ ___ ___ ___ _____     _   ___ ___ _  _ _____</span>
+<span class="go"> | _ \ _ \ __| __| __/ __|_   _|   /_\ / __| __| \| |_   _|</span>
+<span class="go"> |  _/   / _|| _|| _| (__  | |    / _ \ (_ | _|| .` | | |</span>
+<span class="go"> |_| |_|_\___|_| |___\___| |_|   /_/ \_\___|___|_|\_| |_|</span>
 
-Agent<span class="w"> </span>started!<span class="w"> </span>Looking<span class="w"> </span><span class="k">for</span><span class="w"> </span>work<span class="w"> </span>from<span class="w"> </span>work<span class="w"> </span>pool<span class="w"> </span><span class="s1">&#39;my-pool&#39;</span>...
+<span class="go">Agent started! Looking for work from work pool &#39;my-pool&#39;...</span>
 </code></pre></div>
-</div>
-
-<p>In this case, Prefect automatically created a new <code>my-queue</code> work queue.</p>
 <p>By default, the agent polls the API specified by the <code>PREFECT_API_URL</code> environment variable. To configure the agent to poll from a different server location, use the <code>--api</code> flag, specifying the URL of the server.</p>
 <p>In addition, agents can match multiple queues in a work pool by providing a <code>--match</code> string instead of specifying all of the queues. The agent will poll every queue with a name that starts with the given string. New queues matching this prefix will be found by the agent without needing to restart it.</p>
 <p>For example:</p>
-<div class="terminal">
-<div class="highlight"><pre><span></span><code>$<span class="w"> </span>prefect<span class="w"> </span>agent<span class="w"> </span>start<span class="w"> </span>--match<span class="w"> </span><span class="s2">&quot;foo-&quot;</span>
+<div class="highlight"><pre><span></span><code>prefect<span class="w"> </span>agent<span class="w"> </span>start<span class="w"> </span>--match<span class="w"> </span><span class="s2">&quot;foo-&quot;</span>
 </code></pre></div>
-</div>
-
 <p>This example will poll every work queue that starts with "foo-".</p>
 <h3 id="configuring-prefetch">Configuring prefetch<a class="headerlink" href="#configuring-prefetch" title="Permanent link">&para;</a></h3>
-<p>By default, the agent begins submission of flow runs a short time (10 seconds) before they are scheduled to run. This allows time for the infrastructure to be created, so the flow run can start on time. In some cases, infrastructure will take longer than this to actually start the flow run. In these cases, the prefetch can be increased using the <code>--prefetch-seconds</code> option or the <code>PREFECT_AGENT_PREFETCH_SECONDS</code> setting. Submission can begin an arbitrary amount of time before the flow run is scheduled to start. If this value is <em>larger</em> than the amount of time it takes for the infrastructure to start, the flow run will <em>wait</em> until its scheduled start time. This allows flow runs to start exactly on time.</p>
+<p>By default, the agent begins submission of flow runs a short time (10 seconds) before they are scheduled to run. This allows time for the infrastructure to be created, so the flow run can start on time. In some cases, infrastructure will take longer than this to actually start the flow run. In these cases, the prefetch can be increased using the <code>--prefetch-seconds</code> option or the <code>PREFECT_AGENT_PREFETCH_SECONDS</code> setting.</p>
+<p>Submission can begin an arbitrary amount of time before the flow run is scheduled to start. If this value is <em>larger</em> than the amount of time it takes for the infrastructure to start, the flow run will <em>wait</em> until its scheduled start time. This allows flow runs to start exactly on time.</p>
 
   
   
