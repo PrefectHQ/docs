@@ -7150,7 +7150,15 @@ behaves like fcron and enables you to e.g. define a job that executes each
 <span class="normal">359</span>
 <span class="normal">360</span>
 <span class="normal">361</span>
-<span class="normal">362</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">CronSchedule</span><span class="p">(</span><span class="n">PrefectBaseModel</span><span class="p">):</span>
+<span class="normal">362</span>
+<span class="normal">363</span>
+<span class="normal">364</span>
+<span class="normal">365</span>
+<span class="normal">366</span>
+<span class="normal">367</span>
+<span class="normal">368</span>
+<span class="normal">369</span>
+<span class="normal">370</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">CronSchedule</span><span class="p">(</span><span class="n">PrefectBaseModel</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Cron schedule</span>
 
@@ -7272,6 +7280,10 @@ behaves like fcron and enables you to e.g. define a job that executes each
         <span class="c1"># as an event (if it meets the cron criteria)</span>
         <span class="n">start</span> <span class="o">=</span> <span class="n">start</span><span class="o">.</span><span class="n">subtract</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
+        <span class="c1"># Respect microseconds by rounding up</span>
+        <span class="k">if</span> <span class="n">start</span><span class="o">.</span><span class="n">microsecond</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">start</span> <span class="o">+=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
         <span class="c1"># croniter&#39;s DST logic interferes with all other datetime libraries except pytz</span>
         <span class="n">start_localized</span> <span class="o">=</span> <span class="n">pytz</span><span class="o">.</span><span class="n">timezone</span><span class="p">(</span><span class="n">start</span><span class="o">.</span><span class="n">tz</span><span class="o">.</span><span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">localize</span><span class="p">(</span>
             <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span>
@@ -7284,17 +7296,21 @@ behaves like fcron and enables you to e.g. define a job that executes each
                 <span class="n">microsecond</span><span class="o">=</span><span class="n">start</span><span class="o">.</span><span class="n">microsecond</span><span class="p">,</span>
             <span class="p">)</span>
         <span class="p">)</span>
+        <span class="n">start_naive_tz</span> <span class="o">=</span> <span class="n">start</span><span class="o">.</span><span class="n">naive</span><span class="p">()</span>
 
-        <span class="c1"># Respect microseconds by rounding up</span>
-        <span class="k">if</span> <span class="n">start_localized</span><span class="o">.</span><span class="n">microsecond</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">start_localized</span> <span class="o">+=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-
-        <span class="n">cron</span> <span class="o">=</span> <span class="n">croniter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cron</span><span class="p">,</span> <span class="n">start_localized</span><span class="p">,</span> <span class="n">day_or</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">day_or</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+        <span class="n">cron</span> <span class="o">=</span> <span class="n">croniter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cron</span><span class="p">,</span> <span class="n">start_naive_tz</span><span class="p">,</span> <span class="n">day_or</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">day_or</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
         <span class="n">dates</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
         <span class="n">counter</span> <span class="o">=</span> <span class="mi">0</span>
 
         <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
-            <span class="n">next_date</span> <span class="o">=</span> <span class="n">pendulum</span><span class="o">.</span><span class="n">instance</span><span class="p">(</span><span class="n">cron</span><span class="o">.</span><span class="n">get_next</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">))</span>
+            <span class="c1"># croniter does not handle DST properly when the start time is</span>
+            <span class="c1"># in and around when the actual shift occurs. To work around this,</span>
+            <span class="c1"># we use the naive start time to get the next cron date delta, then</span>
+            <span class="c1"># add that time to the original scheduling anchor.</span>
+            <span class="n">next_time</span> <span class="o">=</span> <span class="n">cron</span><span class="o">.</span><span class="n">get_next</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">)</span>
+            <span class="n">delta</span> <span class="o">=</span> <span class="n">next_time</span> <span class="o">-</span> <span class="n">start_naive_tz</span>
+            <span class="n">next_date</span> <span class="o">=</span> <span class="n">pendulum</span><span class="o">.</span><span class="n">instance</span><span class="p">(</span><span class="n">start_localized</span> <span class="o">+</span> <span class="n">delta</span><span class="p">)</span>
+
             <span class="c1"># if the end date was exceeded, exit</span>
             <span class="k">if</span> <span class="n">end</span> <span class="ow">and</span> <span class="n">next_date</span> <span class="o">&gt;</span> <span class="n">end</span><span class="p">:</span>
                 <span class="k">break</span>
@@ -8170,15 +8186,7 @@ a 9am daily schedule with a UTC start date will maintain a 9am UTC time.</p>
 
             <details class="quote">
               <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/server/schemas/schedules.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">368</span>
-<span class="normal">369</span>
-<span class="normal">370</span>
-<span class="normal">371</span>
-<span class="normal">372</span>
-<span class="normal">373</span>
-<span class="normal">374</span>
-<span class="normal">375</span>
-<span class="normal">376</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">376</span>
 <span class="normal">377</span>
 <span class="normal">378</span>
 <span class="normal">379</span>
@@ -8402,7 +8410,15 @@ a 9am daily schedule with a UTC start date will maintain a 9am UTC time.</p>
 <span class="normal">597</span>
 <span class="normal">598</span>
 <span class="normal">599</span>
-<span class="normal">600</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">RRuleSchedule</span><span class="p">(</span><span class="n">PrefectBaseModel</span><span class="p">):</span>
+<span class="normal">600</span>
+<span class="normal">601</span>
+<span class="normal">602</span>
+<span class="normal">603</span>
+<span class="normal">604</span>
+<span class="normal">605</span>
+<span class="normal">606</span>
+<span class="normal">607</span>
+<span class="normal">608</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">RRuleSchedule</span><span class="p">(</span><span class="n">PrefectBaseModel</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    RRule schedule, based on the iCalendar standard</span>
 <span class="sd">    ([RFC 5545](https://datatracker.ietf.org/doc/html/rfc5545)) as</span>
@@ -8759,15 +8775,7 @@ schedule's timezone.</p>
 
           <details class="quote">
             <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/server/schemas/schedules.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">522</span>
-<span class="normal">523</span>
-<span class="normal">524</span>
-<span class="normal">525</span>
-<span class="normal">526</span>
-<span class="normal">527</span>
-<span class="normal">528</span>
-<span class="normal">529</span>
-<span class="normal">530</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">530</span>
 <span class="normal">531</span>
 <span class="normal">532</span>
 <span class="normal">533</span>
@@ -8780,7 +8788,15 @@ schedule's timezone.</p>
 <span class="normal">540</span>
 <span class="normal">541</span>
 <span class="normal">542</span>
-<span class="normal">543</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">get_dates</span><span class="p">(</span>
+<span class="normal">543</span>
+<span class="normal">544</span>
+<span class="normal">545</span>
+<span class="normal">546</span>
+<span class="normal">547</span>
+<span class="normal">548</span>
+<span class="normal">549</span>
+<span class="normal">550</span>
+<span class="normal">551</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">get_dates</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">n</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">start</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -8827,15 +8843,7 @@ here</p>
 
           <details class="quote">
             <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/server/schemas/schedules.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">459</span>
-<span class="normal">460</span>
-<span class="normal">461</span>
-<span class="normal">462</span>
-<span class="normal">463</span>
-<span class="normal">464</span>
-<span class="normal">465</span>
-<span class="normal">466</span>
-<span class="normal">467</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">467</span>
 <span class="normal">468</span>
 <span class="normal">469</span>
 <span class="normal">470</span>
@@ -8880,7 +8888,15 @@ here</p>
 <span class="normal">509</span>
 <span class="normal">510</span>
 <span class="normal">511</span>
-<span class="normal">512</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">to_rrule</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">dateutil</span><span class="o">.</span><span class="n">rrule</span><span class="o">.</span><span class="n">rrule</span><span class="p">:</span>
+<span class="normal">512</span>
+<span class="normal">513</span>
+<span class="normal">514</span>
+<span class="normal">515</span>
+<span class="normal">516</span>
+<span class="normal">517</span>
+<span class="normal">518</span>
+<span class="normal">519</span>
+<span class="normal">520</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">to_rrule</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">dateutil</span><span class="o">.</span><span class="n">rrule</span><span class="o">.</span><span class="n">rrule</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Since rrule doesn&#39;t properly serialize/deserialize timezones, we localize dates</span>
 <span class="sd">    here</span>
