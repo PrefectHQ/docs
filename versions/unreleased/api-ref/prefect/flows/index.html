@@ -8056,7 +8056,9 @@ loaded from the parent flow.</p>
 <span class="normal">844</span>
 <span class="normal">845</span>
 <span class="normal">846</span>
-<span class="normal">847</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@PrefectObjectRegistry</span><span class="o">.</span><span class="n">register_instances</span>
+<span class="normal">847</span>
+<span class="normal">848</span>
+<span class="normal">849</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@PrefectObjectRegistry</span><span class="o">.</span><span class="n">register_instances</span>
 <span class="k">class</span> <span class="nc">Flow</span><span class="p">(</span><span class="n">Generic</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">R</span><span class="p">]):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A Prefect workflow definition.</span>
@@ -8246,7 +8248,7 @@ loaded from the parent flow.</p>
             <span class="c1"># We cannot, however, store the validated function on the flow because it</span>
             <span class="c1"># is not picklable in some environments</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">ValidatedFunction</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fn</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+                <span class="n">ValidatedFunction</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fn</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;arbitrary_types_allowed&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span>
             <span class="k">except</span> <span class="n">pydantic</span><span class="o">.</span><span class="n">ConfigError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                     <span class="s2">&quot;Flow function is not compatible with `validate_parameters`. &quot;</span>
@@ -8410,7 +8412,9 @@ loaded from the parent flow.</p>
 <span class="sd">        Raises:</span>
 <span class="sd">            ParameterTypeError: if the provided parameters are not valid</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">validated_fn</span> <span class="o">=</span> <span class="n">ValidatedFunction</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fn</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+        <span class="n">validated_fn</span> <span class="o">=</span> <span class="n">ValidatedFunction</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fn</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;arbitrary_types_allowed&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span>
+        <span class="p">)</span>
         <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span> <span class="o">=</span> <span class="n">parameters_to_args_kwargs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fn</span><span class="p">,</span> <span class="n">parameters</span><span class="p">)</span>
 
         <span class="k">try</span><span class="p">:</span>
@@ -8848,9 +8852,7 @@ integers during API roundtrips.</p>
 
           <details class="quote">
             <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/flows.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">464</span>
-<span class="normal">465</span>
-<span class="normal">466</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">466</span>
 <span class="normal">467</span>
 <span class="normal">468</span>
 <span class="normal">469</span>
@@ -8867,7 +8869,9 @@ integers during API roundtrips.</p>
 <span class="normal">480</span>
 <span class="normal">481</span>
 <span class="normal">482</span>
-<span class="normal">483</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">serialize_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parameters</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="normal">483</span>
+<span class="normal">484</span>
+<span class="normal">485</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">serialize_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parameters</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert parameters to a serializable form.</span>
 
@@ -9140,9 +9144,7 @@ If False, the schedules will continue running.</p>
 
           <details class="quote">
             <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/flows.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">553</span>
-<span class="normal">554</span>
-<span class="normal">555</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">555</span>
 <span class="normal">556</span>
 <span class="normal">557</span>
 <span class="normal">558</span>
@@ -9241,7 +9243,9 @@ If False, the schedules will continue running.</p>
 <span class="normal">651</span>
 <span class="normal">652</span>
 <span class="normal">653</span>
-<span class="normal">654</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@sync_compatible</span>
+<span class="normal">654</span>
+<span class="normal">655</span>
+<span class="normal">656</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@sync_compatible</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">serve</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -9559,9 +9563,7 @@ purposes.</p>
 
           <details class="quote">
             <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/flows.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">485</span>
-<span class="normal">486</span>
-<span class="normal">487</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">487</span>
 <span class="normal">488</span>
 <span class="normal">489</span>
 <span class="normal">490</span>
@@ -9625,7 +9627,9 @@ purposes.</p>
 <span class="normal">548</span>
 <span class="normal">549</span>
 <span class="normal">550</span>
-<span class="normal">551</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">to_deployment</span><span class="p">(</span>
+<span class="normal">551</span>
+<span class="normal">552</span>
+<span class="normal">553</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">to_deployment</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">interval</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -9792,7 +9796,9 @@ associated types specified by the function's type annotations.</p>
 <span class="normal">459</span>
 <span class="normal">460</span>
 <span class="normal">461</span>
-<span class="normal">462</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">validate_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parameters</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="normal">462</span>
+<span class="normal">463</span>
+<span class="normal">464</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">validate_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parameters</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Validate parameters for compatibility with the flow by attempting to cast the inputs to the</span>
 <span class="sd">    associated types specified by the function&#39;s type annotations.</span>
@@ -9803,7 +9809,9 @@ associated types specified by the function's type annotations.</p>
 <span class="sd">    Raises:</span>
 <span class="sd">        ParameterTypeError: if the provided parameters are not valid</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">validated_fn</span> <span class="o">=</span> <span class="n">ValidatedFunction</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fn</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">validated_fn</span> <span class="o">=</span> <span class="n">ValidatedFunction</span><span class="p">(</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fn</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;arbitrary_types_allowed&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span>
+    <span class="p">)</span>
     <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span> <span class="o">=</span> <span class="n">parameters_to_args_kwargs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fn</span><span class="p">,</span> <span class="n">parameters</span><span class="p">)</span>
 
     <span class="k">try</span><span class="p">:</span>
@@ -9893,9 +9901,7 @@ it's rendered inline, otherwise in a new window as a PNG.</p>
 
           <details class="quote">
             <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/flows.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">800</span>
-<span class="normal">801</span>
-<span class="normal">802</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">802</span>
 <span class="normal">803</span>
 <span class="normal">804</span>
 <span class="normal">805</span>
@@ -9940,7 +9946,9 @@ it's rendered inline, otherwise in a new window as a PNG.</p>
 <span class="normal">844</span>
 <span class="normal">845</span>
 <span class="normal">846</span>
-<span class="normal">847</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@sync_compatible</span>
+<span class="normal">847</span>
+<span class="normal">848</span>
+<span class="normal">849</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@sync_compatible</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">visualize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Generates a graphviz object representing the current flow. In IPython notebooks,</span>
@@ -10940,9 +10948,7 @@ final state of the flow run.</p>
 
           <details class="quote">
             <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/flows.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 882</span>
-<span class="normal"> 883</span>
-<span class="normal"> 884</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 884</span>
 <span class="normal"> 885</span>
 <span class="normal"> 886</span>
 <span class="normal"> 887</span>
@@ -11112,7 +11118,9 @@ final state of the flow run.</p>
 <span class="normal">1051</span>
 <span class="normal">1052</span>
 <span class="normal">1053</span>
-<span class="normal">1054</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">flow</span><span class="p">(</span>
+<span class="normal">1054</span>
+<span class="normal">1055</span>
+<span class="normal">1056</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">flow</span><span class="p">(</span>
     <span class="n">__fn</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -11397,9 +11405,7 @@ final state of the flow run.</p>
 
           <details class="quote">
             <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/flows.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1142</span>
-<span class="normal">1143</span>
-<span class="normal">1144</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1144</span>
 <span class="normal">1145</span>
 <span class="normal">1146</span>
 <span class="normal">1147</span>
@@ -11429,7 +11435,9 @@ final state of the flow run.</p>
 <span class="normal">1171</span>
 <span class="normal">1172</span>
 <span class="normal">1173</span>
-<span class="normal">1174</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">load_flow_from_entrypoint</span><span class="p">(</span><span class="n">entrypoint</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Flow</span><span class="p">:</span>
+<span class="normal">1174</span>
+<span class="normal">1175</span>
+<span class="normal">1176</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">load_flow_from_entrypoint</span><span class="p">(</span><span class="n">entrypoint</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Flow</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Extract a flow object from a script at an entrypoint by running all of the code in the file.</span>
 
@@ -11610,9 +11618,7 @@ the flow to return.</p>
 
           <details class="quote">
             <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/flows.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1115</span>
-<span class="normal">1116</span>
-<span class="normal">1117</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1117</span>
 <span class="normal">1118</span>
 <span class="normal">1119</span>
 <span class="normal">1120</span>
@@ -11634,7 +11640,9 @@ the flow to return.</p>
 <span class="normal">1136</span>
 <span class="normal">1137</span>
 <span class="normal">1138</span>
-<span class="normal">1139</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">load_flow_from_script</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">flow_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Flow</span><span class="p">:</span>
+<span class="normal">1139</span>
+<span class="normal">1140</span>
+<span class="normal">1141</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">load_flow_from_script</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">flow_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Flow</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Extract a flow object from a script by running all of the code in the file.</span>
 
@@ -11685,9 +11693,7 @@ to line numbers and contextual tracebacks can be provided.</p>
 
           <details class="quote">
             <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/flows.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1177</span>
-<span class="normal">1178</span>
-<span class="normal">1179</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1179</span>
 <span class="normal">1180</span>
 <span class="normal">1181</span>
 <span class="normal">1182</span>
@@ -11706,7 +11712,9 @@ to line numbers and contextual tracebacks can be provided.</p>
 <span class="normal">1195</span>
 <span class="normal">1196</span>
 <span class="normal">1197</span>
-<span class="normal">1198</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">load_flow_from_text</span><span class="p">(</span><span class="n">script_contents</span><span class="p">:</span> <span class="n">AnyStr</span><span class="p">,</span> <span class="n">flow_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="normal">1198</span>
+<span class="normal">1199</span>
+<span class="normal">1200</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">load_flow_from_text</span><span class="p">(</span><span class="n">script_contents</span><span class="p">:</span> <span class="n">AnyStr</span><span class="p">,</span> <span class="n">flow_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Load a flow from a text script.</span>
 
@@ -11801,9 +11809,7 @@ will be executed.</p>
 
           <details class="quote">
             <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/flows.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1101</span>
-<span class="normal">1102</span>
-<span class="normal">1103</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1103</span>
 <span class="normal">1104</span>
 <span class="normal">1105</span>
 <span class="normal">1106</span>
@@ -11812,7 +11818,9 @@ will be executed.</p>
 <span class="normal">1109</span>
 <span class="normal">1110</span>
 <span class="normal">1111</span>
-<span class="normal">1112</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">load_flows_from_script</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Flow</span><span class="p">]:</span>
+<span class="normal">1112</span>
+<span class="normal">1113</span>
+<span class="normal">1114</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">load_flows_from_script</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Flow</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Load all flow objects from the given python script. All of the code in the file</span>
 <span class="sd">    will be executed.</span>
@@ -11894,9 +11902,7 @@ will be executed.</p>
 
           <details class="quote">
             <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/flows.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1057</span>
-<span class="normal">1058</span>
-<span class="normal">1059</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1059</span>
 <span class="normal">1060</span>
 <span class="normal">1061</span>
 <span class="normal">1062</span>
@@ -11935,7 +11941,9 @@ will be executed.</p>
 <span class="normal">1095</span>
 <span class="normal">1096</span>
 <span class="normal">1097</span>
-<span class="normal">1098</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">select_flow</span><span class="p">(</span>
+<span class="normal">1098</span>
+<span class="normal">1099</span>
+<span class="normal">1100</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">select_flow</span><span class="p">(</span>
     <span class="n">flows</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Flow</span><span class="p">],</span> <span class="n">flow_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">from_message</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Flow</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
