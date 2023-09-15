@@ -200,6 +200,16 @@ jobs:
         if [[ "$newest_release" == "$version" ]]; then
           echo "Updating 'latest' docs version with $version."
           mike deploy --config-file ./mkdocs.insiders.yml --update-aliases --branch $branch_name --prefix=versions "$display_name" latest
+          
+          # There is a bug in Mike where image url aliases don't get rewritten to latest. 
+          # As of Sept 2023 Mike version 1.2. 
+          # Known issue that should be fixed in Mike 2.0.
+          # https://github.com/jimporter/mike/issues/157
+          # For now, copying the latest numbered version folder to "latest"
+          # so someone doesn't have to do it manually.
+          # This attempted fix doesn't work b/c the folder isn't there yet- PR needs accepted first.
+          # cp ./versions/"$version" ./versions/latest
+          
         else
           echo "Updating previous docs version with $version."
           mike deploy --config-file ./mkdocs.insiders.yml --update-aliases --branch $branch_name --prefix=versions "$display_name"
