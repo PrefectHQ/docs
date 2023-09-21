@@ -7474,7 +7474,7 @@ This step is useful for scripts that require execution in a specific environment
 <span class="w">        </span><span class="nt">work_queue_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">tertiary-queue</span>
 </code></pre></div>
 <p>This file has three deployment declarations, each referencing a different flow. Each deployment declaration has a unique <code>name</code> field and can be deployed individually by using the <code>--name</code> flag when deploying.</p>
-<p>For example, to deploy <code>deployment-1</code> we would run:</p>
+<p>For example, to deploy <code>deployment-1</code> you would run:</p>
 <div class="terminal">
 <div class="highlight"><pre><span></span><code>$<span class="w"> </span>prefect<span class="w"> </span>deploy<span class="w"> </span>--name<span class="w"> </span>deployment-1
 </code></pre></div>
@@ -7498,6 +7498,12 @@ This step is useful for scripts that require execution in a specific environment
 </code></pre></div>
 </div>
 
+<p>To deploy deployments that match a pattern you can run:</p>
+<div class="terminal">
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>prefect<span class="w"> </span>deploy<span class="w"> </span>-n<span class="w"> </span>my-flow/*<span class="w"> </span>-n<span class="w"> </span>*dev/my-deployment<span class="w"> </span>-n<span class="w"> </span>dep*prod
+</code></pre></div>
+</div>
+<p>The above command will deploy all deployments from the flow <code>my-flow</code>, all flows ending in <code>dev</code> with a deployment named <code>my-deployment</code>, and all deployments starting with <code>dep</code> and ending in <code>prod</code>.</p>
 <div class="admonition note">
 <p class="admonition-title">CLI Options When Deploying Multiple Deployments</p>
 <p>When deploying more than one deployment with a single <code>prefect deploy</code> command, any additional attributes provided via the CLI will be ignored.</p>
@@ -7606,6 +7612,10 @@ This step is useful for scripts that require execution in a specific environment
 <tr>
 <td><code>parameters</code></td>
 <td>Optional default values to provide for the parameters of the deployed flow. Should be an object with key/value pairs.</td>
+</tr>
+<tr>
+<td><span class="no-wrap"><code>enforce_parameter_schema</code></span></td>
+<td>Boolean flag that determines whether the API should validate the parameters passed to a flow run against the parameter schema generated for the deployed flow.</td>
 </tr>
 <tr>
 <td><code>work_pool</code></td>
