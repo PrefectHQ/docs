@@ -7233,6 +7233,20 @@ storage or, if stored on a local filesystem, an absolute path</p>
               <em>required</em>
           </td>
         </tr>
+        <tr>
+          <td><code>enforce_parameter_schema</code></td>
+          <td>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>Whether or not the Prefect API should enforce the
+parameter schema for this deployment.</p>
+            </div>
+          </td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
     </tbody>
   </table>
       <div class="codehilite"><pre><span></span><code><span class="n">Create</span> <span class="n">a</span> <span class="n">new</span> <span class="n">deployment</span> <span class="n">using</span> <span class="n">configuration</span> <span class="n">defaults</span> <span class="k">for</span> <span class="n">an</span> <span class="n">imported</span> <span class="n">flow</span><span class="p">:</span>
@@ -7867,7 +7881,24 @@ storage or, if stored on a local filesystem, an absolute path</p>
 <span class="normal">855</span>
 <span class="normal">856</span>
 <span class="normal">857</span>
-<span class="normal">858</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@experimental_field</span><span class="p">(</span>
+<span class="normal">858</span>
+<span class="normal">859</span>
+<span class="normal">860</span>
+<span class="normal">861</span>
+<span class="normal">862</span>
+<span class="normal">863</span>
+<span class="normal">864</span>
+<span class="normal">865</span>
+<span class="normal">866</span>
+<span class="normal">867</span>
+<span class="normal">868</span>
+<span class="normal">869</span>
+<span class="normal">870</span>
+<span class="normal">871</span>
+<span class="normal">872</span>
+<span class="normal">873</span>
+<span class="normal">874</span>
+<span class="normal">875</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@experimental_field</span><span class="p">(</span>
     <span class="s2">&quot;work_pool_name&quot;</span><span class="p">,</span>
     <span class="n">group</span><span class="o">=</span><span class="s2">&quot;work_pools&quot;</span><span class="p">,</span>
     <span class="n">when</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">x</span> <span class="o">!=</span> <span class="n">DEFAULT_AGENT_WORK_POOL_NAME</span><span class="p">,</span>
@@ -7905,6 +7936,8 @@ storage or, if stored on a local filesystem, an absolute path</p>
 <span class="sd">        entrypoint: The path to the entrypoint for the workflow, always relative to the</span>
 <span class="sd">            `path`</span>
 <span class="sd">        parameter_openapi_schema: The parameter schema of the flow, including defaults.</span>
+<span class="sd">        enforce_parameter_schema: Whether or not the Prefect API should enforce the</span>
+<span class="sd">            parameter schema for this deployment.</span>
 
 <span class="sd">    Examples:</span>
 
@@ -8100,6 +8133,14 @@ storage or, if stored on a local filesystem, an absolute path</p>
         <span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The triggers that should cause this deployment to run.&quot;</span><span class="p">,</span>
     <span class="p">)</span>
+    <span class="c1"># defaults to None to allow for backwards compatibility</span>
+    <span class="n">enforce_parameter_schema</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="p">(</span>
+            <span class="s2">&quot;Whether or not the Prefect API should enforce the parameter schema for&quot;</span>
+            <span class="s2">&quot; this deployment.&quot;</span>
+        <span class="p">),</span>
+    <span class="p">)</span>
 
     <span class="nd">@validator</span><span class="p">(</span><span class="s2">&quot;infrastructure&quot;</span><span class="p">,</span> <span class="n">pre</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">infrastructure_must_have_capabilities</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
@@ -8201,7 +8242,13 @@ storage or, if stored on a local filesystem, an absolute path</p>
                     <span class="p">)</span>
 
                 <span class="n">excluded_fields</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__fields_set__</span><span class="o">.</span><span class="n">union</span><span class="p">(</span>
-                    <span class="p">{</span><span class="s2">&quot;infrastructure&quot;</span><span class="p">,</span> <span class="s2">&quot;storage&quot;</span><span class="p">,</span> <span class="s2">&quot;timestamp&quot;</span><span class="p">,</span> <span class="s2">&quot;triggers&quot;</span><span class="p">}</span>
+                    <span class="p">{</span>
+                        <span class="s2">&quot;infrastructure&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;storage&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;timestamp&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;triggers&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;enforce_parameter_schema&quot;</span><span class="p">,</span>
+                    <span class="p">}</span>
                 <span class="p">)</span>
                 <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__fields__</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">-</span> <span class="n">excluded_fields</span><span class="p">:</span>
                     <span class="n">new_value</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">deployment</span><span class="p">,</span> <span class="n">field</span><span class="p">)</span>
@@ -8354,6 +8401,7 @@ storage or, if stored on a local filesystem, an absolute path</p>
                 <span class="n">storage_document_id</span><span class="o">=</span><span class="n">storage_document_id</span><span class="p">,</span>
                 <span class="n">infrastructure_document_id</span><span class="o">=</span><span class="n">infrastructure_document_id</span><span class="p">,</span>
                 <span class="n">parameter_openapi_schema</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parameter_openapi_schema</span><span class="o">.</span><span class="n">dict</span><span class="p">(),</span>
+                <span class="n">enforce_parameter_schema</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">enforce_parameter_schema</span><span class="p">,</span>
             <span class="p">)</span>
 
             <span class="k">if</span> <span class="n">client</span><span class="o">.</span><span class="n">server_type</span> <span class="o">==</span> <span class="n">ServerType</span><span class="o">.</span><span class="n">CLOUD</span><span class="p">:</span>
@@ -8574,23 +8622,7 @@ deployment's work queue</p>
 
           <details class="quote">
             <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/deployments/deployments.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">683</span>
-<span class="normal">684</span>
-<span class="normal">685</span>
-<span class="normal">686</span>
-<span class="normal">687</span>
-<span class="normal">688</span>
-<span class="normal">689</span>
-<span class="normal">690</span>
-<span class="normal">691</span>
-<span class="normal">692</span>
-<span class="normal">693</span>
-<span class="normal">694</span>
-<span class="normal">695</span>
-<span class="normal">696</span>
-<span class="normal">697</span>
-<span class="normal">698</span>
-<span class="normal">699</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">699</span>
 <span class="normal">700</span>
 <span class="normal">701</span>
 <span class="normal">702</span>
@@ -8652,7 +8684,24 @@ deployment's work queue</p>
 <span class="normal">758</span>
 <span class="normal">759</span>
 <span class="normal">760</span>
-<span class="normal">761</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@sync_compatible</span>
+<span class="normal">761</span>
+<span class="normal">762</span>
+<span class="normal">763</span>
+<span class="normal">764</span>
+<span class="normal">765</span>
+<span class="normal">766</span>
+<span class="normal">767</span>
+<span class="normal">768</span>
+<span class="normal">769</span>
+<span class="normal">770</span>
+<span class="normal">771</span>
+<span class="normal">772</span>
+<span class="normal">773</span>
+<span class="normal">774</span>
+<span class="normal">775</span>
+<span class="normal">776</span>
+<span class="normal">777</span>
+<span class="normal">778</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@sync_compatible</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">apply</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span> <span class="n">upload</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">work_queue_concurrency</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">UUID</span><span class="p">:</span>
@@ -8715,6 +8764,7 @@ deployment's work queue</p>
             <span class="n">storage_document_id</span><span class="o">=</span><span class="n">storage_document_id</span><span class="p">,</span>
             <span class="n">infrastructure_document_id</span><span class="o">=</span><span class="n">infrastructure_document_id</span><span class="p">,</span>
             <span class="n">parameter_openapi_schema</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parameter_openapi_schema</span><span class="o">.</span><span class="n">dict</span><span class="p">(),</span>
+            <span class="n">enforce_parameter_schema</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">enforce_parameter_schema</span><span class="p">,</span>
         <span class="p">)</span>
 
         <span class="k">if</span> <span class="n">client</span><span class="o">.</span><span class="n">server_type</span> <span class="o">==</span> <span class="n">ServerType</span><span class="o">.</span><span class="n">CLOUD</span><span class="p">:</span>
@@ -8894,24 +8944,7 @@ values, etc.)</p>
 
           <details class="quote">
             <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/deployments/deployments.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">763</span>
-<span class="normal">764</span>
-<span class="normal">765</span>
-<span class="normal">766</span>
-<span class="normal">767</span>
-<span class="normal">768</span>
-<span class="normal">769</span>
-<span class="normal">770</span>
-<span class="normal">771</span>
-<span class="normal">772</span>
-<span class="normal">773</span>
-<span class="normal">774</span>
-<span class="normal">775</span>
-<span class="normal">776</span>
-<span class="normal">777</span>
-<span class="normal">778</span>
-<span class="normal">779</span>
-<span class="normal">780</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">780</span>
 <span class="normal">781</span>
 <span class="normal">782</span>
 <span class="normal">783</span>
@@ -8989,7 +9022,24 @@ values, etc.)</p>
 <span class="normal">855</span>
 <span class="normal">856</span>
 <span class="normal">857</span>
-<span class="normal">858</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@classmethod</span>
+<span class="normal">858</span>
+<span class="normal">859</span>
+<span class="normal">860</span>
+<span class="normal">861</span>
+<span class="normal">862</span>
+<span class="normal">863</span>
+<span class="normal">864</span>
+<span class="normal">865</span>
+<span class="normal">866</span>
+<span class="normal">867</span>
+<span class="normal">868</span>
+<span class="normal">869</span>
+<span class="normal">870</span>
+<span class="normal">871</span>
+<span class="normal">872</span>
+<span class="normal">873</span>
+<span class="normal">874</span>
+<span class="normal">875</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@classmethod</span>
 <span class="nd">@sync_compatible</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">build_from_flow</span><span class="p">(</span>
     <span class="bp">cls</span><span class="p">,</span>
@@ -9109,14 +9159,14 @@ values, etc.)</p>
 
           <details class="quote">
             <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/deployments/deployments.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">528</span>
-<span class="normal">529</span>
-<span class="normal">530</span>
-<span class="normal">531</span>
-<span class="normal">532</span>
-<span class="normal">533</span>
-<span class="normal">534</span>
-<span class="normal">535</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@validator</span><span class="p">(</span><span class="s2">&quot;parameter_openapi_schema&quot;</span><span class="p">,</span> <span class="n">pre</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">538</span>
+<span class="normal">539</span>
+<span class="normal">540</span>
+<span class="normal">541</span>
+<span class="normal">542</span>
+<span class="normal">543</span>
+<span class="normal">544</span>
+<span class="normal">545</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@validator</span><span class="p">(</span><span class="s2">&quot;parameter_openapi_schema&quot;</span><span class="p">,</span> <span class="n">pre</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">handle_openapi_schema</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This method ensures setting a value of `None` is handled gracefully.</span>
@@ -9178,17 +9228,7 @@ prepopulates any settings that were not set at initialization.</p>
 
           <details class="quote">
             <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/deployments/deployments.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">569</span>
-<span class="normal">570</span>
-<span class="normal">571</span>
-<span class="normal">572</span>
-<span class="normal">573</span>
-<span class="normal">574</span>
-<span class="normal">575</span>
-<span class="normal">576</span>
-<span class="normal">577</span>
-<span class="normal">578</span>
-<span class="normal">579</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">579</span>
 <span class="normal">580</span>
 <span class="normal">581</span>
 <span class="normal">582</span>
@@ -9224,7 +9264,23 @@ prepopulates any settings that were not set at initialization.</p>
 <span class="normal">612</span>
 <span class="normal">613</span>
 <span class="normal">614</span>
-<span class="normal">615</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@sync_compatible</span>
+<span class="normal">615</span>
+<span class="normal">616</span>
+<span class="normal">617</span>
+<span class="normal">618</span>
+<span class="normal">619</span>
+<span class="normal">620</span>
+<span class="normal">621</span>
+<span class="normal">622</span>
+<span class="normal">623</span>
+<span class="normal">624</span>
+<span class="normal">625</span>
+<span class="normal">626</span>
+<span class="normal">627</span>
+<span class="normal">628</span>
+<span class="normal">629</span>
+<span class="normal">630</span>
+<span class="normal">631</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@sync_compatible</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Queries the API for a deployment with this name for this flow, and if found,</span>
@@ -9248,7 +9304,13 @@ prepopulates any settings that were not set at initialization.</p>
                 <span class="p">)</span>
 
             <span class="n">excluded_fields</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__fields_set__</span><span class="o">.</span><span class="n">union</span><span class="p">(</span>
-                <span class="p">{</span><span class="s2">&quot;infrastructure&quot;</span><span class="p">,</span> <span class="s2">&quot;storage&quot;</span><span class="p">,</span> <span class="s2">&quot;timestamp&quot;</span><span class="p">,</span> <span class="s2">&quot;triggers&quot;</span><span class="p">}</span>
+                <span class="p">{</span>
+                    <span class="s2">&quot;infrastructure&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;storage&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;timestamp&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;triggers&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;enforce_parameter_schema&quot;</span><span class="p">,</span>
+                <span class="p">}</span>
             <span class="p">)</span>
             <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__fields__</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">-</span> <span class="n">excluded_fields</span><span class="p">:</span>
                 <span class="n">new_value</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">deployment</span><span class="p">,</span> <span class="n">field</span><span class="p">)</span>
@@ -9330,24 +9392,24 @@ update</p>
 
           <details class="quote">
             <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/deployments/deployments.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">617</span>
-<span class="normal">618</span>
-<span class="normal">619</span>
-<span class="normal">620</span>
-<span class="normal">621</span>
-<span class="normal">622</span>
-<span class="normal">623</span>
-<span class="normal">624</span>
-<span class="normal">625</span>
-<span class="normal">626</span>
-<span class="normal">627</span>
-<span class="normal">628</span>
-<span class="normal">629</span>
-<span class="normal">630</span>
-<span class="normal">631</span>
-<span class="normal">632</span>
-<span class="normal">633</span>
-<span class="normal">634</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@sync_compatible</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">633</span>
+<span class="normal">634</span>
+<span class="normal">635</span>
+<span class="normal">636</span>
+<span class="normal">637</span>
+<span class="normal">638</span>
+<span class="normal">639</span>
+<span class="normal">640</span>
+<span class="normal">641</span>
+<span class="normal">642</span>
+<span class="normal">643</span>
+<span class="normal">644</span>
+<span class="normal">645</span>
+<span class="normal">646</span>
+<span class="normal">647</span>
+<span class="normal">648</span>
+<span class="normal">649</span>
+<span class="normal">650</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@sync_compatible</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ignore_none</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Performs an in-place update with the provided settings.</span>
@@ -9441,23 +9503,7 @@ provided, looks for <code>.prefectignore</code> in the current working directory
 
           <details class="quote">
             <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/deployments/deployments.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">636</span>
-<span class="normal">637</span>
-<span class="normal">638</span>
-<span class="normal">639</span>
-<span class="normal">640</span>
-<span class="normal">641</span>
-<span class="normal">642</span>
-<span class="normal">643</span>
-<span class="normal">644</span>
-<span class="normal">645</span>
-<span class="normal">646</span>
-<span class="normal">647</span>
-<span class="normal">648</span>
-<span class="normal">649</span>
-<span class="normal">650</span>
-<span class="normal">651</span>
-<span class="normal">652</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">652</span>
 <span class="normal">653</span>
 <span class="normal">654</span>
 <span class="normal">655</span>
@@ -9486,7 +9532,23 @@ provided, looks for <code>.prefectignore</code> in the current working directory
 <span class="normal">678</span>
 <span class="normal">679</span>
 <span class="normal">680</span>
-<span class="normal">681</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@sync_compatible</span>
+<span class="normal">681</span>
+<span class="normal">682</span>
+<span class="normal">683</span>
+<span class="normal">684</span>
+<span class="normal">685</span>
+<span class="normal">686</span>
+<span class="normal">687</span>
+<span class="normal">688</span>
+<span class="normal">689</span>
+<span class="normal">690</span>
+<span class="normal">691</span>
+<span class="normal">692</span>
+<span class="normal">693</span>
+<span class="normal">694</span>
+<span class="normal">695</span>
+<span class="normal">696</span>
+<span class="normal">697</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@sync_compatible</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">upload_to_storage</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span> <span class="n">storage_block</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">ignore_file</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;.prefectignore&quot;</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
@@ -9556,14 +9618,14 @@ provided, looks for <code>.prefectignore</code> in the current working directory
 
           <details class="quote">
             <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/deployments/deployments.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">537</span>
-<span class="normal">538</span>
-<span class="normal">539</span>
-<span class="normal">540</span>
-<span class="normal">541</span>
-<span class="normal">542</span>
-<span class="normal">543</span>
-<span class="normal">544</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@validator</span><span class="p">(</span><span class="s2">&quot;triggers&quot;</span><span class="p">)</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">547</span>
+<span class="normal">548</span>
+<span class="normal">549</span>
+<span class="normal">550</span>
+<span class="normal">551</span>
+<span class="normal">552</span>
+<span class="normal">553</span>
+<span class="normal">554</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@validator</span><span class="p">(</span><span class="s2">&quot;triggers&quot;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">validate_automation_names</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">field_value</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Ensure that each trigger has a name for its automation if none is provided.&quot;&quot;&quot;</span>
     <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">trigger</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">field_value</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>

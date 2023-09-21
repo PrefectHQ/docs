@@ -7200,6 +7200,62 @@ Inspect<span class="w"> </span>the<span class="w"> </span>work<span class="w"> <
 <p>We see these configuration options available in the Prefect UI:
 <img alt="process work pool configuration options" src="/img/ui/process-work-pool-config.png" /></p>
 <p>For a <code>process</code> work pool with the default base job template, we can set environment variables for spawned processes, set the working directory to execute flows, and control whether the flow run output is streamed to workers' standard output. You can also see an example of JSON formatted base job template with the 'Advanced' tab.</p>
+<p>You can examine the default base job template for a given worker type by running:</p>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>prefect<span class="w"> </span>work-pool<span class="w"> </span>get-default-base-job-template<span class="w"> </span>--type<span class="w"> </span>process
+<span class="o">{</span>
+<span class="w">  </span><span class="s2">&quot;job_configuration&quot;</span>:<span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="s2">&quot;command&quot;</span>:<span class="w"> </span><span class="s2">&quot;{{ command }}&quot;</span>,
+<span class="w">    </span><span class="s2">&quot;env&quot;</span>:<span class="w"> </span><span class="s2">&quot;{{ env }}&quot;</span>,
+<span class="w">    </span><span class="s2">&quot;labels&quot;</span>:<span class="w"> </span><span class="s2">&quot;{{ labels }}&quot;</span>,
+<span class="w">    </span><span class="s2">&quot;name&quot;</span>:<span class="w"> </span><span class="s2">&quot;{{ name }}&quot;</span>,
+<span class="w">    </span><span class="s2">&quot;stream_output&quot;</span>:<span class="w"> </span><span class="s2">&quot;{{ stream_output }}&quot;</span>,
+<span class="w">    </span><span class="s2">&quot;working_dir&quot;</span>:<span class="w"> </span><span class="s2">&quot;{{ working_dir }}&quot;</span>
+<span class="w">  </span><span class="o">}</span>,
+<span class="w">  </span><span class="s2">&quot;variables&quot;</span>:<span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="s2">&quot;type&quot;</span>:<span class="w"> </span><span class="s2">&quot;object&quot;</span>,
+<span class="w">    </span><span class="s2">&quot;properties&quot;</span>:<span class="w"> </span><span class="o">{</span>
+<span class="w">      </span><span class="s2">&quot;name&quot;</span>:<span class="w"> </span><span class="o">{</span>
+<span class="w">        </span><span class="s2">&quot;title&quot;</span>:<span class="w"> </span><span class="s2">&quot;Name&quot;</span>,
+<span class="w">        </span><span class="s2">&quot;description&quot;</span>:<span class="w"> </span><span class="s2">&quot;Name given to infrastructure created by a worker.&quot;</span>,
+<span class="w">        </span><span class="s2">&quot;type&quot;</span>:<span class="w"> </span><span class="s2">&quot;string&quot;</span>
+<span class="w">      </span><span class="o">}</span>,
+<span class="w">      </span><span class="s2">&quot;env&quot;</span>:<span class="w"> </span><span class="o">{</span>
+<span class="w">        </span><span class="s2">&quot;title&quot;</span>:<span class="w"> </span><span class="s2">&quot;Environment Variables&quot;</span>,
+<span class="w">        </span><span class="s2">&quot;description&quot;</span>:<span class="w"> </span><span class="s2">&quot;Environment variables to set when starting a flow run.&quot;</span>,
+<span class="w">        </span><span class="s2">&quot;type&quot;</span>:<span class="w"> </span><span class="s2">&quot;object&quot;</span>,
+<span class="w">        </span><span class="s2">&quot;additionalProperties&quot;</span>:<span class="w"> </span><span class="o">{</span>
+<span class="w">          </span><span class="s2">&quot;type&quot;</span>:<span class="w"> </span><span class="s2">&quot;string&quot;</span>
+<span class="w">        </span><span class="o">}</span>
+<span class="w">      </span><span class="o">}</span>,
+<span class="w">      </span><span class="s2">&quot;labels&quot;</span>:<span class="w"> </span><span class="o">{</span>
+<span class="w">        </span><span class="s2">&quot;title&quot;</span>:<span class="w"> </span><span class="s2">&quot;Labels&quot;</span>,
+<span class="w">        </span><span class="s2">&quot;description&quot;</span>:<span class="w"> </span><span class="s2">&quot;Labels applied to infrastructure created by a worker.&quot;</span>,
+<span class="w">        </span><span class="s2">&quot;type&quot;</span>:<span class="w"> </span><span class="s2">&quot;object&quot;</span>,
+<span class="w">        </span><span class="s2">&quot;additionalProperties&quot;</span>:<span class="w"> </span><span class="o">{</span>
+<span class="w">          </span><span class="s2">&quot;type&quot;</span>:<span class="w"> </span><span class="s2">&quot;string&quot;</span>
+<span class="w">        </span><span class="o">}</span>
+<span class="w">      </span><span class="o">}</span>,
+<span class="w">      </span><span class="s2">&quot;command&quot;</span>:<span class="w"> </span><span class="o">{</span>
+<span class="w">        </span><span class="s2">&quot;title&quot;</span>:<span class="w"> </span><span class="s2">&quot;Command&quot;</span>,
+<span class="w">        </span><span class="s2">&quot;description&quot;</span>:<span class="w"> </span><span class="s2">&quot;The command to use when starting a flow run. In most cases, this should be left blank and the command will be automatically generated by the worker.&quot;</span>,
+<span class="w">        </span><span class="s2">&quot;type&quot;</span>:<span class="w"> </span><span class="s2">&quot;string&quot;</span>
+<span class="w">      </span><span class="o">}</span>,
+<span class="w">      </span><span class="s2">&quot;stream_output&quot;</span>:<span class="w"> </span><span class="o">{</span>
+<span class="w">        </span><span class="s2">&quot;title&quot;</span>:<span class="w"> </span><span class="s2">&quot;Stream Output&quot;</span>,
+<span class="w">        </span><span class="s2">&quot;description&quot;</span>:<span class="w"> </span><span class="s2">&quot;If enabled, workers will stream output from flow run processes to local standard output.&quot;</span>,
+<span class="w">        </span><span class="s2">&quot;default&quot;</span>:<span class="w"> </span>true,
+<span class="w">        </span><span class="s2">&quot;type&quot;</span>:<span class="w"> </span><span class="s2">&quot;boolean&quot;</span>
+<span class="w">      </span><span class="o">}</span>,
+<span class="w">      </span><span class="s2">&quot;working_dir&quot;</span>:<span class="w"> </span><span class="o">{</span>
+<span class="w">        </span><span class="s2">&quot;title&quot;</span>:<span class="w"> </span><span class="s2">&quot;Working Directory&quot;</span>,
+<span class="w">        </span><span class="s2">&quot;description&quot;</span>:<span class="w"> </span><span class="s2">&quot;If provided, workers will open flow run processes within the specified path as the working directory. Otherwise, a temporary directory will be created.&quot;</span>,
+<span class="w">        </span><span class="s2">&quot;type&quot;</span>:<span class="w"> </span><span class="s2">&quot;string&quot;</span>,
+<span class="w">        </span><span class="s2">&quot;format&quot;</span>:<span class="w"> </span><span class="s2">&quot;path&quot;</span>
+<span class="w">      </span><span class="o">}</span>
+<span class="w">    </span><span class="o">}</span>
+<span class="w">  </span><span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div>
 <p>You can override each of these attributes on a per-deployment basis. When deploying a flow, you can specify these overrides in the <code>work_pool.job_variables</code> section of a <code>deployment.yaml</code>.</p>
 <p>If we wanted to turn off streaming output for a specific deployment, we could add the following to our <code>deployment.yaml</code>:</p>
 <div class="highlight"><pre><span></span><code><span class="nt">work_pool</span><span class="p">:</span>
