@@ -7368,12 +7368,11 @@ This step is useful for scripts that require execution in a specific environment
 <p>Below is an example of installing dependencies from a <code>requirements.txt</code> file after cloning:</p>
 <div class="highlight"><pre><span></span><code><span class="nt">pull</span><span class="p">:</span>
 <span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">prefect.deployments.steps.git_clone</span><span class="p">:</span>
-<span class="w">        </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">clone-step</span>
+<span class="w">        </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">clone-step</span><span class="w">  </span><span class="c1"># needed in order to be referenced in subsequent steps</span>
 <span class="w">        </span><span class="nt">repository</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://github.com/org/repo.git</span>
 <span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">prefect.deployments.steps.pip_install_requirements</span><span class="p">:</span>
-<span class="w">        </span><span class="nt">directory</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{{</span><span class="w"> </span><span class="nv">clone-step.directory</span><span class="w"> </span><span class="p p-Indicator">}}</span>
+<span class="w">        </span><span class="nt">directory</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{{</span><span class="w"> </span><span class="nv">clone-step.directory</span><span class="w"> </span><span class="p p-Indicator">}}</span><span class="w">  </span><span class="c1"># `clone-step` is a user-provided `id` field</span>
 <span class="w">        </span><span class="nt">requirements_file</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">requirements.txt</span>
-<span class="w">        </span><span class="nt">stream_output</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span>
 </code></pre></div>
 <p>Below is an example that retrieves an access token from a 3rd party Key Vault and uses it in a private clone step:</p>
 <div class="highlight"><pre><span></span><code><span class="nt">pull</span><span class="p">:</span>
