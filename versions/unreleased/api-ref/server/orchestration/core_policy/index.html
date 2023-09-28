@@ -8793,7 +8793,8 @@ before attempting the transition again.</p>
 <span class="normal">605</span>
 <span class="normal">606</span>
 <span class="normal">607</span>
-<span class="normal">608</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">UpdateFlowRunTrackerOnTasks</span><span class="p">(</span><span class="n">BaseOrchestrationRule</span><span class="p">):</span>
+<span class="normal">608</span>
+<span class="normal">609</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">UpdateFlowRunTrackerOnTasks</span><span class="p">(</span><span class="n">BaseOrchestrationRule</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Tracks the flow run attempt a task run state is associated with.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -8807,16 +8808,17 @@ before attempting the transition again.</p>
         <span class="n">validated_state</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">states</span><span class="o">.</span><span class="n">State</span><span class="p">],</span>
         <span class="n">context</span><span class="p">:</span> <span class="n">TaskOrchestrationContext</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">flow_run</span> <span class="o">=</span> <span class="k">await</span> <span class="n">context</span><span class="o">.</span><span class="n">flow_run</span><span class="p">()</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">flow_run</span><span class="p">:</span>
-            <span class="n">context</span><span class="o">.</span><span class="n">run</span><span class="o">.</span><span class="n">flow_run_run_count</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">flow_run</span><span class="o">.</span><span class="n">run_count</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">ObjectNotFoundError</span><span class="p">(</span>
-                <span class="p">(</span>
-                    <span class="s2">&quot;Unable to read flow run associated with task run:&quot;</span>
-                    <span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="n">context</span><span class="o">.</span><span class="n">run</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">, this flow run might have been deleted&quot;</span>
-                <span class="p">),</span>
-            <span class="p">)</span>
+        <span class="k">if</span> <span class="n">context</span><span class="o">.</span><span class="n">run</span><span class="o">.</span><span class="n">flow_run_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">flow_run</span> <span class="o">=</span> <span class="k">await</span> <span class="n">context</span><span class="o">.</span><span class="n">flow_run</span><span class="p">()</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">flow_run</span><span class="p">:</span>
+                <span class="n">context</span><span class="o">.</span><span class="n">run</span><span class="o">.</span><span class="n">flow_run_run_count</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">flow_run</span><span class="o">.</span><span class="n">run_count</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">ObjectNotFoundError</span><span class="p">(</span>
+                    <span class="p">(</span>
+                        <span class="s2">&quot;Unable to read flow run associated with task run:&quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="n">context</span><span class="o">.</span><span class="n">run</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">, this flow run might have been deleted&quot;</span>
+                    <span class="p">),</span>
+                <span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
 
@@ -8865,8 +8867,7 @@ which resets task run retries; this is particularly relevant for flow run retrie
 
             <details class="quote">
               <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/server/orchestration/core_policy.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">611</span>
-<span class="normal">612</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">612</span>
 <span class="normal">613</span>
 <span class="normal">614</span>
 <span class="normal">615</span>
@@ -8922,7 +8923,8 @@ which resets task run retries; this is particularly relevant for flow run retrie
 <span class="normal">665</span>
 <span class="normal">666</span>
 <span class="normal">667</span>
-<span class="normal">668</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">HandleTaskTerminalStateTransitions</span><span class="p">(</span><span class="n">BaseOrchestrationRule</span><span class="p">):</span>
+<span class="normal">668</span>
+<span class="normal">669</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">HandleTaskTerminalStateTransitions</span><span class="p">(</span><span class="n">BaseOrchestrationRule</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    We do not allow tasks to leave terminal states if:</span>
 <span class="sd">    - The task is completed and has a persisted result</span>
@@ -8966,7 +8968,7 @@ which resets task run retries; this is particularly relevant for flow run retrie
             <span class="n">context</span><span class="o">.</span><span class="n">run</span><span class="o">.</span><span class="n">run_count</span> <span class="o">=</span> <span class="mi">0</span>
 
         <span class="c1"># Change the name of the state to retrying if its a flow run retry</span>
-        <span class="k">if</span> <span class="n">proposed_state</span><span class="o">.</span><span class="n">is_running</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">proposed_state</span><span class="o">.</span><span class="n">is_running</span><span class="p">()</span> <span class="ow">and</span> <span class="n">context</span><span class="o">.</span><span class="n">run</span><span class="o">.</span><span class="n">flow_run_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">flow_run</span> <span class="o">=</span> <span class="k">await</span> <span class="n">context</span><span class="o">.</span><span class="n">flow_run</span><span class="p">()</span>
             <span class="n">flow_retrying</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">run</span><span class="o">.</span><span class="n">flow_run_run_count</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">flow_run</span><span class="o">.</span><span class="n">run_count</span>
             <span class="k">if</span> <span class="n">flow_retrying</span><span class="p">:</span>
@@ -9029,8 +9031,7 @@ state. This resets pause behavior during manual flow run retries.</p>
 
             <details class="quote">
               <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/server/orchestration/core_policy.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">671</span>
-<span class="normal">672</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">672</span>
 <span class="normal">673</span>
 <span class="normal">674</span>
 <span class="normal">675</span>
@@ -9095,7 +9096,8 @@ state. This resets pause behavior during manual flow run retries.</p>
 <span class="normal">734</span>
 <span class="normal">735</span>
 <span class="normal">736</span>
-<span class="normal">737</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">HandleFlowTerminalStateTransitions</span><span class="p">(</span><span class="n">BaseOrchestrationRule</span><span class="p">):</span>
+<span class="normal">737</span>
+<span class="normal">738</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">HandleFlowTerminalStateTransitions</span><span class="p">(</span><span class="n">BaseOrchestrationRule</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    We do not allow flows to leave terminal states if:</span>
 <span class="sd">    - The flow is completed and has a persisted result</span>
@@ -9219,8 +9221,7 @@ For re-runs of ad-hoc runs, they should transition directly to RUNNING.</p>
 
             <details class="quote">
               <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/server/orchestration/core_policy.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">740</span>
-<span class="normal">741</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">741</span>
 <span class="normal">742</span>
 <span class="normal">743</span>
 <span class="normal">744</span>
@@ -9260,7 +9261,8 @@ For re-runs of ad-hoc runs, they should transition directly to RUNNING.</p>
 <span class="normal">778</span>
 <span class="normal">779</span>
 <span class="normal">780</span>
-<span class="normal">781</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">PreventPendingTransitions</span><span class="p">(</span><span class="n">BaseOrchestrationRule</span><span class="p">):</span>
+<span class="normal">781</span>
+<span class="normal">782</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">PreventPendingTransitions</span><span class="p">(</span><span class="n">BaseOrchestrationRule</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Prevents transitions to PENDING.</span>
 
@@ -9348,8 +9350,7 @@ flow's tasks cannot be run unless the flow is also running.</p>
 
             <details class="quote">
               <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/server/orchestration/core_policy.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">784</span>
-<span class="normal">785</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">785</span>
 <span class="normal">786</span>
 <span class="normal">787</span>
 <span class="normal">788</span>
@@ -9382,7 +9383,11 @@ flow's tasks cannot be run unless the flow is also running.</p>
 <span class="normal">815</span>
 <span class="normal">816</span>
 <span class="normal">817</span>
-<span class="normal">818</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">PreventRunningTasksFromStoppedFlows</span><span class="p">(</span><span class="n">BaseOrchestrationRule</span><span class="p">):</span>
+<span class="normal">818</span>
+<span class="normal">819</span>
+<span class="normal">820</span>
+<span class="normal">821</span>
+<span class="normal">822</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">PreventRunningTasksFromStoppedFlows</span><span class="p">(</span><span class="n">BaseOrchestrationRule</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Prevents running tasks from stopped flows.</span>
 
@@ -9400,23 +9405,26 @@ flow's tasks cannot be run unless the flow is also running.</p>
         <span class="n">context</span><span class="p">:</span> <span class="n">TaskOrchestrationContext</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">flow_run</span> <span class="o">=</span> <span class="k">await</span> <span class="n">context</span><span class="o">.</span><span class="n">flow_run</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">flow_run</span><span class="o">.</span><span class="n">state</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">abort_transition</span><span class="p">(</span>
-                <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;The enclosing flow must be running to begin task execution.&quot;</span>
-            <span class="p">)</span>
-        <span class="k">elif</span> <span class="n">flow_run</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">StateType</span><span class="o">.</span><span class="n">PAUSED</span><span class="p">:</span>
-            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">reject_transition</span><span class="p">(</span>
-                <span class="n">state</span><span class="o">=</span><span class="n">states</span><span class="o">.</span><span class="n">Paused</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;NotReady&quot;</span><span class="p">),</span>
-                <span class="n">reason</span><span class="o">=</span><span class="p">(</span>
-                    <span class="s2">&quot;The flow is paused, new tasks can execute after resuming flow&quot;</span>
-                    <span class="sa">f</span><span class="s2">&quot; run: </span><span class="si">{</span><span class="n">flow_run</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">.&quot;</span>
-                <span class="p">),</span>
-            <span class="p">)</span>
-        <span class="k">elif</span> <span class="ow">not</span> <span class="n">flow_run</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">StateType</span><span class="o">.</span><span class="n">RUNNING</span><span class="p">:</span>
-            <span class="c1"># task runners should abort task run execution</span>
-            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">abort_transition</span><span class="p">(</span>
-                <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;The enclosing flow must be running to begin task execution.&quot;</span><span class="p">,</span>
-            <span class="p">)</span>
+        <span class="k">if</span> <span class="n">flow_run</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">flow_run</span><span class="o">.</span><span class="n">state</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">abort_transition</span><span class="p">(</span>
+                    <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;The enclosing flow must be running to begin task execution.&quot;</span>
+                <span class="p">)</span>
+            <span class="k">elif</span> <span class="n">flow_run</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">StateType</span><span class="o">.</span><span class="n">PAUSED</span><span class="p">:</span>
+                <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">reject_transition</span><span class="p">(</span>
+                    <span class="n">state</span><span class="o">=</span><span class="n">states</span><span class="o">.</span><span class="n">Paused</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;NotReady&quot;</span><span class="p">),</span>
+                    <span class="n">reason</span><span class="o">=</span><span class="p">(</span>
+                        <span class="s2">&quot;The flow is paused, new tasks can execute after resuming flow&quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot; run: </span><span class="si">{</span><span class="n">flow_run</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">.&quot;</span>
+                    <span class="p">),</span>
+                <span class="p">)</span>
+            <span class="k">elif</span> <span class="ow">not</span> <span class="n">flow_run</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">StateType</span><span class="o">.</span><span class="n">RUNNING</span><span class="p">:</span>
+                <span class="c1"># task runners should abort task run execution</span>
+                <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">abort_transition</span><span class="p">(</span>
+                    <span class="n">reason</span><span class="o">=</span><span class="p">(</span>
+                        <span class="s2">&quot;The enclosing flow must be running to begin task execution.&quot;</span>
+                    <span class="p">),</span>
+                <span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
 
@@ -9461,11 +9469,7 @@ flow's tasks cannot be run unless the flow is also running.</p>
 
             <details class="quote">
               <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/server/orchestration/core_policy.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">821</span>
-<span class="normal">822</span>
-<span class="normal">823</span>
-<span class="normal">824</span>
-<span class="normal">825</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">825</span>
 <span class="normal">826</span>
 <span class="normal">827</span>
 <span class="normal">828</span>
@@ -9482,7 +9486,11 @@ flow's tasks cannot be run unless the flow is also running.</p>
 <span class="normal">839</span>
 <span class="normal">840</span>
 <span class="normal">841</span>
-<span class="normal">842</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">EnforceCancellingToCancelledTransition</span><span class="p">(</span><span class="n">BaseOrchestrationRule</span><span class="p">):</span>
+<span class="normal">842</span>
+<span class="normal">843</span>
+<span class="normal">844</span>
+<span class="normal">845</span>
+<span class="normal">846</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">EnforceCancellingToCancelledTransition</span><span class="p">(</span><span class="n">BaseOrchestrationRule</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Rejects transitions from Cancelling to any terminal state except for Cancelled.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -9552,11 +9560,7 @@ a <code>Scheduled</code> state that may have associated infrastructure.</p>
 
             <details class="quote">
               <summary>Source code in <code>/home/runner/work/docs/docs/prefect_source/src/prefect/server/orchestration/core_policy.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">845</span>
-<span class="normal">846</span>
-<span class="normal">847</span>
-<span class="normal">848</span>
-<span class="normal">849</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">849</span>
 <span class="normal">850</span>
 <span class="normal">851</span>
 <span class="normal">852</span>
@@ -9574,7 +9578,11 @@ a <code>Scheduled</code> state that may have associated infrastructure.</p>
 <span class="normal">864</span>
 <span class="normal">865</span>
 <span class="normal">866</span>
-<span class="normal">867</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">BypassCancellingScheduledFlowRuns</span><span class="p">(</span><span class="n">BaseOrchestrationRule</span><span class="p">):</span>
+<span class="normal">867</span>
+<span class="normal">868</span>
+<span class="normal">869</span>
+<span class="normal">870</span>
+<span class="normal">871</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">BypassCancellingScheduledFlowRuns</span><span class="p">(</span><span class="n">BaseOrchestrationRule</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Rejects transitions from Scheduled to Cancelling, and instead sets the state to Cancelled,</span>
 <span class="sd">    if the flow run has no associated infrastructure process ID.</span>
 
