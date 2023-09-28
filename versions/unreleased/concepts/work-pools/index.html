@@ -7141,7 +7141,7 @@ if (amplitudeKey){
 <p><img alt="The UI displays a list of configured work pools" src="/img/ui/work-pool-list.png" /></p>
 <p>You can pause a work pool from this page by using the toggle.</p>
 <p>Select the <strong>+</strong> button to create a new work pool. You'll be able to specify the details for work served by this work pool.</p>
-<p>To configure a work pool via the Prefect CLI, use the <code>prefect work-pool create</code> command:</p>
+<p>To create a work pool via the Prefect CLI, use the <code>prefect work-pool create</code> command:</p>
 <div class="terminal">
 <div class="highlight"><pre><span></span><code>prefect<span class="w"> </span>work-pool<span class="w"> </span>create<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span>NAME
 </code></pre></div>
@@ -7165,6 +7165,10 @@ if (amplitudeKey){
 <td><code>--type</code></td>
 <td>The type of infrastructure that can execute runs from this work pool. [default: prefect-agent]</td>
 </tr>
+<tr>
+<td><span class="no-wrap"><code>--base-job-template</code></span></td>
+<td>The path to a JSON file containing the base job template to use. If unspecified, Prefect will use the default base job template for the given worker type.</td>
+</tr>
 </tbody>
 </table>
 <p>For example, to create a work pool called <code>test-pool</code>, you would run this command: </p>
@@ -7186,6 +7190,44 @@ Inspect<span class="w"> </span>the<span class="w"> </span>work<span class="w"> <
 </div>
 
 <p>On success, the command returns the details of the newly created work pool.</p>
+<p>To update a work pool via the Prefect CLI, use the <code>prefect work-pool update</code> command:</p>
+<div class="terminal">
+<div class="highlight"><pre><span></span><code>prefect<span class="w"> </span>work-pool<span class="w"> </span>update<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span>NAME
+</code></pre></div>
+</div>
+
+<p><code>NAME</code> is the name of the work pool to update.</p>
+<p>Optional configuration parameters you can specify to update the work pool include:</p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="no-wrap"><code>--base-job-template</code></span></td>
+<td>The path to a JSON file containing the base job template to use. If unspecified, Prefect will use the default base job template for the given worker type.</td>
+</tr>
+<tr>
+<td><code>--description</code></td>
+<td>A description of the work pool.</td>
+</tr>
+<tr>
+<td><code>--concurrency-limit</code></td>
+<td>The maximum number of flow runs to run simultaneously in the work pool.</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition tip">
+<p class="admonition-title">Managing work pools in CI/CD</p>
+<p>You can version control your base job template by committing it as a JSON file to your repository and control updates to your work pools' base job templates by using the <code>prefect work-pool update</code> command in your CI/CD pipeline. For example, you could use the following command to update a work pool's base job template to the contents of a file named <code>base-job-template.json</code>:</p>
+<p><div class="terminal">
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>prefect<span class="w"> </span>work-pool<span class="w"> </span>update<span class="w"> </span>--base-job-template<span class="w"> </span>base-job-template.json<span class="w"> </span>my-work-pool
+</code></pre></div>
+</div></p>
+</div>
 <h4 id="base-job-template">Base job template<a class="headerlink" href="#base-job-template" title="Permanent link">&para;</a></h4>
 <p>Each work pool has a base job template that allows the customization of the behavior of the worker executing flow runs from the work pool.</p>
 <p>The base job template acts as a contract defining the configuration passed to the worker for each flow run and the options available to deployment creators to customize worker behavior per deployment.</p>
@@ -7195,8 +7237,11 @@ Inspect<span class="w"> </span>the<span class="w"> </span>work<span class="w"> <
 <p>The values in the <code>job_configuration</code> can use placeholders to reference values provided in the <code>variables</code> section. Placeholders are declared using double curly braces, e.g., <code>{{ variable_name }}</code>. <code>job_configuration</code> values can also be hard-coded if the value should not be customizable.</p>
 <p>Each worker type is configured with a default base job template, making it easy to start with a work pool. The default base template defines fields that can be edited on a per-deployment basis or for the entire work pool via the Prefect API and UI.</p>
 <p>For example, if we create a <code>process</code> work pool named 'above-ground' via the CLI:</p>
+<div class="terminal">
 <div class="highlight"><pre><span></span><code>$<span class="w"> </span>prefect<span class="w"> </span>work-pool<span class="w"> </span>create<span class="w"> </span>--type<span class="w"> </span>process<span class="w"> </span>above-ground
 </code></pre></div>
+</div>
+
 <p>We see these configuration options available in the Prefect UI:
 <img alt="process work pool configuration options" src="/img/ui/process-work-pool-config.png" /></p>
 <p>For a <code>process</code> work pool with the default base job template, we can set environment variables for spawned processes, set the working directory to execute flows, and control whether the flow run output is streamed to workers' standard output. You can also see an example of JSON formatted base job template with the 'Advanced' tab.</p>
@@ -7265,8 +7310,8 @@ Inspect<span class="w"> </span>the<span class="w"> </span>work<span class="w"> <
 </code></pre></div>
 <div class="admonition tip">
 <p class="admonition-title">Advanced Customization of the Base Job Template</p>
-<p>For advanced use cases, users can create work pools with fully customizable job templates. This customization is available when creating or editing a work pool on the 'Advanced' tab within the UI.</p>
-<p>Advanced customization is useful anytime the underlying infrastructure supports a high degree of customization. In these scenarios a work pool job template allows you to expose a minimal and easy-to-digest set of options to deployment authors.  Additionally, these options are the <em>only</em> customizable aspects for deployment infrastructure, which can be useful for restricting functionality in secure environments. For example, the <code>kubernetes</code> worker type allows users to specify a custom job template that can be used to configure the manifest that workers use to create jobs for flow execution. </p>
+<p>For advanced use cases, you can create work pools with fully customizable job templates. This customization is available when creating or editing a work pool on the 'Advanced' tab within the UI or when updating a work pool via the Prefect CLI.</p>
+<p>Advanced customization is useful anytime the underlying infrastructure supports a high degree of customization. In these scenarios a work pool job template allows you to expose a minimal and easy-to-digest set of options to deployment authors.  Additionally, these options are the <em>only</em> customizable aspects for deployment infrastructure, which can be useful for restricting functionality in secure environments. For example, the <code>kubernetes</code> worker type allows users to specify a custom job template that can be used to configure the manifest that workers use to create jobs for flow execution.</p>
 <p>For more information and advanced configuration examples, see the <a href="https://prefecthq.github.io/prefect-kubernetes/worker/">Kubernetes Worker</a> documentation.</p>
 </div>
 <h3 id="viewing-work-pools">Viewing work pools<a class="headerlink" href="#viewing-work-pools" title="Permanent link">&para;</a></h3>
