@@ -1136,6 +1136,64 @@ if (amplitudeKey){
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#use-cases" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Use cases
+        </span>
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Use cases">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#throttling-task-submission" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Throttling task submission
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#managing-database-connections" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Managing database connections
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#parallel-data-processing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Parallel data processing
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -6757,6 +6815,64 @@ if (amplitudeKey){
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#use-cases" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Use cases
+        </span>
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Use cases">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#throttling-task-submission" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Throttling task submission
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#managing-database-connections" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Managing database connections
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#parallel-data-processing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Parallel data processing
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -6832,8 +6948,9 @@ if (amplitudeKey){
 <p>Global concurrency limits allow you to manage task execution efficiently, controlling how many tasks can run simultaneously. They are ideal when optimizing resource usage, preventing bottlenecks, and customizing task execution are priorities.</p>
 <p>Rate Limits ensure system stability by governing the frequency of requests or operations. They are suitable for preventing overuse, ensuring fairness, and handling errors gracefully.</p>
 <p>When selecting between Concurrency and Rate Limits, consider your primary goal. Choose Concurrency Limits for resource optimization and task management. Choose Rate Limits to maintain system stability and fair access to services.</p>
+<p>The core difference between a rate limit and a concurrency limit is the way in which slots are released. With a rate limit, slots are released at a controlled rate, controlled by <code>slot_decay_per_second</code> whereas with a concurrency limit, slots are released when the concurrency manager is exited. </p>
 <h2 id="managing-global-concurrency-limits-and-rate-limits">Managing Global concurrency limits and rate limits<a class="headerlink" href="#managing-global-concurrency-limits-and-rate-limits" title="Permanent link">&para;</a></h2>
-<p>You can create, read, edit and delete concurrency limits via the Prefect UI. </p>
+<p>You can create, read, edit, and delete concurrency limits via the Prefect UI. </p>
 <p>When creating a concurrency limit, you can specify the following parameters:</p>
 <ul>
 <li><strong>Name</strong>: The name of the concurrency limit. This name is also how you'll reference the concurrency limit in your code. Special characters, such as <code>/</code>, <code>%</code>, <code>&amp;</code>, <code>&gt;</code>, <code>&lt;</code>, are not allowed.</li>
@@ -6848,9 +6965,18 @@ if (amplitudeKey){
 <li><strong>Inactive</strong>: In this state, slots will not be occupied, and code execution will not be blocked. Concurrency enforcement occurs only when you activate the limit.</li>
 </ul>
 <h3 id="slot-decay">Slot decay<a class="headerlink" href="#slot-decay" title="Permanent link">&para;</a></h3>
-<p>Global concurrency limits can be configured with <code>slot decay</code>. This is used when the concurrency limit is used as a rate limit, and it controls the rate at which these slots are released.</p>
-<p>The rate of slot decay is determined by the parameter <code>slot decay per second</code>. This parameter defines how quickly slots become available again after being consumed. For example, if you set slot decay per second to 0.5, one slot will become available again every two seconds.</p>
-<p>Slot decay provides fine-grained control over the availability of slots, enabling you to optimize the concurrency of your workflow based on your specific requirements.</p>
+<p>Global concurrency limits can be configured with slot decay. This is used when the concurrency limit is used as a rate limit, and it governs the pace at which slots are released or become available for reuse after being occupied. These slots effectively represent the concurrency capacity within a specific concurrency limit. The concept is best understood as the rate at which these slots "decay" or refresh.</p>
+<p>To configure slot decay, you can set the <code>slot_decay_per_second</code> parameter when defining or adjusting a concurrency limit.</p>
+<p>For practical use, consider the following:</p>
+<ul>
+<li>
+<p><em>Higher values</em>: Setting <code>slot_decay_per_second</code> to a higher value, such as 5.0, results in slots becoming available relatively quickly. In this scenario, a slot that was occupied by a task will free up after just <code>0.2</code> (<code>1.0 / 5.0</code>) seconds.</p>
+</li>
+<li>
+<p><em>Lower values</em>: Conversely, setting <code>slot_decay_per_second</code> to a lower value, like 0.1, causes slots to become available more slowly. In this scenario it would take <code>10</code> (<code>1.0 / 0.1</code>) seconds for a slot to become available again after occupancy</p>
+</li>
+</ul>
+<p>Slot decay provides fine-grained control over the availability of slots, enabling you to optimize the rate of your workflow based on your specific requirements.</p>
 <h2 id="using-the-concurrency-context-manager">Using the <code>concurrency</code> context manager<a class="headerlink" href="#using-the-concurrency-context-manager" title="Permanent link">&para;</a></h2>
 <p>The <code>concurrency</code>context manager allows control over the maximum number of concurrent operations. You can select either the synchronous (<code>sync</code>) or asynchronous (<code>async</code>) version, depending on your use case. Here's how to use it:</p>
 <div class="admonition tip">
@@ -6968,6 +7094,88 @@ if (amplitudeKey){
         <span class="k">await</span> <span class="n">rate_limit</span><span class="p">(</span><span class="s2">&quot;rate-limited-api&quot;</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Making an HTTP request...&quot;</span><span class="p">)</span>
 
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">main</span><span class="p">())</span>
+</code></pre></div>
+<h2 id="use-cases">Use cases<a class="headerlink" href="#use-cases" title="Permanent link">&para;</a></h2>
+<h3 id="throttling-task-submission">Throttling task submission<a class="headerlink" href="#throttling-task-submission" title="Permanent link">&para;</a></h3>
+<p>Throttling task submission to avoid overloading resources, to comply with external rate limits, or ensure a steady, controlled flow of work.</p>
+<p>In this scenario the <code>rate_limit</code> function is used to throttle the submission of tasks. The rate limit acts as a bottleneck, ensuring that tasks are submitted at a controlled rate, governed by the <code>slot_decay_per_second</code> setting on the associated concurrency limit.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
+<span class="kn">from</span> <span class="nn">prefect.concurrency.sync</span> <span class="kn">import</span> <span class="n">rate_limit</span>
+
+
+<span class="nd">@task</span>
+<span class="k">def</span> <span class="nf">my_task</span><span class="p">(</span><span class="n">i</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">i</span>
+
+
+<span class="nd">@flow</span>
+<span class="k">def</span> <span class="nf">my_flow</span><span class="p">():</span>
+    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
+        <span class="n">rate_limit</span><span class="p">(</span><span class="s2">&quot;slow-my-flow&quot;</span><span class="p">,</span> <span class="n">occupy</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">my_task</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">my_flow</span><span class="p">()</span>
+</code></pre></div>
+<h3 id="managing-database-connections">Managing database connections<a class="headerlink" href="#managing-database-connections" title="Permanent link">&para;</a></h3>
+<p>Managing the maximum number of concurrent database connections to avoid exhausting database resources.</p>
+<p>In this scenario we've setup a concurrency limit named <code>database</code> and given it a maximum concurrency limit that matches the maximum number of database connections we want to allow. We then use the <code>concurrency</code> context manager to control the number of database connections allowed at any one time.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span><span class="p">,</span> <span class="n">concurrency</span>
+<span class="kn">import</span> <span class="nn">psycopg2</span>
+
+<span class="nd">@task</span>
+<span class="k">def</span> <span class="nf">database_query</span><span class="p">(</span><span class="n">query</span><span class="p">):</span>
+    <span class="c1"># Here we request a single slot on the &#39;database&#39; concurrency limit. This</span>
+    <span class="c1"># will block in the case that all of the database connections are in use</span>
+    <span class="c1"># ensuring that we never exceed the maximum number of database connections.</span>
+    <span class="k">with</span> <span class="n">concurrency</span><span class="p">(</span><span class="s2">&quot;database&quot;</span><span class="p">,</span> <span class="n">occupy</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">connection</span> <span class="o">=</span> <span class="n">psycopg2</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s2">&quot;&lt;connection_string&gt;&quot;</span><span class="p">)</span>
+        <span class="n">cursor</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+        <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+        <span class="n">connection</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">result</span>
+
+<span class="nd">@flow</span>
+<span class="k">def</span> <span class="nf">my_flow</span><span class="p">():</span>
+    <span class="n">queries</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;SELECT * FROM table1&quot;</span><span class="p">,</span> <span class="s2">&quot;SELECT * FROM table2&quot;</span><span class="p">,</span> <span class="s2">&quot;SELECT * FROM table3&quot;</span><span class="p">]</span>
+
+    <span class="k">for</span> <span class="n">query</span> <span class="ow">in</span> <span class="n">queries</span><span class="p">:</span>
+        <span class="n">database_query</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">my_flow</span><span class="p">()</span>
+</code></pre></div>
+<h3 id="parallel-data-processing">Parallel data processing<a class="headerlink" href="#parallel-data-processing" title="Permanent link">&para;</a></h3>
+<p>Limiting the maximum number of parallel processing tasks.</p>
+<p>In this scenario we want to limit the number of <code>process_data</code> tasks to five at any one time. We do this by using the <code>concurrency</code> context manager to request five slots on the <code>data-processing</code> concurrency limit. This will block until five slots are free and then submit five more tasks, ensuring that we never exceed the maximum number of parallel processing tasks. </p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">asyncio</span>
+<span class="kn">from</span> <span class="nn">prefect.concurrency.sync</span> <span class="kn">import</span> <span class="n">concurrency</span>
+
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">process_data</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Processing: </span><span class="si">{</span><span class="n">data</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Processed: </span><span class="si">{</span><span class="n">data</span><span class="si">}</span><span class="s2">&quot;</span>
+
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="n">data_items</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">))</span>
+    <span class="n">processed_data</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">while</span> <span class="n">data_items</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">concurrency</span><span class="p">(</span><span class="s2">&quot;data-processing&quot;</span><span class="p">,</span> <span class="n">occupy</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+            <span class="n">chunk</span> <span class="o">=</span> <span class="p">[</span><span class="n">data_items</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">)]</span>
+            <span class="n">processed_data</span> <span class="o">+=</span> <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span>
+                <span class="o">*</span><span class="p">[</span><span class="n">process_data</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">chunk</span><span class="p">]</span>
+            <span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="n">processed_data</span><span class="p">)</span>
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
