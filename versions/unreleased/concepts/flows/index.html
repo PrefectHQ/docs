@@ -1963,6 +1963,19 @@ if (amplitudeKey){
 </li>
       
         <li class="md-nav__item">
+  <a href="#retrieve-a-flow-from-remote-storage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Retrieve a flow from remote storage
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#pause-a-flow-run" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -7112,6 +7125,19 @@ if (amplitudeKey){
 </li>
       
         <li class="md-nav__item">
+  <a href="#retrieve-a-flow-from-remote-storage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Retrieve a flow from remote storage
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#pause-a-flow-run" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -7477,7 +7503,7 @@ Hello<span class="w"> </span>Marvin!
 <p>Subflows will block execution of the parent flow until completion. However, asynchronous subflows can be run in parallel by using <a href="https://anyio.readthedocs.io/en/stable/tasks.html">AnyIO task groups</a> or <a href="https://docs.python.org/3/library/asyncio-task.html#id6">asyncio.gather</a>.</p>
 <p>Subflows differ from normal flows in that they will resolve any passed task futures into data. This allows data to be passed from the parent flow to the child easily.</p>
 <p>The relationship between a child and parent flow is tracked by creating a special task run in the parent flow. This task run will mirror the state of the child flow run.</p>
-<p>A task that represents a subflow will be annotated as such in its <code>state_details</code> via the presence of a <code>child_flow_run_id</code> field.  A subflow can be identified via the presence of a <code>parent_task_run_id</code> on <code>state_details</code>.</p>
+<p>A task that represents a subflow will be annotated as such in its <code>state_details</code> via the presence of a <code>child_flow_run_id</code> field. A subflow can be identified via the presence of a <code>parent_task_run_id</code> on <code>state_details</code>.</p>
 <p>You can define multiple flows within the same file. Whether running locally or via a <a href="/concepts/deployments/">deployment</a>, you must indicate which flow is the entrypoint for a flow run.</p>
 <div class="admonition warning">
 <p class="admonition-title">Cancelling subflow runs</p>
@@ -7560,7 +7586,7 @@ Subflow<span class="w"> </span>says:<span class="w"> </span>Hello<span class="w"
 <p class="admonition-title">Prefect API requires keyword arguments</p>
 <p>When creating flow runs from the Prefect API, parameter names must be specified when overriding defaults &mdash; they cannot be positional.</p>
 </div>
-<p>Type hints provide an easy way to enforce typing on your flow parameters via <a href="https://pydantic-docs.helpmanual.io/">pydantic</a>.  This means <em>any</em> pydantic model used as a type hint within a flow will be coerced automatically into the relevant object type:</p>
+<p>Type hints provide an easy way to enforce typing on your flow parameters via <a href="https://pydantic-docs.helpmanual.io/">pydantic</a>. This means <em>any</em> pydantic model used as a type hint within a flow will be coerced automatically into the relevant object type:</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span>
 <span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">BaseModel</span>
 
@@ -7596,7 +7622,7 @@ Subflow<span class="w"> </span>says:<span class="w"> </span>Hello<span class="w"
 <p class="admonition-title">Prerequisite</p>
 <p>Read the documentation about <a href="/concepts/states">states</a> before proceeding with this section.</p>
 </div>
-<p>The final state of the flow is determined by its return value.  The following rules apply:</p>
+<p>The final state of the flow is determined by its return value. The following rules apply:</p>
 <ul>
 <li>If an exception is raised directly in the flow function, the flow run is marked as failed.</li>
 <li>If the flow does not return a value (or returns <code>None</code>), its state is determined by the states of all of the tasks and subflows within it.</li>
@@ -7893,6 +7919,50 @@ Completed<span class="o">(</span><span class="nv">message</span><span class="o">
     <span class="n">serve</span><span class="p">(</span><span class="n">slow_deploy</span><span class="p">,</span> <span class="n">fast_deploy</span><span class="p">)</span>
 </code></pre></div>
 <p>The behavior and interfaces are identical to the single flow case.</p>
+<h2 id="retrieve-a-flow-from-remote-storage">Retrieve a flow from remote storage<a class="headerlink" href="#retrieve-a-flow-from-remote-storage" title="Permanent link">&para;</a></h2>
+<p>Flows can be retrieved from remote storage using the <a href="/api-ref/prefect/flows/#prefect.flows.Flow.from_source"><code>flow.from_source</code></a> method.</p>
+<p><code>flow.from_source</code> accepts a git repository URL  and an entrypoint pointing to the flow to load from the repository:</p>
+<div class="highlight"><span class="filename">load_from_url.py</span><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span>
+
+<span class="n">my_flow</span> <span class="o">=</span> <span class="n">flow</span><span class="o">.</span><span class="n">from_source</span><span class="p">(</span>
+    <span class="n">source</span><span class="o">=</span><span class="s2">&quot;https://github.com/org/repo.git&quot;</span><span class="p">,</span>
+    <span class="n">entrypoint</span><span class="o">=</span><span class="s2">&quot;flows.py:my_flow&quot;</span>
+<span class="p">)</span>
+
+<span class="n">my_flow</span><span class="p">()</span>
+</code></pre></div>
+<p>A flow entrypoint is the path to the file the flow is located in and the name of the flow function separated by a colon.</p>
+<p>If you need additional configuration, such as specifying a private repository, you can provide a <a href="/api-ref/prefect/flows/#prefect.runner.storage.GitRepository"><code>GitRepository</code></a> instead of URL:</p>
+<div class="highlight"><span class="filename">load_from_storage.py</span><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span>
+<span class="kn">from</span> <span class="nn">prefect.runner.storage</span> <span class="kn">import</span> <span class="n">GitRepository</span>
+<span class="kn">from</span> <span class="nn">prefect.blocks.system</span> <span class="kn">import</span> <span class="n">Secret</span>
+
+<span class="n">my_flow</span> <span class="o">=</span> <span class="n">flow</span><span class="o">.</span><span class="n">from_source</span><span class="p">(</span>
+    <span class="n">source</span><span class="o">=</span><span class="n">GitRepository</span><span class="p">(</span>
+        <span class="n">url</span><span class="o">=</span><span class="s2">&quot;https://github.com/org/private-repo.git&quot;</span><span class="p">,</span>
+        <span class="n">branch</span><span class="o">=</span><span class="s2">&quot;dev&quot;</span><span class="p">,</span>
+        <span class="n">credentials</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;access_token&quot;</span><span class="p">:</span> <span class="n">Secret</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;github-access-token&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+        <span class="p">}</span>
+    <span class="p">),</span>
+    <span class="n">entrypoint</span><span class="o">=</span><span class="s2">&quot;flows.py:my_flow&quot;</span>
+<span class="p">)</span>
+
+<span class="n">my_flow</span><span class="p">()</span>
+</code></pre></div>
+<div class="admonition tip">
+<p class="admonition-title">You can serve loaded flows</p>
+<p>Flows loaded from remote storage can be served using the same <a href="#serving-a-flow"><code>serve</code></a> method as local flows:</p>
+<div class="highlight"><span class="filename">serve_loaded_flow.py</span><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">flow</span><span class="o">.</span><span class="n">from_source</span><span class="p">(</span>
+        <span class="n">source</span><span class="o">=</span><span class="s2">&quot;https://github.com/org/repo.git&quot;</span><span class="p">,</span>
+        <span class="n">entrypoint</span><span class="o">=</span><span class="s2">&quot;flows.py:my_flow&quot;</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">serve</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;my-deployment&quot;</span><span class="p">)</span>
+</code></pre></div>
+<p>When you serve a flow loaded from remote storage, the serving process will periodically poll your remote storage for updates to the flow's code. This pattern allows you to update your flow code without restarting the serving process.</p>
+</div>
 <h2 id="pause-a-flow-run">Pause a flow run<a class="headerlink" href="#pause-a-flow-run" title="Permanent link">&para;</a></h2>
 <p>Prefect enables pausing an in-progress flow run for manual approval. Prefect exposes this functionality via the <a href="/api-ref/prefect/engine/#prefect.engine.pause_flow_run"><code>pause_flow_run</code></a> and <a href="/api-ref/prefect/engine/#prefect.engine.resume_flow_run"><code>resume_flow_run</code></a> functions, as well as the Prefect UI.</p>
 <p>Most simply, <code>pause_flow_run</code> can be called inside a flow. A timeout option can be supplied as well &mdash; after the specified number of seconds, the flow will fail if it hasn't been resumed.</p>
