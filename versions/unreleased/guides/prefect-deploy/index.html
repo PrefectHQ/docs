@@ -7116,7 +7116,7 @@ if (amplitudeKey){
 <p>In this guide, we will dive deep into configuring a deployment for a worker and work pool using <code>prefect deploy</code>.</p>
 <h2 id="deployments-overview">Deployments overview<a class="headerlink" href="#deployments-overview" title="Permanent link">&para;</a></h2>
 <p>All Prefect flow runs are tracked by the API. The API does not require prior registration of flows. With Prefect, you can call a flow locally or on a remote environment and it will be tracked.</p>
-<p>Creating a <em>deployment</em> for a Prefect workflow means packaging workflow code, settings, and infrastructure configuration so that the workflow can be managed via the Prefect API and run remotely by a Prefect agent.</p>
+<p>Creating a <em>deployment</em> for a Prefect workflow means packaging workflow code, settings, and infrastructure configuration so that the workflow can be managed via the Prefect API and run remotely by a Prefect worker.</p>
 <p>The following diagram provides a high-level overview of the conceptual elements involved in defining a deployment and executing a flow run based on that deployment.</p>
 <pre class="mermaid"><code>%%{
   init: {
@@ -7154,7 +7154,7 @@ flowchart LR
     classDef dkgray fill:darkgray,stroke:darkgray,stroke-width:4px,color:white</code></pre>
 <p>When creating a deployment, we must answer <em>two</em> basic questions:</p>
 <ul>
-<li>What instructions does a <a href="/concepts/work-pools/">worker</a> need to set up an execution environment for our flow? 
+<li>What instructions does a <a href="/concepts/work-pools/">worker</a> need to set up an execution environment for our flow?
 For example, a flow may have Python requirements, unique Kubernetes settings, or Docker networking configuration.</li>
 <li>How should the flow code be accessed?</li>
 </ul>
@@ -7180,7 +7180,7 @@ For example, a flow may have Python requirements, unique Kubernetes settings, or
 <p>Prefect ships with many off-the-shelf "recipes" that allow you to get started with more structure within your <code>prefect.yaml</code> file; run <code>prefect init</code> to be prompted with available recipes in your installation. You can provide a recipe name in your initialization command with the <code>--recipe</code> flag, otherwise Prefect will attempt to guess an appropriate recipe based on the structure of your working directory (for example if you initialize within a <code>git</code> repository, Prefect will use the <code>git</code> recipe).</p>
 </div>
 <p>The <code>prefect.yaml</code> file contains deployment configuration for deployments created from this file, default instructions for how to build and push any necessary code artifacts (such as Docker images), and default instructions for pulling a deployment in remote execution environments (e.g., cloning a GitHub repository).</p>
-<p>Any deployment configuration can be overridden via options available on the <code>prefect deploy</code> CLI command when creating a deployment. </p>
+<p>Any deployment configuration can be overridden via options available on the <code>prefect deploy</code> CLI command when creating a deployment.</p>
 <p>The base structure for <code>prefect.yaml</code> is as follows:</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># generic metadata</span>
 <span class="nt">prefect-version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span>
@@ -7215,8 +7215,8 @@ For example, a flow may have Python requirements, unique Kubernetes settings, or
 <p>The metadata fields are always pre-populated for you. These fields are for bookkeeping purposes only.  The other sections are pre-populated based on recipe; if no recipe is provided, Prefect will attempt to guess an appropriate one based on local configuration.</p>
 <p>You can create deployments via the CLI command <code>prefect deploy</code> without ever needing to alter the <code>deployments</code> section of your <code>prefect.yaml</code> file — the <code>prefect deploy</code> command will help in deployment creation via interactive prompts. The <code>prefect.yaml</code> file facilitates version-controlling your deployment configuration and managing multiple deployments.</p>
 <h3 id="deployment-actions">Deployment actions<a class="headerlink" href="#deployment-actions" title="Permanent link">&para;</a></h3>
-<p>Deployment actions defined in your <code>prefect.yaml</code> file control the lifecycle of the creation and execution of your deployments. 
-The three actions available are <code>build</code>, <code>push</code>, and <code>pull</code>. 
+<p>Deployment actions defined in your <code>prefect.yaml</code> file control the lifecycle of the creation and execution of your deployments.
+The three actions available are <code>build</code>, <code>push</code>, and <code>pull</code>.
 <code>pull</code> is the only required deployment action — it is used to define how Prefect will pull your deployment in remote execution environments.</p>
 <p>Each action is defined as a list of steps that are executing in sequence.</p>
 <p>Each step has the following format:</p>
@@ -7245,16 +7245,17 @@ The three actions available are <code>build</code>, <code>push</code>, and <code
 
 <div class="admonition tip">
 <p class="admonition-title">Use <code>--field</code> to avoid the interactive experience</p>
-<p>We recommend that you only initialize a recipe when you are first creating your deployment structure, and afterwards store your configuration files within version control. 
+<p>We recommend that you only initialize a recipe when you are first creating your deployment structure, and afterwards store your configuration files within version control.
 However, sometimes you may need to initialize programmatically and avoid the interactive prompts.<br />
 To do so, provide all required fields for your recipe using the <code>--field</code> flag:
 <div class="terminal">
-<div class="highlight"><pre><span></span><code>$<span class="w"> </span>prefect<span class="w"> </span>init<span class="w"> </span>--recipe<span class="w"> </span>docker<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>--field<span class="w"> </span><span class="nv">image_name</span><span class="o">=</span>my-repo/my-image<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>--field<span class="w"> </span><span class="nv">tag</span><span class="o">=</span>my-tag
-</code></pre></div>
-</div></p>
+```bash
+$ prefect init --recipe docker \
+    --field image_name=my-repo/my-image \
+    --field tag=my-tag</p>
 </div>
+<p>```
+    </div></p>
 <div class="highlight"><pre><span></span><code><span class="nt">build</span><span class="p">:</span>
 <span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">prefect_docker.deployments.steps.build_docker_image</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">requires</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">prefect-docker&gt;=0.3.0</span>
@@ -7348,7 +7349,7 @@ It is best practice to use <code>{{ image }}</code> within <code>prefect.yaml</c
 <h3 id="utility-steps">Utility steps<a class="headerlink" href="#utility-steps" title="Permanent link">&para;</a></h3>
 <p>Utility steps can be used within a build, push, or pull action to assist in managing the deployment lifecycle:</p>
 <ul>
-<li><code>run_shell_script</code> allows for the execution of one or more shell commands in a subprocess, and returns the standard output and standard error of the script. 
+<li><code>run_shell_script</code> allows for the execution of one or more shell commands in a subprocess, and returns the standard output and standard error of the script.
 This step is useful for scripts that require execution in a specific environment, or those which have specific input and output requirements.</li>
 </ul>
 <p>Here is an example of retrieving the short Git commit hash of the current repository to use as a Docker image tag:</p>
@@ -7397,7 +7398,7 @@ This step is useful for scripts that require execution in a specific environment
 <span class="w">    </span><span class="nt">branch</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">master</span>
 <span class="w">    </span><span class="nt">access_token</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{{</span><span class="nv"> </span><span class="s">get-access-token.stdout</span><span class="nv"> </span><span class="s">}}&quot;</span>
 </code></pre></div>
-<p>You can also run custom steps by packaging them. In the example below, <code>retrieve_secrets</code> is a custom python module that has been packaged into the default working directory of a Docker image (which is /opt/prefect by default). 
+<p>You can also run custom steps by packaging them. In the example below, <code>retrieve_secrets</code> is a custom python module that has been packaged into the default working directory of a Docker image (which is /opt/prefect by default).
 <code>main</code> is the function entry point, which returns an access token (e.g. <code>return {"access_token": access_token}</code>) like the preceding example, but utilizing the Azure Python SDK for retrieval.</p>
 <div class="highlight"><pre><span></span><code><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">retrieve_secrets.main</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">get-access-token</span>

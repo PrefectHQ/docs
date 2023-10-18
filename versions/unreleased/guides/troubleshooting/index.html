@@ -6747,8 +6747,8 @@ if (amplitudeKey){
 <p>Different components may use different versions of Prefect:</p>
 <ul>
 <li><strong>Cloud</strong> will generally always be the newest version. Cloud is continuously deployed by the Prefect team. When using a self-hosted server, you can control this version.</li>
-<li><strong>Agents and workers</strong> typically don't change versions frequently, and are usually whatever the latest version was at the time of creation. Agents and workers provision infrastructure for flow runs, so upgrading them may help with infrastructure problems.</li>
-<li><strong>Flows</strong> could use a different version than the agent or worker that created them, especially when running in different environments. Suppose your agent and flow both use the latest official Docker image, but your agent was created a month ago. Your agent will often be on an older version than your flow.</li>
+<li><strong>Workers and agents</strong> typically don't change versions frequently, and are usually whatever the latest version was at the time of creation. Workers and agents provision infrastructure for flow runs, so upgrading them may help with infrastructure problems.</li>
+<li><strong>Flows</strong> could use a different version than the worker or agent that created them, especially when running in different environments. Suppose your worker and flow both use the latest official Docker image, but your worker was created a month ago. Your worker will often be on an older version than your flow.</li>
 </ul>
 <div class="admonition note">
 <p class="admonition-title">Integration Versions</p>
@@ -6759,10 +6759,10 @@ if (amplitudeKey){
 <p>There are two types of logs:</p>
 <ul>
 <li><strong>Flow and task logs</strong> are always scoped to a flow. They are sent to Prefect and are viewable in the UI.</li>
-<li><strong>Agent and worker logs</strong> are not scoped to a flow and may have more information on what happened before the flow started. These logs are generally only available where the agent or worker is running.</li>
+<li><strong>Worker and agent logs</strong> are not scoped to a flow and may have more information on what happened before the flow started. These logs are generally only available where the worker or agent is running.</li>
 </ul>
-<p>If your flow and task logs are empty, there may have been an infrastructure issue that prevented your flow from starting. Check your agent logs for more details.</p>
-<p>If there is no clear indication of what went wrong, try updating the logging level from the default <code>INFO</code> level to the <code>DEBUG</code> level. <a href="/api-ref/prefect/settings/">Settings</a> such as the logging level are propagated from the agent or worker environment to the flow run environment and can be set via environment variables or the <code>prefect config set</code> CLI:</p>
+<p>If your flow and task logs are empty, there may have been an infrastructure issue that prevented your flow from starting. Check your worker logs for more details.</p>
+<p>If there is no clear indication of what went wrong, try updating the logging level from the default <code>INFO</code> level to the <code>DEBUG</code> level. <a href="/api-ref/prefect/settings/">Settings</a> such as the logging level are propagated from the worker environment to the flow run environment and can be set via environment variables or the <code>prefect config set</code> CLI:</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># Using the CLI</span>
 prefect<span class="w"> </span>config<span class="w"> </span><span class="nb">set</span><span class="w"> </span><span class="nv">PREFECT_LOGGING_LEVEL</span><span class="o">=</span>DEBUG
 
@@ -6776,7 +6776,7 @@ prefect<span class="w"> </span>config<span class="w"> </span><span class="nb">se
 </code></pre></div>
 <div class="admonition note">
 <p class="admonition-title">Users vs Service Accounts</p>
-<p><a href="/cloud/users/service-accounts/">Service accounts</a> - sometimes referred to as bots - represent non-human actors that interact with Prefect such as agents, workers, and CI/CD systems. Each human that interacts with Prefect should be represented as a user. User API keys start with <code>pnu_</code> and service account API keys start with <code>pnb_</code>.</p>
+<p><a href="/cloud/users/service-accounts/">Service accounts</a> - sometimes referred to as bots - represent non-human actors that interact with Prefect such as workers and CI/CD systems. Each human that interacts with Prefect should be represented as a user. User API keys start with <code>pnu_</code> and service account API keys start with <code>pnb_</code>.</p>
 </div>
 <p>Supposing the response succeeds, let's check our authorization. Actors can be members of <a href="/cloud/workspaces/">workspaces</a>. An actor attempting an action in a workspace they are not a member of will result in a 404 response. Use the following command to check your actor's workspace memberships:</p>
 <div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-s<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Authorization: Bearer </span><span class="nv">$PREFECT_API_KEY</span><span class="s2">&quot;</span><span class="w"> </span><span class="s2">&quot;https://api.prefect.cloud/api/me/workspaces&quot;</span>
@@ -6787,8 +6787,8 @@ prefect<span class="w"> </span>config<span class="w"> </span><span class="nb">se
 </div>
 <p>Make sure your actor is a member of the workspace you are working in. Within a workspace, an actor has a <a href="/cloud/users/roles/">role</a> which grants them certain permissions. Insufficient permissions will result in an error. For example, starting an agent or worker with the <strong>Viewer</strong> role, will result in errors.</p>
 <h2 id="execution">Execution<a class="headerlink" href="#execution" title="Permanent link">&para;</a></h2>
-<p>Prefect flows can be executed locally by the user, or remotely by an agent or worker. Local execution generally means that you - the user - run your flow directly with a command like <code>python flow.py</code>. Remote execution generally means that an agent or worker runs your flow via a <a href="/concepts/deployments/">deployment</a>, optionally on different infrastructure.</p>
-<p>With remote execution, the creation of your flow run happens separately from its execution. Flow runs are assigned to a work pool and a work queue. In order for flow runs to execute, an agent or worker must be subscribed to the work pool and work queue, otherwise the flow runs will go from <code>Scheduled</code> to <code>Late</code>. Ensure that your work pool and work queue have a subscribed agent or worker.</p>
+<p>Prefect flows can be executed locally by the user, or remotely by a worker or agent. Local execution generally means that you - the user - run your flow directly with a command like <code>python flow.py</code>. Remote execution generally means that a worker runs your flow via a <a href="/concepts/deployments/">deployment</a>, optionally on different infrastructure.</p>
+<p>With remote execution, the creation of your flow run happens separately from its execution. Flow runs are assigned to a work pool and a work queue. For flow runs to execute, a worker must be subscribed to the work pool and work queue, otherwise the flow runs will go from <code>Scheduled</code> to <code>Late</code>. Ensure that your work pool and work queue have a subscribed worker.</p>
 <p>Local and remote execution can also differ in their treatment of relative imports. If switching from local to remote execution results in local import errors, try replicating the behavior by executing the flow locally with the <code>-m</code> flag (i.e. <code>python -m flow</code> instead of <code>python flow.py</code>). Read more about <code>-m</code> <a href="https://stackoverflow.com/a/62923810">here</a>.</p>
 
   

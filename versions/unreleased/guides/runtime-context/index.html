@@ -6731,12 +6731,13 @@ if (amplitudeKey){
 <p class="admonition-title">Mock values via environment variable</p>
 <p>Oftentimes, you may want to mock certain values for testing purposes.  For example, by manually setting an ID or a scheduled start time to ensure your code is functioning properly.  Starting in version <code>2.10.3</code>, you can mock values in runtime via environment variable using the schema <code>PREFECT__RUNTIME__{SUBMODULE}__{KEY_NAME}=value</code>:
 <div class="terminal">
-<div class="highlight"><pre><span></span><code>$<span class="w"> </span><span class="nb">export</span><span class="w"> </span><span class="nv">PREFECT__RUNTIME__TASK_RUN__FAKE_KEY</span><span class="o">=</span><span class="s1">&#39;foo&#39;</span>
-$<span class="w"> </span>python<span class="w"> </span>-c<span class="w"> </span><span class="s1">&#39;from prefect.runtime import task_run; print(task_run.fake_key)&#39;</span><span class="w"> </span><span class="c1"># &quot;foo&quot;</span>
-</code></pre></div>
+```bash
+$ export PREFECT__RUNTIME__TASK_RUN__FAKE_KEY='foo'
+$ python -c 'from prefect.runtime import task_run; print(task_run.fake_key)' # "foo"</p>
 </div>
-If the environment variable mocks an existing runtime attribute, the value is cast to the same type. This works for runtime attributes of basic types (<code>bool</code>, <code>int</code>, <code>float</code> and <code>str</code>) and <code>pendulum.DateTime</code>. For complex types like <code>list</code> or <code>dict</code>, we suggest mocking them using <a href="https://docs.pytest.org/en/latest/how-to/monkeypatch.html">monkeypatch</a> or a similar tool.</p>
-</div>
+<p><code>``
+    &lt;/div&gt;
+    If the environment variable mocks an existing runtime attribute, the value is cast to the same type. This works for runtime attributes of basic types (</code>bool<code>,</code>int<code>,</code>float<code>and</code>str<code>) and</code>pendulum.DateTime<code>. For complex types like</code>list<code>or</code>dict`, we suggest mocking them using <a href="https://docs.pytest.org/en/latest/how-to/monkeypatch.html">monkeypatch</a> or a similar tool.</p>
 <h2 id="accessing-runtime-information">Accessing runtime information<a class="headerlink" href="#accessing-runtime-information" title="Permanent link">&para;</a></h2>
 <p>The <code>prefect.runtime</code> module is the home for all runtime context access. Each major runtime concept has its own submodule:</p>
 <ul>
@@ -6775,7 +6776,7 @@ If the environment variable mocks an existing runtime attribute, the value is ca
 <span class="m">10</span>:08:04.968<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>Flow<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;solid-gibbon&#39;</span><span class="w"> </span>-<span class="w"> </span>Finished<span class="w"> </span><span class="k">in</span><span class="w"> </span>state<span class="w"> </span>Completed<span class="o">(</span><span class="s1">&#39;All states completed.&#39;</span><span class="o">)</span>
 </code></pre></div>
 </div>
-<p>Above, we demonstrate access to information about the current flow run, task run, and deployment. When run without a deployment (via <code>python my_runtime_info.py</code>), you should see <code>"I belong to deployment None"</code> logged. When information is not available, the runtime will always return an empty value. Because this flow was run without a deployment, there is no deployment data. If this flow were deployed and executed by an agent or worker, we'd see the name of the deployment instead.</p>
+<p>Above, we demonstrate access to information about the current flow run, task run, and deployment. When run without a deployment (via <code>python my_runtime_info.py</code>), you should see <code>"I belong to deployment None"</code> logged. When information is not available, the runtime will always return an empty value. Because this flow was run without a deployment, there is no deployment data. If this flow were deployed and executed by a worker, we'd see the name of the deployment instead.</p>
 <p>See the <a href="/api-ref/prefect/runtime/flow_run/">runtime API reference</a> for a full list of available attributes.</p>
 <h2 id="accessing-the-run-context-directly">Accessing the run context directly<a class="headerlink" href="#accessing-the-run-context-directly" title="Permanent link">&para;</a></h2>
 <p>The current run context can be accessed with <code>prefect.context.get_run_context()</code>. This will raise an exception if no run context is available, meaning you are not in a flow or task run. If a task run context is available, it will be returned even if a flow run context is available.</p>
