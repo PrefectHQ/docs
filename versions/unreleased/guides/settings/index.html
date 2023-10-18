@@ -7185,21 +7185,21 @@ if (amplitudeKey){
 <p>This section describes some commonly configured settings for Prefect installations. See <a href="#configuring-settings">Configuring settings</a> for details on setting and unsetting configuration values.</p>
 <h3 id="prefect_api_url">PREFECT_API_URL<a class="headerlink" href="#prefect_api_url" title="Permanent link">&para;</a></h3>
 <p>The <code>PREFECT_API_URL</code> value specifies the API endpoint of your Prefect Cloud workspace or a Prefect server instance.</p>
-<p>For example, using a local Prefect server instance.
+<p>For example, using a local Prefect server instance.</p>
 <div class="highlight"><pre><span></span><code><span class="nv">PREFECT_API_URL</span><span class="o">=</span><span class="s2">&quot;http://127.0.0.1:4200/api&quot;</span>
-</code></pre></div></p>
+</code></pre></div>
 <p>Using Prefect Cloud:</p>
 <div class="highlight"><pre><span></span><code><span class="nv">PREFECT_API_URL</span><span class="o">=</span><span class="s2">&quot;https://api.prefect.cloud/api/accounts/[ACCOUNT-ID]/workspaces/[WORKSPACE-ID]&quot;</span>
 </code></pre></div>
-<p>View your Account ID and Workspace ID in your browser URL when logged into Prefect Cloud. For example: https://app.prefect.cloud/account/abc-my-account-id-is-here/workspaces/123-my-workspace-id-is-here.</p>
+<p>View your Account ID and Workspace ID in your browser URL when logged into Prefect Cloud. For example: <a href="https://app.prefect.cloud/account/abc-my-account-id-is-here/workspaces/123-my-workspace-id-is-here">https://app.prefect.cloud/account/abc-my-account-id-is-here/workspaces/123-my-workspace-id-is-here</a>.</p>
 <div class="admonition tip">
-<p class="admonition-title"><code>PREFECT_API_URL</code> setting for agents</p>
-<p>When using <a href="/concepts/work-pools/">workers, agents, and work pools</a> that can create flow runs for deployments in remote environments,  <a href="/concepts/settings/"><code>PREFECT_API_URL</code></a> must be set for the environment in which your worker or agent is running. </p>
-<p>If you want the worker or agent to communicate with Prefect Cloud or a Prefect server instance from a remote execution environment such as a VM or Docker container, you must configure <code>PREFECT_API_URL</code> in that environment.</p>
+<p class="admonition-title"><code>PREFECT_API_URL</code> setting for workers</p>
+<p>When using <a href="/concepts/work-pools/">workers and work pools</a> (agent and block-based deployments are legacy) that can create flow runs for deployments in remote environments,  <a href="/concepts/settings/"><code>PREFECT_API_URL</code></a> must be set for the environment in which your worker is running.</p>
+<p>If you want the worker to communicate with Prefect Cloud or a Prefect server instance from a remote execution environment such as a VM or Docker container, you must configure <code>PREFECT_API_URL</code> in that environment.</p>
 </div>
 <div class="admonition tip">
 <p class="admonition-title">Running the Prefect UI behind a reverse proxy</p>
-<p>When using a reverse proxy (such as <a href="https://nginx.org">Nginx</a> or <a href="https://traefik.io">Traefik</a>) to proxy traffic to a locally-hosted Prefect UI instance, the Prefect server also needs to be configured to know how to connect to the API. The  <a href="../../api-ref/prefect/settings/#PREFECT_UI_API_URL"><code>PREFECT_UI_API_URL</code></a>  should be set to the external proxy URL (e.g. if your external URL is https://prefect-server.example.com/ then set <code>PREFECT_UI_API_URL=https://prefect-server.example.com/api</code> for the Prefect server process).  You can also accomplish this by setting <a href="/concepts/settings/#prefect.settings.PREFECT_API_URL"><code>PREFECT_API_URL</code></a> to the API URL, as this setting is used as a fallback if <code>PREFECT_UI_API_URL</code> is not set.</p>
+<p>When using a reverse proxy (such as <a href="https://nginx.org">Nginx</a> or <a href="https://traefik.io">Traefik</a>) to proxy traffic to a locally-hosted Prefect UI instance, the Prefect server also needs to be configured to know how to connect to the API. The <a href="../../api-ref/prefect/settings/#PREFECT_UI_API_URL"><code>PREFECT_UI_API_URL</code></a> should be set to the external proxy URL (e.g. if your external URL is <a href="https://prefect-server.example.com/">https://prefect-server.example.com/</a> then set <code>PREFECT_UI_API_URL=https://prefect-server.example.com/api</code> for the Prefect server process). You can also accomplish this by setting <a href="/concepts/settings/#prefect.settings.PREFECT_API_URL"><code>PREFECT_API_URL</code></a> to the API URL, as this setting is used as a fallback if <code>PREFECT_UI_API_URL</code> is not set.</p>
 </div>
 <h3 id="prefect_api_key">PREFECT_API_KEY<a class="headerlink" href="#prefect_api_key" title="Permanent link">&para;</a></h3>
 <p>The <code>PREFECT_API_KEY</code> value specifies the <a href="/ui/cloud-api-keys/#create-an-api-key">API key</a> used to authenticate with your Prefect Cloud workspace.</p>
@@ -7277,20 +7277,20 @@ prefect<span class="w"> </span>config<span class="w"> </span><span class="nb">se
 <h3 id="overriding-defaults-with-environment-variables">Overriding defaults with environment variables<a class="headerlink" href="#overriding-defaults-with-environment-variables" title="Permanent link">&para;</a></h3>
 <p>All settings have keys that match the environment variable that can be used to override them.</p>
 <p>For example, configuring the home directory:</p>
-<p><div class="highlight"><pre><span></span><code><span class="c1"># environment variable</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># environment variable</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">PREFECT_HOME</span><span class="o">=</span><span class="s2">&quot;/path/to/home&quot;</span>
 </code></pre></div>
 <div class="highlight"><pre><span></span><code><span class="c1"># python</span>
 <span class="kn">import</span> <span class="nn">prefect.settings</span>
 <span class="n">prefect</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">PREFECT_HOME</span><span class="o">.</span><span class="n">value</span><span class="p">()</span>  <span class="c1"># PosixPath(&#39;/path/to/home&#39;)</span>
-</code></pre></div></p>
+</code></pre></div>
 <p>Configuring the server's port:</p>
-<p><div class="highlight"><pre><span></span><code><span class="c1"># environment variable</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># environment variable</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">PREFECT_SERVER_API_PORT</span><span class="o">=</span><span class="m">4242</span>
 </code></pre></div>
 <div class="highlight"><pre><span></span><code><span class="c1"># python</span>
 <span class="n">prefect</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">PREFECT_SERVER_API_PORT</span><span class="o">.</span><span class="n">value</span><span class="p">()</span>  <span class="c1"># 4242</span>
-</code></pre></div></p>
+</code></pre></div>
 <h2 id="configuration-profiles">Configuration profiles<a class="headerlink" href="#configuration-profiles" title="Permanent link">&para;</a></h2>
 <p>Prefect allows you to persist settings instead of setting an environment variable each time you open a new shell.
 Settings are persisted to profiles, which allow you to move between groups of settings quickly.</p>
@@ -7405,16 +7405,16 @@ cloud
 Profile<span class="w"> </span><span class="s1">&#39;test&#39;</span><span class="w"> </span>now<span class="w"> </span>active.
 </code></pre></div>
 <p>Alternatively, you may set the environment variable <code>PREFECT_PROFILE</code> to the name of the profile:</p>
-<div class="highlight"><pre><span></span><code>$<span class="w"> </span><span class="nb">export</span><span class="w"> </span><span class="nv">PREFECT_PROFILE</span><span class="o">=</span>foo
+<div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">PREFECT_PROFILE</span><span class="o">=</span>foo
 </code></pre></div>
 <p>Or, specify the profile in the CLI command for one-time usage:</p>
-<div class="highlight"><pre><span></span><code>$<span class="w"> </span>prefect<span class="w"> </span>--profile<span class="w"> </span><span class="s2">&quot;foo&quot;</span><span class="w"> </span>...
+<div class="highlight"><pre><span></span><code>prefect<span class="w"> </span>--profile<span class="w"> </span><span class="s2">&quot;foo&quot;</span><span class="w"> </span>...
 </code></pre></div>
 <p>Note that this option must come before the subcommand. For example, to list flow runs using the profile <code>foo</code>:</p>
-<div class="highlight"><pre><span></span><code>$<span class="w"> </span>prefect<span class="w"> </span>--profile<span class="w"> </span><span class="s2">&quot;foo&quot;</span><span class="w"> </span>flow-run<span class="w"> </span>ls
+<div class="highlight"><pre><span></span><code>prefect<span class="w"> </span>--profile<span class="w"> </span><span class="s2">&quot;foo&quot;</span><span class="w"> </span>flow-run<span class="w"> </span>ls
 </code></pre></div>
 <p>You may use the <code>-p</code> flag as well:</p>
-<div class="highlight"><pre><span></span><code>$<span class="w"> </span>prefect<span class="w"> </span>-p<span class="w"> </span><span class="s2">&quot;foo&quot;</span><span class="w"> </span>flow-run<span class="w"> </span>ls
+<div class="highlight"><pre><span></span><code>prefect<span class="w"> </span>-p<span class="w"> </span><span class="s2">&quot;foo&quot;</span><span class="w"> </span>flow-run<span class="w"> </span>ls
 </code></pre></div>
 <p>You may also create an 'alias' to automatically use your profile:</p>
 <div class="highlight"><pre><span></span><code>$<span class="w"> </span><span class="nb">alias</span><span class="w"> </span>prefect-foo<span class="o">=</span><span class="s2">&quot;prefect --profile &#39;foo&#39; &quot;</span>

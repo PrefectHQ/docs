@@ -7139,7 +7139,7 @@ if (amplitudeKey){
 <p>Work pools organize work for execution. Work pools have types corresponding to the infrastructure that will execute the flow code, as well as the delivery method of work to that environment. Pull work pools require <a href="#worker-overview">workers</a> (or less ideally, <a href="#agent-overview">agents</a>) to poll the work pool for flow runs to execute. <a href="/guides/deployment/push-work-pools">Push work pools</a> can submit runs directly to serverless infrastructure providers like Cloud Run, Azure Container Instances, and AWS ECS without the need for an agent or worker.</p>
 <div class="admonition tip">
 <p class="admonition-title">Work pools are like pub/sub topics</p>
-<p>It's helpful to think of work pools as a way to coordinate (potentially many) deployments with (potentially many) workers through a known channel: the pool itself. This is similar to how "topics" are used to connect producers and consumers in a pub/sub or message-based system. By switching a deployment's work pool, users can quickly change the agent that will execute their runs, making it easy to promote runs through environments or even debug locally.</p>
+<p>It's helpful to think of work pools as a way to coordinate (potentially many) deployments with (potentially many) workers through a known channel: the pool itself. This is similar to how "topics" are used to connect producers and consumers in a pub/sub or message-based system. By switching a deployment's work pool, users can quickly change the worker that will execute their runs, making it easy to promote runs through environments or even debug locally.</p>
 </div>
 <p>In addition, users can control aspects of work pool behavior, like how many runs the pool allows to be run concurrently or pausing delivery entirely. These options can be modified at any time, and any workers requesting work for a specific pool will only see matching flow runs.</p>
 <h3 id="work-pool-configuration">Work pool configuration<a class="headerlink" href="#work-pool-configuration" title="Permanent link">&para;</a></h3>
@@ -7183,7 +7183,7 @@ if (amplitudeKey){
 </tr>
 </tbody>
 </table>
-<p>For example, to create a work pool called <code>test-pool</code>, you would run this command: </p>
+<p>For example, to create a work pool called <code>test-pool</code>, you would run this command:</p>
 <div class="terminal">
 
 <div class="highlight"><pre><span></span><code>$<span class="w"> </span>prefect<span class="w"> </span>work-pool<span class="w"> </span>create<span class="w"> </span>test-pool
@@ -7193,12 +7193,13 @@ Created<span class="w"> </span>work<span class="w"> </span>pool<span class="w"> 
 <span class="w">    </span>id<span class="w"> </span>-<span class="w"> </span>a51adf8c-58bb-4949-abe6-1b87af46eabd
 <span class="w">    </span>concurrency<span class="w"> </span>limit<span class="w"> </span>-<span class="w"> </span>None
 
-Start<span class="w"> </span>an<span class="w"> </span>agent<span class="w"> </span>to<span class="w"> </span>pick<span class="w"> </span>up<span class="w"> </span>flows<span class="w"> </span>from<span class="w"> </span>the<span class="w"> </span>work<span class="w"> </span>pool:
-<span class="w">    </span>prefect<span class="w"> </span>agent<span class="w"> </span>start<span class="w"> </span>-p<span class="w"> </span><span class="s1">&#39;test-pool&#39;</span>
+Start<span class="w"> </span>a<span class="w"> </span>worker<span class="w"> </span>to<span class="w"> </span>pick<span class="w"> </span>up<span class="w"> </span>flows<span class="w"> </span>from<span class="w"> </span>the<span class="w"> </span>work<span class="w"> </span>pool:
+<span class="w">    </span>prefect<span class="w"> </span>worker<span class="w"> </span>start<span class="w"> </span>-p<span class="w"> </span><span class="s1">&#39;test-pool&#39;</span>
 
 Inspect<span class="w"> </span>the<span class="w"> </span>work<span class="w"> </span>pool:
 <span class="w">    </span>prefect<span class="w"> </span>work-pool<span class="w"> </span>inspect<span class="w"> </span><span class="s1">&#39;test-pool&#39;</span>
 </code></pre></div>
+
 </div>
 
 <p>On success, the command returns the details of the newly created work pool.</p>
@@ -7343,9 +7344,10 @@ prefect<span class="w"> </span>work-pool<span class="w"> </span>ls
 ┏━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━┓
 ┃<span class="w"> </span>Name<span class="w">       </span>┃<span class="w">    </span>Type<span class="w">        </span>┃<span class="w">                                   </span>ID<span class="w"> </span>┃<span class="w"> </span>Concurrency<span class="w"> </span>Limit<span class="w"> </span>┃
 ┡━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━┩
-│<span class="w"> </span>barbeque<span class="w">   </span>│<span class="w"> </span>prefect-agent<span class="w">  </span>│<span class="w"> </span>72c0a101-b3e2-4448-b5f8-a8c5184abd17<span class="w"> </span>│<span class="w"> </span>None<span class="w">              </span>│
-│<span class="w"> </span>k8s-pool<span class="w">   </span>│<span class="w">  </span>prefect-agent<span class="w"> </span>│<span class="w"> </span>7b6e3523-d35b-4882-84a7-7a107325bb3f<span class="w"> </span>│<span class="w"> </span>None<span class="w">              </span>│
-│<span class="w"> </span>test-pool<span class="w">  </span>│<span class="w">  </span>prefect-agent<span class="w"> </span>│<span class="w"> </span>a51adf8c-58bb-4949-abe6-1b87af46eabd<span class="w"> </span>│<span class="w"> </span>None<span class="w">              </span>│
+│<span class="w"> </span>barbeque<span class="w">   </span>│<span class="w"> </span>docker<span class="w">         </span>│<span class="w"> </span>72c0a101-b3e2-4448-b5f8-a8c5184abd17<span class="w"> </span>│<span class="w"> </span>None<span class="w">              </span>│
+│<span class="w"> </span>k8s-pool<span class="w">   </span>│<span class="w"> </span>kubernetes<span class="w">     </span>│<span class="w"> </span>7b6e3523-d35b-4882-84a7-7a107325bb3f<span class="w"> </span>│<span class="w"> </span>None<span class="w">              </span>│
+│<span class="w"> </span>test-pool<span class="w">  </span>│<span class="w"> </span>prefect-agent<span class="w">  </span>│<span class="w"> </span>a51adf8c-58bb-4949-abe6-1b87af46eabd<span class="w"> </span>│<span class="w"> </span>None<span class="w">              </span><span class="p">|</span>
+<span class="p">|</span><span class="w"> </span>my-pool<span class="w">    </span>│<span class="w"> </span>process<span class="w">        </span>│<span class="w"> </span>cd6ff9e8-bfd8-43be-9be3-69375f7a11cd<span class="w"> </span>│<span class="w"> </span>None<span class="w">              </span>│
 └────────────┴────────────────┴──────────────────────────────────────┴───────────────────┘
 <span class="w">                       </span><span class="o">(</span>**<span class="o">)</span><span class="w"> </span>denotes<span class="w"> </span>a<span class="w"> </span>paused<span class="w"> </span>pool
 </code></pre></div>
@@ -7364,9 +7366,9 @@ Workpool<span class="o">(</span>
 </code></pre></div>
 </div>
 
-<p><code>prefect work-pool preview</code> displays scheduled flow runs for a specific work pool by ID for the upcoming hour. The optional <code>--hours</code> flag lets you specify the number of hours to look ahead. </p>
+<p><code>prefect work-pool preview</code> displays scheduled flow runs for a specific work pool by ID for the upcoming hour. The optional <code>--hours</code> flag lets you specify the number of hours to look ahead.</p>
 <div class="terminal">
-<div class="highlight"><pre><span></span><code>$<span class="w"> </span>prefect<span class="w"> </span>work-pool<span class="w"> </span>preview<span class="w"> </span><span class="s1">&#39;test-pool&#39;</span><span class="w"> </span>--hours<span class="w"> </span><span class="m">12</span><span class="w"> </span>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>prefect<span class="w"> </span>work-pool<span class="w"> </span>preview<span class="w"> </span><span class="s1">&#39;test-pool&#39;</span><span class="w"> </span>--hours<span class="w"> </span><span class="m">12</span>
 ┏━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
 ┃<span class="w"> </span>Scheduled<span class="w"> </span>Star…<span class="w"> </span>┃<span class="w"> </span>Run<span class="w"> </span>ID<span class="w">                     </span>┃<span class="w"> </span>Name<span class="w">         </span>┃<span class="w"> </span>Deployment<span class="w"> </span>ID<span class="w">               </span>┃
 ┡━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
@@ -7399,7 +7401,7 @@ Paused<span class="w"> </span>work<span class="w"> </span>pool<span class="w"> <
 <p>To resume a work pool through the Prefect CLI, use the <code>prefect work-pool resume</code> command with the work pool name.</p>
 <p>To delete a work pool through the Prefect CLI, use the <code>prefect work-pool delete</code> command with the work pool name.</p>
 <h3 id="managing-concurrency">Managing concurrency<a class="headerlink" href="#managing-concurrency" title="Permanent link">&para;</a></h3>
-<p>Each work pool can optionally restrict concurrent runs of matching flows. </p>
+<p>Each work pool can optionally restrict concurrent runs of matching flows.</p>
 <p>For example, a work pool with a concurrency limit of 5 will only release new work if fewer than 5 matching runs are currently in a <code>Running</code> or <code>Pending</code> state. If 3 runs are <code>Running</code> or <code>Pending</code>, polling the pool for work will only result in 2 new runs, even if there are many more available, to ensure that the concurrency limit is not exceeded.</p>
 <p>When using the <code>prefect work-pool</code> Prefect CLI command to configure a work pool, the following subcommands set concurrency limits:</p>
 <ul>
@@ -7414,13 +7416,13 @@ Paused<span class="w"> </span>work<span class="w"> </span>pool<span class="w"> <
 <p>Each work pool has a "default" queue that all work will be sent to by default. Additional queues can be added to a work pool. Work queues enable greater control over work delivery through fine grained priority and concurrency. Each work queue has a priority indicated by a unique positive integer. Lower numbers take greater priority in the allocation of work. Accordingly, new queues can be added without changing the rank of the higher-priority queues (e.g. no matter how many queues you add, the queue with priority <code>1</code> will always be the highest priority).</p>
 <p>Work queues can also have their own concurrency limits. Note that each queue is also subject to the global work pool concurrency limit, which cannot be exceeded.</p>
 <p>Together work queue priority and concurrency enable precise control over work. For example, a pool may have three queues: A "low" queue with priority <code>10</code> and no concurrency limit, a "high" queue with priority <code>5</code> and a concurrency limit of <code>3</code>, and a "critical" queue with priority <code>1</code> and a concurrency limit of <code>1</code>. This arrangement would enable a pattern in which there are two levels of priority, "high" and "low" for regularly scheduled flow runs, with the remaining "critical" queue for unplanned, urgent work, such as a backfill.</p>
-<p>Priority is evaluated to determine the order in which flow runs are submitted for execution. 
+<p>Priority is evaluated to determine the order in which flow runs are submitted for execution.
 If all flow runs are capable of being executed with no limitation due to concurrency or otherwise, priority is still used to determine order of submission, but there is no impact to execution.
 If not all flow runs can be executed, usually as a result of concurrency limits, priority is used to determine which queues receive precedence to submit runs for execution.</p>
-<p>Priority for flow run submission proceeds from the highest priority to the lowest priority. In the preceding example, all work from the "critical" queue (priority 1) will be submitted, before any work is submitted from "high" (priority 5). Once all work has been submitted from priority queue "critical", work from the "high" queue will begin submission. </p>
+<p>Priority for flow run submission proceeds from the highest priority to the lowest priority. In the preceding example, all work from the "critical" queue (priority 1) will be submitted, before any work is submitted from "high" (priority 5). Once all work has been submitted from priority queue "critical", work from the "high" queue will begin submission.</p>
 <p>If new flow runs are received on the "critical" queue while flow runs are still in scheduled on the "high" and "low" queues, flow run submission goes back to ensuring all scheduled work is first satisfied from the highest priority queue, until it is empty, in waterfall fashion.</p>
 <h3 id="local-debugging">Local debugging<a class="headerlink" href="#local-debugging" title="Permanent link">&para;</a></h3>
-<p>As long as your deployment's infrastructure block supports it, you can use work pools to temporarily send runs to an agent running on your local machine for debugging by running <code>prefect worker start -p my-local-machine</code> and updating the deployment's work pool to <code>my-local-machine</code>.</p>
+<p>As long as your deployment's infrastructure block supports it, you can use work pools to temporarily send runs to a worker running on your local machine for debugging by running <code>prefect worker start -p my-local-machine</code> and updating the deployment's work pool to <code>my-local-machine</code>.</p>
 <h2 id="worker-overview">Worker overview<a class="headerlink" href="#worker-overview" title="Permanent link">&para;</a></h2>
 <p>Workers are lightweight polling services that retrieve scheduled runs from a work pool and execute them.</p>
 <p>Workers are similar to agents, but offer greater control over infrastructure configuration and the ability to route work to specific types of execution environments.</p>
@@ -7555,7 +7557,7 @@ Worker<span class="w"> </span><span class="s1">&#39;ProcessWorker d24f3768-62a9-
 <span class="m">06</span>:57:53.289<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>prefect.worker.process.processworker<span class="w"> </span>d24f3768-62a9-4141-9480-a056b9539a25<span class="w"> </span>-<span class="w"> </span>Worker<span class="w"> </span>pool<span class="w"> </span><span class="s1">&#39;my-pool&#39;</span><span class="w"> </span>created.
 </code></pre></div>
 </div>
-<p>In addition, workers can limit the number of flow runs they will start simultaneously with the <code>--limit</code> flag. 
+<p>In addition, workers can limit the number of flow runs they will start simultaneously with the <code>--limit</code> flag.
 For example, to limit a worker to five concurrent flow runs:</p>
 <div class="terminal">
 <div class="highlight"><pre><span></span><code>prefect<span class="w"> </span>worker<span class="w"> </span>start<span class="w"> </span>--pool<span class="w"> </span><span class="s2">&quot;my-pool&quot;</span><span class="w"> </span>--limit<span class="w"> </span><span class="m">5</span>
@@ -7563,7 +7565,7 @@ For example, to limit a worker to five concurrent flow runs:</p>
 </div>
 
 <h3 id="configuring-prefetch">Configuring prefetch<a class="headerlink" href="#configuring-prefetch" title="Permanent link">&para;</a></h3>
-<p>By default, the worker begins submitting flow runs a short time (10 seconds) before they are scheduled to run. This behavior allows time for the infrastructure to be created so that the flow run can start on time. </p>
+<p>By default, the worker begins submitting flow runs a short time (10 seconds) before they are scheduled to run. This behavior allows time for the infrastructure to be created so that the flow run can start on time.</p>
 <p>In some cases, infrastructure will take longer than 10 seconds to start the flow run. The prefetch can be increased using the <code>--prefetch-seconds</code> option or the <code>PREFECT_WORKER_PREFETCH_SECONDS</code> setting.</p>
 <p>If this value is <em>more</em> than the amount of time it takes for the infrastructure to start, the flow run will <em>wait</em> until its scheduled start time.</p>
 <h3 id="polling-for-work">Polling for work<a class="headerlink" href="#polling-for-work" title="Permanent link">&para;</a></h3>

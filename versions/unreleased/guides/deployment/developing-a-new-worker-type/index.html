@@ -7142,7 +7142,7 @@ if (amplitudeKey){
 <p>This tutorial is for users who want to extend the Prefect framework and completing this successfully will require deep knowledge of Prefect concepts. For standard use cases, we recommend using one of the <a href="/concepts/work-pools/#worker-types">available workers</a> instead.</p>
 </div>
 <p>Prefect workers are responsible for setting up execution infrastructure and starting flow runs on that infrastructure.</p>
-<p>A list of available workers can be found in the <a href="/concepts/work-pools/#worker-types">Work Pools, Workers &amp; Agents documentation</a>. What if you want to execute your flow runs on infrastructure that doesn't have an available worker type? This tutorial will walk you through creating a custom worker that can run your flows on your chosen infrastructure.</p>
+<p>A list of available workers can be found <a href="/concepts/work-pools/#worker-types">here</a>. What if you want to execute your flow runs on infrastructure that doesn't have an available worker type? This tutorial will walk you through creating a custom worker that can run your flows on your chosen infrastructure.</p>
 <h2 id="worker-configuration">Worker Configuration<a class="headerlink" href="#worker-configuration" title="Permanent link">&para;</a></h2>
 <p>When setting up an execution environment for a flow run, a worker receives configuration for the infrastructure it is designed to work with. Examples of configuration values include memory allocation, CPU allocation, credentials, image name, etc. The worker then uses this configuration to create the execution environment and start the flow run.</p>
 <div class="admonition tip">
@@ -7152,8 +7152,8 @@ if (amplitudeKey){
 <p>The work pool creator gets to decide how they want to populate the values in the <code>job_configuration</code> section of the base job template. The values can be hard-coded, templated using placeholders, or a mix of these two approaches. Because you, as the worker developer, don't know how the work pool creator will populate the values, you should set sensible defaults for your configuration class attributes as a matter of best practice.</p>
 </div>
 <h3 id="implementing-a-basejobconfiguration-subclass">Implementing a <code>BaseJobConfiguration</code> Subclass<a class="headerlink" href="#implementing-a-basejobconfiguration-subclass" title="Permanent link">&para;</a></h3>
-<p>A worker developer defines their worker's configuration to function with a class extending <a href="/api-ref/prefect/workers/base/#prefect.workers.base.BaseJobConfiguration"><code>BaseJobConfiguration</code></a>. </p>
-<p><code>BaseJobConfiguration</code> has attributes that are common to all workers: </p>
+<p>A worker developer defines their worker's configuration to function with a class extending <a href="/api-ref/prefect/workers/base/#prefect.workers.base.BaseJobConfiguration"><code>BaseJobConfiguration</code></a>.</p>
+<p><code>BaseJobConfiguration</code> has attributes that are common to all workers:</p>
 <table>
 <thead>
 <tr>
@@ -7202,7 +7202,7 @@ if (amplitudeKey){
             <span class="n">description</span><span class="o">=</span><span class="s2">&quot;CPU allocation for the execution environment.&quot;</span>
         <span class="p">)</span>
 </code></pre></div>
-<p>This configuration class will populate the <code>job_configuration</code> section of the resulting base job template. </p>
+<p>This configuration class will populate the <code>job_configuration</code> section of the resulting base job template.</p>
 <p>For this example, the base job template would look like this:</p>
 <div class="highlight"><pre><span></span><code><span class="nt">job_configuration</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{{</span><span class="nv"> </span><span class="s">name</span><span class="nv"> </span><span class="s">}}&quot;</span>
@@ -7289,12 +7289,12 @@ if (amplitudeKey){
 <p>Template variables define the interface that deployment creators interact with to configure the execution environments of their deployments. The complexity of this interface can be controlled via the template variables that are defined for a base job template. This control allows work pool maintainers to find a point along the spectrum of flexibility and simplicity appropriate for their organization.</p>
 <p>There are two patterns that are represented in current worker implementations:</p>
 <h4 id="pass-through">Pass-Through<a class="headerlink" href="#pass-through" title="Permanent link">&para;</a></h4>
-<p>In the pass-through pattern, template variables are passed through to the job configuration with little change. This pattern exposes complete control to deployment creators but also requires them to understand the details of the execution environment. </p>
-<p>This pattern is useful when the execution environment is simple, and the deployment creators are expected to have high technical knowledge. </p>
+<p>In the pass-through pattern, template variables are passed through to the job configuration with little change. This pattern exposes complete control to deployment creators but also requires them to understand the details of the execution environment.</p>
+<p>This pattern is useful when the execution environment is simple, and the deployment creators are expected to have high technical knowledge.</p>
 <p>The <a href="https://prefecthq.github.io/prefect-docker/worker/">Docker worker</a> is an example of a worker that uses this pattern.</p>
 <h4 id="infrastructure-as-code-templating">Infrastructure as Code Templating<a class="headerlink" href="#infrastructure-as-code-templating" title="Permanent link">&para;</a></h4>
-<p>Depending on the infrastructure they interact with, workers can sometimes employ a declarative infrastructure syntax (i.e., infrastructure as code) to create execution environments (e.g., a Kubernetes manifest or an ECS task definition). </p>
-<p>In the IaC pattern, it's often useful to use template variables to template portions of the declarative syntax which then can be used to generate the declarative syntax into a final form. </p>
+<p>Depending on the infrastructure they interact with, workers can sometimes employ a declarative infrastructure syntax (i.e., infrastructure as code) to create execution environments (e.g., a Kubernetes manifest or an ECS task definition).</p>
+<p>In the IaC pattern, it's often useful to use template variables to template portions of the declarative syntax which then can be used to generate the declarative syntax into a final form.</p>
 <p>This approach allows work pool creators to provide a simpler interface to deployment creators while also controlling which portions of infrastructure are configurable by deployment creators.</p>
 <p>The <a href="https://prefecthq.github.io/prefect-kubernetes/worker/">Kubernetes worker</a> is an example of a worker that uses this pattern.</p>
 <h3 id="configuring-credentials">Configuring Credentials<a class="headerlink" href="#configuring-credentials" title="Permanent link">&para;</a></h3>
@@ -7396,7 +7396,7 @@ if (amplitudeKey){
 <span class="w">            </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">integer</span>
 <span class="w">            </span><span class="nt">default</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">500</span>
 </code></pre></div>
-<p>Note that template variable classes are never used directly. Instead, they are used to generate a schema that is used to populate the <code>variables</code> section of a base job template and validate the template variables provided by the user. </p>
+<p>Note that template variable classes are never used directly. Instead, they are used to generate a schema that is used to populate the <code>variables</code> section of a base job template and validate the template variables provided by the user.</p>
 <p>We don't recommend using template variable classes within your worker implementation for validation purposes because the work pool creator ultimately defines the template variables. The configuration class should handle any necessary run-time validation.</p>
 <h2 id="worker-implementation">Worker Implementation<a class="headerlink" href="#worker-implementation" title="Permanent link">&para;</a></h2>
 <p>Workers set up execution environments using provided configuration. Workers also observe the execution environment as the flow run executes and report any crashes to the Prefect API.</p>
@@ -7462,7 +7462,7 @@ if (amplitudeKey){
 <p>If you would like to return more information about a flow run, then additional attributes can be added to the <code>BaseWorkerResult</code> class.</p>
 <h4 id="kill_infrastructure"><code>kill_infrastructure</code><a class="headerlink" href="#kill_infrastructure" title="Permanent link">&para;</a></h4>
 <p>Workers must implement a <code>kill_infrastructure</code> method to support flow run cancellation. The <code>kill_infrastructure</code> method is called when a flow run is canceled and is passed an identifier for the infrastructure to tear down and the execution environment configuration for the flow run.</p>
-<p>The <code>infrastructure_pid</code> passed to the <code>kill_infrastructure</code> method is the same identifier used to mark a flow run execution as started in the <code>run</code> method. The <code>infrastructure_pid</code> must be a string, but it can take on any format you choose. </p>
+<p>The <code>infrastructure_pid</code> passed to the <code>kill_infrastructure</code> method is the same identifier used to mark a flow run execution as started in the <code>run</code> method. The <code>infrastructure_pid</code> must be a string, but it can take on any format you choose.</p>
 <p>The <code>infrastructure_pid</code> should contain enough information to uniquely identify the infrastructure created for a flow run when used with the <code>job_configuration</code> passed to the <code>kill_infrastructure</code> method. Examples of useful information include: the cluster name, the hostname, the process ID, the container ID, etc.</p>
 <p>If a worker cannot tear down infrastructure created for a flow run, the <code>kill_infrastructure</code> command should raise an <code>InfrastructureNotFound</code> or <code>InfrastructureNotAvailable</code> exception.</p>
 <h3 id="worker-implementation-example">Worker Implementation Example<a class="headerlink" href="#worker-implementation-example" title="Permanent link">&para;</a></h3>
@@ -7533,7 +7533,7 @@ if (amplitudeKey){
     4. Get the execution's final status from the infrastructure and return a <code>BaseWorkerResult</code> object</p>
 <p>To see other examples of worker implementations, see the <a href="/api-ref/prefect/workers/process/"><code>ProcessWorker</code></a> and <a href="https://prefecthq.github.io/prefect-kubernetes/worker/"><code>KubernetesWorker</code></a> implementations.</p>
 <h3 id="integrating-with-the-prefect-cli">Integrating with the Prefect CLI<a class="headerlink" href="#integrating-with-the-prefect-cli" title="Permanent link">&para;</a></h3>
-<p>Workers can be started via the Prefect CLI by providing the <code>--type</code> option to the <code>prefect worker start</code> CLI command. To make your worker type available via the CLI, it must be available at import time. </p>
+<p>Workers can be started via the Prefect CLI by providing the <code>--type</code> option to the <code>prefect worker start</code> CLI command. To make your worker type available via the CLI, it must be available at import time.</p>
 <p>If your worker is in a package, you can add an entry point to your setup file in the following format:</p>
 <div class="highlight"><pre><span></span><code><span class="n">entry_points</span><span class="o">=</span><span class="p">{</span>
     <span class="s2">&quot;prefect.collections&quot;</span><span class="p">:</span> <span class="p">[</span>

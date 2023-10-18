@@ -8042,8 +8042,8 @@ Completed<span class="o">(</span><span class="nv">message</span><span class="o">
 </code></pre></div>
 <div class="admonition tip">
 <p class="admonition-title">Pausing flow runs is blocking by default</p>
-<p>By default, pausing a flow run blocks the agent &mdash; the flow is still running inside the <code>pause_flow_run</code> function. However, you may pause any flow run in this fashion, including non-deployment local flow runs and subflows.</p>
-<p>Alternatively, flow runs can be paused without blocking the flow run process. This is particularly useful when running the flow via an agent and you want the agent to be able to pick up other flows while the paused flow is paused.</p>
+<p>By default, pausing a flow run blocks the worker &mdash; the flow is still running inside the <code>pause_flow_run</code> function. However, you may pause any flow run in this fashion, including non-deployment local flow runs and subflows.</p>
+<p>Alternatively, flow runs can be paused without blocking the flow run process. This is particularly useful when running the flow via a worker and you want the worker to be able to pick up other flows while the paused flow is paused.</p>
 <p>Non-blocking pause can be accomplished by setting the <code>reschedule</code> flag to <code>True</code>. In order to use this feature, flows that pause with the <code>reschedule</code> flag must have:</p>
 <ul>
 <li>An associated deployment</li>
@@ -8052,7 +8052,7 @@ Completed<span class="o">(</span><span class="nv">message</span><span class="o">
 </div>
 <h2 id="cancel-a-flow-run">Cancel a flow run<a class="headerlink" href="#cancel-a-flow-run" title="Permanent link">&para;</a></h2>
 <p>You may cancel a scheduled or in-progress flow run from the CLI, UI, REST API, or Python client.</p>
-<p>When cancellation is requested, the flow run is moved to a "Cancelling" state. The agent monitors the state of flow runs and detects that cancellation has been requested. The agent then sends a signal to the flow run infrastructure, requesting termination of the run. If the run does not terminate after a grace period (default of 30 seconds), the infrastructure will be killed, ensuring the flow run exits.</p>
+<p>When cancellation is requested, the flow run is moved to a "Cancelling" state. The worker monitors the state of flow runs and detects that cancellation has been requested. The worker then sends a signal to the flow run infrastructure, requesting termination of the run. If the run does not terminate after a grace period (default of 30 seconds), the infrastructure will be killed, ensuring the flow run exits.</p>
 <div class="admonition warning">
 <p class="admonition-title">A deployment is required</p>
 <p>Flow run cancellation requires the flow run to be associated with a <a href="#serving-a-flow">deployment</a>. A monitoring process must be running to enforce the cancellation. Inline subflow runs, i.e. those created without <code>run_deployment</code>, cannot be cancelled without cancelling the parent flow run. If you may need to cancel a subflow run independent of its parent flow run, we recommend deploying it separately and starting it using the <a href="/api-ref/prefect/deployments/deployments/#prefect.deployments.run_deployment">run_deployment</a> method.</p>
@@ -8063,12 +8063,12 @@ Completed<span class="o">(</span><span class="nv">message</span><span class="o">
 <li>Kubernetes Jobs</li>
 <li>Processes</li>
 </ul>
-<p>Cancellation is robust to restarts of the agent. To enable this, we attach metadata about the created infrastructure to the flow run. Internally, this is referred to as the <code>infrastructure_pid</code> or infrastructure identifier. Generally, this is composed of two parts:</p>
+<p>Cancellation is robust to restarts of the worker. To enable this, we attach metadata about the created infrastructure to the flow run. Internally, this is referred to as the <code>infrastructure_pid</code> or infrastructure identifier. Generally, this is composed of two parts:</p>
 <ol>
 <li>Scope: identifying where the infrastructure is running.</li>
 <li>ID: a unique identifier for the infrastructure within the scope.</li>
 </ol>
-<p>The scope is used to ensure that Prefect does not kill the wrong infrastructure. For example, agents running on multiple machines may have overlapping process IDs but should not have a matching scope.</p>
+<p>The scope is used to ensure that Prefect does not kill the wrong infrastructure. For example, workers running on multiple machines may have overlapping process IDs but should not have a matching scope.</p>
 <p>The identifiers for the primary infrastructure types are as follows:</p>
 <ul>
 <li>Processes: The machine hostname and the PID.</li>
@@ -8079,10 +8079,10 @@ Completed<span class="o">(</span><span class="nv">message</span><span class="o">
 <ul>
 <li>If the infrastructure block for the flow run has been removed or altered, cancellation may not work.</li>
 <li>If the infrastructure block for the flow run does not have support for cancellation, cancellation will not work.</li>
-<li>If the identifier scope does not match when attempting to cancel a flow run the agent will be unable to cancel the flow run. Another agent may attempt cancellation.</li>
-<li>If the infrastructure associated with the run cannot be found or has already been killed, the agent will mark the flow run as cancelled.</li>
+<li>If the identifier scope does not match when attempting to cancel a flow run the worker will be unable to cancel the flow run. Another worker may attempt cancellation.</li>
+<li>If the infrastructure associated with the run cannot be found or has already been killed, the worker will mark the flow run as cancelled.</li>
 <li>If the <code>infrastructre_pid</code> is missing from the flow run will be marked as cancelled but cancellation cannot be enforced.</li>
-<li>If the agent runs into an unexpected error during cancellation the flow run may or may not be cancelled depending on where the error occurred. The agent will try again to cancel the flow run. Another agent may attempt cancellation.</li>
+<li>If the worker runs into an unexpected error during cancellation the flow run may or may not be cancelled depending on where the error occurred. The worker will try again to cancel the flow run. Another worker may attempt cancellation.</li>
 </ul>
 <div class="admonition tip">
 <p class="admonition-title">Enhanced cancellation</p>
