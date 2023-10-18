@@ -6789,7 +6789,12 @@ if (amplitudeKey){
 
 
 <h1 id="storage">Storage<a class="headerlink" href="#storage" title="Permanent link">&para;</a></h1>
-<p>Storage lets you configure how flow code for deployments is persisted and retrieved by <a href="/concepts/work-pools">Prefect agents</a>. Anytime you build a deployment, a storage block is used to upload the entire directory containing your workflow code (along with supporting files) to its configured location.  This helps ensure portability of your relative imports, configuration files, and more.  Note that your environment dependencies (for example, external Python packages) still need to be managed separately.</p>
+<div class="admonition warning">
+<p class="admonition-title">Storage blocks are not recommended</p>
+<p>Storage blocks are part of the legacy block-based deployment model. Instead, using <code>serve</code> or <code>runner</code>-based Python creation methods or workers and work pools with <code>prefect deploy</code> via the CLI are the recommended options for creating a deployment. 
+Flow code storage can be specified in the Python file with <code>serve</code> or <code>runner</code>-based Python creation methods; alternatively, with the work pools and workers style of flow deployment, you can specify flow code storage during the interactive <code>prefect deploy</code> CLI experience and in its resulting <code>prefect.yaml</code> file. </p>
+</div>
+<p>Storage lets you configure how flow code for deployments is persisted and retrieved by <a href="/concepts/work-pools">Prefect workers</a> (or legacy <a href="/concepts/agents">agents</a>). Anytime you build a block-based deployment, a storage block is used to upload the entire directory containing your workflow code (along with supporting files) to its configured location.  This helps ensure portability of your relative imports, configuration files, and more.  Note that your environment dependencies (for example, external Python packages) still need to be managed separately.</p>
 <p>If no storage is explicitly configured, Prefect will use <code>LocalFileSystem</code> storage by default. Local storage works fine for many local flow run scenarios, especially when testing and getting started. However, due to the inherent lack of portability, many use cases are better served by using remote storage such as S3 or Google Cloud Storage.</p>
 <p>Prefect supports creating multiple storage configurations and switching between storage as needed.</p>
 <div class="admonition tip">
