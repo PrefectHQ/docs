@@ -1644,17 +1644,17 @@ if (amplitudeKey){
 </li>
       
         <li class="md-nav__item">
-  <a href="#define-a-deployment" class="md-nav__link">
+  <a href="#define-a-prefect-deployment" class="md-nav__link">
     <span class="md-ellipsis">
       
         <span class="md-typeset">
-          Define a deployment
+          Define a Prefect deployment
         </span>
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Define a deployment">
+    <nav class="md-nav" aria-label="Define a Prefect deployment">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -7023,17 +7023,17 @@ if (amplitudeKey){
 </li>
       
         <li class="md-nav__item">
-  <a href="#define-a-deployment" class="md-nav__link">
+  <a href="#define-a-prefect-deployment" class="md-nav__link">
     <span class="md-ellipsis">
       
         <span class="md-typeset">
-          Define a deployment
+          Define a Prefect deployment
         </span>
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Define a deployment">
+    <nav class="md-nav" aria-label="Define a Prefect deployment">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -7317,7 +7317,7 @@ Note that these values can be overridden by individual deployments.</p>
 <p>Let's look at a few popular configuration options.</p>
 <p><strong>Environment Variables</strong></p>
 <p>Add environment variables to set when starting a flow run.
-So long as you are using a Prefect-maintained image and haven't overwritten the image's entrypoint, you can specify Python packages to install at runtime with <code>{"EXTRA_PIP_PACKAGES":"my_package"}</code>. 
+So long as you are using a Prefect-maintained image and haven't overwritten the image's entrypoint, you can specify Python packages to install at runtime with <code>{"EXTRA_PIP_PACKAGES":"my_package"}</code>.
 For example <code>{"EXTRA_PIP_PACKAGES":"pandas==1.2.3"}</code> will install pandas version 1.2.3.
 Alternatively, you can specify package installation in a custom Dockerfile, which can allow you to take advantage of image caching.
 As we'll see below, Prefect can help us create a Dockerfile with our flow code and the packages specified in a <code>requirements.txt</code> file baked in.</p>
@@ -7331,7 +7331,7 @@ Note that you can override this on each deployment through <code>job_variables</
 <p>Select from the dropdown options to specify when to pull the image.
 When using the <code>IfNotPresent</code> policy, make sure to use unique image tags, as otherwise old images could get cached on your nodes.</p>
 <p><strong>Finished Job TTL</strong></p>
-<p>Number of seconds before finished jobs are automatically cleaned up by Kubernetes' controller. 
+<p>Number of seconds before finished jobs are automatically cleaned up by Kubernetes' controller.
 You may want to set to 60 so that completed flow runs are cleaned up after a minute.</p>
 <p><strong>Pod Watch Timeout Seconds</strong></p>
 <p>Number of seconds for pod creation to complete before timing out.
@@ -7431,19 +7431,24 @@ In a directory named <code>flows</code>, create a file named <code>hello.py</cod
 <p>Run the flow locally with <code>python hello.py</code> to verify that it works.
 Note that we use the <code>tags</code> context manager to tag the flow run as <code>local</code>.
 This step is not required, but does add some helpful metadata.</p>
-<h2 id="define-a-deployment">Define a deployment<a class="headerlink" href="#define-a-deployment" title="Permanent link">&para;</a></h2>
+<h2 id="define-a-prefect-deployment">Define a Prefect deployment<a class="headerlink" href="#define-a-prefect-deployment" title="Permanent link">&para;</a></h2>
+<p>Prefect has two recommended options for creating a deployment with dynamic infrastructure.
+You can define a deployment in a Python script using the <code>flow.deploy</code> mechanics or in a <code>prefect.yaml</code> definition file.
+The <code>prefect.yaml</code> file currently allows for more customization in terms of push and pull steps.
+Kubernetes objects are defined in YAML, so we expect many teams using Kubernetes work pools to create their deployments with YAML as well.
+To learn about the Python deployment creation method with <code>flow.deploy</code> refer to the <a href="/tutorial/workers/">Workers &amp; Work Pools tutorial page</a>.</p>
 <p>The <a href="/concepts/deployments/#managing-deployments"><code>prefect.yaml</code></a> file is used by the <code>prefect deploy</code> command to deploy our flows.
 As a part of that process it will also build and push our image.
 Create a new file named <code>prefect.yaml</code> with the following contents:</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># Generic metadata about this project</span>
 <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">flows</span>
-<span class="nt">prefect-version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2.11.0</span>
+<span class="nt">prefect-version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2.13.8</span>
 
 <span class="c1"># build section allows you to manage and build docker images</span>
 <span class="nt">build</span><span class="p">:</span>
 <span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">prefect_docker.deployments.steps.build_docker_image</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">build-image</span>
-<span class="w">    </span><span class="nt">requires</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">prefect-docker&gt;=0.3.11</span>
+<span class="w">    </span><span class="nt">requires</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">prefect-docker&gt;=0.4.0</span>
 <span class="w">    </span><span class="nt">image_name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{{</span><span class="nv"> </span><span class="s">$PREFECT_IMAGE_NAME</span><span class="nv"> </span><span class="s">}}&quot;</span>
 <span class="w">    </span><span class="nt">tag</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">latest</span>
 <span class="w">    </span><span class="nt">dockerfile</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">auto</span>
@@ -7452,7 +7457,7 @@ Create a new file named <code>prefect.yaml</code> with the following contents:</
 <span class="c1"># push section allows you to manage if and how this project is uploaded to remote locations</span>
 <span class="nt">push</span><span class="p">:</span>
 <span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">prefect_docker.deployments.steps.push_docker_image</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">requires</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">prefect-docker&gt;=0.3.11</span>
+<span class="w">    </span><span class="nt">requires</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">prefect-docker&gt;=0.4.0</span>
 <span class="w">    </span><span class="nt">image_name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{{</span><span class="nv"> </span><span class="s">build-image.image_name</span><span class="nv"> </span><span class="s">}}&quot;</span>
 <span class="w">    </span><span class="nt">tag</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{{</span><span class="nv"> </span><span class="s">build-image.tag</span><span class="nv"> </span><span class="s">}}&quot;</span>
 
@@ -7497,9 +7502,9 @@ This specification is often necessary when images are built on Macs with M serie
 This allows for more custom behavior, such as specifying a different image for each deployment.</p>
 </div>
 <p>Let's make sure we define our requirements in a <code>requirements.txt</code> file:</p>
-<div class="highlight"><pre><span></span><code>prefect&gt;=2.11.0
-prefect-docker&gt;=0.3.11
-prefect-kubernetes&gt;=0.2.11
+<div class="highlight"><pre><span></span><code>prefect&gt;=2.13.8
+prefect-docker&gt;=0.4.0
+prefect-kubernetes&gt;=0.3.1
 </code></pre></div>
 <p>The directory should now look something like this:</p>
 <div class="highlight"><pre><span></span><code>.
@@ -7510,7 +7515,7 @@ prefect-kubernetes&gt;=0.2.11
 </code></pre></div>
 <h3 id="tag-images-with-a-git-sha">Tag images with a Git SHA<a class="headerlink" href="#tag-images-with-a-git-sha" title="Permanent link">&para;</a></h3>
 <p>If your code is stored in a GitHub repository, it's good practice to tag your images with the Git SHA of the code used to build it.
-This can be done in the <code>prefect.yaml</code> file with a few minor modifications.
+This can be done in the <code>prefect.yaml</code> file with a few minor modifications, and isn't yet an option with the Python deployment creation method.
 Let's use the <code>run_shell_script</code> command to grab the SHA and pass it to the <code>tag</code> parameter of <code>build_docker_image</code>:</p>
 <div class="highlight"><pre><span></span><code><span class="nt">build</span><span class="p">:</span>
 <span class="hll"><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">prefect.deployments.steps.run_shell_script</span><span class="p">:</span>
@@ -7519,7 +7524,7 @@ Let's use the <code>run_shell_script</code> command to grab the SHA and pass it 
 </span><span class="hll"><span class="w">    </span><span class="nt">stream_output</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
 </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">prefect_docker.deployments.steps.build_docker_image</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">build-image</span>
-<span class="w">    </span><span class="nt">requires</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">prefect-docker&gt;=0.3.1</span>
+<span class="w">    </span><span class="nt">requires</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">prefect-docker&gt;=0.4.0</span>
 <span class="w">    </span><span class="nt">image_name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{{</span><span class="nv"> </span><span class="s">$PREFECT_IMAGE_NAME</span><span class="nv"> </span><span class="s">}}&quot;</span>
 <span class="hll"><span class="w">    </span><span class="nt">tag</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{{</span><span class="nv"> </span><span class="s">get-commit-hash.stdout</span><span class="nv"> </span><span class="s">}}&quot;</span>
 </span><span class="w">    </span><span class="nt">dockerfile</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">auto</span>
@@ -7536,7 +7541,8 @@ Let's use the <code>run_shell_script</code> command to grab the SHA and pass it 
 <span class="w">      </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{{</span><span class="nv"> </span><span class="s">build-image.image</span><span class="nv"> </span><span class="s">}}&quot;</span>
 </code></pre></div>
 <h2 id="authenticate-to-prefect">Authenticate to Prefect<a class="headerlink" href="#authenticate-to-prefect" title="Permanent link">&para;</a></h2>
-<p>Before we deploy the flows to Prefect, we will need to authenticate via the Prefect CLI. We will also need to ensure that all of our flow's dependencies are present at <code>deploy</code> time.</p>
+<p>Before we deploy the flows to Prefect, we will need to authenticate via the Prefect CLI.
+We will also need to ensure that all of our flow's dependencies are present at <code>deploy</code> time.</p>
 <p>This example uses a virtual environment to ensure consistency across environments.</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># Create a virtualenv &amp; activate it</span>
 virtualenv<span class="w"> </span>prefect-demo
@@ -7569,13 +7575,15 @@ We have configured our <code>prefect.yaml</code> file to get the image name from
 </div>
 </div>
 </div>
-<p>In order to deploy your flows, ensure your Docker daemon is running first. Deploy all the flows with <code>prefect deploy --all</code> or deploy them individually by name: <code>prefect deploy -n hello/default</code> or <code>prefect deploy -n hello/arthur</code>.</p>
+<p>To deploy your flows, ensure your Docker daemon is running first. Deploy all the flows with <code>prefect deploy --all</code> or deploy them individually by name: <code>prefect deploy -n hello/default</code> or <code>prefect deploy -n hello/arthur</code>.</p>
 <h2 id="run-the-flows">Run the flows<a class="headerlink" href="#run-the-flows" title="Permanent link">&para;</a></h2>
-<p>Once successfully deployed we can run the flows from the UI or the CLI:</p>
+<p>Once the deployments are successfully created, we can run them from the UI or the CLI:</p>
 <div class="highlight"><pre><span></span><code>prefect<span class="w"> </span>deployment<span class="w"> </span>run<span class="w"> </span>hello/default
 prefect<span class="w"> </span>deployment<span class="w"> </span>run<span class="w"> </span>hello/arthur
 </code></pre></div>
-<p>Congratulations! You just ran two flows in Kubernetes. Now head over to the UI to check their status.</p>
+<p>Congratulations!
+You just ran two deployments in Kubernetes.
+Head over to the UI to check their status!</p>
 <!-- ### Example: cpu and memory example -->
 
   
