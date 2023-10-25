@@ -1958,11 +1958,11 @@ if (amplitudeKey){
 </li>
       
         <li class="md-nav__item">
-  <a href="#creating-schedules-through-a-python-deployment-file" class="md-nav__link">
+  <a href="#creating-schedules-through-a-python-deployment-creation-file" class="md-nav__link">
     <span class="md-ellipsis">
       
         <span class="md-typeset">
-          Creating schedules through a Python deployment file
+          Creating schedules through a Python deployment creation file
         </span>
       
     </span>
@@ -6834,11 +6834,11 @@ if (amplitudeKey){
 </li>
       
         <li class="md-nav__item">
-  <a href="#creating-schedules-through-a-python-deployment-file" class="md-nav__link">
+  <a href="#creating-schedules-through-a-python-deployment-creation-file" class="md-nav__link">
     <span class="md-ellipsis">
       
         <span class="md-typeset">
-          Creating schedules through a Python deployment file
+          Creating schedules through a Python deployment creation file
         </span>
       
     </span>
@@ -7057,9 +7057,26 @@ This means that a daily schedule that always fires at 9am will observe DST and c
 <p>Note that as a calendar-oriented standard, <code>RRules</code> are sensitive to the initial timezone provided.
 A 9am daily schedule with a DST-aware start date will maintain a local 9am time through DST boundaries. A 9am daily schedule with a UTC start date will maintain a 9am UTC time.</p>
 </div>
-<h2 id="creating-schedules-through-a-python-deployment-file">Creating schedules through a Python deployment file<a class="headerlink" href="#creating-schedules-through-a-python-deployment-file" title="Permanent link">&para;</a></h2>
+<h2 id="creating-schedules-through-a-python-deployment-creation-file">Creating schedules through a Python deployment creation file<a class="headerlink" href="#creating-schedules-through-a-python-deployment-creation-file" title="Permanent link">&para;</a></h2>
+<p>When you create a deployment with through a Python file with <code>flow.serve()</code>, <code>serve</code>, <code>flow.deploy()</code>, or <code>deploy</code> you can specify the schedule. Just add the keyword argument <code>cron</code>, <code>interval</code>, or <code>rrule</code>. </p>
+<div class="highlight"><pre><span></span><code>interval: An interval on which to execute the new deployment. Accepts either a number
+    or a timedelta object. If a number is given, it will be interpreted as seconds.
+cron: A cron schedule of when to execute runs of this deployment.
+rrule: An rrule schedule of when to execute runs of this deployment.
+schedule: A schedule object defining when to execute runs of this deployment. Used to
+  define additional scheduling options like `timezone`.
+</code></pre></div>
+<p>Here's an example of creating a cron schedule with <code>serve</code> for a deployment flow that will run every minute of every day:</p>
+<div class="highlight"><pre><span></span><code><span class="n">my_flow</span><span class="o">.</span><span class="n">serve</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;flowing&quot;</span><span class="p">,</span> <span class="n">cron</span><span class="o">=</span><span class="s2">&quot;* * * * *&quot;</span><span class="p">)</span>
+</code></pre></div>
+<p>Here's an example of creating an interval schedule with <code>serve</code> for a deployment flow that will run every 10 minutes with an anchor date and a timezone:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">timedelta</span><span class="p">,</span> <span class="n">datetime</span>
+<span class="kn">from</span> <span class="nn">prefect.client.schemas.schedules</span> <span class="kn">import</span> <span class="n">IntervalSchedule</span>
+
+<span class="n">my_flow</span><span class="o">.</span><span class="n">serve</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;flowing&quot;</span><span class="p">,</span> <span class="n">schedule</span><span class="o">=</span><span class="n">IntervalSchedule</span><span class="p">(</span><span class="n">interval</span><span class="o">=</span><span class="n">timedelta</span><span class="p">(</span><span class="n">minutes</span><span class="o">=</span><span class="mi">10</span><span class="p">),</span> <span class="n">anchor_date</span><span class="o">=</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2023</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">timezone</span><span class="o">=</span><span class="s2">&quot;America/Chicago&quot;</span><span class="p">))</span>
+</code></pre></div>
 <p>Block and agent-based deployments with Python files are not a recommended way to create deployments.
-However, you can create a schedule by passing a <code>schedule</code> parameter to the <code>Deployment.build_from_flow</code> method.</p>
+However, if you are using that deployment creation method you can create a schedule by passing a <code>schedule</code> parameter to the <code>Deployment.build_from_flow</code> method.</p>
 <p>Here's how you create the equivalent schedule in a Python deployment file, with a timezone specified.</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect.server.schemas.schedules</span> <span class="kn">import</span> <span class="n">CronSchedule</span>
 
