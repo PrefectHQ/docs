@@ -6,6 +6,8 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
+        <meta name="description" content="Upgrade from Agents to Workers">
+      
       
       
         <link rel="canonical" href="https://docs.prefect.io/latest/guides/upgrade-guide-agents-to-workers/">
@@ -174,6 +176,7 @@ if (amplitudeKey){
   
 <meta property="og:type" content="website" />
 <meta property="og:title" content="Upgrade from Agents to Workers - Prefect Docs" />
+<meta property="og:description" content="Upgrade from Agents to Workers" />
 <meta property="og:image" content="https://docs.prefect.io/latest/assets/images/social/guides/upgrade-guide-agents-to-workers.png" />
 <meta property="og:image:type" content="image/png" />
 <meta property="og:image:width" content="1200" />
@@ -181,6 +184,7 @@ if (amplitudeKey){
 <meta property="og:url" content="https://docs.prefect.io/latest/guides/upgrade-guide-agents-to-workers/" />
 <meta property="twitter:card" content="summary_large_image" />
 <meta property="twitter.title" content="Upgrade from Agents to Workers - Prefect Docs" />
+<meta property="twitter:description" content="Upgrade from Agents to Workers" />
 <meta property="twitter:image" content="https://docs.prefect.io/latest/assets/images/social/guides/upgrade-guide-agents-to-workers.png" />
 </head>
   
@@ -1285,6 +1289,8 @@ if (amplitudeKey){
       
         
       
+        
+      
     
     
     <li class="md-nav__item md-nav__item--active md-nav__item--nested">
@@ -1301,7 +1307,7 @@ if (amplitudeKey){
   <span class="md-ellipsis">
     
   
-    Workers and agents
+    Workers and Agents
   
 
     
@@ -1317,7 +1323,7 @@ if (amplitudeKey){
             <span class="md-nav__icon md-icon"></span>
             
   
-    Workers and agents
+    Workers and Agents
   
 
           </label>
@@ -1335,7 +1341,7 @@ if (amplitudeKey){
   <span class="md-ellipsis">
     
   
-    Deploying flows to work pools and workers
+    Deploying Flows to Work pools and Workers
   
 
     
@@ -1608,7 +1614,7 @@ if (amplitudeKey){
   <span class="md-ellipsis">
     
   
-    Run a flow on AWS ECS
+    Run a Flow on AWS ECS
   
 
     
@@ -1635,6 +1641,32 @@ if (amplitudeKey){
     
   
     Azure Container Instance
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../deployment/daemonize/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    Daemonize Processes
   
 
     
@@ -6836,7 +6868,7 @@ if (amplitudeKey){
         <a href="../prefect-deploy/" class="md-path__link">
           
   <span class="md-ellipsis">
-    Workers and agents
+    Workers and Agents
   </span>
 
         </a>
@@ -6863,7 +6895,7 @@ if (amplitudeKey){
 
 
 <h1 id="upgrade-from-agents-to-workers">Upgrade from Agents to Workers<a class="headerlink" href="#upgrade-from-agents-to-workers" title="Permanent link">&para;</a></h1>
-<p>Upgrading from agents to workers significantly enhances the experience of deploying flows. It simplifies the specification of each flow's infrastructure and runtime environment. </p>
+<p>Upgrading from agents to workers significantly enhances the experience of deploying flows. It simplifies the specification of each flow's infrastructure and runtime environment.</p>
 <p>A <a href="/concepts/work-pools/#worker-overview">worker</a> is the fusion of an <a href="/concepts/agents/">agent</a> with an <a href="/concepts/infrastructure/">infrastructure block</a>. Like agents, workers poll a work pool for flow runs that are scheduled to start. Like infrastructure blocks, workers are typed - they work with only one kind of infrastructure and they specify the default configuration for jobs submitted to that infrastructure.</p>
 <p>Accordingly, workers are not a drop-in replacement for agents. <strong>Using workers requires deploying flows differently.</strong> In particular, deploying a flow with a worker does not involve specifying an infrastructure block. Instead, infrastructure configuration is specified on the <a href="/concepts/work-pools/">work pool</a> and passed to each worker that polls work from that pool.</p>
 <p>This guide provides an overview of the differences between agents and workers. It also describes how to upgrade from agents to workers in just a few quick steps.</p>
@@ -6889,18 +6921,18 @@ if (amplitudeKey){
 <h2 id="whats-different">What's different<a class="headerlink" href="#whats-different" title="Permanent link">&para;</a></h2>
 <ol>
 <li>
-<p><strong>Command to build deployments:</strong> </p>
-<p><code>prefect deployment build &lt;entrypoint&gt;</code> --&gt; <a href="/concepts/deployments/#deployment-declaration-reference"><code>prefect deploy</code></a> </p>
+<p><strong>Command to build deployments:</strong></p>
+<p><code>prefect deployment build &lt;entrypoint&gt;</code> --&gt; <a href="/concepts/deployments/#deployment-declaration-reference"><code>prefect deploy</code></a></p>
 <p>Prefect will now automatically detect flows in your repo and provide a <a href="/#step-5-deploy-the-flow">wizard</a> 🧙 to guide you through setting required attributes for your deployments.</p>
 </li>
 <li>
-<p><strong>Configuring remote flow code storage:</strong> </p>
+<p><strong>Configuring remote flow code storage:</strong></p>
 <p>storage blocks --&gt; <a href="/concepts/deployments/#the-pull-action">pull action</a></p>
 <p>And you can still use an existing <a href="/guides/deployment/storage-guide/">storage block as your pull action</a>!  The more general pull steps specification allows for explicit customization of the job that defines each run (for example, by adding an additional step that sets a working directory).</p>
 </li>
 <li>
-<p><strong>Configuring flow run infrastructure:</strong> </p>
-<p>run-infrastructure blocks --&gt; <a href="/concepts/work-pools/#worker-types">typed work pool</a> </p>
+<p><strong>Configuring flow run infrastructure:</strong></p>
+<p>run-infrastructure blocks --&gt; <a href="/concepts/work-pools/#worker-types">typed work pool</a></p>
 <p>Default infra config is now set on the typed work pool, and can be overwritten by both individual deployments or individual runs.</p>
 </li>
 <li>
@@ -6913,7 +6945,7 @@ if (amplitudeKey){
 <li>Storage blocks can be set as the pull action in a <code>prefect.yaml</code> file.</li>
 <li>Infrastructure blocks have similar configuration fields as typed work pools.</li>
 <li>
-<p>Deployment-level infra-overrides operate in much the same way. </p>
+<p>Deployment-level infra-overrides operate in much the same way.</p>
 <p><code>infra_override</code> -&gt; <a href="/concepts/deployments/#work-pool-fields"><code>job_variable</code></a></p>
 </li>
 <li>
@@ -6936,7 +6968,7 @@ if (amplitudeKey){
 </ol>
 </li>
 <li>
-<p><a href="/concepts/work-pools/#starting-a-worker">Start a worker</a> to poll this work pool. You should see the command to start the worker as soon as you save your new work pool. </p>
+<p><a href="/concepts/work-pools/#starting-a-worker">Start a worker</a> to poll this work pool. You should see the command to start the worker as soon as you save your new work pool.</p>
 <div class="highlight"><pre><span></span><code>prefect worker start -p &lt;work pool name&gt;
 </code></pre></div>
 </li>
@@ -6950,7 +6982,7 @@ if (amplitudeKey){
 </code></pre></div>
 <div class="admonition note">
 <p class="admonition-title">For step 4, select <code>y</code> on last prompt to save the configuration for the deployment.</p>
-<p>Saving the configuration for your deployment will result in a <code>prefect.yaml</code> file populated with your first deployment. You can use this YAML file to edit and <a href="/concepts/deployments/#working-with-multiple-deployments">define multiple deployments</a> for this repo. </p>
+<p>Saving the configuration for your deployment will result in a <code>prefect.yaml</code> file populated with your first deployment. You can use this YAML file to edit and <a href="/concepts/deployments/#working-with-multiple-deployments">define multiple deployments</a> for this repo.</p>
 </div>
 </li>
 <li>
@@ -6958,6 +6990,9 @@ if (amplitudeKey){
 </li>
 <li>Continue to create more <a href="/concepts/deployments/#deployment-declaration-reference">deployments</a> that use workers by either adding them to the <code>deployments</code> list in the <code>prefect.yaml</code> file and/or by continuing to use the deployment creation wizard.</li>
 </ol>
+
+  
+  
 
 
 
