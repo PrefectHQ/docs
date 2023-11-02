@@ -7000,10 +7000,10 @@ if (amplitudeKey){
 
             <details class="quote">
               <summary>Source code in <code>prefect/utilities/annotations.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">89</span>
-<span class="normal">90</span>
-<span class="normal">91</span>
-<span class="normal">92</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">NotSet</span><span class="p">:</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">106</span>
+<span class="normal">107</span>
+<span class="normal">108</span>
+<span class="normal">109</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">NotSet</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Singleton to distinguish `None` from a value that is not provided by the user.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -7093,6 +7093,20 @@ function.</p>
       <p>Simple wrapper to mark an expression as a different type so it will not be coerced
 by Prefect. For example, if you want to return a state from a flow without having
 the flow assume that state.</p>
+<p>quote will also instruct prefect to ignore introspection of the wrapped object
+when passed as flow or task parameter. Parameter introspection can be a
+significant performance hit when the object is a large collection,
+e.g. a large dictionary or DataFrame, and each element needs to be visited. This
+will disable task dependency tracking for the wrapped object, but likely will
+increase performance.</p>
+<div class="highlight"><pre><span></span><code>@task
+def my_task(df):
+    ...
+
+@flow
+def my_flow():
+    my_task(quote(df))
+</code></pre></div>
 
             <details class="quote">
               <summary>Source code in <code>prefect/utilities/annotations.py</code></summary>
@@ -7104,11 +7118,45 @@ the flow assume that state.</p>
 <span class="normal">73</span>
 <span class="normal">74</span>
 <span class="normal">75</span>
-<span class="normal">76</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">quote</span><span class="p">(</span><span class="n">BaseAnnotation</span><span class="p">[</span><span class="n">T</span><span class="p">]):</span>
+<span class="normal">76</span>
+<span class="normal">77</span>
+<span class="normal">78</span>
+<span class="normal">79</span>
+<span class="normal">80</span>
+<span class="normal">81</span>
+<span class="normal">82</span>
+<span class="normal">83</span>
+<span class="normal">84</span>
+<span class="normal">85</span>
+<span class="normal">86</span>
+<span class="normal">87</span>
+<span class="normal">88</span>
+<span class="normal">89</span>
+<span class="normal">90</span>
+<span class="normal">91</span>
+<span class="normal">92</span>
+<span class="normal">93</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">quote</span><span class="p">(</span><span class="n">BaseAnnotation</span><span class="p">[</span><span class="n">T</span><span class="p">]):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Simple wrapper to mark an expression as a different type so it will not be coerced</span>
 <span class="sd">    by Prefect. For example, if you want to return a state from a flow without having</span>
 <span class="sd">    the flow assume that state.</span>
+
+<span class="sd">    quote will also instruct prefect to ignore introspection of the wrapped object</span>
+<span class="sd">    when passed as flow or task parameter. Parameter introspection can be a</span>
+<span class="sd">    significant performance hit when the object is a large collection,</span>
+<span class="sd">    e.g. a large dictionary or DataFrame, and each element needs to be visited. This</span>
+<span class="sd">    will disable task dependency tracking for the wrapped object, but likely will</span>
+<span class="sd">    increase performance.</span>
+
+<span class="sd">    ```</span>
+<span class="sd">    @task</span>
+<span class="sd">    def my_task(df):</span>
+<span class="sd">        ...</span>
+
+<span class="sd">    @flow</span>
+<span class="sd">    def my_flow():</span>
+<span class="sd">        my_task(quote(df))</span>
+<span class="sd">    ```</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">unquote</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="p">:</span>
