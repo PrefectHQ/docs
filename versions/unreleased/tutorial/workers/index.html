@@ -7004,7 +7004,7 @@ In this case, you don't want an idle process running within that infrastructure.
 <p>These are expanded upon in the <a href="/guides/">Guides</a> section.</p>
 </div>
 <h3 id="create-a-work-pool">Create a work pool<a class="headerlink" href="#create-a-work-pool" title="Permanent link">&para;</a></h3>
-<p>In your terminal run the following command to set up a <strong>Docker</strong> type work pool.</p>
+<p>In your terminal, run the following command to set up a <strong>Docker</strong> type work pool.</p>
 <div class="terminal">
 <div class="highlight"><pre><span></span><code>prefect<span class="w"> </span>work-pool<span class="w"> </span>create<span class="w"> </span>--type<span class="w"> </span>docker<span class="w"> </span>my-docker-pool
 </code></pre></div>
@@ -7015,8 +7015,9 @@ In this case, you don't want an idle process running within that infrastructure.
 <div class="highlight"><pre><span></span><code>prefect<span class="w"> </span>work-pool<span class="w"> </span>ls
 </code></pre></div>
 </div>
-<p>Finally, let’s double check that you can see this work pool in your Prefect UI.
-Navigate to the Work Pools tab and verify that you see <code>my-docker-pool</code> listed.</p>
+
+<p>Finally, let’s double check that you can see this work pool in your Prefect UI.</p>
+<p>Navigate to the Work Pools tab and verify that you see <code>my-docker-pool</code> listed.</p>
 <p>When you click into <code>my-docker-pool</code> you should see a red status icon signifying that this work pool is not ready to submit work.</p>
 <p>To get the work pool ready to submit flow runs, you need to start a worker.</p>
 <h3 id="start-a-worker">Start a worker<a class="headerlink" href="#start-a-worker" title="Permanent link">&para;</a></h3>
@@ -7027,9 +7028,10 @@ To start a worker on your laptop, open a new terminal and confirm that your virt
 <div class="highlight"><pre><span></span><code>prefect<span class="w"> </span>worker<span class="w"> </span>start<span class="w"> </span>--pool<span class="w"> </span>my-docker-pool
 </code></pre></div>
 </div>
-<p>You should see the worker start - it's now polling the Prefect API to request any scheduled flow runs it should pick up and then submit for execution.
-You’ll see your new worker listed in the UI under the Workers tab of the Work Pools page with a recent last polled date.
-You should also be able to see a <code>Ready</code> status indicator on your work pool - progress!</p>
+
+<p>You should see the worker start - it's now polling the Prefect API to request any scheduled flow runs it should pick up and then submit for execution. 
+You’ll see your new worker listed in the UI under the Workers tab of the Work Pools page with a recent last polled date.</p>
+<p>You should also be able to see a <code>Ready</code> status indicator on your work pool - progress!</p>
 <p>You will need to keep this terminal session active in order for the worker to continue to pick up jobs. Since you are running this worker locally, the worker will terminate if you close the terminal. Therefore, in a production setting this worker should run as a daemonized or managed process. See next steps for more information on this.</p>
 <p>Now that you’ve set up your work pool and worker, we have what we need to kick off and execute flow runs of flows deployed to this work pool.
 Let's deploy your tutorial flow to <code>my-docker-pool</code>.</p>
@@ -7123,7 +7125,6 @@ Let's deploy your tutorial flow to <code>my-docker-pool</code>.</p>
 <p>Here's how you can easily set the <code>image_pull_policy</code> to be <code>Never</code> for this tutorial deployment without affecting the default value set on your work pool:</p>
 <div class="highlight"><span class="filename">repo_info.py</span><pre><span></span><code><span class="kn">import</span> <span class="nn">httpx</span>
 <span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span>
-<span class="kn">from</span> <span class="nn">prefect.deployments</span> <span class="kn">import</span> <span class="n">DeploymentImage</span>
 
 
 <span class="nd">@flow</span><span class="p">(</span><span class="n">log_prints</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -7141,9 +7142,9 @@ Let's deploy your tutorial flow to <code>my-docker-pool</code>.</p>
     <span class="n">get_repo_info</span><span class="o">.</span><span class="n">deploy</span><span class="p">(</span>
         <span class="n">name</span><span class="o">=</span><span class="s2">&quot;my-first-deployment&quot;</span><span class="p">,</span> 
         <span class="n">work_pool_name</span><span class="o">=</span><span class="s2">&quot;my-docker-pool&quot;</span><span class="p">,</span> 
-<span class="hll">        <span class="n">job_variables</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;image_pull_policy&quot;</span><span class="p">:</span> <span class="s2">&quot;Never&quot;</span><span class="p">},</span>
-</span>        <span class="n">image</span><span class="o">=</span><span class="s2">&quot;my-first-deployment-image:tutorial&quot;</span><span class="p">,</span>
-        <span class="n">push</span><span class="o">=</span><span class="kc">False</span>
+        <span class="n">job_variables</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;image_pull_policy&quot;</span><span class="p">:</span> <span class="s2">&quot;Never&quot;</span><span class="p">},</span>
+<span class="hll">        <span class="n">image</span><span class="o">=</span><span class="s2">&quot;my-first-deployment-image:tutorial&quot;</span><span class="p">,</span>
+</span>        <span class="n">push</span><span class="o">=</span><span class="kc">False</span>
     <span class="p">)</span>
 </code></pre></div>
 <p>To register this update to your deployment's parameters with Prefect's API, run:</p>
@@ -7159,10 +7160,9 @@ Let's deploy your tutorial flow to <code>my-docker-pool</code>.</p>
 </div>
 
 <div class="admonition danger">
-<p class="admonition-title">Common Pitfalls</p>
+<p class="admonition-title">Common Pitfall</p>
 <ul>
 <li>Store and run your deploy scripts at the <strong>root of your repo</strong>, otherwise the built Docker file may be missing files that it needs to execute!</li>
-<li>Ensure that you have pushed any changes to your flow script to your GitHub repo - at any given time, your worker will pull the code that exists there!</li>
 </ul>
 </div>
 <div class="admonition tip">
