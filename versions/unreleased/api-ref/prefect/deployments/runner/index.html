@@ -10358,15 +10358,16 @@ an image.</p>
         <tr>
           <td><code>work_pool_name</code></td>
           <td>
-                <code>str</code>
+                <code><span title="typing.Optional">Optional</span>[str]</code>
           </td>
           <td>
             <div class="doc-md-description">
-              <p>The name of the work pool to use for these deployments.</p>
+              <p>The name of the work pool to use for these deployments. Defaults to
+the value of <code>PREFECT_DEFAULT_WORK_POOL_NAME</code>.</p>
             </div>
           </td>
           <td>
-              <em>required</em>
+                <code>None</code>
           </td>
         </tr>
         <tr>
@@ -10681,10 +10682,20 @@ after deploying the deployments.</p>
 <span class="normal">885</span>
 <span class="normal">886</span>
 <span class="normal">887</span>
-<span class="normal">888</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@sync_compatible</span>
+<span class="normal">888</span>
+<span class="normal">889</span>
+<span class="normal">890</span>
+<span class="normal">891</span>
+<span class="normal">892</span>
+<span class="normal">893</span>
+<span class="normal">894</span>
+<span class="normal">895</span>
+<span class="normal">896</span>
+<span class="normal">897</span>
+<span class="normal">898</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@sync_compatible</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">deploy</span><span class="p">(</span>
     <span class="o">*</span><span class="n">deployments</span><span class="p">:</span> <span class="n">RunnerDeployment</span><span class="p">,</span>
-    <span class="n">work_pool_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">work_pool_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">image</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">DeploymentImage</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">build</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="n">push</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
@@ -10703,7 +10714,8 @@ after deploying the deployments.</p>
 
 <span class="sd">    Args:</span>
 <span class="sd">        *deployments: A list of deployments to deploy.</span>
-<span class="sd">        work_pool_name: The name of the work pool to use for these deployments.</span>
+<span class="sd">        work_pool_name: The name of the work pool to use for these deployments. Defaults to</span>
+<span class="sd">            the value of `PREFECT_DEFAULT_WORK_POOL_NAME`.</span>
 <span class="sd">        image: The name of the Docker image to build, including the registry and</span>
 <span class="sd">            repository. Pass a DeploymentImage instance to customize the Dockerfile used</span>
 <span class="sd">            and build arguments.</span>
@@ -10740,10 +10752,19 @@ after deploying the deployments.</p>
 <span class="sd">            )</span>
 <span class="sd">        ```</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">work_pool_name</span> <span class="o">=</span> <span class="n">work_pool_name</span> <span class="ow">or</span> <span class="n">PREFECT_DEFAULT_WORK_POOL_NAME</span><span class="o">.</span><span class="n">value</span><span class="p">()</span>
+
     <span class="k">if</span> <span class="ow">not</span> <span class="n">image</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">storage</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">deployments</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
             <span class="s2">&quot;Either an image or remote storage location must be provided when deploying&quot;</span>
             <span class="s2">&quot; a deployment.&quot;</span>
+        <span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">work_pool_name</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">&quot;A work pool name must be provided when deploying a deployment. Either&quot;</span>
+            <span class="s2">&quot; provide a work pool name when calling `deploy` or set&quot;</span>
+            <span class="s2">&quot; `PREFECT_DEFAULT_WORK_POOL_NAME` in your profile.&quot;</span>
         <span class="p">)</span>
 
     <span class="k">if</span> <span class="n">image</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
