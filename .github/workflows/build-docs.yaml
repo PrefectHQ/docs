@@ -237,10 +237,25 @@ jobs:
         PREFECT_SOURCE: ${{ github.workspace }}/prefect_source
       run: |
         version="${{ env.version }}"
-        # If version is not 'unreleased', skip this step. We should only need to update
-        # the Netlify TOML when building docs for commits to Prefect's main branch.
+        # Update Netlify TOML when building docs
         if [[ $version != "unreleased" ]]; then
-          exit 0
+            cat <<EOT > ./netlify.additions.toml 
+[[redirects]]
+from = "/2*"
+to = "/2*:splat"
+status = 200
+force = false
+
+[[redirects]]
+from = "/*"
+to = "/$version/:splat"
+status = 301
+
+[[redirects]]
+from = "/latest/"
+to = "/$version/"
+status = 200
+EOT
         fi
 
         git checkout $branch_name
