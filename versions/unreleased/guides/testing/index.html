@@ -1449,10 +1449,6 @@ if (amplitudeKey){
       
         
       
-        
-      
-        
-      
     
     
     
@@ -1551,32 +1547,6 @@ if (amplitudeKey){
   
   
     <li class="md-nav__item">
-      <a href="../deployment/storage-guide/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    
-  
-    Storage
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../deployment/kubernetes/" class="md-nav__link">
         
   
@@ -1629,39 +1599,13 @@ if (amplitudeKey){
   
   
     <li class="md-nav__item">
-      <a href="https://prefecthq.github.io/prefect-aws/#using-prefect-with-aws-ecs" class="md-nav__link">
+      <a href="../deployment/serverless-workers/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
     
   
-    Run a Flow on AWS ECS
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../deployment/aci/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    
-  
-    Azure Container Instance
+    Serverless Work Pools with Workers
   
 
     
@@ -6852,7 +6796,7 @@ if (amplitudeKey){
 <span class="k">def</span> <span class="nf">test_my_favorite_flow</span><span class="p">():</span>
   <span class="k">with</span> <span class="n">prefect_test_harness</span><span class="p">():</span>
       <span class="c1"># run the flow against a temporary testing database</span>
-      <span class="k">assert</span> <span class="n">my_favorite_flow</span><span class="p">()</span> <span class="o">==</span> <span class="mi">42</span> 
+      <span class="k">assert</span> <span class="n">my_favorite_flow</span><span class="p">()</span> <span class="o">==</span> <span class="mi">42</span>
 </code></pre></div>
 <p>For more extensive testing, you can leverage <code>prefect_test_harness</code> as a fixture in your unit testing framework. For example, when using <code>pytest</code>:</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span>
@@ -6891,6 +6835,16 @@ if (amplitudeKey){
 <span class="k">def</span> <span class="nf">test_my_favorite_task</span><span class="p">():</span>
     <span class="k">assert</span> <span class="n">my_favorite_task</span><span class="o">.</span><span class="n">fn</span><span class="p">()</span> <span class="o">==</span> <span class="mi">42</span>
 </code></pre></div>
+<div class="admonition tip">
+<p class="admonition-title">Disable logger</p>
+<p>If your task makes uses a logger, you can disable the logger in order to avoid the <code>RuntimeError</code> raised from a missing flow context.
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect.logging</span> <span class="kn">import</span> <span class="n">disable_run_logger</span>
+
+<span class="k">def</span> <span class="nf">test_my_favorite_task</span><span class="p">():</span>
+    <span class="k">with</span> <span class="n">disable_run_logger</span><span class="p">():</span>
+        <span class="k">assert</span> <span class="n">my_favorite_task</span><span class="o">.</span><span class="n">fn</span><span class="p">()</span> <span class="o">==</span> <span class="mi">42</span>
+</code></pre></div></p>
+</div>
 
 
 
