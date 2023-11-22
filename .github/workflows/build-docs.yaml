@@ -237,27 +237,12 @@ jobs:
         PREFECT_SOURCE: ${{ github.workspace }}/prefect_source
       run: |
         version="${{ env.version }}"
-        # Update Netlify TOML when building docs
+        # If version is not 'unreleased', skip this step. We should only need to update
+        # the Netlify TOML when building docs for commits to Prefect's main branch.
         if [[ $version != "unreleased" ]]; then
-            cat <<EOT > ./netlify.additions.toml 
-            [[redirects]]
-            from = "/2*"
-            to = "/2*:splat"
-            status = 200
-            force = false
-            
-            [[redirects]]
-            from = "/*"
-            to = "/$version/:splat"
-            status = 301
-            
-            [[redirects]]
-            from = "/latest/"
-            to = "/$version/"
-            status = 200
-            EOT
+          exit 0
         fi
-
+        
         git checkout $branch_name
 
         echo "Merging Netlify TOML overrides and additions..."
