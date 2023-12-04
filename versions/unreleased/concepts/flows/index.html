@@ -2010,6 +2010,20 @@ if (amplitudeKey){
 </li>
       
         <li class="md-nav__item">
+  <a href="#pausing-or-suspending-a-flow-run" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Pausing or suspending a flow run
+        </span>
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Pausing or suspending a flow run">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
   <a href="#pause-a-flow-run" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2019,6 +2033,24 @@ if (amplitudeKey){
       
     </span>
   </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#suspending-a-flow-run" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Suspending a flow run
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -7208,6 +7240,20 @@ if (amplitudeKey){
 </li>
       
         <li class="md-nav__item">
+  <a href="#pausing-or-suspending-a-flow-run" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Pausing or suspending a flow run
+        </span>
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Pausing or suspending a flow run">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
   <a href="#pause-a-flow-run" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -7217,6 +7263,24 @@ if (amplitudeKey){
       
     </span>
   </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#suspending-a-flow-run" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Suspending a flow run
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -8033,7 +8097,11 @@ Completed<span class="o">(</span><span class="nv">message</span><span class="o">
 </code></pre></div>
 <p>When you serve a flow loaded from remote storage, the serving process will periodically poll your remote storage for updates to the flow's code. This pattern allows you to update your flow code without restarting the serving process.</p>
 </div>
-<h2 id="pause-a-flow-run">Pause a flow run<a class="headerlink" href="#pause-a-flow-run" title="Permanent link">&para;</a></h2>
+<h2 id="pausing-or-suspending-a-flow-run">Pausing or suspending a flow run<a class="headerlink" href="#pausing-or-suspending-a-flow-run" title="Permanent link">&para;</a></h2>
+<p>Prefect provides you with the ability to halt a flow run with two functions that are similar, but slightly different.
+When a flow run is paused, code execution is stopped and the process continues to run. 
+When a flow run is suspended, code execution is stopped and so is the process.</p>
+<h3 id="pause-a-flow-run">Pause a flow run<a class="headerlink" href="#pause-a-flow-run" title="Permanent link">&para;</a></h3>
 <p>Prefect enables pausing an in-progress flow run for manual approval. Prefect exposes this functionality via the <a href="/api-ref/prefect/engine/#prefect.engine.pause_flow_run"><code>pause_flow_run</code></a> and <a href="/api-ref/prefect/engine/#prefect.engine.resume_flow_run"><code>resume_flow_run</code></a> functions, as well as the Prefect UI.</p>
 <p>Most simply, <code>pause_flow_run</code> can be called inside a flow. A timeout option can be supplied as well &mdash; after the specified number of seconds, the flow will fail if it hasn't been resumed.</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">task</span><span class="p">,</span> <span class="n">flow</span><span class="p">,</span> <span class="n">pause_flow_run</span><span class="p">,</span> <span class="n">resume_flow_run</span>
@@ -8050,7 +8118,7 @@ Completed<span class="o">(</span><span class="nv">message</span><span class="o">
     <span class="k">await</span> <span class="n">pause_flow_run</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="mi">600</span><span class="p">)</span>  <span class="c1"># pauses for 10 minutes</span>
     <span class="k">await</span> <span class="n">marvin_punchline</span><span class="p">()</span>
 </code></pre></div>
-<p>Calling this flow will pause after the first task and wait for resumption.</p>
+<p>Calling this flow will block code execution after the first task and wait for resumption.</p>
 <div class="terminal">
 <div class="highlight"><pre><span></span><code>await<span class="w"> </span>inspiring_joke<span class="o">()</span>
 &gt;<span class="w"> </span><span class="s2">&quot;a raft of ducks walk into a bar...&quot;</span>
@@ -8066,6 +8134,9 @@ Completed<span class="o">(</span><span class="nv">message</span><span class="o">
 </code></pre></div>
 </div>
 
+<h3 id="suspending-a-flow-run">Suspending a flow run<a class="headerlink" href="#suspending-a-flow-run" title="Permanent link">&para;</a></h3>
+<p>Similar to pausing a flow run, Prefect enables suspending an in-progress flow run. Prefect exposes this functionality via the <a href="/api-ref/prefect/engine/#prefect.engine.suspend_flow_run"><code>susepend_flow_run</code></a> and <a href="/api-ref/prefect/engine/#prefect.engine.resume_flow_run"><code>resume_flow_run</code></a> functions, as well as the Prefect UI.</p>
+<p>When called inside of a flow <code>suspend_flow_run</code> will immediately suspend execution of the flow run. The flow run will be marked as <code>Suspended</code> and will not be resumed until <code>resume_flow_run</code> is called.</p>
 <p>Here is an example of a flow that does not block flow execution while paused. This flow will exit after one task, and will be rescheduled upon resuming. The stored result of the first task is retrieved instead of being rerun.</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">pause_flow_run</span><span class="p">,</span> <span class="n">task</span>
 
@@ -8082,32 +8153,10 @@ Completed<span class="o">(</span><span class="nv">message</span><span class="o">
     <span class="n">alpha</span> <span class="o">=</span> <span class="n">foo</span><span class="p">(</span><span class="n">wait_for</span><span class="o">=</span><span class="p">[</span><span class="n">y</span><span class="p">])</span>
     <span class="n">omega</span> <span class="o">=</span> <span class="n">foo</span><span class="p">(</span><span class="n">wait_for</span><span class="o">=</span><span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">])</span>
 </code></pre></div>
-<p>This long-running flow can be paused out of process, either by calling <code>pause_flow_run(flow_run_id=&lt;ID&gt;)</code> or selecting the <strong>Pause</strong> button in the Prefect UI or Prefect Cloud.</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
-<span class="kn">import</span> <span class="nn">time</span>
-
-<span class="nd">@task</span><span class="p">(</span><span class="n">persist_result</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">foo</span><span class="p">():</span>
-    <span class="k">return</span> <span class="mi">42</span>
-
-<span class="nd">@flow</span><span class="p">(</span><span class="n">persist_result</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">longrunning</span><span class="p">():</span>
-    <span class="n">res</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">20</span><span class="p">):</span>
-        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
-        <span class="n">res</span> <span class="o">+=</span> <span class="p">(</span><span class="k">await</span> <span class="n">foo</span><span class="p">())</span>
-    <span class="k">return</span> <span class="n">res</span>
+<p>Flow runs can be suspended out-of-process by calling <code>suspend_flow_run(flow_run_id=&lt;ID&gt;)</code> or selecting the <strong>Suspend</strong> button in the Prefect UI or Prefect Cloud.</p>
+<p>Suspended flow runs can be resumed by clicking the <strong>Resume</strong> button in the Prefect UI or calling the <code>resume_flow_run</code> utility via client code.</p>
+<div class="highlight"><pre><span></span><code><span class="n">resume_flow_run</span><span class="p">(</span><span class="n">FLOW_RUN_ID</span><span class="p">)</span>
 </code></pre></div>
-<div class="admonition tip">
-<p class="admonition-title">Pausing flow runs is blocking by default</p>
-<p>By default, pausing a flow run blocks the worker &mdash; the flow is still running inside the <code>pause_flow_run</code> function. However, you may pause any flow run in this fashion, including non-deployment local flow runs and subflows.</p>
-<p>Alternatively, flow runs can be paused without blocking the flow run process. This is particularly useful when running the flow via a worker and you want the worker to be able to pick up other flows while the paused flow is paused.</p>
-<p>Non-blocking pause can be accomplished by setting the <code>reschedule</code> flag to <code>True</code>. In order to use this feature, flows that pause with the <code>reschedule</code> flag must have:</p>
-<ul>
-<li>An associated deployment</li>
-<li>Results configured with the <code>persist_results</code> flag</li>
-</ul>
-</div>
 <h2 id="cancel-a-flow-run">Cancel a flow run<a class="headerlink" href="#cancel-a-flow-run" title="Permanent link">&para;</a></h2>
 <p>You may cancel a scheduled or in-progress flow run from the CLI, UI, REST API, or Python client.</p>
 <p>When cancellation is requested, the flow run is moved to a "Cancelling" state. The worker monitors the state of flow runs and detects that cancellation has been requested. The worker then sends a signal to the flow run infrastructure, requesting termination of the run. If the run does not terminate after a grace period (default of 30 seconds), the infrastructure will be killed, ensuring the flow run exits.</p>
