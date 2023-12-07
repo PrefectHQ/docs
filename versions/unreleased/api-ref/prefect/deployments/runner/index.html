@@ -10820,7 +10820,11 @@ after deploying the deployments.</p>
 <span class="normal">892</span>
 <span class="normal">893</span>
 <span class="normal">894</span>
-<span class="normal">895</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@sync_compatible</span>
+<span class="normal">895</span>
+<span class="normal">896</span>
+<span class="normal">897</span>
+<span class="normal">898</span>
+<span class="normal">899</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@sync_compatible</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">deploy</span><span class="p">(</span>
     <span class="o">*</span><span class="n">deployments</span><span class="p">:</span> <span class="n">RunnerDeployment</span><span class="p">,</span>
     <span class="n">work_pool_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -10911,7 +10915,11 @@ after deploying the deployments.</p>
     <span class="n">is_docker_based_work_pool</span> <span class="o">=</span> <span class="n">get_from_dict</span><span class="p">(</span>
         <span class="n">work_pool</span><span class="o">.</span><span class="n">base_job_template</span><span class="p">,</span> <span class="s2">&quot;variables.properties.image&quot;</span><span class="p">,</span> <span class="kc">False</span>
     <span class="p">)</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">is_docker_based_work_pool</span><span class="p">:</span>
+    <span class="n">is_block_based_work_pool</span> <span class="o">=</span> <span class="n">get_from_dict</span><span class="p">(</span>
+        <span class="n">work_pool</span><span class="o">.</span><span class="n">base_job_template</span><span class="p">,</span> <span class="s2">&quot;variables.properties.block&quot;</span><span class="p">,</span> <span class="kc">False</span>
+    <span class="p">)</span>
+    <span class="c1"># carve out an exception for block based work pools that only have a block in their base job template</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">is_docker_based_work_pool</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">is_block_based_work_pool</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
             <span class="sa">f</span><span class="s2">&quot;Work pool </span><span class="si">{</span><span class="n">work_pool_name</span><span class="si">!r}</span><span class="s2"> does not support custom Docker images. &quot;</span>
             <span class="s2">&quot;Please use a work pool with an `image` variable in its base job template.&quot;</span>
