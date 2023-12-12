@@ -7726,6 +7726,24 @@ RUN pip install --extra-index-url ${AUTHED_ARTIFACT_REG_URL} -r /requirements.tx
 </code></pre></div>
 <p>Note that we used a <a href="/concepts/blocks/">Prefect Secret block</a> to load the URL configuration for the artifact registry above.</p>
 <p>See all the optional keyword arguments for the DeploymentImage class <a href="https://docker-py.readthedocs.io/en/stable/images.html#docker.models.images.ImageCollection.build">here</a>. </p>
+<div class="admonition tip">
+<p class="admonition-title">Default Docker namespace</p>
+<p>You can set the <code>PREFECT_DEFAULT_DOCKER_BUILD_NAMESPACE</code> setting to append a default Docker namespace to all images you build with <code>.deploy</code>. This is great if you use a private registry to store your images.</p>
+<p>To set a default Docker namespace for your current profile run:</p>
+<p><div class="terminal">
+<div class="highlight"><pre><span></span><code>prefect<span class="w"> </span>config<span class="w"> </span><span class="nb">set</span><span class="w"> </span><span class="nv">PREFECT_DEFAULT_DOCKER_BUILD_NAMESPACE</span><span class="o">=</span>&lt;docker-registry-url&gt;/&lt;organization-or-username&gt;
+</code></pre></div>
+</div></p>
+<p>Once set, you can omit the namespace from your image name when creating a deployment:</p>
+<div class="highlight"><span class="filename">with_default_docker_namespace.py</span><pre><span></span><code><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">buy</span><span class="o">.</span><span class="n">deploy</span><span class="p">(</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;my-code-baked-into-an-image-deployment&quot;</span><span class="p">,</span> 
+        <span class="n">work_pool_name</span><span class="o">=</span><span class="s2">&quot;my-docker-pool&quot;</span><span class="p">,</span> 
+<span class="hll">        <span class="n">image</span><span class="o">=</span><span class="s2">&quot;my_image:my_image_tag&quot;</span>
+</span>    <span class="p">)</span>
+</code></pre></div>
+<p>The above code will build an image with the format <code>&lt;docker-registry-url&gt;/&lt;organization-or-username&gt;/my_image:my_image_tag</code> when <code>PREFECT_DEFAULT_DOCKER_BUILD_NAMESPACE</code> is set.</p>
+</div>
 <p>While baking code into Docker images is a popular deployment option, many teams decide to store their workflow code in git-based storage, such as GitHub, Bitbucket, or Gitlab. Let's see how to do that next.</p>
 <h3 id="store-you-code-in-git-based-cloud-storage">Store you code in git-based cloud storage<a class="headerlink" href="#store-you-code-in-git-based-cloud-storage" title="Permanent link">&para;</a></h3>
 <p>If you don't specify an <code>image</code> argument for <code>.deploy</code>, then you need to specify where to pull the flow code from at runtime with the <code>from_source</code> method. </p>
