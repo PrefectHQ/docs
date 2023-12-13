@@ -1143,6 +1143,8 @@ if (amplitudeKey){
       
         
       
+        
+      
     
     
     
@@ -1326,6 +1328,32 @@ if (amplitudeKey){
     
   
     Troubleshooting
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../guides/managed-execution/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    Managed Execution
   
 
     
@@ -9647,7 +9675,9 @@ flow's tasks cannot be run unless the flow is also running.</p>
 <span class="normal">833</span>
 <span class="normal">834</span>
 <span class="normal">835</span>
-<span class="normal">836</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">PreventRunningTasksFromStoppedFlows</span><span class="p">(</span><span class="n">BaseOrchestrationRule</span><span class="p">):</span>
+<span class="normal">836</span>
+<span class="normal">837</span>
+<span class="normal">838</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">PreventRunningTasksFromStoppedFlows</span><span class="p">(</span><span class="n">BaseOrchestrationRule</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Prevents running tasks from stopped flows.</span>
 
@@ -9673,8 +9703,10 @@ flow's tasks cannot be run unless the flow is also running.</p>
             <span class="k">elif</span> <span class="n">flow_run</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">StateType</span><span class="o">.</span><span class="n">PAUSED</span><span class="p">:</span>
                 <span class="c1"># Use the flow run&#39;s Paused state details to preserve data like</span>
                 <span class="c1"># timeouts.</span>
-                <span class="n">paused_state</span> <span class="o">=</span> <span class="n">flow_run</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">as_state</span><span class="p">()</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span>
-                    <span class="n">update</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;NotReady&quot;</span><span class="p">}</span>
+                <span class="n">paused_state</span> <span class="o">=</span> <span class="n">states</span><span class="o">.</span><span class="n">Paused</span><span class="p">(</span>
+                    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;NotReady&quot;</span><span class="p">,</span>
+                    <span class="n">pause_expiration_time</span><span class="o">=</span><span class="n">flow_run</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">state_details</span><span class="o">.</span><span class="n">pause_timeout</span><span class="p">,</span>
+                    <span class="n">reschedule</span><span class="o">=</span><span class="n">flow_run</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">state_details</span><span class="o">.</span><span class="n">pause_reschedule</span><span class="p">,</span>
                 <span class="p">)</span>
                 <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">reject_transition</span><span class="p">(</span>
                     <span class="n">state</span><span class="o">=</span><span class="n">paused_state</span><span class="p">,</span>
@@ -9734,9 +9766,7 @@ flow's tasks cannot be run unless the flow is also running.</p>
 
             <details class="quote">
               <summary>Source code in <code>prefect/server/orchestration/core_policy.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">839</span>
-<span class="normal">840</span>
-<span class="normal">841</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">841</span>
 <span class="normal">842</span>
 <span class="normal">843</span>
 <span class="normal">844</span>
@@ -9755,7 +9785,9 @@ flow's tasks cannot be run unless the flow is also running.</p>
 <span class="normal">857</span>
 <span class="normal">858</span>
 <span class="normal">859</span>
-<span class="normal">860</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">EnforceCancellingToCancelledTransition</span><span class="p">(</span><span class="n">BaseOrchestrationRule</span><span class="p">):</span>
+<span class="normal">860</span>
+<span class="normal">861</span>
+<span class="normal">862</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">EnforceCancellingToCancelledTransition</span><span class="p">(</span><span class="n">BaseOrchestrationRule</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Rejects transitions from Cancelling to any terminal state except for Cancelled.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -9825,9 +9857,7 @@ a <code>Scheduled</code> state that may have associated infrastructure.</p>
 
             <details class="quote">
               <summary>Source code in <code>prefect/server/orchestration/core_policy.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">863</span>
-<span class="normal">864</span>
-<span class="normal">865</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">865</span>
 <span class="normal">866</span>
 <span class="normal">867</span>
 <span class="normal">868</span>
@@ -9847,7 +9877,9 @@ a <code>Scheduled</code> state that may have associated infrastructure.</p>
 <span class="normal">882</span>
 <span class="normal">883</span>
 <span class="normal">884</span>
-<span class="normal">885</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">BypassCancellingScheduledFlowRuns</span><span class="p">(</span><span class="n">BaseOrchestrationRule</span><span class="p">):</span>
+<span class="normal">885</span>
+<span class="normal">886</span>
+<span class="normal">887</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">BypassCancellingScheduledFlowRuns</span><span class="p">(</span><span class="n">BaseOrchestrationRule</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Rejects transitions from Scheduled to Cancelling, and instead sets the state to Cancelled,</span>
 <span class="sd">    if the flow run has no associated infrastructure process ID.</span>
 
