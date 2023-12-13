@@ -7225,18 +7225,19 @@ Prefect can dramatically simplify this process by automatically provisioning the
 </code></pre></div>
 </div>
 <p>Using the <code>--provision-infra</code> flag will automatically set up your default AWS account to be ready to execute flows via ECS tasks. 
-In your AWS account, this command will create a new IAM user, IAM policy, ECS cluster that uses AWS Fargate, and VPC, if they don't already exist.
+In your AWS account, this command will create a new IAM user, IAM policy, ECS cluster that uses AWS Fargate, VPC, and ECR repository if they don't already exist.
 In your Prefect workspace, this command will create an <a href="https://prefecthq.github.io/prefect-aws/credentials/"><code>AWSCredentials</code> block</a> for storing the generated credentials.</p>
 <p>Here's an abbreviated example output from running the command:</p>
 <div class="terminal">
 <div class="highlight"><pre><span></span><code>╭───────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
-│<span class="w"> </span>Provisioning<span class="w"> </span>infrastructure<span class="w"> </span><span class="k">for</span><span class="w"> </span>your<span class="w"> </span>work<span class="w"> </span>pool<span class="w"> </span>my-ecs-pool<span class="w"> </span>will<span class="w"> </span>require:<span class="w">                                         </span>│
+│<span class="w"> </span>Provisioning<span class="w"> </span>infrastructure<span class="w"> </span><span class="k">for</span><span class="w"> </span>your<span class="w"> </span>work<span class="w"> </span>pool<span class="w"> </span>my-ecs-pool<span class="w"> </span>will<span class="w"> </span>require:<span class="w">                                          </span>│
 │<span class="w">                                                                                                                   </span>│
 │<span class="w">          </span>-<span class="w"> </span>Creating<span class="w"> </span>an<span class="w"> </span>IAM<span class="w"> </span>user<span class="w"> </span><span class="k">for</span><span class="w"> </span>managing<span class="w"> </span>ECS<span class="w"> </span>tasks:<span class="w"> </span>prefect-ecs-user<span class="w">                                          </span>│
 │<span class="w">          </span>-<span class="w"> </span>Creating<span class="w"> </span>and<span class="w"> </span>attaching<span class="w"> </span>an<span class="w"> </span>IAM<span class="w"> </span>policy<span class="w"> </span><span class="k">for</span><span class="w"> </span>managing<span class="w"> </span>ECS<span class="w"> </span>tasks:<span class="w"> </span>prefect-ecs-policy<span class="w">                        </span>│
 │<span class="w">          </span>-<span class="w"> </span>Storing<span class="w"> </span>generated<span class="w"> </span>AWS<span class="w"> </span>credentials<span class="w"> </span><span class="k">in</span><span class="w"> </span>a<span class="w"> </span>block<span class="w">                                                           </span>│
 │<span class="w">          </span>-<span class="w"> </span>Creating<span class="w"> </span>an<span class="w"> </span>ECS<span class="w"> </span>cluster<span class="w"> </span><span class="k">for</span><span class="w"> </span>running<span class="w"> </span>Prefect<span class="w"> </span>flows:<span class="w"> </span>prefect-ecs-cluster<span class="w">                                 </span>│
 │<span class="w">          </span>-<span class="w"> </span>Creating<span class="w"> </span>a<span class="w"> </span>VPC<span class="w"> </span>with<span class="w"> </span>CIDR<span class="w"> </span><span class="m">172</span>.31.0.0/16<span class="w"> </span><span class="k">for</span><span class="w"> </span>running<span class="w"> </span>ECS<span class="w"> </span>tasks:<span class="w"> </span>prefect-ecs-vpc<span class="w">                          </span>│
+│<span class="w">          </span>-<span class="w"> </span>Creating<span class="w"> </span>an<span class="w"> </span>ECR<span class="w"> </span>repository<span class="w"> </span><span class="k">for</span><span class="w"> </span>storing<span class="w"> </span>Prefect<span class="w"> </span>images:<span class="w"> </span>prefect-flows<span class="w">                                   </span>│
 ╰───────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
 Proceed<span class="w"> </span>with<span class="w"> </span>infrastructure<span class="w"> </span>provisioning?<span class="w"> </span><span class="o">[</span>y/n<span class="o">]</span>:<span class="w"> </span>y
 Provisioning<span class="w"> </span>IAM<span class="w"> </span>user
@@ -7248,10 +7249,39 @@ Provisioning<span class="w"> </span>VPC
 Creating<span class="w"> </span>internet<span class="w"> </span>gateway
 Setting<span class="w"> </span>up<span class="w"> </span>subnets
 Setting<span class="w"> </span>up<span class="w"> </span>security<span class="w"> </span>group
+Provisioning<span class="w"> </span>ECR<span class="w"> </span>repository
+Authenticating<span class="w"> </span>with<span class="w"> </span>ECR
+Setting<span class="w"> </span>default<span class="w"> </span>Docker<span class="w"> </span>build<span class="w"> </span>namespace
 Provisioning<span class="w"> </span>Infrastructure<span class="w"> </span>━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━<span class="w"> </span><span class="m">100</span>%<span class="w"> </span><span class="m">0</span>:00:00
 Infrastructure<span class="w"> </span>successfully<span class="w"> </span>provisioned!
 Created<span class="w"> </span>work<span class="w"> </span>pool<span class="w"> </span><span class="s1">&#39;my-ecs-pool&#39;</span>!
 </code></pre></div>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Default Docker build namespace</p>
+<p>After infrastructure provisioning completes, you will be logged into your new ECR repository and the default Docker build namespace will be set to the URL of the registry.</p>
+<p>While the default namespace is set, you will not need to provide the registry URL when building images as part of your deployment process.</p>
+<p>To take advantage of this, you can write your deploy scripts like this:</p>
+<div class="highlight"><span class="filename">example_deploy_script.py</span><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span>                                                       
+<span class="kn">from</span> <span class="nn">prefect.deployments</span> <span class="kn">import</span> <span class="n">DeploymentImage</span>                                
+
+
+<span class="nd">@flow</span><span class="p">(</span><span class="n">log_prints</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>                                                         
+<span class="k">def</span> <span class="nf">my_flow</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;world&quot;</span><span class="p">):</span>                                              
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Hello </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">! I&#39;m a flow running in a ECS task!&quot;</span><span class="p">)</span> 
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>                                                     
+    <span class="n">my_flow</span><span class="o">.</span><span class="n">deploy</span><span class="p">(</span>                                                            
+        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;my-deployment&quot;</span><span class="p">,</span>                                                  
+        <span class="n">image</span><span class="o">=</span><span class="n">DeploymentImage</span><span class="p">(</span>                                                 
+<span class="hll">            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;my-repository:latest&quot;</span><span class="p">,</span>                                            
+</span>            <span class="n">platform</span><span class="o">=</span><span class="s2">&quot;linux/amd64&quot;</span><span class="p">,</span>                                            
+        <span class="p">)</span>                                                                      
+    <span class="p">)</span>       
+</code></pre></div>
+<p>This will build an image with the tag <code>&lt;ecr-registry-url&gt;/my-image:latest</code> and push it to the registry.</p>
+<p>Your image name will need to match the name of the repository created with your work pool. You can create new repositories in the ECR console.</p>
 </div>
 </div>
 <div class="tabbed-block">
