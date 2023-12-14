@@ -7301,7 +7301,7 @@ Features are likely to change without warning.</p>
 <p>Run the deployment from the UI or from the CLI.</p>
 <p>That's it! You ran a flow on remote infrastructure without any infrastructure setup, worker, or cloud provider account.</p>
 <h3 id="adding-dependencies">Adding dependencies<a class="headerlink" href="#adding-dependencies" title="Permanent link">&para;</a></h3>
-<p>You can install Python package dependencies at runtime by configuring <code>job_variables={"env": {"EXTRA_PIP_PACKAGES": ["pandas", "prefect-aws"] }}</code> like this:</p>
+<p>You can install Python package dependencies at runtime by configuring <code>job_variables={"pip_packages": ["pandas", "prefect-aws"]}</code> like this:</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span>
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
@@ -7310,8 +7310,8 @@ Features are likely to change without warning.</p>
     <span class="n">entrypoint</span><span class="o">=</span><span class="s2">&quot;flow.py:my_flow&quot;</span><span class="p">,</span>
     <span class="p">)</span><span class="o">.</span><span class="n">deploy</span><span class="p">(</span>
         <span class="n">name</span><span class="o">=</span><span class="s2">&quot;test-managed-flow&quot;</span><span class="p">,</span>
-        <span class="n">work_pool_name</span><span class="o">=</span><span class="s2">&quot;prefect-managed&quot;</span><span class="p">,</span>
-<span class="hll">        <span class="n">job_variables</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;env&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;EXTRA_PIP_PACKAGES&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;pandas&quot;</span><span class="p">,</span> <span class="s2">&quot;prefect-aws&quot;</span><span class="p">]</span> <span class="p">}}</span>
+        <span class="n">work_pool_name</span><span class="o">=</span><span class="s2">&quot;my-managed-pool&quot;</span><span class="p">,</span>
+<span class="hll">        <span class="n">job_variables</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;pip_packages&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;pandas&quot;</span><span class="p">,</span> <span class="s2">&quot;prefect-aws&quot;</span><span class="p">]}</span>
 </span>    <span class="p">)</span>
 </code></pre></div>
 <p>Alternatively, you can specify a <code>requirements.txt</code> file and reference it in your <code>prefect.yaml</code> <code>pull_step</code>.</p>
@@ -7320,10 +7320,12 @@ Features are likely to change without warning.</p>
 <p>All limitations listed below may change without warning during the beta period.
 We will update this page as we make changes.</p>
 <h3 id="concurrency-work-pools">Concurrency &amp; work pools<a class="headerlink" href="#concurrency-work-pools" title="Permanent link">&para;</a></h3>
-<ul>
-<li>Maximum of 10 concurrent flow runs per workspace across all <code>prefect:managed</code> pools.</li>
-<li>Maximum of 5 managed execution work pools per workspace.</li>
-</ul>
+<p>Free tier accounts are limited to:
+- Maximum of 1 concurrent flow run per workspace across all <code>prefect:managed</code> pools.
+- Maximum of 1 managed execution work pool per workspace.</p>
+<p>Pro tier and above accounts are limited to:
+- Maximum of 10 concurrent flow runs per workspace across all <code>prefect:managed</code> pools.
+- Maximum of 5 managed execution work pools per workspace.</p>
 <h3 id="images">Images<a class="headerlink" href="#images" title="Permanent link">&para;</a></h3>
 <p>At this time, managed execution requires that you run the official Prefect Docker image: <code>prefecthq/prefect:2-latest</code>. However, as noted above, you can install Python package dependencies at runtime. If you need to use your own image, we recommend using another type of work pool.</p>
 <h3 id="code-storage">Code storage<a class="headerlink" href="#code-storage" title="Permanent link">&para;</a></h3>
