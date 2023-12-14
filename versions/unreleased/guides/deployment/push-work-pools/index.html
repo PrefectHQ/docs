@@ -1645,6 +1645,19 @@ if (amplitudeKey){
 </li>
       
         <li class="md-nav__item">
+  <a href="#provisioning-infrastructure-for-an-existing-push-work-pool" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Provisioning infrastructure for an existing push work pool
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#manual-infrastructure-provisioning" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -7056,6 +7069,19 @@ if (amplitudeKey){
 </li>
       
         <li class="md-nav__item">
+  <a href="#provisioning-infrastructure-for-an-existing-push-work-pool" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Provisioning infrastructure for an existing push work pool
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#manual-infrastructure-provisioning" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -7424,6 +7450,43 @@ Created<span class="w"> </span>work<span class="w"> </span>pool<span class="w"> 
 
 </div>
 
+<h2 id="provisioning-infrastructure-for-an-existing-push-work-pool">Provisioning infrastructure for an existing push work pool<a class="headerlink" href="#provisioning-infrastructure-for-an-existing-push-work-pool" title="Permanent link">&para;</a></h2>
+<p>If you already have a push work pool set up, but haven't configured the necessary infrastructure, you can use the <code>provision-infra</code> sub-command to provision the infrastructure for that work pool.
+For example, you can run the following command if you have a work pool named "my-work-pool".</p>
+<div class="terminal">
+
+<div class="highlight"><pre><span></span><code>prefect<span class="w"> </span>work-pool<span class="w"> </span>provision-infra<span class="w"> </span>my-work-pool
+</code></pre></div>
+
+</div>
+
+<p>Prefect will create the necessary infrastructure for the <code>my-work-pool</code> work pool and provide you with a summary of the changes to be made:</p>
+<div class="terminal">
+
+<div class="highlight"><pre><span></span><code>╭────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+│<span class="w"> </span>Provisioning<span class="w"> </span>infrastructure<span class="w"> </span><span class="k">for</span><span class="w"> </span>your<span class="w"> </span>work<span class="w"> </span>pool<span class="w"> </span>my-work-pool<span class="w"> </span>will<span class="w"> </span>require:<span class="w">                                      </span>│
+│<span class="w">                                                                                                                </span>│
+│<span class="w">     </span>Updates<span class="w"> </span><span class="k">in</span><span class="w"> </span>subscription<span class="w"> </span>Azure<span class="w"> </span>subscription<span class="w"> </span><span class="m">1</span><span class="w">                                                               </span>│
+│<span class="w">                                                                                                                </span>│
+│<span class="w">         </span>-<span class="w"> </span>Create<span class="w"> </span>a<span class="w"> </span>resource<span class="w"> </span>group<span class="w"> </span><span class="k">in</span><span class="w"> </span>location<span class="w"> </span>eastus<span class="w">                                                           </span>│
+│<span class="w">         </span>-<span class="w"> </span>Create<span class="w"> </span>an<span class="w"> </span>app<span class="w"> </span>registration<span class="w"> </span><span class="k">in</span><span class="w"> </span>Azure<span class="w"> </span>AD<span class="w"> </span>prefect-aci-push-pool-app<span class="w">                                     </span>│
+│<span class="w">         </span>-<span class="w"> </span>Create/use<span class="w"> </span>a<span class="w"> </span>service<span class="w"> </span>principal<span class="w"> </span><span class="k">for</span><span class="w"> </span>app<span class="w"> </span>registration<span class="w">                                                  </span>│
+│<span class="w">         </span>-<span class="w"> </span>Generate<span class="w"> </span>a<span class="w"> </span>secret<span class="w"> </span><span class="k">for</span><span class="w"> </span>app<span class="w"> </span>registration<span class="w">                                                               </span>│
+│<span class="w">         </span>-<span class="w"> </span>Assign<span class="w"> </span>Contributor<span class="w"> </span>role<span class="w"> </span>to<span class="w"> </span>service<span class="w"> </span>account<span class="w">                                                           </span>│
+│<span class="w">         </span>-<span class="w"> </span>Create<span class="w"> </span>Azure<span class="w"> </span>Container<span class="w"> </span>Instance<span class="w"> </span><span class="s1">&#39;aci-push-pool-container&#39;</span><span class="w"> </span><span class="k">in</span><span class="w"> </span>resource<span class="w"> </span>group<span class="w"> </span>prefect-aci-push-pool-rg<span class="w"> </span>│
+│<span class="w">                                                                                                                </span>│
+│<span class="w">     </span>Updates<span class="w"> </span><span class="k">in</span><span class="w"> </span>Prefect<span class="w"> </span>workspace<span class="w">                                                                               </span>│
+│<span class="w">                                                                                                                </span>│
+│<span class="w">         </span>-<span class="w"> </span>Create<span class="w"> </span>Azure<span class="w"> </span>Container<span class="w"> </span>Instance<span class="w"> </span>credentials<span class="w"> </span>block<span class="w"> </span>aci-push-pool-credentials<span class="w">                          </span>│
+│<span class="w">                                                                                                                </span>│
+╰────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+Proceed<span class="w"> </span>with<span class="w"> </span>infrastructure<span class="w"> </span>provisioning?<span class="w"> </span><span class="o">[</span>y/n<span class="o">]</span>:<span class="w"> </span>y
+</code></pre></div>
+
+</div>
+
+<p>This command can speed up your infrastructure setup process.</p>
+<p>As with the examples above, you will need to have the related cloud CLI library installed and be authenticated with your cloud provider.</p>
 <h2 id="manual-infrastructure-provisioning">Manual infrastructure provisioning<a class="headerlink" href="#manual-infrastructure-provisioning" title="Permanent link">&para;</a></h2>
 <p>If you prefer to set up your infrastructure manually, don't include the <code>--provision-infra</code> flag in the CLI command.
 In the examples below, we'll create a push work pool via the Prefect Cloud UI.</p>
