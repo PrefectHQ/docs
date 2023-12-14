@@ -7316,21 +7316,21 @@ Created<span class="w"> </span>work<span class="w"> </span>pool<span class="w"> 
 <p>After infrastructure provisioning completes, you will be logged into your new ECR repository and the default Docker build namespace will be set to the URL of the registry.</p>
 <p>While the default namespace is set, you will not need to provide the registry URL when building images as part of your deployment process.</p>
 <p>To take advantage of this, you can write your deploy scripts like this:</p>
-<div class="highlight"><span class="filename">example_deploy_script.py</span><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span>                                                       
-<span class="kn">from</span> <span class="nn">prefect.deployments</span> <span class="kn">import</span> <span class="n">DeploymentImage</span>                                
+<div class="highlight"><span class="filename">example_deploy_script.py</span><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span>
+<span class="kn">from</span> <span class="nn">prefect.deployments</span> <span class="kn">import</span> <span class="n">DeploymentImage</span>
 
-
-<span class="nd">@flow</span><span class="p">(</span><span class="n">log_prints</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>                                                         
-<span class="k">def</span> <span class="nf">my_flow</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;world&quot;</span><span class="p">):</span>                                              
+<span class="nd">@flow</span><span class="p">(</span><span class="n">log_prints</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>            
+<span class="k">def</span> <span class="nf">my_flow</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;world&quot;</span><span class="p">):</span>                          
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Hello </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">! I&#39;m a flow running in a ECS task!&quot;</span><span class="p">)</span> 
 
 
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>                                                     
-    <span class="n">my_flow</span><span class="o">.</span><span class="n">deploy</span><span class="p">(</span>                                                            
-        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;my-deployment&quot;</span><span class="p">,</span>                                                  
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">my_flow</span><span class="o">.</span><span class="n">deploy</span><span class="p">(</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;my-deployment&quot;</span><span class="p">,</span> 
+        <span class="n">work_pool_name</span><span class="o">=</span><span class="s2">&quot;my-work-pool&quot;</span><span class="p">,</span>
         <span class="n">image</span><span class="o">=</span><span class="n">DeploymentImage</span><span class="p">(</span>                                                 
-<span class="hll">            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;my-repository:latest&quot;</span><span class="p">,</span>                                            
-</span>            <span class="n">platform</span><span class="o">=</span><span class="s2">&quot;linux/amd64&quot;</span><span class="p">,</span>                                            
+<span class="hll">            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;my-repository:latest&quot;</span><span class="p">,</span>
+</span>            <span class="n">platform</span><span class="o">=</span><span class="s2">&quot;linux/amd64&quot;</span><span class="p">,</span>
         <span class="p">)</span>                                                                      
     <span class="p">)</span>       
 </code></pre></div>
