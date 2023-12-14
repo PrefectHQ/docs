@@ -7678,7 +7678,7 @@ idempotency key already exists, the existing flow run will be returned.</p>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">create_flow_run_input</span><span class="p">(</span>
     <span class="n">flow_run_id</span><span class="p">:</span> <span class="n">UUID</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The flow run id&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;id&quot;</span><span class="p">),</span>
     <span class="n">key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Body</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The input key&quot;</span><span class="p">),</span>
-    <span class="n">value</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Body</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The value of the input&quot;</span><span class="p">),</span>
+    <span class="n">value</span><span class="p">:</span> <span class="nb">bytes</span> <span class="o">=</span> <span class="n">Body</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The value of the input&quot;</span><span class="p">),</span>
     <span class="n">db</span><span class="p">:</span> <span class="n">PrefectDBInterface</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">provide_database_interface</span><span class="p">),</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -7691,7 +7691,7 @@ idempotency key already exists, the existing flow run will be returned.</p>
                 <span class="n">flow_run_input</span><span class="o">=</span><span class="n">schemas</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">FlowRunInput</span><span class="p">(</span>
                     <span class="n">flow_run_id</span><span class="o">=</span><span class="n">flow_run_id</span><span class="p">,</span>
                     <span class="n">key</span><span class="o">=</span><span class="n">key</span><span class="p">,</span>
-                    <span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="p">,</span>
+                    <span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="o">.</span><span class="n">decode</span><span class="p">(),</span>
                 <span class="p">),</span>
             <span class="p">)</span>
             <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
