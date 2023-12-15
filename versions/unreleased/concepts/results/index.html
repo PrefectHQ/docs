@@ -1149,6 +1149,8 @@ if (amplitudeKey){
       
         
       
+        
+      
     
     
     
@@ -1280,6 +1282,32 @@ if (amplitudeKey){
     
   
     Moving data
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guides/big-data/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    Big data
   
 
     
@@ -7755,7 +7783,6 @@ This will silence the warning, but you will need to retrieve your result manuall
 <ul>
 <li>Task cache keys</li>
 <li>Flow run retries</li>
-<li>Disabling in-memory caching</li>
 </ul>
 <p>If results are not persisted, these features may not be usable.</p>
 <h3 id="configuring-persistence-of-results">Configuring persistence of results<a class="headerlink" href="#configuring-persistence-of-results" title="Permanent link">&para;</a></h3>
@@ -7821,7 +7848,7 @@ This will silence the warning, but you will need to retrieve your result manuall
 </code></pre></div>
 <p>Toggling persistence manually will always override any behavior that Prefect would infer.</p>
 <p>You may also change Prefect's default persistence behavior with the <code>PREFECT_RESULTS_PERSIST_BY_DEFAULT</code> setting. To persist results by default, even if they are not needed for a feature change the value to a truthy value:</p>
-<div class="highlight"><pre><span></span><code>$ prefect config set PREFECT_RESULTS_PERSIST_BY_DEFAULT=true
+<div class="highlight"><pre><span></span><code>prefect config set PREFECT_RESULTS_PERSIST_BY_DEFAULT=true
 </code></pre></div>
 <p>Task and flows with <code>persist_result=False</code> will not persist their results even if <code>PREFECT_RESULTS_PERSIST_BY_DEFAULT</code> is <code>true</code>.</p>
 <h4 id="result-storage-location">Result storage location<a class="headerlink" href="#result-storage-location" title="Permanent link">&para;</a></h4>
@@ -7923,7 +7950,7 @@ If there is no context to load the serializer from, the serializer defined by <c
 <li>A type name, prefixed with <code>compressed/</code> e.g. <code>"compressed/json"</code> or <code>"compressed/pickle"</code></li>
 <li>An instance e.g. <code>CompressedSerializer(serializer="pickle", compressionlib="lzma")</code></li>
 </ul>
-<p>Note that the <code>"compressed/&lt;serializer-type&gt;"</code> shortcut will only work for serializers provided by Prefect. 
+<p>Note that the <code>"compressed/&lt;serializer-type&gt;"</code> shortcut will only work for serializers provided by Prefect.
 If you are using custom serializers, you must pass a full instance.</p>
 <h3 id="storage-of-results-in-prefect">Storage of results in Prefect<a class="headerlink" href="#storage-of-results-in-prefect" title="Permanent link">&para;</a></h3>
 <p>The Prefect API does not store your results in most cases for the following reasons:</p>
@@ -7940,10 +7967,12 @@ If you are using custom serializers, you must pass a full instance.</p>
 </ul>
 <p>If <code>persist_result</code> is set to <code>False</code>, these values will never be stored.</p>
 <h2 id="tracking-results">Tracking results<a class="headerlink" href="#tracking-results" title="Permanent link">&para;</a></h2>
-<p>The Prefect API tracks metadata about your results. The value of your result is only stored in <a href="#storage-of-results-in-prefect">specific cases</a>. Result metadata can be seen in the UI on the "Results" page for flows. </p>
-<p>Prefect tracks the following result metadata:
-- Data type
-- Storage location (if persisted)</p>
+<p>The Prefect API tracks metadata about your results. The value of your result is only stored in <a href="#storage-of-results-in-prefect">specific cases</a>. Result metadata can be seen in the UI on the "Results" page for flows.</p>
+<p>Prefect tracks the following result metadata:</p>
+<ul>
+<li>Data type</li>
+<li>Storage location (if persisted)</li>
+</ul>
 <h2 id="caching-of-results-in-memory">Caching of results in memory<a class="headerlink" href="#caching-of-results-in-memory" title="Permanent link">&para;</a></h2>
 <p>When running your workflows, Prefect will keep the results of all tasks and flows in memory so they can be passed downstream. In some cases, it is desirable to override this behavior. For example, if you are returning a large amount of data from a task it can be costly to keep it memory for the entire duration of the flow run.</p>
 <p>Flows and tasks both include an option to drop the result from memory with <code>cache_result_in_memory</code>:</p>
@@ -8047,11 +8076,11 @@ If you are using custom serializers, you must pass a full instance.</p>
 <p>Unpersisted results are used to represent results that have not been and will not be persisted beyond the current flow run. The value associated with the result is stored in memory, but will not be available later. Result metadata is attached to this object for storage in the API and representation in the UI.</p>
 <h3 id="literal-results">Literal results<a class="headerlink" href="#literal-results" title="Permanent link">&para;</a></h3>
 <p>Literal results are used to represent <a href="#storage-of-results-in-prefect">results stored in the Prefect database</a>. The values contained by these results must always be JSON serializable.</p>
-<p>Example:
+<p>Example:</p>
 <div class="highlight"><pre><span></span><code>result = LiteralResult(value=None)
 result.json()
 # {&quot;type&quot;: &quot;result&quot;, &quot;value&quot;: &quot;null&quot;}
-</code></pre></div></p>
+</code></pre></div>
 <p>Literal results reduce the overhead required to persist simple results.</p>
 <h3 id="persisted-results">Persisted results<a class="headerlink" href="#persisted-results" title="Permanent link">&para;</a></h3>
 <p>The persisted result type contains all of the information needed to retrieve the result from storage. This includes:</p>
