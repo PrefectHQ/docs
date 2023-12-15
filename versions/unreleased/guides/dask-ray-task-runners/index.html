@@ -1153,6 +1153,8 @@ if (amplitudeKey){
       
         
       
+        
+      
     
     
     
@@ -1382,6 +1384,32 @@ if (amplitudeKey){
     
   
     Moving data
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../big-data/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    Big data
   
 
     
@@ -7030,20 +7058,20 @@ if (amplitudeKey){
   
 
 
-<h1 id="dask-and-ray-task-runners">Dask and Ray task runners<a class="headerlink" href="#dask-and-ray-task-runners" title="Permanent link">&para;</a></h1>
+<h1 id="dask-and-ray-task-runners">Dask and Ray Task Runners<a class="headerlink" href="#dask-and-ray-task-runners" title="Permanent link">&para;</a></h1>
 <p>Task runners provide an execution environment for tasks. In a flow decorator, you can specify a task runner to run the tasks called in that flow.</p>
-<p>The default task runner is the <a href="/api-ref/prefect/task-runners/#prefect.task_runners.ConcurrentTaskRunner"><code>ConcurrentTaskRunner</code></a>. </p>
+<p>The default task runner is the <a href="/api-ref/prefect/task-runners/#prefect.task_runners.ConcurrentTaskRunner"><code>ConcurrentTaskRunner</code></a>.</p>
 <div class="admonition note">
 <p class="admonition-title">Use <code>.submit</code> to run your tasks asynchronously</p>
 <p>To run tasks asynchronously use the <code>.submit</code> method when you call them. If you call a task as you would normally in Python code it will run synchronously, even if you are calling the task within a flow that uses the <code>ConcurrentTaskRunner</code>, <code>DaskTaskRunner</code>, or <code>RayTaskRunner</code>.</p>
 </div>
-<p>Many real-world data workflows benefit from true parallel, distributed task execution. For these use cases, the following Prefect-developed task runners for parallel task execution may be installed as <a href="/integrations/catalog/">Prefect Integrations</a>. </p>
+<p>Many real-world data workflows benefit from true parallel, distributed task execution. For these use cases, the following Prefect-developed task runners for parallel task execution may be installed as <a href="/integrations/catalog/">Prefect Integrations</a>.</p>
 <ul>
-<li><a href="https://prefecthq.github.io/prefect-dask/"><code>DaskTaskRunner</code></a> runs tasks requiring parallel execution using <a href="http://distributed.dask.org/"><code>dask.distributed</code></a>. </li>
+<li><a href="https://prefecthq.github.io/prefect-dask/"><code>DaskTaskRunner</code></a> runs tasks requiring parallel execution using <a href="http://distributed.dask.org/"><code>dask.distributed</code></a>.</li>
 <li><a href="https://prefecthq.github.io/prefect-ray/"><code>RayTaskRunner</code></a> runs tasks requiring parallel execution using <a href="https://www.ray.io/">Ray</a>.</li>
 </ul>
 <p>These task runners can spin up a local Dask cluster or Ray instance on the fly, or let you connect with a Dask or Ray environment you've set up separately. Then you can take advantage of massively parallel computing environments.</p>
-<p>Use Dask or Ray in your flows to choose the execution environment that fits your particular needs. </p>
+<p>Use Dask or Ray in your flows to choose the execution environment that fits your particular needs.</p>
 <p>To show you how they work, let's start small.</p>
 <div class="admonition note">
 <p class="admonition-title">Remote storage</p>
@@ -7128,7 +7156,7 @@ goodbye<span class="w"> </span>marvin
 </div>
 
 <h2 id="running-parallel-tasks-with-dask">Running parallel tasks with Dask<a class="headerlink" href="#running-parallel-tasks-with-dask" title="Permanent link">&para;</a></h2>
-<p>You could argue that this simple flow gains nothing from parallel execution, but let's roll with it so you can see just how simple it is to take advantage of the <a href="https://prefecthq.github.io/prefect-dask/"><code>DaskTaskRunner</code></a>. </p>
+<p>You could argue that this simple flow gains nothing from parallel execution, but let's roll with it so you can see just how simple it is to take advantage of the <a href="https://prefecthq.github.io/prefect-dask/"><code>DaskTaskRunner</code></a>.</p>
 <p>To configure your flow to use the <code>DaskTaskRunner</code>:</p>
 <ol>
 <li>Make sure the <code>prefect-dask</code> collection is installed by running <code>pip install prefect-dask</code>.</li>
@@ -7157,19 +7185,19 @@ goodbye<span class="w"> </span>marvin
 <span class="hll"><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
 </span>    <span class="n">greetings</span><span class="p">([</span><span class="s2">&quot;arthur&quot;</span><span class="p">,</span> <span class="s2">&quot;trillian&quot;</span><span class="p">,</span> <span class="s2">&quot;ford&quot;</span><span class="p">,</span> <span class="s2">&quot;marvin&quot;</span><span class="p">])</span>
 </code></pre></div>
-<p>Note that, because you're using <code>DaskTaskRunner</code> in a script, you must use <code>if __name__ == "__main__":</code> or you'll see warnings and errors. </p>
+<p>Note that, because you're using <code>DaskTaskRunner</code> in a script, you must use <code>if __name__ == "__main__":</code> or you'll see warnings and errors.</p>
 <p>Now run <code>dask_flow.py</code>. If you get a warning about accepting incoming network connections, that's okay - everything is local in this example.</p>
 <div class="terminal">
 <div class="highlight"><pre><span></span><code>$<span class="w"> </span>python<span class="w"> </span>dask_flow.py
 <span class="m">19</span>:29:03.798<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>prefect.engine<span class="w"> </span>-<span class="w"> </span>Created<span class="w"> </span>flow<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;fine-bison&#39;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>flow<span class="w"> </span><span class="s1">&#39;greetings&#39;</span>
 
-<span class="m">19</span>:29:03.798<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>Flow<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;fine-bison&#39;</span><span class="w"> </span>-<span class="w"> </span>Using<span class="w"> </span>task<span class="w"> </span>runner<span class="w"> </span><span class="s1">&#39;DaskTaskRunner&#39;</span><span class="w"> </span>
+<span class="m">19</span>:29:03.798<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>Flow<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;fine-bison&#39;</span><span class="w"> </span>-<span class="w"> </span>Using<span class="w"> </span>task<span class="w"> </span>runner<span class="w"> </span><span class="s1">&#39;DaskTaskRunner&#39;</span>
 
 <span class="m">19</span>:29:04.080<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>prefect.task_runner.dask<span class="w"> </span>-<span class="w"> </span>Creating<span class="w"> </span>a<span class="w"> </span>new<span class="w"> </span>Dask<span class="w"> </span>cluster<span class="w"> </span>with<span class="w"> </span><span class="sb">`</span>distributed.deploy.local.LocalCluster<span class="sb">`</span>
 <span class="m">16</span>:54:18.465<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>prefect.engine<span class="w"> </span>-<span class="w"> </span>Created<span class="w"> </span>flow<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;radical-finch&#39;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>flow<span class="w"> </span><span class="s1">&#39;greetings&#39;</span>
 <span class="m">16</span>:54:18.465<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>Flow<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;radical-finch&#39;</span><span class="w"> </span>-<span class="w"> </span>Starting<span class="w"> </span><span class="s1">&#39;DaskTaskRunner&#39;</span><span class="p">;</span><span class="w"> </span>submitted<span class="w"> </span>tasks<span class="w"> </span>will<span class="w"> </span>be<span class="w"> </span>run<span class="w"> </span>concurrently...
 <span class="m">16</span>:54:18.465<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>prefect.task_runner.dask<span class="w"> </span>-<span class="w"> </span>Creating<span class="w"> </span>a<span class="w"> </span>new<span class="w"> </span>Dask<span class="w"> </span>cluster<span class="w"> </span>with<span class="w"> </span><span class="sb">`</span>distributed.deploy.local.LocalCluster<span class="sb">`</span>
-<span class="m">16</span>:54:19.811<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>prefect.task_runner.dask<span class="w"> </span>-<span class="w"> </span>The<span class="w"> </span>Dask<span class="w"> </span>dashboard<span class="w"> </span>is<span class="w"> </span>available<span class="w"> </span>at<span class="w"> </span>http://127.0.0.1:8787/status
+<span class="m">16</span>:54:19.811<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>prefect.task_runner.dask<span class="w"> </span>-<span class="w"> </span>The<span class="w"> </span>Dask<span class="w"> </span>dashboard<span class="w"> </span>is<span class="w"> </span>available<span class="w"> </span>at<span class="w"> </span>&lt;http://127.0.0.1:8787/status&gt;
 <span class="m">16</span>:54:19.881<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>Flow<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;radical-finch&#39;</span><span class="w"> </span>-<span class="w"> </span>Created<span class="w"> </span>task<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;say_hello-811087cd-0&#39;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>task<span class="w"> </span><span class="s1">&#39;say_hello&#39;</span>
 <span class="m">16</span>:54:20.364<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>Flow<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;radical-finch&#39;</span><span class="w"> </span>-<span class="w"> </span>Submitted<span class="w"> </span>task<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;say_hello-811087cd-0&#39;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>execution.
 <span class="m">16</span>:54:20.379<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>Flow<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;radical-finch&#39;</span><span class="w"> </span>-<span class="w"> </span>Created<span class="w"> </span>task<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;say_goodbye-261e56a8-0&#39;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>task<span class="w"> </span><span class="s1">&#39;say_goodbye&#39;</span>
@@ -7229,7 +7257,7 @@ hello<span class="w"> </span>marvin
 <span class="m">16</span>:57:34.534<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>prefect.engine<span class="w"> </span>-<span class="w"> </span>Created<span class="w"> </span>flow<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;papaya-honeybee&#39;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>flow<span class="w"> </span><span class="s1">&#39;greetings&#39;</span>
 <span class="m">16</span>:57:34.534<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>Flow<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;papaya-honeybee&#39;</span><span class="w"> </span>-<span class="w"> </span>Starting<span class="w"> </span><span class="s1">&#39;DaskTaskRunner&#39;</span><span class="p">;</span><span class="w"> </span>submitted<span class="w"> </span>tasks<span class="w"> </span>will<span class="w"> </span>be<span class="w"> </span>run<span class="w"> </span>concurrently...
 <span class="m">16</span>:57:34.535<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>prefect.task_runner.dask<span class="w"> </span>-<span class="w"> </span>Creating<span class="w"> </span>a<span class="w"> </span>new<span class="w"> </span>Dask<span class="w"> </span>cluster<span class="w"> </span>with<span class="w"> </span><span class="sb">`</span>distributed.deploy.local.LocalCluster<span class="sb">`</span>
-<span class="m">16</span>:57:35.715<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>prefect.task_runner.dask<span class="w"> </span>-<span class="w"> </span>The<span class="w"> </span>Dask<span class="w"> </span>dashboard<span class="w"> </span>is<span class="w"> </span>available<span class="w"> </span>at<span class="w"> </span>http://127.0.0.1:8787/status
+<span class="m">16</span>:57:35.715<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>prefect.task_runner.dask<span class="w"> </span>-<span class="w"> </span>The<span class="w"> </span>Dask<span class="w"> </span>dashboard<span class="w"> </span>is<span class="w"> </span>available<span class="w"> </span>at<span class="w"> </span>&lt;http://127.0.0.1:8787/status&gt;
 <span class="m">16</span>:57:35.787<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>Flow<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;papaya-honeybee&#39;</span><span class="w"> </span>-<span class="w"> </span>Created<span class="w"> </span>task<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;say_hello-811087cd-0&#39;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>task<span class="w"> </span><span class="s1">&#39;say_hello&#39;</span>
 <span class="m">16</span>:57:35.788<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>Flow<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;papaya-honeybee&#39;</span><span class="w"> </span>-<span class="w"> </span>Executing<span class="w"> </span><span class="s1">&#39;say_hello-811087cd-0&#39;</span><span class="w"> </span>immediately...
 hello<span class="w"> </span>arthur
@@ -7310,7 +7338,7 @@ goodbye<span class="w"> </span>marvin
 <h2 id="using-multiple-task-runners">Using multiple task runners<a class="headerlink" href="#using-multiple-task-runners" title="Permanent link">&para;</a></h2>
 <p>Many workflows include a variety of tasks, and not all of them benefit from parallel execution. You'll most likely want to use the Dask or Ray task runners and spin up their respective resources only for those tasks that need them.</p>
 <p>Because task runners are specified on flows, you can assign different task runners to tasks by using <a href="/concepts/flows/#composing-flows">subflows</a> to organize those tasks.</p>
-<p>This example uses the same tasks as the previous examples, but on the parent flow <code>greetings()</code> we use the default <code>ConcurrentTaskRunner</code>. Then we call a <code>ray_greetings()</code> subflow that uses the <code>RayTaskRunner</code> to execute the same tasks in a Ray instance. </p>
+<p>This example uses the same tasks as the previous examples, but on the parent flow <code>greetings()</code> we use the default <code>ConcurrentTaskRunner</code>. Then we call a <code>ray_greetings()</code> subflow that uses the <code>RayTaskRunner</code> to execute the same tasks in a Ray instance.</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
 <span class="kn">from</span> <span class="nn">prefect_ray.task_runners</span> <span class="kn">import</span> <span class="n">RayTaskRunner</span>
 
