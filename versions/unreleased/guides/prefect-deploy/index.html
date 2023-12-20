@@ -7696,7 +7696,8 @@ if (amplitudeKey){
 <p>In this guide, we will configure a deployment that uses a work pool for for dynamically provisioned infrastructure.</p>
 <p>All Prefect flow runs are tracked by the API. The API does not require prior registration of flows.
 With Prefect, you can call a flow locally or on a remote environment and it will be tracked.</p>
-<p>A deployment turns your workflow into an application that can be interacted with and managed via the Prefect API. A deployment enables you to:</p>
+<p>A deployment turns your workflow into an application that can be interacted with and managed via the Prefect API.
+A deployment enables you to:</p>
 <ul>
 <li>Schedule flow runs.</li>
 <li>Specify event triggers for flow runs.</li>
@@ -7714,13 +7715,11 @@ With Prefect, you can call a flow locally or on a remote environment and it will
 Work pool-based deployments contain information about the infrastructure type and configuration for your workflow execution.</p>
 <p>Work pool-based deployment infrastructure options include the following:</p>
 <ul>
-<li>Process - runs flow in a subprocess. Generally better off using <code>.serve</code></li>
+<li>Process - runs flow in a subprocess. In most cases, you're better off using <code>.serve</code>.</li>
 <li><a href="/guides/deployment/docker/">Docker</a> - runs flows in an ephemeral Docker container.</li>
 <li><a href="/guides/deployment/kubernetes/">Kubernetes</a> - runs flows as a Kubernetes Job.</li>
+<li><a href="/guides/deployment/serverless-workers/">Serverless Cloud Provider options</a> - runs flows in a Docker container in a serverless cloud provider environment, such as AWS ECS, Azure Container Instance, Google Cloud Run, or Vertex AI.</li>
 </ul>
-<!-- - [Serverless Cloud Provider options] TK - Jeff PR in progress, awaiting ACI PR in progress - runs flows in a Docker container in a serverless cloud provider environment, such as AWS ECS, Azure Container Instance, Google Cloud Run, or Vertex AI. -->
-
-<p>Work pool-based deployments also allow you to assign a work queue name to prioritize work and allow you to limit concurrent runs at the work pool level.</p>
 <p>The following diagram provides a high-level overview of the conceptual elements involved in defining a work-pool based deployment that is polled by a worker and executes a flow run based on that deployment.</p>
 <pre class="mermaid"><code>%%{
   init: {
@@ -7761,12 +7760,17 @@ flowchart LR
 <p class="admonition-title">Additional work pool options available with Prefect Cloud</p>
 <p>Prefect Cloud offers other flavors of work pools that don't require a worker:</p>
 <ul>
-<li><a href="/guides/deployment/push-work-pools">Push Work Pools</a> - serverless cloud options that don't require a worker because Prefect Cloud submits them to your cloud provider on your behalf.</li>
+<li>
+<p><a href="/guides/deployment/push-work-pools">Push Work Pools</a> - serverless cloud options that don't require a worker because Prefect Cloud submits them to your serverless cloud infrastructure on your behalf. Prefect can auto-provision your cloud infrastructure for you and set it up to use your work pool.</p>
+</li>
+<li>
+<p><a href="/guides/managed-execution/">Managed Execution</a> Prefect Cloud submits and runs your deployment on serverless infrastructure. No cloud provider account required.</p>
+</li>
 </ul>
-<!-- - <a href="">Managed Execution</a> TK - Prefect Cloud submits and runs your deployment on serverless infrastructure TK - Jake PR in progress -->
 </div>
 <p>In this guide, we focus on deployments that require a worker.</p>
-<p>When creating a deployment that uses a work pool, we must answer <em>two</em> basic questions:</p>
+<p>Work pool-based deployments that use a worker also allow you to assign a work queue name to prioritize work and allow you to limit concurrent runs at the work pool level.</p>
+<p>When creating a deployment that uses a work pool and worker, we must answer <em>two</em> basic questions:</p>
 <ul>
 <li>What instructions does a <a href="/concepts/work-pools/">worker</a> need to set up an execution environment for our flow? For example, a flow may have Python package requirements, unique Kubernetes settings, or Docker networking configuration.</li>
 <li>How should the flow code be accessed?</li>
@@ -7774,8 +7778,8 @@ flowchart LR
 <h2 id="creating-work-pool-based-deployments">Creating work pool-based deployments<a class="headerlink" href="#creating-work-pool-based-deployments" title="Permanent link">&para;</a></h2>
 <p>The <a href="/tutorial/deployments/">tutorial</a> shows how you can create a deployment with a long-running process using <code>.serve</code> and how to move to a <a href="/tutorial/workers/">work-pool-based deployment</a> setup with <code>.deploy</code>.
 See the discussion of when you might want to move to work-pool-based deployments <a href="/tutorial/workers/#why-workers-and-work-pools">there</a>.</p>
-<p>In this guide, we will explore how to use <code>.deploy</code> in more depth and discuss <code>prefect.yaml</code>, a YAML-based alternative for managing deployments.</p>
-<p>Use the tabs below to explore both deployment creation options.</p>
+<p>In this guide, we show how to use <code>.deploy</code> in more depth and discuss <code>prefect.yaml</code>, a YAML-based alternative for managing deployments.</p>
+<p>Use the tabs below to explore these two deployment creation options.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">.deploy</label><label for="__tabbed_1_2">prefect.yaml</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
