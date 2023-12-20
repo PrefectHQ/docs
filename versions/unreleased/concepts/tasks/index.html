@@ -7893,38 +7893,6 @@ times, waiting five seconds in between retries.</p>
 <span class="k">def</span> <span class="nf">some_task_with_manual_backoff_retries</span><span class="p">():</span>
    <span class="o">...</span>
 </code></pre></div>
-<p>The <code>retry_condition_fn</code> option accepts a callable that returns a boolean. If the callable returns <code>True</code>, the task will be retried. If the callable returns <code>False</code>, the task will not be retried. The callable accepts three arguments &mdash; the task, the task run, and the state of the task run. The following task will retry on non-401 and non-404 HTTP status codes:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">httpx</span>
-<span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
-
-<span class="k">def</span> <span class="nf">retry_handler</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">task_run</span><span class="p">,</span> <span class="n">state</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="c1"># Attempt to get the result of the task</span>
-        <span class="n">state</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
-    <span class="k">except</span> <span class="n">httpx</span><span class="o">.</span><span class="n">HTTPStatusError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
-        <span class="c1"># Retry on any HTTP status code that is not 401 or 404</span>
-        <span class="n">do_not_retry_on_these_codes</span> <span class="o">=</span> <span class="p">[</span><span class="mi">401</span><span class="p">,</span> <span class="mi">404</span><span class="p">]</span>
-        <span class="k">return</span> <span class="n">exc</span><span class="o">.</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">do_not_retry_on_these_codes</span>
-    <span class="k">except</span> <span class="n">httpx</span><span class="o">.</span><span class="n">ConnectError</span><span class="p">:</span>
-        <span class="c1"># Do not retry</span>
-        <span class="k">return</span> <span class="kc">False</span>
-    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-        <span class="c1"># Retry on any other exception</span>
-        <span class="k">return</span> <span class="kc">True</span>
-
-<span class="nd">@task</span><span class="p">(</span><span class="n">retries</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">retry_condition_fn</span><span class="o">=</span><span class="n">retry_handler</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">get_data_task</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
-    <span class="n">response</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
-    <span class="n">response</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
-    <span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
-
-<span class="nd">@flow</span>
-<span class="k">def</span> <span class="nf">get_data_flow</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
-    <span class="n">get_data_task</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="n">url</span><span class="p">)</span>
-
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-    <span class="n">get_data_flow</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="s2">&quot;http://google.com&quot;</span><span class="p">)</span>
-</code></pre></div>
 <p>Additionally, you can pass a callable that accepts the number of retries as an argument and returns a list. Prefect includes an <a href="/api-ref/prefect/tasks/#prefect.tasks.exponential_backoff"><code>exponential_backoff</code></a> utility that will automatically generate a list of retry delays that correspond to an exponential backoff retry strategy. The following flow will wait for 10, 20, then 40 seconds before each retry.</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">task</span>
 <span class="kn">from</span> <span class="nn">prefect.tasks</span> <span class="kn">import</span> <span class="n">exponential_backoff</span>
