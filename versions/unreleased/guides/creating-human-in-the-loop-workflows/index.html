@@ -7245,81 +7245,83 @@ if (amplitudeKey){
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Hello, </span><span class="si">{</span><span class="n">user_input</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">!&quot;</span><span class="p">)</span>
 </code></pre></div>
 <h2 id="handling-custom-validation">Handling custom validation<a class="headerlink" href="#handling-custom-validation" title="Permanent link">&para;</a></h2>
-<p>Prefect uses the fields and type hints on your <code>RunInput</code> subclass to validate the general structure of input your flow run receives, but you might require more complex validation. If you do, you can use Pydantic's validation methods.</p>
+<p>Prefect uses the fields and type hints on your <code>RunInput</code> subclass to validate the general structure of input your flow run receives, but you might require more complex validation. If you do, you can use Pydantic <a href="https://docs.pydantic.dev/1.10/usage/validators/">validators</a>.</p>
+<div class="admonition warning">
+<p class="admonition-title">Custom validation runs after the flow run resumes</p>
+<p>Prefect transforms the type annotations in your <code>RunInput</code> class to a JSON schema and use that schema in the UI to do client-side validation. However, custom validation requires running logic defined in your <code>RunInput</code> class. This happens <em>after the flow resumes</em>, so you'll probably want to handle it explicitly in your flow. Continue reading for an example best practice.</p>
+</div>
+<p>The following is an example <code>RunInput</code> class that uses a custom field validator:</p>
 <div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">pydantic</span>
 <span class="kn">from</span> <span class="nn">prefect.input</span> <span class="kn">import</span> <span class="n">RunInput</span>
 
-<span class="k">class</span> <span class="nc">UserAgeInput</span><span class="p">(</span><span class="n">RunInput</span><span class="p">):</span>
-    <span class="n">age</span><span class="p">:</span> <span class="nb">int</span>
 
-    <span class="nd">@pydantic</span><span class="o">.</span><span class="n">validator</span><span class="p">(</span><span class="s2">&quot;age&quot;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">validate_age</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="n">min_age</span> <span class="o">=</span> <span class="mi">18</span>
-        <span class="n">max_age</span> <span class="o">=</span> <span class="mi">99</span>
+<span class="k">class</span> <span class="nc">ShirtOrder</span><span class="p">(</span><span class="n">RunInput</span><span class="p">):</span>
+    <span class="n">size</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;small&quot;</span><span class="p">,</span> <span class="s2">&quot;medium&quot;</span><span class="p">,</span> <span class="s2">&quot;large&quot;</span><span class="p">,</span> <span class="s2">&quot;xlarge&quot;</span><span class="p">]</span>
+    <span class="n">color</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;red&quot;</span><span class="p">,</span> <span class="s2">&quot;green&quot;</span><span class="p">,</span> <span class="s2">&quot;black&quot;</span><span class="p">]</span>
 
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">min_age</span> <span class="o">&lt;=</span> <span class="n">value</span> <span class="o">&lt;=</span> <span class="n">max_age</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Age must be between </span><span class="si">{</span><span class="n">min_age</span><span class="si">}</span><span class="s2"> and </span><span class="si">{</span><span class="n">max_age</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nd">@pydantic</span><span class="o">.</span><span class="n">validator</span><span class="p">(</span><span class="s2">&quot;color&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">validate_age</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="o">==</span> <span class="s2">&quot;green&quot;</span> <span class="ow">and</span> <span class="n">values</span><span class="p">[</span><span class="s2">&quot;size&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;small&quot;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Green is only in-stock for medium, large, and XL sizes.&quot;</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">value</span>
 </code></pre></div>
-<p>In this case, we are using Pydantic's <code>validator</code> decorator to define a custom validation method for the <code>age</code> field. We can use it in a flow like this:</p>
+<p>In the example, we use Pydantic's <code>validator</code> decorator to define a custom validation method for the <code>color</code> field. We can use it in a flow like this:</p>
 <div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">pydantic</span>
-<span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">pause_flow_run</span>
-<span class="kn">from</span> <span class="nn">prefect.input</span> <span class="kn">import</span> <span class="n">RunInput</span>
-
-<span class="k">class</span> <span class="nc">UserAgeInput</span><span class="p">(</span><span class="n">RunInput</span><span class="p">):</span>
-    <span class="n">age</span><span class="p">:</span> <span class="nb">int</span>
-
-    <span class="nd">@pydantic</span><span class="o">.</span><span class="n">validator</span><span class="p">(</span><span class="s2">&quot;age&quot;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">validate_age</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="n">min_age</span> <span class="o">=</span> <span class="mi">18</span>
-        <span class="n">max_age</span> <span class="o">=</span> <span class="mi">99</span>
-
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">min_age</span> <span class="o">&lt;=</span> <span class="n">value</span> <span class="o">&lt;=</span> <span class="n">max_age</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Age must be between </span><span class="si">{</span><span class="n">min_age</span><span class="si">}</span><span class="s2"> and </span><span class="si">{</span><span class="n">max_age</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="n">value</span>
-
-<span class="nd">@flow</span>
-<span class="k">def</span> <span class="nf">get_user_age</span><span class="p">():</span>
-    <span class="n">user_age_input</span> <span class="o">=</span> <span class="n">pause_flow_run</span><span class="p">(</span><span class="n">wait_for_input</span><span class="o">=</span><span class="n">UserAgeInput</span><span class="p">)</span>
-</code></pre></div>
-<p>If a user enters an invalid age of <code>hello</code>, the flow run will not resume and the user will receive a validation error. However, if the user enters a number that is a valid integer but that is not between 18 and 99, the flow run will resume, and <code>pause_flow_run</code> will raise a <code>ValidationError</code> exception.</p>
-<p>One way to handle this and ensure that the user enters valid input is to use a <code>while</code> loop and pause again if the <code>ValidationError</code> exception is raised:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">pydantic</span>
-<span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">suspend_flow_run</span><span class="p">,</span> <span class="n">get_run_logger</span>
+<span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span>
 <span class="kn">from</span> <span class="nn">prefect.input</span> <span class="kn">import</span> <span class="n">RunInput</span>
 
 
-<span class="k">class</span> <span class="nc">UserAgeInput</span><span class="p">(</span><span class="n">RunInput</span><span class="p">):</span>
-    <span class="n">age</span><span class="p">:</span> <span class="nb">int</span>
+<span class="k">class</span> <span class="nc">ShirtOrder</span><span class="p">(</span><span class="n">RunInput</span><span class="p">):</span>
+    <span class="n">size</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;small&quot;</span><span class="p">,</span> <span class="s2">&quot;medium&quot;</span><span class="p">,</span> <span class="s2">&quot;large&quot;</span><span class="p">,</span> <span class="s2">&quot;xlarge&quot;</span><span class="p">]</span>
+    <span class="n">color</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;red&quot;</span><span class="p">,</span> <span class="s2">&quot;green&quot;</span><span class="p">,</span> <span class="s2">&quot;black&quot;</span><span class="p">]</span>
 
-    <span class="nd">@pydantic</span><span class="o">.</span><span class="n">validator</span><span class="p">(</span><span class="s2">&quot;age&quot;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">validate_age</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="n">min_age</span> <span class="o">=</span> <span class="mi">18</span>
-        <span class="n">max_age</span> <span class="o">=</span> <span class="mi">99</span>
-
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">min_age</span> <span class="o">&lt;=</span> <span class="n">value</span> <span class="o">&lt;=</span> <span class="n">max_age</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Age must be between </span><span class="si">{</span><span class="n">min_age</span><span class="si">}</span><span class="s2"> and </span><span class="si">{</span><span class="n">max_age</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nd">@pydantic</span><span class="o">.</span><span class="n">validator</span><span class="p">(</span><span class="s2">&quot;color&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">validate_age</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="o">==</span> <span class="s2">&quot;green&quot;</span> <span class="ow">and</span> <span class="n">values</span><span class="p">[</span><span class="s2">&quot;size&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;small&quot;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Green is only in-stock for medium, large, and XL sizes.&quot;</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">value</span>
 
 
 <span class="nd">@flow</span>
-<span class="k">def</span> <span class="nf">get_user_age</span><span class="p">():</span>
+<span class="k">def</span> <span class="nf">get_shirt_order</span><span class="p">():</span>
+    <span class="n">shirt_order</span> <span class="o">=</span> <span class="n">pause_flow_run</span><span class="p">(</span><span class="n">wait_for_input</span><span class="o">=</span><span class="n">ShirtOrder</span><span class="p">)</span>
+</code></pre></div>
+<p>If a user chooses any size and color combination other than <code>small</code> and <code>green</code>, the flow run will resume successfully. However, if the user chooses size <code>small</code> and color <code>green</code>, the flow run will resume, and <code>pause_flow_run</code> will raise a <code>ValidationError</code> exception. This will cause the flow run to fail and log the error.</p>
+<p>However, what if you don't want the flow run to fail? One way to handle this case is to use a <code>while</code> loop and pause again if the <code>ValidationError</code> exception is raised:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">pydantic</span>
+<span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">get_run_logger</span>
+<span class="kn">from</span> <span class="nn">prefect.input</span> <span class="kn">import</span> <span class="n">RunInput</span>
+
+
+<span class="k">class</span> <span class="nc">ShirtOrder</span><span class="p">(</span><span class="n">RunInput</span><span class="p">):</span>
+    <span class="n">size</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;small&quot;</span><span class="p">,</span> <span class="s2">&quot;medium&quot;</span><span class="p">,</span> <span class="s2">&quot;large&quot;</span><span class="p">,</span> <span class="s2">&quot;xlarge&quot;</span><span class="p">]</span>
+    <span class="n">color</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;red&quot;</span><span class="p">,</span> <span class="s2">&quot;green&quot;</span><span class="p">,</span> <span class="s2">&quot;black&quot;</span><span class="p">]</span>
+
+    <span class="nd">@pydantic</span><span class="o">.</span><span class="n">validator</span><span class="p">(</span><span class="s2">&quot;color&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">validate_age</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="o">==</span> <span class="s2">&quot;green&quot;</span> <span class="ow">and</span> <span class="n">values</span><span class="p">[</span><span class="s2">&quot;size&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;small&quot;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Green is only in-stock for medium, large, and XL sizes.&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">value</span>
+
+
+<span class="nd">@flow</span>
+<span class="k">def</span> <span class="nf">get_shirt_order</span><span class="p">():</span>
     <span class="n">logger</span> <span class="o">=</span> <span class="n">get_run_logger</span><span class="p">()</span>
+    <span class="n">shirt_order</span> <span class="o">=</span> <span class="kc">None</span>
 
-    <span class="n">user_age_data</span> <span class="o">=</span> <span class="kc">None</span>
-
-    <span class="k">while</span> <span class="n">user_age_data</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">while</span> <span class="n">shirt_order</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">user_age_data</span> <span class="o">=</span> <span class="n">pause_flow_run</span><span class="p">(</span><span class="n">wait_for_input</span><span class="o">=</span><span class="n">UserAgeInput</span><span class="p">)</span>
+            <span class="n">shirt_order</span> <span class="o">=</span> <span class="n">pause_flow_run</span><span class="p">(</span><span class="n">wait_for_input</span><span class="o">=</span><span class="n">ShirtOrder</span><span class="p">)</span>
         <span class="k">except</span> <span class="n">pydantic</span><span class="o">.</span><span class="n">ValidationError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid age: </span><span class="si">{</span><span class="n">exc</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid size and color combination: </span><span class="si">{</span><span class="n">exc</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;User age: </span><span class="si">{</span><span class="n">user_age_data</span><span class="o">.</span><span class="n">age</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Shirt order: </span><span class="si">{</span><span class="n">shirt_order</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">shirt_order</span><span class="o">.</span><span class="n">color</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </code></pre></div>
 <p>This code will cause the flow run to continually pause until the user enters a valid age.</p>
+<p>As an additional step, you may want to use an <a href="/concepts/automations">automation</a> or <a href="/concepts/notifications/">notification</a> to alert the user to the error.</p>
 
 
 
