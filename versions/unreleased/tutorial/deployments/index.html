@@ -16,7 +16,7 @@
         <link rel="prev" href="../tasks/">
       
       
-        <link rel="next" href="../workers/">
+        <link rel="next" href="../work-pools/">
       
       
         
@@ -27,7 +27,7 @@
     
     
       
-        <title>Deploying Flows - Prefect Docs</title>
+        <title>Deployments - Prefect Docs</title>
       
     
     
@@ -175,7 +175,7 @@ if (amplitudeKey){
     
   
 <meta property="og:type" content="website" />
-<meta property="og:title" content="Deploying Flows - Prefect Docs" />
+<meta property="og:title" content="Deployments - Prefect Docs" />
 <meta property="og:description" content="Learn how Prefect flow deployments enable configuring flows for scheduled and remote execution." />
 <meta property="og:image" content="https://docs.prefect.io/latest/assets/images/social/tutorial/deployments.png" />
 <meta property="og:image:type" content="image/png" />
@@ -183,7 +183,7 @@ if (amplitudeKey){
 <meta property="og:image:height" content="630" />
 <meta property="og:url" content="https://docs.prefect.io/latest/tutorial/deployments/" />
 <meta property="twitter:card" content="summary_large_image" />
-<meta property="twitter:title" content="Deploying Flows - Prefect Docs" />
+<meta property="twitter:title" content="Deployments - Prefect Docs" />
 <meta property="twitter:description" content="Learn how Prefect flow deployments enable configuring flows for scheduled and remote execution." />
 <meta property="twitter:image" content="https://docs.prefect.io/latest/assets/images/social/tutorial/deployments.png" />
 </head>
@@ -274,7 +274,7 @@ if (amplitudeKey){
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-            Deploying Flows
+            Deployments
             
           </span>
         </div>
@@ -564,6 +564,8 @@ if (amplitudeKey){
       
         
       
+        
+      
     
     
     
@@ -687,7 +689,7 @@ if (amplitudeKey){
   <span class="md-ellipsis">
     
   
-    Deploying Flows
+    Deployments
   
 
     
@@ -704,7 +706,7 @@ if (amplitudeKey){
   <span class="md-ellipsis">
     
   
-    Deploying Flows
+    Deployments
   
 
     
@@ -828,13 +830,39 @@ if (amplitudeKey){
   
   
     <li class="md-nav__item">
+      <a href="../work-pools/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    Work Pools
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../workers/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
     
   
-    Workers & Work Pools
+    Workers
   
 
     
@@ -7251,11 +7279,13 @@ if (amplitudeKey){
 
 <h1 id="deploying-flows">Deploying Flows<a class="headerlink" href="#deploying-flows" title="Permanent link">&para;</a></h1>
 <div class="admonition note">
-<p class="admonition-title">Reminder to start a Prefect API</p>
-<p>Some features in this tutorial, such as scheduling, require a Prefect server to be running; if using a self-hosted setup, simply run <code>prefect server start</code> to run both the webserver and UI; if using Prefect Cloud, make sure you have <a href="/cloud/cloud-quickstart/">successfully configured your local profile</a>.</p>
+<p class="admonition-title">Reminder to connect to Prefect Cloud or a self-hosted Prefect server instance</p>
+<p>Some features in this tutorial, such as scheduling, require you to be connected to a Prefect server.
+If using a self-hosted setup, run <code>prefect server start</code> to run both the webserver and UI.
+If using Prefect Cloud, make sure you have <a href="/cloud/cloud-quickstart/">successfully authenticated your local environment</a>.</p>
 </div>
 <h2 id="why-deployments">Why deployments?<a class="headerlink" href="#why-deployments" title="Permanent link">&para;</a></h2>
-<p>One of the most common reasons to use a tool like Prefect is <a href="/concepts/schedules">scheduling</a> or <a href="/concepts/automations/">event-based triggering</a>.
+<p>Some of the most common reasons to use an orchestration tool such as Prefect are for <a href="/concepts/schedules/">scheduling</a> and <a href="/concepts/automations/">event-based triggering</a>.
 Up to this point, we’ve demonstrated running Prefect flows as scripts, but this means <em>you</em> have been the one triggering and managing flow runs.
 You can certainly continue to trigger your workflows in this way and use Prefect as a monitoring layer for other schedulers or systems, but you will miss out on many of the other benefits and features that Prefect offers.</p>
 <p>Deploying a flow exposes an API and UI so that you can:</p>
@@ -7265,7 +7295,7 @@ You can certainly continue to trigger your workflows in this way and use Prefect
 <li>dynamically provision infrastructure using <a href="/tutorials/workers/">workers</a></li>
 </ul>
 <h2 id="what-is-a-deployment">What is a deployment?<a class="headerlink" href="#what-is-a-deployment" title="Permanent link">&para;</a></h2>
-<p>Deploying a flow is the act of specifying when, where, and how it will run.
+<p>Deploying a flow is the act of specifying where and how it will run.
 This information is encapsulated and sent to Prefect as a <a href="/concepts/deployments/">deployment</a> that contains the crucial metadata needed for remote orchestration.
 Deployments elevate workflows from functions that you call manually to API-managed entities.</p>
 <p>Attributes of a deployment include (but are not limited to):</p>
@@ -7275,7 +7305,7 @@ Deployments elevate workflows from functions that you call manually to API-manag
 <li><strong>Tags</strong>: optional text labels for organizing your deployments</li>
 </ul>
 <h2 id="create-a-deployment">Create a deployment<a class="headerlink" href="#create-a-deployment" title="Permanent link">&para;</a></h2>
-<p>Using our <code>get_repo_info</code> flow from the previous sections, we can easily create a deployment for it by introducing one simple line of code:</p>
+<p>Using our <code>get_repo_info</code> flow from the previous sections, we can easily create a deployment for it by calling a single method on the flow object: <code>flow.serve</code>.</p>
 <div class="highlight"><span class="filename">repo_info.py</span><pre><span></span><code><span class="kn">import</span> <span class="nn">httpx</span>
 <span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span>
 
@@ -7302,27 +7332,29 @@ Deployments elevate workflows from functions that you call manually to API-manag
 <div class="admonition warning">
 <p class="admonition-title">Deployments must be defined in static files</p>
 <p>Flows can be defined and run interactively, that is, within REPLs or Notebooks.
-Deployments, on the other hand, require that your flow definition be in a known file (which can be located on a remote filesystem in certain setups).  </p>
+Deployments, on the other hand, require that your flow definition be in a known file (which can be located on a remote filesystem in certain setups, as we'll see in the next section of the tutorial).  </p>
 </div>
 <p>Because this deployment has no schedule or triggering automation, you will need to use the UI or API to create runs for it.
-Let's use the CLI (in a separate terminal window) to see what happens:</p>
+Let's use the CLI (in a separate terminal window) to create a run for this deployment:</p>
 <div class="terminal">
+
 <div class="highlight"><pre><span></span><code>prefect<span class="w"> </span>deployment<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;get-repo-info/my-first-deployment&#39;</span>
 </code></pre></div>
+
 </div>
 
 <p>If you are watching either your terminal or your UI, you should see the newly created run execute successfully!<br />
 Let's take this example further by adding a schedule and additional metadata.</p>
 <h3 id="additional-options">Additional options<a class="headerlink" href="#additional-options" title="Permanent link">&para;</a></h3>
-<p>The <code>serve</code> method on flows exposes many options for your deployment.
+<p>The <code>serve</code> method on flows exposes many options for the deployment.
 Let's use a few of these options now:</p>
 <ul>
 <li><code>cron</code>: a keyword that allows us to set a cron string schedule for the deployment; see <a href="/concepts/schedules/">schedules</a> for more advanced scheduling options</li>
 <li><code>tags</code>: a keyword that allows us to tag this deployment and its runs for bookkeeping and filtering purposes</li>
-<li><code>description</code>: a keyword that allows us to document what this deployment does; by default the description is set from the docstring of the flow function, but we did not document our flow</li>
+<li><code>description</code>: a keyword that allows us to document what this deployment does; by default the description is set from the docstring of the flow function, but we did not document our flow function</li>
 <li><code>version</code>: a keyword that allows us to track changes to our deployment; by default a hash of the file containing the flow is used; popular options include semver tags or git commit hashes</li>
 </ul>
-<p>Setting these fields is simple:</p>
+<p>Let's add these options to our deployment:</p>
 <div class="highlight"><pre><span></span><code><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
     <span class="n">get_repo_info</span><span class="o">.</span><span class="n">serve</span><span class="p">(</span>
         <span class="n">name</span><span class="o">=</span><span class="s2">&quot;my-first-deployment&quot;</span><span class="p">,</span>
@@ -7332,13 +7364,14 @@ Let's use a few of these options now:</p>
         <span class="n">version</span><span class="o">=</span><span class="s2">&quot;tutorial/deployments&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 </code></pre></div>
-<p>When you rerun this script, you will find an updated deployment in the UI that is actively scheduling work!  Stop the script using <code>CTRL+C</code> and your schedule will be automatically paused.</p>
+<p>When you rerun this script, you will find an updated deployment in the UI that is actively scheduling work!<br />
+Stop the script in the CLI using <code>CTRL+C</code> and your schedule will be automatically paused.</p>
 <div class="admonition note">
 <p class="admonition-title"><code>.serve</code> is a long-running process</p>
-<p>In order for remotely triggered or scheduled runs to be executed, your script with <code>flow.serve</code> must be actively running.</p>
+<p>For remotely triggered or scheduled runs to be executed, your script with <code>flow.serve</code> must be actively running.</p>
 </div>
 <h2 id="running-multiple-deployments-at-once">Running multiple deployments at once<a class="headerlink" href="#running-multiple-deployments-at-once" title="Permanent link">&para;</a></h2>
-<p>This method is useful for creating deployments for single flows, but what if we have two or more flows?  This only requires a few additional method calls and imports to get up and running:</p>
+<p>This method is useful for creating deployments for single flows, but what if we have two or more flows?  This situation only requires a few additional method calls and imports to get up and running:</p>
 <div class="highlight"><span class="filename">multi_flow_deployment.py</span><pre><span></span><code><span class="kn">import</span> <span class="nn">time</span>
 <span class="hll"><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">serve</span>
 </span>
@@ -7366,21 +7399,25 @@ Let's use a few of these options now:</p>
 <li>the deployments are only registered with the API once <code>serve(...)</code> is called</li>
 <li>when serving multiple deployments, the only requirement is that they share a Python environment; they can be executed and scheduled independently of each other</li>
 </ul>
-<p>You should spend some time experimenting with this setup; a few next steps for exploration include:</p>
+<p>Spend some time experimenting with this setup.
+A few potential next steps for exploration include:</p>
 <ul>
 <li>pausing and unpausing the schedule for the "sleeper" deployment</li>
-<li>use the UI to submit ad-hoc runs for the "sleeper" deployment with different values for <code>sleep</code></li>
-<li>use the UI to cancel an active run for the "sleeper" deployment (good luck cancelling the "fast" one 😉)</li>
+<li>using the UI to submit ad-hoc runs for the "sleeper" deployment with different values for <code>sleep</code></li>
+<li>cancelling an active run for the "sleeper" deployment from the UI (good luck cancelling the "fast" one 😉)</li>
 </ul>
 <div class="admonition tip">
-<p class="admonition-title">Security Note</p>
-<p>Another implication of Prefect's deployment interface is our hybrid execution model. Whether you use Prefect Cloud or host a Prefect server instance yourself, you'll always be able to run work flows in the environments best suited to their execution. This model allows you efficient use of your infrastructure resources while maintaining the privacy of your code and data.
+<p class="admonition-title">Hybrid execution option</p>
+<p>Another implication of Prefect's deployment interface is that you can choose to use our hybrid execution model.
+Whether you use Prefect Cloud or host a Prefect server instance yourself, you can run work flows in the environments best suited to their execution.
+This model allows you efficient use of your infrastructure resources while maintaining the privacy of your code and data.
 There is no ingress required.
 For more information <a href="https://www.prefect.io/security/overview/#hybrid-model">read more about our hybrid model</a>.</p>
 </div>
 <h2 id="next-steps">Next steps<a class="headerlink" href="#next-steps" title="Permanent link">&para;</a></h2>
 <p>Congratulations! You now have your first working deployment.</p>
-<p>Deploying flows through the <code>serve</code> method is the most straightforward way to start scheduling flows with Prefect. However, if your team has more complex infrastructure requirements or you'd like to use Prefect <a href="/guides/managed-execution/">Managed Execution</a> you can deploy flows to a <a href="/concepts/work-pools/">work pool</a>.</p>
+<p>Deploying flows through the <code>serve</code> method is a fast way to start scheduling flows with Prefect.
+However, if your team has more complex infrastructure requirements or you'd like to have Prefect manage flow execution, you can deploy flows to a work pool.</p>
 <p>Learn about work pools and how Prefect Cloud can handle infrastructure configuration for you in the <a href="/tutorial/work-pools/">next step of the tutorial</a>.</p>
 
 
