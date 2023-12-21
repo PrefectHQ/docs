@@ -13,7 +13,7 @@
         <link rel="canonical" href="https://docs.prefect.io/latest/tutorial/workers/">
       
       
-        <link rel="prev" href="../deployments/">
+        <link rel="prev" href="../work-pools/">
       
       
         <link rel="next" href="../../guides/">
@@ -27,7 +27,7 @@
     
     
       
-        <title>Workers & Work Pools - Prefect Docs</title>
+        <title>Workers - Prefect Docs</title>
       
     
     
@@ -175,7 +175,7 @@ if (amplitudeKey){
     
   
 <meta property="og:type" content="website" />
-<meta property="og:title" content="Workers & Work Pools - Prefect Docs" />
+<meta property="og:title" content="Workers - Prefect Docs" />
 <meta property="og:description" content="Learn how Prefect flow deployments enable configuring flows for scheduled and remote execution with workers." />
 <meta property="og:image" content="https://docs.prefect.io/latest/assets/images/social/tutorial/workers.png" />
 <meta property="og:image:type" content="image/png" />
@@ -183,7 +183,7 @@ if (amplitudeKey){
 <meta property="og:image:height" content="630" />
 <meta property="og:url" content="https://docs.prefect.io/latest/tutorial/workers/" />
 <meta property="twitter:card" content="summary_large_image" />
-<meta property="twitter:title" content="Workers & Work Pools - Prefect Docs" />
+<meta property="twitter:title" content="Workers - Prefect Docs" />
 <meta property="twitter:description" content="Learn how Prefect flow deployments enable configuring flows for scheduled and remote execution with workers." />
 <meta property="twitter:image" content="https://docs.prefect.io/latest/assets/images/social/tutorial/workers.png" />
 </head>
@@ -274,7 +274,7 @@ if (amplitudeKey){
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-            Workers & Work Pools
+            Workers
             
           </span>
         </div>
@@ -564,6 +564,8 @@ if (amplitudeKey){
       
         
       
+        
+      
     
     
     
@@ -678,7 +680,33 @@ if (amplitudeKey){
   <span class="md-ellipsis">
     
   
-    Deploying Flows
+    Deployments
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../work-pools/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    Work Pools
   
 
     
@@ -713,7 +741,7 @@ if (amplitudeKey){
   <span class="md-ellipsis">
     
   
-    Workers & Work Pools
+    Workers
   
 
     
@@ -730,7 +758,7 @@ if (amplitudeKey){
   <span class="md-ellipsis">
     
   
-    Workers & Work Pools
+    Workers
   
 
     
@@ -7317,9 +7345,9 @@ if (amplitudeKey){
 <h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">&para;</a></h2>
 <p><a href="https://docs.docker.com/engine/install/">Docker</a> installed and running on your machine.</p>
 <h2 id="why-workers">Why workers<a class="headerlink" href="#why-workers" title="Permanent link">&para;</a></h2>
-<p>In the last section of the tutorial, you learned how work pools are a bridge between the Prefect orchestration layer and infrastructure for flow runs that can be dynamically provisioned.
-You saw how you can transition from persistent infrastructure to dynamic infrastructure, use <code>flow.deploy</code> instead of <code>flow.serve</code>.</p>
-<p>Work pools that rely on client-side workers take this a step further by enabling you to run work flows in your own Docker containers, Kubernetes Clusters, and serverless environments like AWS ECS, Azure Container Instances, and GCP Cloud Run.</p>
+<p>In the previous section of the tutorial, you learned how work pools are a bridge between the Prefect orchestration layer and infrastructure for flow runs that can be dynamically provisioned.
+You saw how you can transition from persistent infrastructure to dynamic infrastructure by using <code>flow.deploy</code> instead of <code>flow.serve</code>.</p>
+<p>Work pools that rely on client-side workers take this a step further by enabling you to run work flows in your own Docker containers, Kubernetes clusters, and serverless environments such as AWS ECS, Azure Container Instances, and GCP Cloud Run.</p>
 <p>The architecture of a worker-based work pool deployment can be summarized with the following diagram:</p>
 <pre class="mermaid"><code>graph TD
     subgraph your_infra["Your Execution Environment"]
@@ -7350,7 +7378,7 @@ Different <a href="/concepts/work-pools/#worker-types">worker types</a> create d
 <div class="admonition tip">
 <p class="admonition-title">Other work pool types</p>
 <p>There are <a href="/concepts/work-pools/#worker-types">work pool types</a> for serverless computing environments such as AWS ECS, Azure Container Instances, Google Cloud Run, and Vertex AI.
-Kubernetes is also a popular work poo typdel.</p>
+Kubernetes is also a popular work pool type.</p>
 <p>These options are expanded upon in various <a href="/guides/">How-to Guides</a>.</p>
 </div>
 <h3 id="create-a-work-pool">Create a work pool<a class="headerlink" href="#create-a-work-pool" title="Permanent link">&para;</a></h3>
@@ -7362,7 +7390,8 @@ Kubernetes is also a popular work poo typdel.</p>
 
 </div>
 
-<p>Let’s confirm that the work pool was successfully created by running the following command in the same terminal. You should see your new <code>my-docker-pool</code> in the output list.</p>
+<p>Let’s confirm that the work pool was successfully created by running the following command in the same terminal.
+You should see your new <code>my-docker-pool</code> in the output list.</p>
 <div class="terminal">
 
 <div class="highlight"><pre><span></span><code>prefect<span class="w"> </span>work-pool<span class="w"> </span>ls
@@ -7371,7 +7400,7 @@ Kubernetes is also a popular work poo typdel.</p>
 </div>
 
 <p>Finally, let’s double check that you can see this work pool in your Prefect UI.</p>
-<p>Navigate to the Work Pools tab and verify that you see <code>my-docker-pool</code> listed.</p>
+<p>Navigate to the <em>Work Pools</em> tab and verify that you see <code>my-docker-pool</code> listed.</p>
 <p>When you click into <code>my-docker-pool</code> you should see a red status icon signifying that this work pool is not ready to submit work.</p>
 <p>To get the work pool ready to submit flow runs, you need to start a worker.</p>
 <h3 id="start-a-worker">Start a worker<a class="headerlink" href="#start-a-worker" title="Permanent link">&para;</a></h3>
@@ -7385,10 +7414,12 @@ To start a worker on your laptop, open a new terminal and confirm that your virt
 
 </div>
 
-<p>You should see the worker start - it's now polling the Prefect API to request any scheduled flow runs it should pick up and then submit for execution.
+<p>You should see the worker start.
+It's now polling the Prefect API to request any scheduled flow runs it should pick up and then submit for execution.
 You’ll see your new worker listed in the UI under the Workers tab of the Work Pools page with a recent last polled date.</p>
 <p>You should also be able to see a <code>Ready</code> status indicator on your work pool - progress!</p>
-<p>You will need to keep this terminal session active in order for the worker to continue to pick up jobs. Since you are running this worker locally, the worker will terminate if you close the terminal.
+<p>You will need to keep this terminal session active in order for the worker to continue to pick up jobs.
+Since you are running this worker locally, the worker will terminate if you close the terminal.
 Therefore, in a production setting this worker should run as a <a href="/guides/deployment/daemonize/">daemonized or managed process</a>.</p>
 <p>Now that you’ve set up your work pool and worker, we have what we need to kick off and execute flow runs of flows deployed to this work pool.
 Let's deploy your tutorial flow to <code>my-docker-pool</code>.</p>
@@ -7399,7 +7430,8 @@ Let's deploy your tutorial flow to <code>my-docker-pool</code>.</p>
 <li>A work pool</li>
 <li>A worker</li>
 </ol>
-<p>Now it’s time to put it all together. We're going to update our <code>repo_info.py</code> file so it will build a Docker image and update our deployment so our worker can execute it.</p>
+<p>Now it’s time to put it all together.
+We're going to update our <code>repo_info.py</code> file to build a Docker image and update our deployment so our worker can execute it.</p>
 <p>The updates that you need to make to <code>repo_info.py</code> are:</p>
 <ol>
 <li>Change <code>flow.serve</code> to <code>flow.deploy</code>.</li>
@@ -7514,7 +7546,7 @@ Let's deploy your tutorial flow to <code>my-docker-pool</code>.</p>
 
 </div>
 
-<p>Now everything is set up for us to submit a flow-run to the work pool:</p>
+<p>Now everything is set for us to submit a flow-run to the work pool:</p>
 <div class="terminal">
 
 <div class="highlight"><pre><span></span><code>prefect<span class="w"> </span>deployment<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;get_repo_info/my-deployment&#39;</span>
@@ -7542,7 +7574,7 @@ Let's deploy your tutorial flow to <code>my-docker-pool</code>.</p>
 <li><a href="/guides/deployment/serverless-workers/">Deploying flows on serverless infrastructure</a></li>
 <li><a href="/guides/deployment/daemonize/">Daemonizing workers</a></li>
 </ul>
-<p>And more!</p>
+<p>Happy building!</p>
 
 
 

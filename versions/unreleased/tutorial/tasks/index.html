@@ -564,6 +564,8 @@ if (amplitudeKey){
       
         
       
+        
+      
     
     
     
@@ -785,7 +787,33 @@ if (amplitudeKey){
   <span class="md-ellipsis">
     
   
-    Deploying Flows
+    Deployments
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../work-pools/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    Work Pools
   
 
     
@@ -811,7 +839,7 @@ if (amplitudeKey){
   <span class="md-ellipsis">
     
   
-    Workers & Work Pools
+    Workers
   
 
     
@@ -7208,8 +7236,8 @@ if (amplitudeKey){
   <h1>Tasks</h1>
 
 <h2 id="what-is-a-task">What is a task?<a class="headerlink" href="#what-is-a-task" title="Permanent link">&para;</a></h2>
-<p>A <a href="/concepts/tasks/">task</a> is any Python function decorated with a <code>@task</code> decorator called within a flow. 
-You can think of a flow as a recipe for connecting a known sequence of tasks together. 
+<p>A <a href="/concepts/tasks/">task</a> is any Python function decorated with a <code>@task</code> decorator called within a flow.
+You can think of a flow as a recipe for connecting a known sequence of tasks together.
 Tasks, and the dependencies between them, are displayed in the flow run graph, enabling you to break down a complex flow into something you can observe, understand and control at a more granular level.<br />
 When a function becomes a task, it can be executed concurrently and its return value can be cached.</p>
 <p>Flows and tasks share some common features:</p>
@@ -7246,6 +7274,9 @@ When a function becomes a task, it can be executed concurrently and its return v
 </span>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">repo_name</span><span class="si">}</span><span class="s2"> repository statistics 🤓:&quot;</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Stars 🌠 : </span><span class="si">{</span><span class="n">repo_stats</span><span class="p">[</span><span class="s1">&#39;stargazers_count&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Forks 🍴 : </span><span class="si">{</span><span class="n">repo_stats</span><span class="p">[</span><span class="s1">&#39;forks_count&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">repo_info</span><span class="p">()</span>
 </code></pre></div>
 <p>Running the flow in your terminal will result in something like this:</p>
 <div class="terminal">
@@ -7262,7 +7293,7 @@ When a function becomes a task, it can be executed concurrently and its return v
 
 <p>And you should now see this task run tracked in the UI as well.</p>
 <h2 id="caching">Caching<a class="headerlink" href="#caching" title="Permanent link">&para;</a></h2>
-<p>Tasks support the ability to cache their return value. 
+<p>Tasks support the ability to cache their return value.
 Caching allows you to efficiently reuse <a href="/concepts/results/">results</a> of tasks that may be expensive to reproduce with every flow run, or reuse cached results if the inputs to a task have not changed.</p>
 <p>To enable caching, specify a <code>cache_key_fn</code> — a function that returns a cache key — on your task. You may optionally provide a <code>cache_expiration</code> timedelta indicating when the cache expires. You can define a task that is cached based on its inputs by using the Prefect <a href="/api-ref/prefect/tasks/#prefect.tasks.task_input_hash"><code>task_input_hash</code></a>. Let's add caching to our <code>get_url</code> task:</p>
 <div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">httpx</span>
@@ -7282,10 +7313,14 @@ Caching allows you to efficiently reuse <a href="/concepts/results/">results</a>
 <p>You can test this caching behavior by using a personal repository as your workflow parameter - give it a star, or remove a star and see how the output of this task changes (or doesn't) by running your flow multiple times.</p>
 <div class="admonition warning">
 <p class="admonition-title">Task results and caching</p>
-<p>Task results are cached in memory during a flow run and persisted to your home directory by default. Prefect Cloud only stores the cache key, not the data itself.</p>
+<p>Task results are cached in memory during a flow run and persisted to your home directory by default.
+Prefect Cloud only stores the cache key, not the data itself.</p>
 </div>
 <h2 id="concurrency">Concurrency<a class="headerlink" href="#concurrency" title="Permanent link">&para;</a></h2>
-<p>Tasks enable concurrency, allowing you to execute multiple tasks asynchronously. This concurrency can greatly enhance the efficiency and performance of your workflows. Let's expand our script to calculate the average open issues per user. This will require making more requests:</p>
+<p>Tasks enable concurrency, allowing you to execute multiple tasks asynchronously.
+This concurrency can greatly enhance the efficiency and performance of your workflows.
+Let's expand our script to calculate the average open issues per user.
+This will require making more requests:</p>
 <div class="highlight"><span class="filename">repo_info.py</span><pre><span></span><code><span class="kn">import</span> <span class="nn">httpx</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">timedelta</span>
 <span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
@@ -7321,8 +7356,14 @@ Caching allows you to efficiently reuse <a href="/concepts/results/">results</a>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Stars 🌠 : </span><span class="si">{</span><span class="n">repo_stats</span><span class="p">[</span><span class="s1">&#39;stargazers_count&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Forks 🍴 : </span><span class="si">{</span><span class="n">repo_stats</span><span class="p">[</span><span class="s1">&#39;forks_count&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 <span class="hll">    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Average open issues per user 💌 : </span><span class="si">{</span><span class="n">issues_per_user</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-</span></code></pre></div>
-<p>Now we're fetching the data we need, but the requests are happening sequentially. Tasks expose a <a href="/api-ref/prefect/tasks/#prefect.tasks.Task.submit"><code>submit</code></a> method which changes the execution from sequential to concurrent. In our specific example, we also need to use the <a href="/api-ref/prefect/futures/#prefect.futures.PrefectFuture.result"><code>result</code></a> method since we are unpacking a list of return values:</p>
+</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">get_repo_info</span><span class="p">()</span>
+</code></pre></div>
+<p>Now we're fetching the data we need, but the requests are happening sequentially.
+Tasks expose a <a href="/api-ref/prefect/tasks/#prefect.tasks.Task.submit"><code>submit</code></a> method that changes the execution from sequential to concurrent.
+In our specific example, we also need to use the <a href="/api-ref/prefect/futures/#prefect.futures.PrefectFuture.result"><code>result</code></a> method because we are unpacking a list of return values:</p>
 <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">get_open_issues</span><span class="p">(</span><span class="n">repo_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">open_issues_count</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">per_page</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">):</span>
     <span class="n">issues</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">pages</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="p">(</span><span class="n">open_issues_count</span> <span class="o">//</span> <span class="o">-</span><span class="n">per_page</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
@@ -7337,6 +7378,7 @@ Caching allows you to efficiently reuse <a href="/concepts/results/">results</a>
 </span></code></pre></div>
 <p>The logs show that each task is running concurrently:</p>
 <div class="terminal">
+
 <div class="highlight"><pre><span></span><code><span class="m">12</span>:45:28.241<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>prefect.engine<span class="w"> </span>-<span class="w"> </span>Created<span class="w"> </span>flow<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;intrepid-coua&#39;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>flow<span class="w"> </span><span class="s1">&#39;get-repo-info&#39;</span>
 <span class="m">12</span>:45:28.311<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>Flow<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;intrepid-coua&#39;</span><span class="w"> </span>-<span class="w"> </span>Created<span class="w"> </span>task<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;get_url-0&#39;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>task<span class="w"> </span><span class="s1">&#39;get_url&#39;</span>
 <span class="m">12</span>:45:28.312<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>Flow<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;intrepid-coua&#39;</span><span class="w"> </span>-<span class="w"> </span>Executing<span class="w"> </span><span class="s1">&#39;get_url-0&#39;</span><span class="w"> </span>immediately...
@@ -7365,10 +7407,12 @@ Caching allows you to efficiently reuse <a href="/concepts/results/">results</a>
 Average<span class="w"> </span>open<span class="w"> </span>issues<span class="w"> </span>per<span class="w"> </span>user<span class="w"> </span>💌<span class="w"> </span>:<span class="w"> </span><span class="m">2</span>.27
 <span class="m">12</span>:45:29.838<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>Flow<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;intrepid-coua&#39;</span><span class="w"> </span>-<span class="w"> </span>Finished<span class="w"> </span><span class="k">in</span><span class="w"> </span>state<span class="w"> </span>Completed<span class="o">(</span><span class="s1">&#39;All states completed.&#39;</span><span class="o">)</span>
 </code></pre></div>
+
 </div>
 
 <h2 id="subflows">Subflows<a class="headerlink" href="#subflows" title="Permanent link">&para;</a></h2>
-<p>Not only can you call tasks within a flow, but you can also call other flows! Child flows are called <a href="/concepts/flows/#composing-flows">subflows</a> and allow you to efficiently manage, track, and version common multi-task logic.</p>
+<p>Not only can you call tasks within a flow, but you can also call other flows!
+Child flows are called <a href="/concepts/flows/#composing-flows">subflows</a> and allow you to efficiently manage, track, and version common multi-task logic.</p>
 <p>Subflows are a great way to organize your workflows and offer more visibility within the UI.</p>
 <p>Let's add a <code>flow</code> decorator to our <code>get_open_issues</code> function:</p>
 <div class="highlight"><pre><span></span><code><span class="hll"><span class="nd">@flow</span>
@@ -7386,7 +7430,8 @@ Average<span class="w"> </span>open<span class="w"> </span>issues<span class="w"
 </code></pre></div>
 <p>Whenever we run the parent flow, a new run will be generated for related functions within that as well. Not only is this run tracked as a subflow run of the main flow, but you can also inspect it independently in the UI!</p>
 <h2 id="next-deployments"><a href="/tutorial/deployments/">Next: Deployments</a><a class="headerlink" href="#next-deployments" title="Permanent link">&para;</a></h2>
-<p>We now have a flow with tasks, subflows, retries, logging, caching, and concurrent execution. In the next section, we'll see how we can deploy this flow in order to run it on a schedule and/or external infrastructure - <a href="/tutorial/deployments/">click here to learn how to create your first deployment</a>.</p>
+<p>We now have a flow with tasks, subflows, retries, logging, caching, and concurrent execution.
+In the next section, we'll see how we can deploy this flow in order to run it on a schedule and/or external infrastructure - <a href="/tutorial/deployments/">click here to learn how to create your first deployment</a>.</p>
 
 
 
