@@ -7409,38 +7409,61 @@ if (amplitudeKey){
 </ol>
 <h2 id="how-to-use-incident-management-in-prefect-cloud">How to use incident management in Prefect Cloud<a class="headerlink" href="#how-to-use-incident-management-in-prefect-cloud" title="Permanent link">&para;</a></h2>
 <h3 id="creating-an-incident">Creating an incident<a class="headerlink" href="#creating-an-incident" title="Permanent link">&para;</a></h3>
+<p>There are several ways to create an incident:</p>
 <ol>
-<li><strong>From the incidents page</strong>:</li>
-<li>Click on the 'plus' button.</li>
 <li>
-<p>Fill in required fields and attach any Prefect resources related to your incident.</p>
+<p><strong>From the Incidents page:</strong></p>
+<ul>
+<li>Click on the <strong>+</strong> button.</li>
+<li>Fill in required fields and attach any Prefect resources related to your incident.</li>
+</ul>
 </li>
 <li>
-<p><strong>From a flow run, work pool or block</strong>:</p>
+<p><strong>From a flow run, work pool, or block:</strong></p>
+<ul>
+<li>Initiate an incident directly from a failed flow run, automatically linking it as a resource, by clicking on the menu button and selecting "Declare an incident".</li>
+</ul>
 </li>
 <li>
-<p>Initiate an incident directly from a failed flow run, automatically linking it as a resource, by clicking on the menu button and selecting "Declare an incident".</p>
-</li>
-<li>
-<p><strong>Via automation</strong>:</p>
-</li>
+<p><strong>Via an <a href="/concepts/automations/">automation</a>:</strong></p>
+<ul>
 <li>Set up incident creation as an automated response to selected triggers.</li>
+</ul>
+</li>
 </ol>
 <h3 id="incident-automations">Incident automations<a class="headerlink" href="#incident-automations" title="Permanent link">&para;</a></h3>
 <p>Automations can be used for triggering an incident and for selecting actions to take when an incident is triggered. For example, a work pool status change could trigger the declaration of an incident, or a critical level incident could trigger a notification action.</p>
 <p>To automatically take action when an incident is declared, set up a custom trigger that listens for declaration events.</p>
-<div class="highlight"><pre><span></span><code>{
-  &quot;match&quot;: {
-    &quot;prefect.resource.id&quot;: &quot;prefect-cloud.incident.*&quot;
-  },
-  &quot;expect&quot;: [
-    &quot;prefect-cloud.incident.declared&quot;
-  ],
-  &quot;posture&quot;: &quot;Reactive&quot;,
-  &quot;threshold&quot;: 1,
-  &quot;within&quot;: 0
-}
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;match&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;prefect.resource.id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;prefect-cloud.incident.*&quot;</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;expect&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="s2">&quot;prefect-cloud.incident.declared&quot;</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;posture&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Reactive&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;threshold&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;within&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span>
+<span class="p">}</span>
 </code></pre></div>
+<div class="admonition tip">
+<p class="admonition-title">Building custom triggers</p>
+<p>To get started with incident automations, you only need to specify two fields in your trigger:</p>
+<ul>
+<li>
+<p><strong>match</strong>: The resource emitting your event of interest. You can match on specific resource IDs, use wildcards to match on all resources of a given type, and even match on other resource attributes, like <code>prefect.resource.name</code>.</p>
+</li>
+<li>
+<p><strong>expect</strong>: The event type to listen for. For example, you could listen for any (or all) of the following event types:</p>
+<ul>
+<li><code>prefect-cloud.incident.declared</code></li>
+<li><code>prefect-cloud.incident.resolved</code></li>
+<li><code>prefect-cloud.incident.updated.severity</code></li>
+</ul>
+</li>
+</ul>
+<p>See <a href="/concepts/automations/#custom-triggers">Event Triggers</a> for more information on custom triggers, and check out your Event Feed to see the event types emitted by your incidents and other resources (i.e. events that you can react to).</p>
+</div>
 <p>When an incident is declared, any actions you configure such as pausing work pools or sending notifications, will execute immediately.</p>
 <h3 id="managing-an-incident">Managing an incident<a class="headerlink" href="#managing-an-incident" title="Permanent link">&para;</a></h3>
 <ul>
