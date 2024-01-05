@@ -2054,11 +2054,11 @@ if (amplitudeKey){
 </li>
         
           <li class="md-nav__item">
-  <a href="#dynamically-provisioning-infrastructure-with-workers" class="md-nav__link">
+  <a href="#dynamically-provisioning-infrastructure-with-work-pools" class="md-nav__link">
     <span class="md-ellipsis">
       
         <span class="md-typeset">
-          Dynamically provisioning infrastructure with workers
+          Dynamically provisioning infrastructure with work pools
         </span>
       
     </span>
@@ -8730,11 +8730,11 @@ if (amplitudeKey){
 </li>
         
           <li class="md-nav__item">
-  <a href="#dynamically-provisioning-infrastructure-with-workers" class="md-nav__link">
+  <a href="#dynamically-provisioning-infrastructure-with-work-pools" class="md-nav__link">
     <span class="md-ellipsis">
       
         <span class="md-typeset">
-          Dynamically provisioning infrastructure with workers
+          Dynamically provisioning infrastructure with work pools
         </span>
       
     </span>
@@ -8778,11 +8778,14 @@ if (amplitudeKey){
 
 
 <h1 id="deployments">Deployments<a class="headerlink" href="#deployments" title="Permanent link">&para;</a></h1>
-<p>Deployments are server-side representations of flows. They store the crucial metadata needed for remote orchestration including <em>when</em>, <em>where</em>, and <em>how</em> a workflow should run.
+<p>Deployments are server-side representations of flows. 
+They store the crucial metadata needed for remote orchestration including <em>when</em>, <em>where</em>, and <em>how</em> a workflow should run.
 Deployments elevate workflows from functions that you must call manually to API-managed entities that can be triggered remotely.</p>
-<p>Here we will focus largely on the metadata that defines a deployment and how it is used. Different ways of creating a deployment populate these fields differently.</p>
+<p>Here we will focus largely on the metadata that defines a deployment and how it is used. 
+Different ways of creating a deployment populate these fields differently.</p>
 <h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
-<p>Every Prefect deployment references one and only one "entrypoint" flow (though that flow may itself call any number of subflows). Different deployments may reference the same underlying flow, a useful pattern when developing or promoting workflow changes through staged environments.</p>
+<p>Every Prefect deployment references one and only one "entrypoint" flow (though that flow may itself call any number of subflows). 
+Different deployments may reference the same underlying flow, a useful pattern when developing or promoting workflow changes through staged environments.</p>
 <p>The complete schema that defines a deployment is as follows:</p>
 <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Deployment</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -8827,15 +8830,20 @@ For example, triggering a run of a deployment from the Prefect CLI can be done v
 
 <p>The other two fields are less obvious:</p>
 <ul>
-<li><strong><code>path</code></strong>: the <em>path</em> can generally be interpreted as the runtime working directory for the flow. For example, if a deployment references a workflow defined within a Docker image, the <code>path</code> will be the absolute path to the parent directory where that workflow will run anytime the deployment is triggered. This interpretation is more subtle in the case of flows defined in remote filesystems.</li>
-<li><strong><code>entrypoint</code></strong>: the <em>entrypoint</em> of a deployment is a relative reference to a function decorated as a flow that exists on some filesystem. It is always specified relative to the <code>path</code>. Entrypoints use Python's standard path-to-object syntax (e.g., <code>path/to/file.py:function_name</code> or simply <code>path:object</code>).</li>
+<li><strong><code>path</code></strong>: the <em>path</em> can generally be interpreted as the runtime working directory for the flow. 
+For example, if a deployment references a workflow defined within a Docker image, the <code>path</code> will be the absolute path to the parent directory where that workflow will run anytime the deployment is triggered. 
+This interpretation is more subtle in the case of flows defined in remote filesystems.</li>
+<li><strong><code>entrypoint</code></strong>: the <em>entrypoint</em> of a deployment is a relative reference to a function decorated as a flow that exists on some filesystem. 
+It is always specified relative to the <code>path</code>. Entrypoints use Python's standard path-to-object syntax (e.g., <code>path/to/file.py:function_name</code> or simply <code>path:object</code>).</li>
 </ul>
 <p>The entrypoint must reference the same flow as the flow ID.</p>
 <p>Note that Prefect requires that deployments reference flows defined <em>within Python files</em>.
-Flows defined within interactive REPLs or notebooks cannot currently be deployed as such. They are still valid flows that will be monitored by the API and observable in the UI whenever they are run, but Prefect cannot trigger them.</p>
+Flows defined within interactive REPLs or notebooks cannot currently be deployed as such. 
+They are still valid flows that will be monitored by the API and observable in the UI whenever they are run, but Prefect cannot trigger them.</p>
 <div class="admonition info">
 <p class="admonition-title">Deployments do not contain code definitions</p>
-<p>Deployment metadata references code that exists in potentially diverse locations within your environment; this separation of concerns means that your flow code stays within your storage and execution infrastructure and never lives on the Prefect server or database.</p>
+<p>Deployment metadata references code that exists in potentially diverse locations within your environment.
+This separation of concerns means that your flow code stays within your storage and execution infrastructure and never lives on the Prefect server or database.</p>
 <p>This is the heart of the Prefect hybrid model: there's a boundary between your proprietary assets, such as your flow code, and the Prefect backend (including <a href="/cloud/">Prefect Cloud</a>). </p>
 </div>
 <h3 id="scheduling-and-parametrization">Scheduling and parametrization<a class="headerlink" href="#scheduling-and-parametrization" title="Permanent link">&para;</a></h3>
@@ -8859,10 +8867,22 @@ These can be overwritten through a trigger or when manually creating a custom ru
 <p>Because deployments are nothing more than metadata, runs can be created at anytime.
 Note that pausing a schedule, updating your deployment, and other actions reset your auto-scheduled runs.</p>
 </div>
+<div class="admonition tip">
+<p class="admonition-title">Scheduling deployments from within Python flow code</p>
+<p>Note that Prefect provides a <a href="/api-ref/prefect/deployments/deployments/#prefect.deployments.deployments.run_deployment"><code>run_deployment</code> function</a> that can be used to schedule the run of an existing deployment when your Python code executes.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect.deployments</span> <span class="kn">import</span> <span class="n">run_deployment</span>
+
+<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="n">run_deployment</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;my_flow_name/my_deployment_name&quot;</span><span class="p">)</span>
+</code></pre></div>
+<p>Pass <code>timeout=0</code> to return immediately and not block.</p>
+</div>
 <h3 id="versioning-and-bookkeeping">Versioning and bookkeeping<a class="headerlink" href="#versioning-and-bookkeeping" title="Permanent link">&para;</a></h3>
 <p>Versions, descriptions and tags are omnipresent fields throughout Prefect that can be easy to overlook. However, putting some extra thought into how you use these fields can pay dividends down the road.</p>
 <ul>
-<li><strong><code>version</code></strong>: versions are always set by the client and can be any arbitrary string. We recommend tightly coupling this field on your deployments to your software development lifecycle. For example if you leverage <code>git</code> to manage code changes, use either a tag or commit hash in this field. If you don't set a value for the version, Prefect will compute a hash</li>
+<li><strong><code>version</code></strong>: versions are always set by the client and can be any arbitrary string. 
+We recommend tightly coupling this field on your deployments to your software development lifecycle. 
+For example if you leverage <code>git</code> to manage code changes, use either a tag or commit hash in this field. If you don't set a value for the version, Prefect will compute a hash</li>
 <li><strong><code>description</code></strong>: the description field of a deployment is a place to provide rich reference material for downstream stakeholders such as intended use and parameter documentation. Markdown formatting will be rendered in the Prefect UI, allowing for section headers, links, tables, and other formatting. If not provided explicitly, Prefect will use the docstring of your flow function as a default value.</li>
 <li><strong><code>tags</code></strong>: tags are a mechanism for grouping related work together across a diverse set of objects. Tags set on a deployment will be inherited by that deployment's flow runs. These tags can then be used to filter what runs are displayed on the primary UI dashboard, allowing you to customize different views into your work. In addition, in Prefect Cloud you can easily find objects through searching by tag.</li>
 </ul>
@@ -8890,11 +8910,16 @@ For example, a common use of pull steps is to dynamically pull code from remote 
 <h2 id="two-approaches-to-deployments">Two approaches to deployments<a class="headerlink" href="#two-approaches-to-deployments" title="Permanent link">&para;</a></h2>
 <p>There are two primary ways to deploy flows with Prefect, differentiated by how much control Prefect has over the infrastructure in which the flows run.</p>
 <p>In one setup, deploying Prefect flows is analogous to deploying a webserver - users author their workflows and then start a long-running process (often within a Docker container) that is responsible for managing all of the runs for the associated deployment(s).</p>
-<p>In the other setup, you do <a href="/guides/prefect-deploy">a little extra up-front work to setup a work pool and a base job template that defines how individual flow runs will be submitted to infrastructure</a>.
-Workers then take these job definitions and submit them to the appropriate infrastructure with each run.</p>
-<p>Both setups can support production workloads. The choice ultimately boils down to your use case and preferences. Read further to decide which setup is right for your situation.</p>
+<p>In the other setup, you do a little extra up-front work to set up a <a href="/guides/prefect-deploy">work pool and a base job template that defines how individual flow runs will be submitted to infrastructure</a>.</p>
+<p>Prefect provides several <a href="/concepts/work-pools/#work-pool-types">types of work pools</a> corresponding to different types of infrastructure.
+Prefect Cloud provides a <a href="/guides/managed-execution/">Prefect Managed work pool</a> option that is the simplest way to run workflows remotely.
+A cloud-provider account, such as AWS, is not required with a Prefect Managed work pool.</p>
+<p>Some work pool types require a client-side worker to submit job definitions to the appropriate infrastructure with each run.</p>
+<p>Each of these setups can support production workloads. 
+The choice ultimately boils down to your use case and preferences. 
+Read further to decide which setup is best for your situation.</p>
 <h3 id="serving-flows-on-long-lived-infrastructure">Serving flows on long-lived infrastructure<a class="headerlink" href="#serving-flows-on-long-lived-infrastructure" title="Permanent link">&para;</a></h3>
-<p>The simplest way to deploy a Prefect flow is to use <a href="/concepts/flows/#serving-a-flow">the <code>serve</code> method</a> of the <code>Flow</code> object or <a href="/concepts/flows/#serving-multiple-flows-at-once">the <code>serve</code> utility</a> for managing multiple flows simultaneously.</p>
+<p>When you have several flows running regularly, <a href="/concepts/flows/#serving-a-flow">the <code>serve</code> method</a> of the <code>Flow</code> object or <a href="/concepts/flows/#serving-multiple-flows-at-once">the <code>serve</code> utility</a> is a great option for managing multiple flows simultaneously.</p>
 <p>Once you have authored your flow and decided on its deployment settings as described above, all that's left is to run this long-running process in a location of your choosing.
 The process will stay in communication with the Prefect API, monitoring for work and submitting each run within an individual subprocess.
 Note that because runs are submitted to subprocesses, any external infrastructure configuration will need to be setup beforehand and kept associated with this process.</p>
@@ -8905,24 +8930,24 @@ Note that because runs are submitted to subprocesses, any external infrastructur
 <li>Creating deployments requires a minimal set of decisions.</li>
 <li>Iteration speed is fast.</li>
 </ul>
-<p>However, there are a few reasons you might consider running flows on dynamically provisioned infrastructure with workers and work pools instead:</p>
+<p>However, there are a few reasons you might consider running flows on dynamically provisioned infrastructure with work pools instead:</p>
 <ul>
 <li>Flows that have expensive infrastructure needs may be more costly in this setup due to the long-running process.</li>
 <li>Flows with heterogeneous infrastructure needs across runs will be more difficult to configure and schedule.</li>
 <li>Large volumes of deployments can be harder to track.</li>
 <li>If your internal team structure requires that deployment authors be members of a different team than the team managing infrastructure, the work pool interface may be preferred.</li>
 </ul>
-<h3 id="dynamically-provisioning-infrastructure-with-workers">Dynamically provisioning infrastructure with workers<a class="headerlink" href="#dynamically-provisioning-infrastructure-with-workers" title="Permanent link">&para;</a></h3>
-<p><a href="/concepts/work-pools/">Work pools and workers</a> allow Prefect to exercise greater control of the infrastructure on which flows run.
-This setup allows you to essentially "scale to zero" when nothing is running, as the worker process is lightweight and does not need the same resources that your workflows do.</p>
-<p>With this approach:</p>
+<h3 id="dynamically-provisioning-infrastructure-with-work-pools">Dynamically provisioning infrastructure with work pools<a class="headerlink" href="#dynamically-provisioning-infrastructure-with-work-pools" title="Permanent link">&para;</a></h3>
+<p><a href="/concepts/work-pools/">Work pools</a> allow Prefect to exercise greater control of the infrastructure on which flows run.
+Options for <a href="/guides/deployment/serverless-workers/">serverless work pools</a> allow you to scale to zero when workflows aren't running.
+Prefect even provides you with the ability to <a href="/guides/deployment/push-work-pools/#automatically-creating-a-new-push-work-pool-and-provisioning-infrastructure">provision cloud infrastructure via a single CLI command</a>, if you use a Prefect Cloud push work pool option.</p>
+<p>With work pools:</p>
 <ul>
 <li>You can configure and monitor infrastructure configuration within the Prefect UI.</li>
 <li>Infrastructure is ephemeral and dynamically provisioned.</li>
 <li>Prefect is more infrastructure-aware and therefore collects more event data from your infrastructure by default.</li>
 <li>Highly decoupled setups are possible.</li>
 </ul>
-<p>Of course, complexity always has a price. The worker approach has more components and may be more difficult to debug and understand.</p>
 <div class="admonition note">
 <p class="admonition-title">You don't have to commit to one approach</p>
 <p>You are not required to use only one of these approaches for your deployments. You can mix and match approaches based on the needs of each flow. Further, you can change the deployment approach for a particular flow as its needs evolve.
