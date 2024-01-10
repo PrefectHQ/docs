@@ -8810,8 +8810,10 @@ if (amplitudeKey){
 </code></pre></div>
 <p>If a user chooses any size and color combination other than <code>small</code> and <code>green</code>, the flow run will resume successfully. However, if the user chooses size <code>small</code> and color <code>green</code>, the flow run will resume, and <code>pause_flow_run</code> will raise a <code>ValidationError</code> exception. This will cause the flow run to fail and log the error.</p>
 <p>However, what if you don't want the flow run to fail? One way to handle this case is to use a <code>while</code> loop and pause again if the <code>ValidationError</code> exception is raised:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">pydantic</span>
-<span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">get_run_logger</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Literal</span>
+
+<span class="kn">import</span> <span class="nn">pydantic</span>
+<span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">pause_flow_run</span><span class="p">,</span> <span class="n">get_run_logger</span>
 <span class="kn">from</span> <span class="nn">prefect.input</span> <span class="kn">import</span> <span class="n">RunInput</span>
 
 
