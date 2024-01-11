@@ -26681,7 +26681,13 @@ if not provided, the current timestamp will be used</p>
 <span class="normal"> 99</span>
 <span class="normal">100</span>
 <span class="normal">101</span>
-<span class="normal">102</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">IntervalSchedule</span><span class="p">(</span><span class="n">PrefectBaseModel</span><span class="p">):</span>
+<span class="normal">102</span>
+<span class="normal">103</span>
+<span class="normal">104</span>
+<span class="normal">105</span>
+<span class="normal">106</span>
+<span class="normal">107</span>
+<span class="normal">108</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">IntervalSchedule</span><span class="p">(</span><span class="n">PrefectBaseModel</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A schedule formed by adding `interval` increments to an `anchor_date`. If no</span>
 <span class="sd">    `anchor_date` is supplied, the current UTC time is used.  If a</span>
@@ -26732,14 +26738,20 @@ if not provided, the current timestamp will be used</p>
 
     <span class="nd">@validator</span><span class="p">(</span><span class="s2">&quot;timezone&quot;</span><span class="p">,</span> <span class="n">always</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">default_timezone</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="c1"># pendulum.tz.timezones is a callable in 3.0 and above</span>
+        <span class="c1"># https://github.com/PrefectHQ/prefect/issues/11619</span>
+        <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">pendulum</span><span class="o">.</span><span class="n">tz</span><span class="o">.</span><span class="n">timezones</span><span class="p">):</span>
+            <span class="n">timezones</span> <span class="o">=</span> <span class="n">pendulum</span><span class="o">.</span><span class="n">tz</span><span class="o">.</span><span class="n">timezones</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">timezones</span> <span class="o">=</span> <span class="n">pendulum</span><span class="o">.</span><span class="n">tz</span><span class="o">.</span><span class="n">timezones</span>
         <span class="c1"># if was provided, make sure its a valid IANA string</span>
-        <span class="k">if</span> <span class="n">v</span> <span class="ow">and</span> <span class="n">v</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">pendulum</span><span class="o">.</span><span class="n">tz</span><span class="o">.</span><span class="n">timezones</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">v</span> <span class="ow">and</span> <span class="n">v</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">timezones</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Invalid timezone: &quot;</span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s1">&quot;&#39;</span><span class="p">)</span>
 
         <span class="c1"># otherwise infer the timezone from the anchor date</span>
         <span class="k">elif</span> <span class="n">v</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">values</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;anchor_date&quot;</span><span class="p">):</span>
             <span class="n">tz</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="s2">&quot;anchor_date&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">tz</span><span class="o">.</span><span class="n">name</span>
-            <span class="k">if</span> <span class="n">tz</span> <span class="ow">in</span> <span class="n">pendulum</span><span class="o">.</span><span class="n">tz</span><span class="o">.</span><span class="n">timezones</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">tz</span> <span class="ow">in</span> <span class="n">timezones</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">tz</span>
             <span class="c1"># sometimes anchor dates have &quot;timezones&quot; that are UTC offsets</span>
             <span class="c1"># like &quot;-04:00&quot;. This happens when parsing ISO8601 strings.</span>
@@ -26863,13 +26875,7 @@ behaves like fcron and enables you to e.g. define a job that executes each
 
             <details class="quote">
               <summary>Source code in <code>prefect/client/schemas/schedules.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">105</span>
-<span class="normal">106</span>
-<span class="normal">107</span>
-<span class="normal">108</span>
-<span class="normal">109</span>
-<span class="normal">110</span>
-<span class="normal">111</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">111</span>
 <span class="normal">112</span>
 <span class="normal">113</span>
 <span class="normal">114</span>
@@ -26919,7 +26925,20 @@ behaves like fcron and enables you to e.g. define a job that executes each
 <span class="normal">158</span>
 <span class="normal">159</span>
 <span class="normal">160</span>
-<span class="normal">161</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">CronSchedule</span><span class="p">(</span><span class="n">PrefectBaseModel</span><span class="p">):</span>
+<span class="normal">161</span>
+<span class="normal">162</span>
+<span class="normal">163</span>
+<span class="normal">164</span>
+<span class="normal">165</span>
+<span class="normal">166</span>
+<span class="normal">167</span>
+<span class="normal">168</span>
+<span class="normal">169</span>
+<span class="normal">170</span>
+<span class="normal">171</span>
+<span class="normal">172</span>
+<span class="normal">173</span>
+<span class="normal">174</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">CronSchedule</span><span class="p">(</span><span class="n">PrefectBaseModel</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Cron schedule</span>
 
@@ -26958,7 +26977,14 @@ behaves like fcron and enables you to e.g. define a job that executes each
 
     <span class="nd">@validator</span><span class="p">(</span><span class="s2">&quot;timezone&quot;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">valid_timezone</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">v</span> <span class="ow">and</span> <span class="n">v</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">pendulum</span><span class="o">.</span><span class="n">tz</span><span class="o">.</span><span class="n">timezones</span><span class="p">:</span>
+        <span class="c1"># pendulum.tz.timezones is a callable in 3.0 and above</span>
+        <span class="c1"># https://github.com/PrefectHQ/prefect/issues/11619</span>
+        <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">pendulum</span><span class="o">.</span><span class="n">tz</span><span class="o">.</span><span class="n">timezones</span><span class="p">):</span>
+            <span class="n">timezones</span> <span class="o">=</span> <span class="n">pendulum</span><span class="o">.</span><span class="n">tz</span><span class="o">.</span><span class="n">timezones</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">timezones</span> <span class="o">=</span> <span class="n">pendulum</span><span class="o">.</span><span class="n">tz</span><span class="o">.</span><span class="n">timezones</span>
+
+        <span class="k">if</span> <span class="n">v</span> <span class="ow">and</span> <span class="n">v</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">timezones</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s1">&#39;Invalid timezone: &quot;</span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s1">&quot; (specify in IANA tzdata format, for example,&#39;</span>
                 <span class="s2">&quot; America/New_York)&quot;</span>
@@ -27073,20 +27099,7 @@ a 9am daily schedule with a UTC start date will maintain a 9am UTC time.</p>
 
             <details class="quote">
               <summary>Source code in <code>prefect/client/schemas/schedules.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">167</span>
-<span class="normal">168</span>
-<span class="normal">169</span>
-<span class="normal">170</span>
-<span class="normal">171</span>
-<span class="normal">172</span>
-<span class="normal">173</span>
-<span class="normal">174</span>
-<span class="normal">175</span>
-<span class="normal">176</span>
-<span class="normal">177</span>
-<span class="normal">178</span>
-<span class="normal">179</span>
-<span class="normal">180</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">180</span>
 <span class="normal">181</span>
 <span class="normal">182</span>
 <span class="normal">183</span>
@@ -27225,7 +27238,20 @@ a 9am daily schedule with a UTC start date will maintain a 9am UTC time.</p>
 <span class="normal">316</span>
 <span class="normal">317</span>
 <span class="normal">318</span>
-<span class="normal">319</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">RRuleSchedule</span><span class="p">(</span><span class="n">PrefectBaseModel</span><span class="p">):</span>
+<span class="normal">319</span>
+<span class="normal">320</span>
+<span class="normal">321</span>
+<span class="normal">322</span>
+<span class="normal">323</span>
+<span class="normal">324</span>
+<span class="normal">325</span>
+<span class="normal">326</span>
+<span class="normal">327</span>
+<span class="normal">328</span>
+<span class="normal">329</span>
+<span class="normal">330</span>
+<span class="normal">331</span>
+<span class="normal">332</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">RRuleSchedule</span><span class="p">(</span><span class="n">PrefectBaseModel</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    RRule schedule, based on the iCalendar standard</span>
 <span class="sd">    ([RFC 5545](https://datatracker.ietf.org/doc/html/rfc5545)) as</span>
@@ -27411,20 +27437,7 @@ here</p>
 
           <details class="quote">
             <summary>Source code in <code>prefect/client/schemas/schedules.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">258</span>
-<span class="normal">259</span>
-<span class="normal">260</span>
-<span class="normal">261</span>
-<span class="normal">262</span>
-<span class="normal">263</span>
-<span class="normal">264</span>
-<span class="normal">265</span>
-<span class="normal">266</span>
-<span class="normal">267</span>
-<span class="normal">268</span>
-<span class="normal">269</span>
-<span class="normal">270</span>
-<span class="normal">271</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">271</span>
 <span class="normal">272</span>
 <span class="normal">273</span>
 <span class="normal">274</span>
@@ -27464,7 +27477,20 @@ here</p>
 <span class="normal">308</span>
 <span class="normal">309</span>
 <span class="normal">310</span>
-<span class="normal">311</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">to_rrule</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">dateutil</span><span class="o">.</span><span class="n">rrule</span><span class="o">.</span><span class="n">rrule</span><span class="p">:</span>
+<span class="normal">311</span>
+<span class="normal">312</span>
+<span class="normal">313</span>
+<span class="normal">314</span>
+<span class="normal">315</span>
+<span class="normal">316</span>
+<span class="normal">317</span>
+<span class="normal">318</span>
+<span class="normal">319</span>
+<span class="normal">320</span>
+<span class="normal">321</span>
+<span class="normal">322</span>
+<span class="normal">323</span>
+<span class="normal">324</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">to_rrule</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">dateutil</span><span class="o">.</span><span class="n">rrule</span><span class="o">.</span><span class="n">rrule</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Since rrule doesn&#39;t properly serialize/deserialize timezones, we localize dates</span>
 <span class="sd">    here</span>
@@ -27638,20 +27664,7 @@ or a timedelta object. If a number is given, it will be interpreted as seconds.<
 
           <details class="quote">
             <summary>Source code in <code>prefect/client/schemas/schedules.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">330</span>
-<span class="normal">331</span>
-<span class="normal">332</span>
-<span class="normal">333</span>
-<span class="normal">334</span>
-<span class="normal">335</span>
-<span class="normal">336</span>
-<span class="normal">337</span>
-<span class="normal">338</span>
-<span class="normal">339</span>
-<span class="normal">340</span>
-<span class="normal">341</span>
-<span class="normal">342</span>
-<span class="normal">343</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">343</span>
 <span class="normal">344</span>
 <span class="normal">345</span>
 <span class="normal">346</span>
@@ -27685,7 +27698,20 @@ or a timedelta object. If a number is given, it will be interpreted as seconds.<
 <span class="normal">374</span>
 <span class="normal">375</span>
 <span class="normal">376</span>
-<span class="normal">377</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">construct_schedule</span><span class="p">(</span>
+<span class="normal">377</span>
+<span class="normal">378</span>
+<span class="normal">379</span>
+<span class="normal">380</span>
+<span class="normal">381</span>
+<span class="normal">382</span>
+<span class="normal">383</span>
+<span class="normal">384</span>
+<span class="normal">385</span>
+<span class="normal">386</span>
+<span class="normal">387</span>
+<span class="normal">388</span>
+<span class="normal">389</span>
+<span class="normal">390</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">construct_schedule</span><span class="p">(</span>
     <span class="n">interval</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">anchor_date</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">cron</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
