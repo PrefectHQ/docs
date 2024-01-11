@@ -8733,8 +8733,7 @@ if (amplitudeKey){
 
           <details class="quote">
             <summary>Source code in <code>prefect/cli/deploy.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 75</span>
-<span class="normal"> 76</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 76</span>
 <span class="normal"> 77</span>
 <span class="normal"> 78</span>
 <span class="normal"> 79</span>
@@ -8962,7 +8961,16 @@ if (amplitudeKey){
 <span class="normal">301</span>
 <span class="normal">302</span>
 <span class="normal">303</span>
-<span class="normal">304</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@app</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="normal">304</span>
+<span class="normal">305</span>
+<span class="normal">306</span>
+<span class="normal">307</span>
+<span class="normal">308</span>
+<span class="normal">309</span>
+<span class="normal">310</span>
+<span class="normal">311</span>
+<span class="normal">312</span>
+<span class="normal">313</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@app</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">deploy</span><span class="p">(</span>
     <span class="n">entrypoint</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Argument</span><span class="p">(</span>
         <span class="kc">None</span><span class="p">,</span>
@@ -9101,6 +9109,11 @@ if (amplitudeKey){
             <span class="s2">&quot; provided, this flag will be ignored.&quot;</span>
         <span class="p">),</span>
     <span class="p">),</span>
+    <span class="n">prefect_file</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
+        <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;prefect.yaml&quot;</span><span class="p">),</span>
+        <span class="s2">&quot;--prefect-file&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Specify a custom path to a prefect.yaml file&quot;</span><span class="p">,</span>
+    <span class="p">),</span>
     <span class="n">ci</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
         <span class="kc">False</span><span class="p">,</span>
         <span class="s2">&quot;--ci&quot;</span><span class="p">,</span>
@@ -9150,8 +9163,9 @@ if (amplitudeKey){
         <span class="s2">&quot;enforce_parameter_schema&quot;</span><span class="p">:</span> <span class="n">enforce_parameter_schema</span><span class="p">,</span>
     <span class="p">}</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">deploy_configs</span><span class="p">,</span> <span class="n">actions</span> <span class="o">=</span> <span class="n">_load_deploy_configs_and_actions</span><span class="p">(</span><span class="n">ci</span><span class="o">=</span><span class="n">ci</span><span class="p">)</span>
-
+        <span class="n">deploy_configs</span><span class="p">,</span> <span class="n">actions</span> <span class="o">=</span> <span class="n">_load_deploy_configs_and_actions</span><span class="p">(</span>
+            <span class="n">prefect_file</span><span class="o">=</span><span class="n">prefect_file</span><span class="p">,</span> <span class="n">ci</span><span class="o">=</span><span class="n">ci</span>
+        <span class="p">)</span>
         <span class="n">parsed_names</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">names</span><span class="p">:</span>
             <span class="k">if</span> <span class="s2">&quot;*&quot;</span> <span class="ow">in</span> <span class="n">name</span><span class="p">:</span>
@@ -9177,6 +9191,7 @@ if (amplitudeKey){
                 <span class="n">actions</span><span class="o">=</span><span class="n">actions</span><span class="p">,</span>
                 <span class="n">deploy_all</span><span class="o">=</span><span class="n">deploy_all</span><span class="p">,</span>
                 <span class="n">ci</span><span class="o">=</span><span class="n">ci</span><span class="p">,</span>
+                <span class="n">prefect_file</span><span class="o">=</span><span class="n">prefect_file</span><span class="p">,</span>
             <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># Accommodate passing in -n flow-name/deployment-name as well as -n deployment-name</span>
@@ -9189,6 +9204,7 @@ if (amplitudeKey){
                 <span class="n">actions</span><span class="o">=</span><span class="n">actions</span><span class="p">,</span>
                 <span class="n">options</span><span class="o">=</span><span class="n">options</span><span class="p">,</span>
                 <span class="n">ci</span><span class="o">=</span><span class="n">ci</span><span class="p">,</span>
+                <span class="n">prefect_file</span><span class="o">=</span><span class="n">prefect_file</span><span class="p">,</span>
             <span class="p">)</span>
     <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
         <span class="n">exit_with_error</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">exc</span><span class="p">))</span>
