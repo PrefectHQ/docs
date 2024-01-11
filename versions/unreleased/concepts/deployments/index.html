@@ -2049,9 +2049,33 @@ if (amplitudeKey){
     </span>
   </a>
   
-</li>
+    <nav class="md-nav" aria-label="Scheduling and parametrization">
+      <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#running-a-deployed-flow-from-within-python-flow-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Running a deployed flow from within Python flow code
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#versioning-and-bookkeeping" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2062,7 +2086,8 @@ if (amplitudeKey){
     </span>
   </a>
   
-</li>
+    <nav class="md-nav" aria-label="Versioning and bookkeeping">
+      <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#workers-and-work-pools" class="md-nav__link">
@@ -8725,9 +8750,33 @@ if (amplitudeKey){
     </span>
   </a>
   
-</li>
+    <nav class="md-nav" aria-label="Scheduling and parametrization">
+      <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#running-a-deployed-flow-from-within-python-flow-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Running a deployed flow from within Python flow code
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#versioning-and-bookkeeping" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -8738,7 +8787,8 @@ if (amplitudeKey){
     </span>
   </a>
   
-</li>
+    <nav class="md-nav" aria-label="Versioning and bookkeeping">
+      <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#workers-and-work-pools" class="md-nav__link">
@@ -8923,17 +8973,56 @@ These can be overwritten through a trigger or when manually creating a custom ru
 <p>Because deployments are nothing more than metadata, runs can be created at anytime.
 Note that pausing a schedule, updating your deployment, and other actions reset your auto-scheduled runs.</p>
 </div>
-<div class="admonition tip">
-<p class="admonition-title">Scheduling deployments from within Python flow code</p>
-<p>Note that Prefect provides a <a href="/api-ref/prefect/deployments/deployments/#prefect.deployments.deployments.run_deployment"><code>run_deployment</code> function</a> that can be used to schedule the run of an existing deployment when your Python code executes.</p>
+<h4 id="running-a-deployed-flow-from-within-python-flow-code">Running a deployed flow from within Python flow code<a class="headerlink" href="#running-a-deployed-flow-from-within-python-flow-code" title="Permanent link">&para;</a></h4>
+<p>Prefect provides a <a href="/api-ref/prefect/deployments/deployments/#prefect.deployments.deployments.run_deployment"><code>run_deployment</code> function</a> that can be used to schedule the run of an existing deployment when your Python code executes.</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect.deployments</span> <span class="kn">import</span> <span class="n">run_deployment</span>
 
 <span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
     <span class="n">run_deployment</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;my_flow_name/my_deployment_name&quot;</span><span class="p">)</span>
 </code></pre></div>
-<p>Pass <code>timeout=0</code> to return immediately and not block.</p>
+<div class="admonition tip">
+<p class="admonition-title">Run a deployment without blocking</p>
+<p>By default, <code>run_deployment</code> blocks until the scheduled flow run finishes
+executing. Pass <code>timeout=0</code> to return immediately and not block.</p>
 </div>
-<h3 id="versioning-and-bookkeeping">Versioning and bookkeeping<a class="headerlink" href="#versioning-and-bookkeeping" title="Permanent link">&para;</a></h3>
+<p>If you call <code>run_deployment</code> from within a flow or task, the scheduled flow
+run will be linked to the calling flow run (or the calling task's flow run)
+as a subflow run by default.</p>
+<p>Subflow runs have different behavior than regular flow runs. For example, a 
+subflow run can't be suspended independently of its parent flow. If you'd
+rather not link the scheduled flow run to the calling flow or task run, you
+can disable this behavior by passing <code>as_subflow=False</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span>
+<span class="kn">from</span> <span class="nn">prefect.deployments</span> <span class="kn">import</span> <span class="n">run_deployment</span>
+
+
+<span class="nd">@flow</span>
+<span class="k">def</span> <span class="nf">my_flow</span><span class="p">():</span>
+    <span class="c1"># The scheduled flow run will not be linked to this flow as a subflow.</span>
+    <span class="n">run_deployment</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;my_other_flow/my_deployment_name&quot;</span><span class="p">,</span> <span class="n">as_subflow</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</code></pre></div>
+<p>The return value of <code>run_deployment</code> is a <a href="/api-ref/prefect/client/schemas/#prefect.client.schemas.objects.FlowRun">FlowRun</a> object containing metadata about the scheduled run. You
+can use this object to retrieve information about the run after calling
+<code>run_deployment</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">get_client</span>
+<span class="kn">from</span> <span class="nn">prefect.deployments</span> <span class="kn">import</span> <span class="n">run_deployment</span>
+
+<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="n">flow_run</span> <span class="o">=</span> <span class="n">run_deployment</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;my_flow_name/my_deployment_name&quot;</span><span class="p">)</span>
+    <span class="n">flow_run_id</span> <span class="o">=</span> <span class="n">flow_run</span><span class="o">.</span><span class="n">id</span>
+
+    <span class="c1"># If you save the flow run&#39;s ID, you can use it later to retrieve</span>
+    <span class="c1"># flow run metadata again, e.g. to check if it&#39;s completed.</span>
+    <span class="k">async</span> <span class="k">with</span> <span class="n">get_client</span><span class="p">()</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+        <span class="n">flow_run</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">read_flow_run</span><span class="p">(</span><span class="n">flow_run_id</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Current state of the flow run: </span><span class="si">{</span><span class="n">flow_run</span><span class="o">.</span><span class="n">state</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</code></pre></div>
+<div class="admonition tip">
+<p class="admonition-title">Using the Prefect client</p>
+<p>For more information on using the Prefect client to interact with Prefect's
+REST API, see <a href="/guides/using-the-client/">our guide</a>.</p>
+</div>
+<h2 id="versioning-and-bookkeeping">Versioning and bookkeeping<a class="headerlink" href="#versioning-and-bookkeeping" title="Permanent link">&para;</a></h2>
 <p>Versions, descriptions and tags are omnipresent fields throughout Prefect that can be easy to overlook. However, putting some extra thought into how you use these fields can pay dividends down the road.</p>
 <ul>
 <li><strong><code>version</code></strong>: versions are always set by the client and can be any arbitrary string. 

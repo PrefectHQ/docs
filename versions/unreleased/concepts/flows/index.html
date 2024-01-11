@@ -10188,6 +10188,16 @@ The stored result of the first task is retrieved instead of being rerun.</p>
 <p>Suspended flow runs can be resumed by clicking the <strong>Resume</strong> button in the Prefect UI or calling the <code>resume_flow_run</code> utility via client code.</p>
 <div class="highlight"><pre><span></span><code><span class="n">resume_flow_run</span><span class="p">(</span><span class="n">FLOW_RUN_ID</span><span class="p">)</span>
 </code></pre></div>
+<div class="admonition note">
+<p class="admonition-title">Subflows can't be suspended independently of their parent run</p>
+<p>You can't suspend a subflow run independently of its parent flow run.</p>
+<p>If you use a flow to schedule a flow run with <code>run_deployment</code>, the
+scheduled flow run will be linked to the calling flow as a subflow run by
+default. This means you won't be able to suspend the scheduled flow run
+independently of the calling flow. Call <code>run_deployment</code> with
+<code>as_subflow=False</code> to disable this linking if you need to be able to suspend
+the scheduled flow run independently of the calling flow.</p>
+</div>
 <h2 id="waiting-for-input-when-pausing-or-suspending-a-flow-run">Waiting for input when pausing or suspending a flow run<a class="headerlink" href="#waiting-for-input-when-pausing-or-suspending-a-flow-run" title="Permanent link">&para;</a></h2>
 <div class="admonition warning">
 <p class="admonition-title">Experimental</p>
