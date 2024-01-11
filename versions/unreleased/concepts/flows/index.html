@@ -9446,14 +9446,14 @@ The name will be formatted using Python's standard string formatting syntax as c
     <span class="k">pass</span>
 
 <span class="c1"># creates a flow run called &#39;marvin-on-Thursday&#39;</span>
-<span class="n">my_flow</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;marvin&quot;</span><span class="p">,</span> <span class="n">date</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span><span class="p">())</span>
+<span class="n">my_flow</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;marvin&quot;</span><span class="p">,</span> <span class="n">date</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">))</span>
 </code></pre></div>
 <p>Additionally this setting also accepts a function that returns a string for the flow run name:</p>
 <div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">datetime</span>
 <span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span>
 
 <span class="k">def</span> <span class="nf">generate_flow_run_name</span><span class="p">():</span>
-    <span class="n">date</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span><span class="p">()</span>
+    <span class="n">date</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">date</span><span class="si">:</span><span class="s2">%A</span><span class="si">}</span><span class="s2">-is-a-nice-day&quot;</span>
 
@@ -9713,7 +9713,7 @@ Type hints on your flow functions provide you a way of automatically coercing JS
 <span class="nd">@flow</span>
 <span class="k">def</span> <span class="nf">what_day_is_it</span><span class="p">(</span><span class="n">date</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">date</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">date</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span><span class="p">()</span>
+        <span class="n">date</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;It was </span><span class="si">{</span><span class="n">date</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%A&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2"> on </span><span class="si">{</span><span class="n">date</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
 <span class="n">what_day_is_it</span><span class="p">(</span><span class="s2">&quot;2021-01-01T02:00:19.180906&quot;</span><span class="p">)</span>
@@ -10082,7 +10082,7 @@ This pattern allows you to update your flow code without restarting the serving 
 </div>
 <h2 id="pausing-or-suspending-a-flow-run">Pausing or suspending a flow run<a class="headerlink" href="#pausing-or-suspending-a-flow-run" title="Permanent link">&para;</a></h2>
 <p>Prefect provides you with the ability to halt a flow run with two functions that are similar, but slightly different.
-When a flow run is paused, code execution is stopped and the process continues to run. 
+When a flow run is paused, code execution is stopped and the process continues to run.
 When a flow run is suspended, code execution is stopped and so is the process.</p>
 <h3 id="pausing-a-flow-run">Pausing a flow run<a class="headerlink" href="#pausing-a-flow-run" title="Permanent link">&para;</a></h3>
 <p>Prefect enables pausing an in-progress flow run for manual approval. 
@@ -10210,7 +10210,7 @@ Prefect provides a way to do this by leveraging the <code>pause_flow_run</code> 
 These functions accept a <code>wait_for_input</code> argument, the value of which should be a subclass of <code>prefect.input.RunInput</code>, a pydantic model. 
 When resuming the flow run, users are required to provide data for this model. Upon successful validation, the flow run resumes, and the return value of the <code>pause_flow_run</code> or <code>suspend_flow_run</code> is an instance of the model containing the provided data.</p>
 <p>Here is an example of a flow that pauses and waits for input from a user:</p>
-<p><div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">get_run_logger</span><span class="p">,</span> <span class="n">pause_flow_run</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">get_run_logger</span><span class="p">,</span> <span class="n">pause_flow_run</span>
 <span class="kn">from</span> <span class="nn">prefect.input</span> <span class="kn">import</span> <span class="n">RunInput</span>
 
 
@@ -10228,7 +10228,7 @@ When resuming the flow run, users are required to provide data for this model. U
 
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Hello, </span><span class="si">{</span><span class="n">user_input</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">!&quot;</span><span class="p">)</span>
 </code></pre></div>
-Running this flow will create a flow run. The flow run will advance until code execution reaches <code>pause_flow_run</code>, at which point it will move into a <code>Paused</code> state. 
+<p>Running this flow will create a flow run. The flow run will advance until code execution reaches <code>pause_flow_run</code>, at which point it will move into a <code>Paused</code> state. 
 Execution will block and wait for resumption. </p>
 <p>When resuming the flow run, users will be prompted to provide a value for the <code>name</code> field of the <code>UserNameInput</code> model. 
 Upon successful validation, the flow run will resume, and the return value of the <code>pause_flow_run</code> will be an instance of the <code>UserNameInput</code> model containing the provided data. </p>

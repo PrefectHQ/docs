@@ -9182,11 +9182,11 @@ if (amplitudeKey){
 
 
 <h1 id="tasks">Tasks<a class="headerlink" href="#tasks" title="Permanent link">&para;</a></h1>
-<p>A task is a function that represents a discrete unit of work in a Prefect workflow. Tasks are not required &mdash; you may define Prefect workflows that consist only of flows, using regular Python statements and functions. Tasks enable you to encapsulate elements of your workflow logic in observable units that can be reused across flows and subflows. </p>
+<p>A task is a function that represents a discrete unit of work in a Prefect workflow. Tasks are not required &mdash; you may define Prefect workflows that consist only of flows, using regular Python statements and functions. Tasks enable you to encapsulate elements of your workflow logic in observable units that can be reused across flows and subflows.</p>
 <h2 id="tasks-overview">Tasks overview<a class="headerlink" href="#tasks-overview" title="Permanent link">&para;</a></h2>
 <p>Tasks are functions: they can take inputs, perform work, and return an output. A Prefect task can do almost anything a Python function can do.  </p>
 <p>Tasks are special because they receive metadata about upstream dependencies and the state of those dependencies before they run, even if they don't receive any explicit data inputs from them. This gives you the opportunity to, for example, have a task wait on the completion of another task before executing.</p>
-<p>Tasks also take advantage of automatic Prefect <a href="/concepts/logs/">logging</a> to capture details about task runs such as runtime, tags, and final state. </p>
+<p>Tasks also take advantage of automatic Prefect <a href="/concepts/logs/">logging</a> to capture details about task runs such as runtime, tags, and final state.</p>
 <p>You can define your tasks within the same file as your flow definition, or you can define tasks within modules and import them for use in your flow definitions. All tasks must be called from within a flow. Tasks may not be called from other tasks.</p>
 <p><strong>Calling a task from a flow</strong></p>
 <p>Use the <code>@task</code> decorator to designate a function as a task. Calling the task from within a flow function creates a new task run:</p>
@@ -9293,14 +9293,14 @@ if (amplitudeKey){
 <span class="nd">@flow</span>
 <span class="k">def</span> <span class="nf">my_flow</span><span class="p">():</span>
     <span class="c1"># creates a run with a name like &quot;hello-marvin-on-Thursday&quot;</span>
-    <span class="n">my_task</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;marvin&quot;</span><span class="p">,</span> <span class="n">date</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span><span class="p">())</span>
+    <span class="n">my_task</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;marvin&quot;</span><span class="p">,</span> <span class="n">date</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">))</span>
 </code></pre></div>
 <p>Additionally this setting also accepts a function that returns a string to be used for the task run name:</p>
 <div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">datetime</span>
 <span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
 
 <span class="k">def</span> <span class="nf">generate_task_name</span><span class="p">():</span>
-    <span class="n">date</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span><span class="p">()</span>
+    <span class="n">date</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span>
     <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">date</span><span class="si">:</span><span class="s2">%A</span><span class="si">}</span><span class="s2">-is-a-lovely-day&quot;</span>
 
 <span class="nd">@task</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;My Example Task&quot;</span><span class="p">,</span>
@@ -9471,7 +9471,7 @@ is when many tasks all retry at the exact same time, potentially overwhelming sy
    <span class="o">...</span>
 </code></pre></div>
 <h3 id="configuring-retry-behavior-globally-with-settings">Configuring retry behavior globally with settings<a class="headerlink" href="#configuring-retry-behavior-globally-with-settings" title="Permanent link">&para;</a></h3>
-<p>You can also set retries and retry delays by using the following global settings. These settings will not override the <code>retries</code> or <code>retry_delay_seconds</code> that are set in the flow or task decorator. </p>
+<p>You can also set retries and retry delays by using the following global settings. These settings will not override the <code>retries</code> or <code>retry_delay_seconds</code> that are set in the flow or task decorator.</p>
 <div class="highlight"><pre><span></span><code>prefect config set PREFECT_FLOW_DEFAULT_RETRIES=2
 prefect config set PREFECT_TASK_DEFAULT_RETRIES=2
 prefect config set PREFECT_FLOW_DEFAULT_RETRY_DELAY_SECONDS = [1, 10, 100]
@@ -9498,12 +9498,12 @@ prefect config set PREFECT_TASK_DEFAULT_RETRY_DELAY_SECONDS = [1, 10, 100]
 <span class="k">def</span> <span class="nf">hello_flow</span><span class="p">(</span><span class="n">name_input</span><span class="p">):</span>
     <span class="n">hello_task</span><span class="p">(</span><span class="n">name_input</span><span class="p">)</span>
 </code></pre></div>
-<p>Alternatively, you can provide your own function or other callable that returns a string cache key. A generic <code>cache_key_fn</code> is a function that accepts two positional arguments: </p>
+<p>Alternatively, you can provide your own function or other callable that returns a string cache key. A generic <code>cache_key_fn</code> is a function that accepts two positional arguments:</p>
 <ul>
 <li>The first argument corresponds to the <code>TaskRunContext</code>, which stores task run metadata in the attributes <code>task_run_id</code>, <code>flow_run_id</code>, and <code>task</code>.</li>
 <li>The second argument corresponds to a dictionary of input values to the task. For example, if your task is defined with signature <code>fn(x, y, z)</code> then the dictionary will have keys <code>"x"</code>, <code>"y"</code>, and <code>"z"</code> with corresponding values that can be used to compute your cache key.</li>
 </ul>
-<p>Note that the <code>cache_key_fn</code> is <em>not</em> defined as a <code>@task</code>. </p>
+<p>Note that the <code>cache_key_fn</code> is <em>not</em> defined as a <code>@task</code>.</p>
 <div class="admonition note">
 <p class="admonition-title">Task cache keys</p>
 <p>By default, a task cache key is limited to 2000 characters, specified by the <code>PREFECT_API_TASK_CACHE_KEY_MAX_LENGTH</code> setting.</p>
@@ -9571,8 +9571,8 @@ prefect config set PREFECT_TASK_DEFAULT_RETRY_DELAY_SECONDS = [1, 10, 100]
     <span class="k">return</span> <span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span>
 </code></pre></div>
 <h2 id="timeouts">Timeouts<a class="headerlink" href="#timeouts" title="Permanent link">&para;</a></h2>
-<p>Task timeouts are used to prevent unintentional long-running tasks. When the duration of execution for a task exceeds the duration specified in the timeout, a timeout exception will be raised and the task will be marked as failed. In the UI, the task will be visibly designated as <code>TimedOut</code>. From the perspective of the flow, the timed-out task will be treated like any other failed task. </p>
-<p>Timeout durations are specified using the <code>timeout_seconds</code> keyword argument. </p>
+<p>Task timeouts are used to prevent unintentional long-running tasks. When the duration of execution for a task exceeds the duration specified in the timeout, a timeout exception will be raised and the task will be marked as failed. In the UI, the task will be visibly designated as <code>TimedOut</code>. From the perspective of the flow, the timed-out task will be treated like any other failed task.</p>
+<p>Timeout durations are specified using the <code>timeout_seconds</code> keyword argument.</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">task</span><span class="p">,</span> <span class="n">get_run_logger</span>
 <span class="kn">import</span> <span class="nn">time</span>
 
@@ -9691,15 +9691,15 @@ prefect config set PREFECT_TASK_DEFAULT_RETRY_DELAY_SECONDS = [1, 10, 100]
 <p>There are situations in which you want to actively prevent too many tasks from running simultaneously. For example, if many tasks across multiple flows are designed to interact with a database that only allows 10 connections, you want to make sure that no more than 10 tasks that connect to this database are running at any given time.</p>
 <p>Prefect has built-in functionality for achieving this: task concurrency limits.</p>
 <p>Task concurrency limits use <a href="#tags">task tags</a>. You can specify an optional concurrency limit as the maximum number of concurrent task runs in a <code>Running</code> state for tasks with a given tag. The specified concurrency limit applies to any task to which the tag is applied.</p>
-<p>If a task has multiple tags, it will run only if <em>all</em> tags have available concurrency. </p>
+<p>If a task has multiple tags, it will run only if <em>all</em> tags have available concurrency.</p>
 <p>Tags without explicit limits are considered to have unlimited concurrency.</p>
 <div class="admonition note">
 <p class="admonition-title">0 concurrency limit aborts task runs</p>
 <p>Currently, if the concurrency limit is set to 0 for a tag, any attempt to run a task with that tag will be aborted instead of delayed.</p>
 </div>
 <h3 id="execution-behavior">Execution behavior<a class="headerlink" href="#execution-behavior" title="Permanent link">&para;</a></h3>
-<p>Task tag limits are checked whenever a task run attempts to enter a <a href="/concepts/states/"><code>Running</code> state</a>. </p>
-<p>If there are no concurrency slots available for any one of your task's tags, the transition to a <code>Running</code> state will be delayed and the client is instructed to try entering a <code>Running</code> state again in 30 seconds (or the value specified by the <code>PREFECT_TASK_RUN_TAG_CONCURRENCY_SLOT_WAIT_SECONDS</code> setting). </p>
+<p>Task tag limits are checked whenever a task run attempts to enter a <a href="/concepts/states/"><code>Running</code> state</a>.</p>
+<p>If there are no concurrency slots available for any one of your task's tags, the transition to a <code>Running</code> state will be delayed and the client is instructed to try entering a <code>Running</code> state again in 30 seconds (or the value specified by the <code>PREFECT_TASK_RUN_TAG_CONCURRENCY_SLOT_WAIT_SECONDS</code> setting).</p>
 <div class="admonition warning">
 <p class="admonition-title">Concurrency limits in subflows</p>
 <p>Using concurrency limits on task runs in subflows can cause deadlocks. As a best practice, configure your tags and concurrency limits to avoid setting limits on task runs in subflows.</p>
@@ -9717,7 +9717,7 @@ prefect config set PREFECT_TASK_DEFAULT_RETRY_DELAY_SECONDS = [1, 10, 100]
 </ul>
 <h4 id="cli">CLI<a class="headerlink" href="#cli" title="Permanent link">&para;</a></h4>
 <p>You can create, list, and remove concurrency limits by using Prefect CLI <code>concurrency-limit</code> commands.</p>
-<div class="highlight"><pre><span></span><code>$<span class="w"> </span>prefect<span class="w"> </span>concurrency-limit<span class="w"> </span><span class="o">[</span>command<span class="o">]</span><span class="w"> </span><span class="o">[</span>arguments<span class="o">]</span>
+<div class="highlight"><pre><span></span><code>prefect<span class="w"> </span>concurrency-limit<span class="w"> </span><span class="o">[</span>command<span class="o">]</span><span class="w"> </span><span class="o">[</span>arguments<span class="o">]</span>
 </code></pre></div>
 <table>
 <thead>
@@ -9746,16 +9746,16 @@ prefect config set PREFECT_TASK_DEFAULT_RETRY_DELAY_SECONDS = [1, 10, 100]
 </tbody>
 </table>
 <p>For example, to set a concurrency limit of 10 on the 'small_instance' tag:</p>
-<div class="highlight"><pre><span></span><code>$<span class="w"> </span>prefect<span class="w"> </span>concurrency-limit<span class="w"> </span>create<span class="w"> </span>small_instance<span class="w"> </span><span class="m">10</span>
+<div class="highlight"><pre><span></span><code>prefect<span class="w"> </span>concurrency-limit<span class="w"> </span>create<span class="w"> </span>small_instance<span class="w"> </span><span class="m">10</span>
 </code></pre></div>
 <p>To delete the concurrency limit on the 'small_instance' tag:</p>
-<div class="highlight"><pre><span></span><code>$<span class="w"> </span>prefect<span class="w"> </span>concurrency-limit<span class="w"> </span>delete<span class="w"> </span>small_instance
+<div class="highlight"><pre><span></span><code>prefect<span class="w"> </span>concurrency-limit<span class="w"> </span>delete<span class="w"> </span>small_instance
 </code></pre></div>
 <p>To view details about the concurrency limit on the 'small_instance' tag:</p>
-<div class="highlight"><pre><span></span><code>$<span class="w"> </span>prefect<span class="w"> </span>concurrency-limit<span class="w"> </span>inspect<span class="w"> </span>small_instance
+<div class="highlight"><pre><span></span><code>prefect<span class="w"> </span>concurrency-limit<span class="w"> </span>inspect<span class="w"> </span>small_instance
 </code></pre></div>
 <h4 id="python-client">Python client<a class="headerlink" href="#python-client" title="Permanent link">&para;</a></h4>
-<p>To update your tag concurrency limits programmatically, use <a href="../../api-ref/prefect/client/orchestration/#prefect.client.orchestration.PrefectClient.create_concurrency_limit"><code>PrefectClient.orchestration.create_concurrency_limit</code></a>. </p>
+<p>To update your tag concurrency limits programmatically, use <a href="../../api-ref/prefect/client/orchestration/#prefect.client.orchestration.PrefectClient.create_concurrency_limit"><code>PrefectClient.orchestration.create_concurrency_limit</code></a>.</p>
 <p><code>create_concurrency_limit</code> takes two arguments:</p>
 <ul>
 <li><code>tag</code> specifies the task tag on which you're setting a limit.</li>
