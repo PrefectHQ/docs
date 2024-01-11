@@ -9596,6 +9596,11 @@ This approach is an alternative to building an image with a custom <code>require
 </div>
 <p>The <code>prefect.yaml</code> file contains deployment configuration for deployments created from this file, default instructions for how to build and push any necessary code artifacts (such as Docker images), and default instructions for pulling a deployment in remote execution environments (e.g., cloning a GitHub repository).</p>
 <p>Any deployment configuration can be overridden via options available on the <code>prefect deploy</code> CLI command when creating a deployment.</p>
+<div class="admonition tip">
+<p class="admonition-title"><code>prefect.yaml</code> file flexibility</p>
+<p>In older versions of Prefect, this file had to be in the root of your repository or project directory and named <code>prefect.yaml</code>. Now this file can be located in a directory outside the project or a subdirectory inside the project. It can be named differently, provided the filename ends in <code>.yaml</code>. You can even have multiple <code>prefect.yaml</code> files with the same name in different directories. By default, <code>prefect deploy</code> will use a <code>prefect.yaml</code> file in the project's root directory. To use a custom deployment configuration file, supply the new  <code>--prefect-file</code> CLI argument when running the <code>deploy</code> command from the root of your project directory: </p>
+<p><code>prefect deploy --prefect-file path/to/my_file.yaml</code></p>
+</div>
 <p>The base structure for <code>prefect.yaml</code> is as follows:</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># generic metadata</span>
 <span class="nt">prefect-version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span>
@@ -9942,6 +9947,11 @@ This behavior is useful if using a monorepo approach to your workflows.</p>
 <div class="tabbed-block">
 <p>Prefect supports multiple deployment declarations within the <code>prefect.yaml</code> file. This method of declaring multiple deployments allows the configuration for all deployments to be version controlled and deployed with a single command.</p>
 <p>New deployment declarations can be added to the <code>prefect.yaml</code> file by adding a new entry to the <code>deployments</code> list. Each deployment declaration must have a unique <code>name</code> field which is used to select deployment declarations when using the <code>prefect deploy</code> command.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>When using a <code>prefect.yaml</code> file that is in another directory or differently named, remember that the value for 
+the deployment <code>entrypoint</code> must be relative to the root directory of the project.  </p>
+</div>
 <p>For example, consider the following <code>prefect.yaml</code> file:</p>
 <div class="highlight"><pre><span></span><code><span class="nt">build</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">...</span>
 <span class="nt">push</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">...</span>
