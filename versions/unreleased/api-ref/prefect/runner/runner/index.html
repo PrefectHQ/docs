@@ -1081,7 +1081,7 @@ if (amplitudeKey){
   
   
     <li class="md-nav__item">
-      <a href="../../../../guides/creating-human-in-the-loop-workflows/" class="md-nav__link">
+      <a href="../../../../guides/creating-human-in-the-loop-workflows.md" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -10661,8 +10661,8 @@ either <code>flow.serve</code> or the <code>serve</code> utility.</p>
         <span class="k">except</span> <span class="n">anyio</span><span class="o">.</span><span class="n">WouldBlock</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;Flow run limit reached; </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_limiter</span><span class="o">.</span><span class="n">borrowed_tokens</span><span class="si">}</span><span class="s2"> flow runs&quot;</span>
-                <span class="s2">&quot; in progress. You can control this limit by adjusting the&quot;</span>
-                <span class="s2">&quot; PREFECT_RUNNER_PROCESS_LIMIT setting.&quot;</span>
+                <span class="s2">&quot; in progress. You can control this limit by passing a `limit` value&quot;</span>
+                <span class="s2">&quot; to `serve` or adjusting the PREFECT_RUNNER_PROCESS_LIMIT setting.&quot;</span>
             <span class="p">)</span>
             <span class="k">return</span> <span class="kc">False</span>
 
@@ -11975,6 +11975,35 @@ deployment schedules on shutdown.</p>
           </td>
         </tr>
         <tr>
+          <td><code>print_starting_message</code></td>
+          <td>
+                <code>bool</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>Whether or not to print message to the console
+on startup.</p>
+            </div>
+          </td>
+          <td>
+                <code>True</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>limit</code></td>
+          <td>
+                <code><span title="typing.Optional">Optional</span>[int]</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>The maximum number of runs that can be executed concurrently.</p>
+            </div>
+          </td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+        <tr>
           <td><code>**kwargs</code></td>
           <td>
           </td>
@@ -12099,11 +12128,16 @@ deployment schedules on shutdown.</p>
 <span class="normal">1205</span>
 <span class="normal">1206</span>
 <span class="normal">1207</span>
-<span class="normal">1208</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@sync_compatible</span>
+<span class="normal">1208</span>
+<span class="normal">1209</span>
+<span class="normal">1210</span>
+<span class="normal">1211</span>
+<span class="normal">1212</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@sync_compatible</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">serve</span><span class="p">(</span>
     <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">RunnerDeployment</span><span class="p">,</span>
     <span class="n">pause_on_shutdown</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="n">print_starting_message</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">limit</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -12113,6 +12147,9 @@ deployment schedules on shutdown.</p>
 <span class="sd">        *args: A list of deployments to serve.</span>
 <span class="sd">        pause_on_shutdown: A boolean for whether or not to automatically pause</span>
 <span class="sd">            deployment schedules on shutdown.</span>
+<span class="sd">        print_starting_message: Whether or not to print message to the console</span>
+<span class="sd">            on startup.</span>
+<span class="sd">        limit: The maximum number of runs that can be executed concurrently.</span>
 <span class="sd">        **kwargs: Additional keyword arguments to pass to the runner.</span>
 
 <span class="sd">    Examples:</span>
@@ -12145,7 +12182,7 @@ deployment schedules on shutdown.</p>
 <span class="sd">            serve(hello_deploy, bye_deploy)</span>
 <span class="sd">        ```</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">runner</span> <span class="o">=</span> <span class="n">Runner</span><span class="p">(</span><span class="n">pause_on_shutdown</span><span class="o">=</span><span class="n">pause_on_shutdown</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="n">runner</span> <span class="o">=</span> <span class="n">Runner</span><span class="p">(</span><span class="n">pause_on_shutdown</span><span class="o">=</span><span class="n">pause_on_shutdown</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="n">limit</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">deployment</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
         <span class="k">await</span> <span class="n">runner</span><span class="o">.</span><span class="n">add_deployment</span><span class="p">(</span><span class="n">deployment</span><span class="p">)</span>
 
