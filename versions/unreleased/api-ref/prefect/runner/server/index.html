@@ -5612,6 +5612,17 @@ if (amplitudeKey){
 </li>
       
         <li class="md-nav__item">
+  <a href="#prefect.runner.server.get_subflow_schemas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        get_subflow_schemas
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#prefect.runner.server.start_webserver" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -8637,6 +8648,17 @@ if (amplitudeKey){
 </li>
       
         <li class="md-nav__item">
+  <a href="#prefect.runner.server.get_subflow_schemas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        get_subflow_schemas
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#prefect.runner.server.start_webserver" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -8824,40 +8846,50 @@ if (amplitudeKey){
 
           <details class="quote">
             <summary>Source code in <code>prefect/runner/server.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">114</span>
-<span class="normal">115</span>
-<span class="normal">116</span>
-<span class="normal">117</span>
-<span class="normal">118</span>
-<span class="normal">119</span>
-<span class="normal">120</span>
-<span class="normal">121</span>
-<span class="normal">122</span>
-<span class="normal">123</span>
-<span class="normal">124</span>
-<span class="normal">125</span>
-<span class="normal">126</span>
-<span class="normal">127</span>
-<span class="normal">128</span>
-<span class="normal">129</span>
-<span class="normal">130</span>
-<span class="normal">131</span>
-<span class="normal">132</span>
-<span class="normal">133</span>
-<span class="normal">134</span>
-<span class="normal">135</span>
-<span class="normal">136</span>
-<span class="normal">137</span>
-<span class="normal">138</span>
-<span class="normal">139</span>
-<span class="normal">140</span>
-<span class="normal">141</span>
-<span class="normal">142</span>
-<span class="normal">143</span>
-<span class="normal">144</span>
-<span class="normal">145</span>
-<span class="normal">146</span>
-<span class="normal">147</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@sync_compatible</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">245</span>
+<span class="normal">246</span>
+<span class="normal">247</span>
+<span class="normal">248</span>
+<span class="normal">249</span>
+<span class="normal">250</span>
+<span class="normal">251</span>
+<span class="normal">252</span>
+<span class="normal">253</span>
+<span class="normal">254</span>
+<span class="normal">255</span>
+<span class="normal">256</span>
+<span class="normal">257</span>
+<span class="normal">258</span>
+<span class="normal">259</span>
+<span class="normal">260</span>
+<span class="normal">261</span>
+<span class="normal">262</span>
+<span class="normal">263</span>
+<span class="normal">264</span>
+<span class="normal">265</span>
+<span class="normal">266</span>
+<span class="normal">267</span>
+<span class="normal">268</span>
+<span class="normal">269</span>
+<span class="normal">270</span>
+<span class="normal">271</span>
+<span class="normal">272</span>
+<span class="normal">273</span>
+<span class="normal">274</span>
+<span class="normal">275</span>
+<span class="normal">276</span>
+<span class="normal">277</span>
+<span class="normal">278</span>
+<span class="normal">279</span>
+<span class="normal">280</span>
+<span class="normal">281</span>
+<span class="normal">282</span>
+<span class="normal">283</span>
+<span class="normal">284</span>
+<span class="normal">285</span>
+<span class="normal">286</span>
+<span class="normal">287</span>
+<span class="normal">288</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@sync_compatible</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">build_server</span><span class="p">(</span><span class="n">runner</span><span class="p">:</span> <span class="s2">&quot;Runner&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FastAPI</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Build a FastAPI server for a runner.</span>
@@ -8880,6 +8912,16 @@ if (amplitudeKey){
         <span class="n">deployments_router</span><span class="p">,</span> <span class="n">deployment_schemas</span> <span class="o">=</span> <span class="k">await</span> <span class="n">get_deployment_router</span><span class="p">(</span><span class="n">runner</span><span class="p">)</span>
         <span class="n">webserver</span><span class="o">.</span><span class="n">include_router</span><span class="p">(</span><span class="n">deployments_router</span><span class="p">)</span>
 
+        <span class="n">subflow_schemas</span> <span class="o">=</span> <span class="k">await</span> <span class="n">get_subflow_schemas</span><span class="p">(</span><span class="n">runner</span><span class="p">)</span>
+        <span class="n">webserver</span><span class="o">.</span><span class="n">add_api_route</span><span class="p">(</span>
+            <span class="s2">&quot;/flow/run&quot;</span><span class="p">,</span>
+            <span class="n">_build_generic_endpoint_for_flows</span><span class="p">(</span><span class="n">runner</span><span class="o">=</span><span class="n">runner</span><span class="p">,</span> <span class="n">schemas</span><span class="o">=</span><span class="n">subflow_schemas</span><span class="p">),</span>
+            <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;POST&quot;</span><span class="p">],</span>
+            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Run flow in background&quot;</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Trigger any flow run as a background task on the runner.&quot;</span><span class="p">,</span>
+            <span class="n">summary</span><span class="o">=</span><span class="s2">&quot;Run flow&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+
         <span class="k">def</span> <span class="nf">customize_openapi</span><span class="p">():</span>
             <span class="k">if</span> <span class="n">webserver</span><span class="o">.</span><span class="n">openapi_schema</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">webserver</span><span class="o">.</span><span class="n">openapi_schema</span>
@@ -8891,6 +8933,69 @@ if (amplitudeKey){
         <span class="n">webserver</span><span class="o">.</span><span class="n">openapi</span> <span class="o">=</span> <span class="n">customize_openapi</span>
 
     <span class="k">return</span> <span class="n">webserver</span>
+</code></pre></div></td></tr></table></div>
+          </details>
+  </div>
+
+</div>
+
+
+<div class="doc doc-object doc-function">
+
+
+
+<h2 id="prefect.runner.server.get_subflow_schemas" class="doc doc-heading">
+          <code class="highlight language-python"><span class="n">get_subflow_schemas</span></code>
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-async"><code>async</code></small>
+  </span>
+
+<a href="#prefect.runner.server.get_subflow_schemas" class="headerlink" title="Permanent link">&para;</a></h2>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>Load available subflow schemas by filtering for only those subflows in the
+deployment entrypoint's import space.</p>
+
+          <details class="quote">
+            <summary>Source code in <code>prefect/runner/server.py</code></summary>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">149</span>
+<span class="normal">150</span>
+<span class="normal">151</span>
+<span class="normal">152</span>
+<span class="normal">153</span>
+<span class="normal">154</span>
+<span class="normal">155</span>
+<span class="normal">156</span>
+<span class="normal">157</span>
+<span class="normal">158</span>
+<span class="normal">159</span>
+<span class="normal">160</span>
+<span class="normal">161</span>
+<span class="normal">162</span>
+<span class="normal">163</span>
+<span class="normal">164</span>
+<span class="normal">165</span>
+<span class="normal">166</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">get_subflow_schemas</span><span class="p">(</span><span class="n">runner</span><span class="p">:</span> <span class="s2">&quot;Runner&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Load available subflow schemas by filtering for only those subflows in the</span>
+<span class="sd">    deployment entrypoint&#39;s import space.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">schemas</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">async</span> <span class="k">with</span> <span class="n">get_client</span><span class="p">()</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">deployment_id</span> <span class="ow">in</span> <span class="n">runner</span><span class="o">.</span><span class="n">_deployment_ids</span><span class="p">:</span>
+            <span class="n">deployment</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">read_deployment</span><span class="p">(</span><span class="n">deployment_id</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">deployment</span><span class="o">.</span><span class="n">entrypoint</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="n">script</span> <span class="o">=</span> <span class="n">deployment</span><span class="o">.</span><span class="n">entrypoint</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">subflows</span> <span class="o">=</span> <span class="n">load_flows_from_script</span><span class="p">(</span><span class="n">script</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">flow</span> <span class="ow">in</span> <span class="n">subflows</span><span class="p">:</span>
+                <span class="n">schemas</span><span class="p">[</span><span class="n">flow</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">flow</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">schemas</span>
 </code></pre></div></td></tr></table></div>
           </details>
   </div>
@@ -8958,19 +9063,19 @@ if (amplitudeKey){
 
           <details class="quote">
             <summary>Source code in <code>prefect/runner/server.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">150</span>
-<span class="normal">151</span>
-<span class="normal">152</span>
-<span class="normal">153</span>
-<span class="normal">154</span>
-<span class="normal">155</span>
-<span class="normal">156</span>
-<span class="normal">157</span>
-<span class="normal">158</span>
-<span class="normal">159</span>
-<span class="normal">160</span>
-<span class="normal">161</span>
-<span class="normal">162</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">start_webserver</span><span class="p">(</span><span class="n">runner</span><span class="p">:</span> <span class="s2">&quot;Runner&quot;</span><span class="p">,</span> <span class="n">log_level</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">291</span>
+<span class="normal">292</span>
+<span class="normal">293</span>
+<span class="normal">294</span>
+<span class="normal">295</span>
+<span class="normal">296</span>
+<span class="normal">297</span>
+<span class="normal">298</span>
+<span class="normal">299</span>
+<span class="normal">300</span>
+<span class="normal">301</span>
+<span class="normal">302</span>
+<span class="normal">303</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">start_webserver</span><span class="p">(</span><span class="n">runner</span><span class="p">:</span> <span class="s2">&quot;Runner&quot;</span><span class="p">,</span> <span class="n">log_level</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Run a FastAPI server for a runner.</span>
 

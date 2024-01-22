@@ -8061,6 +8061,17 @@ if (amplitudeKey){
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#prefect.server.orchestration.core_policy.PreventDuplicateTransitions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PreventDuplicateTransitions
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -9061,6 +9072,17 @@ if (amplitudeKey){
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#prefect.server.orchestration.core_policy.PreventDuplicateTransitions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PreventDuplicateTransitions
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -9212,13 +9234,15 @@ Prefect enforces on a state transition.</p>
 <span class="normal">51</span>
 <span class="normal">52</span>
 <span class="normal">53</span>
-<span class="normal">54</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">CoreFlowPolicy</span><span class="p">(</span><span class="n">BaseOrchestrationPolicy</span><span class="p">):</span>
+<span class="normal">54</span>
+<span class="normal">55</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">CoreFlowPolicy</span><span class="p">(</span><span class="n">BaseOrchestrationPolicy</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Orchestration rules that run against flow-run-state transitions in priority order.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">priority</span><span class="p">():</span>
         <span class="k">return</span> <span class="p">[</span>
+            <span class="n">PreventDuplicateTransitions</span><span class="p">,</span>
             <span class="n">HandleFlowTerminalStateTransitions</span><span class="p">,</span>
             <span class="n">EnforceCancellingToCancelledTransition</span><span class="p">,</span>
             <span class="n">BypassCancellingScheduledFlowRuns</span><span class="p">,</span>
@@ -9273,8 +9297,7 @@ Prefect enforces on a state transition.</p>
 
             <details class="quote">
               <summary>Source code in <code>prefect/server/orchestration/core_policy.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">57</span>
-<span class="normal">58</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">58</span>
 <span class="normal">59</span>
 <span class="normal">60</span>
 <span class="normal">61</span>
@@ -9291,7 +9314,8 @@ Prefect enforces on a state transition.</p>
 <span class="normal">72</span>
 <span class="normal">73</span>
 <span class="normal">74</span>
-<span class="normal">75</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">CoreTaskPolicy</span><span class="p">(</span><span class="n">BaseOrchestrationPolicy</span><span class="p">):</span>
+<span class="normal">75</span>
+<span class="normal">76</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">CoreTaskPolicy</span><span class="p">(</span><span class="n">BaseOrchestrationPolicy</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Orchestration rules that run against task-run-state transitions in priority order.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -9361,8 +9385,7 @@ be aborted to prevent deadlocks.</p>
 
             <details class="quote">
               <summary>Source code in <code>prefect/server/orchestration/core_policy.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 93</span>
-<span class="normal"> 94</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 94</span>
 <span class="normal"> 95</span>
 <span class="normal"> 96</span>
 <span class="normal"> 97</span>
@@ -9437,7 +9460,8 @@ be aborted to prevent deadlocks.</p>
 <span class="normal">166</span>
 <span class="normal">167</span>
 <span class="normal">168</span>
-<span class="normal">169</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">SecureTaskConcurrencySlots</span><span class="p">(</span><span class="n">BaseOrchestrationRule</span><span class="p">):</span>
+<span class="normal">169</span>
+<span class="normal">170</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">SecureTaskConcurrencySlots</span><span class="p">(</span><span class="n">BaseOrchestrationRule</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Checks relevant concurrency slots are available before entering a Running state.</span>
 
@@ -9559,8 +9583,7 @@ Cancelling state.</p>
 
             <details class="quote">
               <summary>Source code in <code>prefect/server/orchestration/core_policy.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">172</span>
-<span class="normal">173</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">173</span>
 <span class="normal">174</span>
 <span class="normal">175</span>
 <span class="normal">176</span>
@@ -9585,7 +9608,8 @@ Cancelling state.</p>
 <span class="normal">195</span>
 <span class="normal">196</span>
 <span class="normal">197</span>
-<span class="normal">198</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">ReleaseTaskConcurrencySlots</span><span class="p">(</span><span class="n">BaseUniversalTransform</span><span class="p">):</span>
+<span class="normal">198</span>
+<span class="normal">199</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">ReleaseTaskConcurrencySlots</span><span class="p">(</span><span class="n">BaseUniversalTransform</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Releases any concurrency slots held by a run upon exiting a Running or</span>
 <span class="sd">    Cancelling state.</span>
@@ -9670,8 +9694,7 @@ has an unknown result.</p>
 
             <details class="quote">
               <summary>Source code in <code>prefect/server/orchestration/core_policy.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">201</span>
-<span class="normal">202</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">202</span>
 <span class="normal">203</span>
 <span class="normal">204</span>
 <span class="normal">205</span>
@@ -9706,7 +9729,8 @@ has an unknown result.</p>
 <span class="normal">234</span>
 <span class="normal">235</span>
 <span class="normal">236</span>
-<span class="normal">237</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">AddUnknownResult</span><span class="p">(</span><span class="n">BaseOrchestrationRule</span><span class="p">):</span>
+<span class="normal">237</span>
+<span class="normal">238</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">AddUnknownResult</span><span class="p">(</span><span class="n">BaseOrchestrationRule</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Assign an &quot;unknown&quot; result to runs that are forced to complete from a</span>
 <span class="sd">    failed or crashed state, if the previous state used a persisted result.</span>
@@ -9787,8 +9811,7 @@ has an unknown result.</p>
 
             <details class="quote">
               <summary>Source code in <code>prefect/server/orchestration/core_policy.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">240</span>
-<span class="normal">241</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">241</span>
 <span class="normal">242</span>
 <span class="normal">243</span>
 <span class="normal">244</span>
@@ -9813,7 +9836,8 @@ has an unknown result.</p>
 <span class="normal">263</span>
 <span class="normal">264</span>
 <span class="normal">265</span>
-<span class="normal">266</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">CacheInsertion</span><span class="p">(</span><span class="n">BaseOrchestrationRule</span><span class="p">):</span>
+<span class="normal">266</span>
+<span class="normal">267</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">CacheInsertion</span><span class="p">(</span><span class="n">BaseOrchestrationRule</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Caches completed states with cache keys after they are validated.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -9887,8 +9911,7 @@ will be instructed to transition into the cached completed state instead.</p>
 
             <details class="quote">
               <summary>Source code in <code>prefect/server/orchestration/core_policy.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">269</span>
-<span class="normal">270</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">270</span>
 <span class="normal">271</span>
 <span class="normal">272</span>
 <span class="normal">273</span>
@@ -9931,7 +9954,8 @@ will be instructed to transition into the cached completed state instead.</p>
 <span class="normal">310</span>
 <span class="normal">311</span>
 <span class="normal">312</span>
-<span class="normal">313</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">CacheRetrieval</span><span class="p">(</span><span class="n">BaseOrchestrationRule</span><span class="p">):</span>
+<span class="normal">313</span>
+<span class="normal">314</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">CacheRetrieval</span><span class="p">(</span><span class="n">BaseOrchestrationRule</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Rejects running states if a completed state has been cached.</span>
 
@@ -10023,8 +10047,7 @@ instructed to transition into a scheduled state to retry flow execution.</p>
 
             <details class="quote">
               <summary>Source code in <code>prefect/server/orchestration/core_policy.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">316</span>
-<span class="normal">317</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">317</span>
 <span class="normal">318</span>
 <span class="normal">319</span>
 <span class="normal">320</span>
@@ -10088,7 +10111,8 @@ instructed to transition into a scheduled state to retry flow execution.</p>
 <span class="normal">378</span>
 <span class="normal">379</span>
 <span class="normal">380</span>
-<span class="normal">381</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">RetryFailedFlows</span><span class="p">(</span><span class="n">BaseOrchestrationRule</span><span class="p">):</span>
+<span class="normal">381</span>
+<span class="normal">382</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">RetryFailedFlows</span><span class="p">(</span><span class="n">BaseOrchestrationRule</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Rejects failed states and schedules a retry if the retry limit has not been reached.</span>
 
@@ -10202,8 +10226,7 @@ transition into a scheduled state to retry task execution.</p>
 
             <details class="quote">
               <summary>Source code in <code>prefect/server/orchestration/core_policy.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">384</span>
-<span class="normal">385</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">385</span>
 <span class="normal">386</span>
 <span class="normal">387</span>
 <span class="normal">388</span>
@@ -10248,7 +10271,8 @@ transition into a scheduled state to retry task execution.</p>
 <span class="normal">427</span>
 <span class="normal">428</span>
 <span class="normal">429</span>
-<span class="normal">430</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">RetryFailedTasks</span><span class="p">(</span><span class="n">BaseOrchestrationRule</span><span class="p">):</span>
+<span class="normal">430</span>
+<span class="normal">431</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">RetryFailedTasks</span><span class="p">(</span><span class="n">BaseOrchestrationRule</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Rejects failed states and schedules a retry if the retry limit has not been reached.</span>
 
@@ -10341,8 +10365,7 @@ the proposed state will be renamed to "Retrying" instead.</p>
 
             <details class="quote">
               <summary>Source code in <code>prefect/server/orchestration/core_policy.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">433</span>
-<span class="normal">434</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">434</span>
 <span class="normal">435</span>
 <span class="normal">436</span>
 <span class="normal">437</span>
@@ -10363,7 +10386,8 @@ the proposed state will be renamed to "Retrying" instead.</p>
 <span class="normal">452</span>
 <span class="normal">453</span>
 <span class="normal">454</span>
-<span class="normal">455</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">RenameReruns</span><span class="p">(</span><span class="n">BaseOrchestrationRule</span><span class="p">):</span>
+<span class="normal">455</span>
+<span class="normal">456</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">RenameReruns</span><span class="p">(</span><span class="n">BaseOrchestrationRule</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Name the states if they have run more than once.</span>
 
@@ -10432,8 +10456,7 @@ on the scheduled state will be ignored.</p>
 
             <details class="quote">
               <summary>Source code in <code>prefect/server/orchestration/core_policy.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">458</span>
-<span class="normal">459</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">459</span>
 <span class="normal">460</span>
 <span class="normal">461</span>
 <span class="normal">462</span>
@@ -10452,7 +10475,8 @@ on the scheduled state will be ignored.</p>
 <span class="normal">475</span>
 <span class="normal">476</span>
 <span class="normal">477</span>
-<span class="normal">478</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">CopyScheduledTime</span><span class="p">(</span><span class="n">BaseOrchestrationRule</span><span class="p">):</span>
+<span class="normal">478</span>
+<span class="normal">479</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">CopyScheduledTime</span><span class="p">(</span><span class="n">BaseOrchestrationRule</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Ensures scheduled time is copied from scheduled states to pending states.</span>
 
@@ -10522,8 +10546,7 @@ before attempting the transition again.</p>
 
             <details class="quote">
               <summary>Source code in <code>prefect/server/orchestration/core_policy.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">481</span>
-<span class="normal">482</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">482</span>
 <span class="normal">483</span>
 <span class="normal">484</span>
 <span class="normal">485</span>
@@ -10554,7 +10577,8 @@ before attempting the transition again.</p>
 <span class="normal">510</span>
 <span class="normal">511</span>
 <span class="normal">512</span>
-<span class="normal">513</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">WaitForScheduledTime</span><span class="p">(</span><span class="n">BaseOrchestrationRule</span><span class="p">):</span>
+<span class="normal">513</span>
+<span class="normal">514</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">WaitForScheduledTime</span><span class="p">(</span><span class="n">BaseOrchestrationRule</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Prevents transitions to running states from happening to early.</span>
 
@@ -10631,8 +10655,7 @@ before attempting the transition again.</p>
 
             <details class="quote">
               <summary>Source code in <code>prefect/server/orchestration/core_policy.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">516</span>
-<span class="normal">517</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">517</span>
 <span class="normal">518</span>
 <span class="normal">519</span>
 <span class="normal">520</span>
@@ -10690,7 +10713,8 @@ before attempting the transition again.</p>
 <span class="normal">572</span>
 <span class="normal">573</span>
 <span class="normal">574</span>
-<span class="normal">575</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">HandlePausingFlows</span><span class="p">(</span><span class="n">BaseOrchestrationRule</span><span class="p">):</span>
+<span class="normal">575</span>
+<span class="normal">576</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">HandlePausingFlows</span><span class="p">(</span><span class="n">BaseOrchestrationRule</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Governs runs attempting to enter a Paused/Suspended state</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -10794,8 +10818,7 @@ before attempting the transition again.</p>
 
             <details class="quote">
               <summary>Source code in <code>prefect/server/orchestration/core_policy.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">578</span>
-<span class="normal">579</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">579</span>
 <span class="normal">580</span>
 <span class="normal">581</span>
 <span class="normal">582</span>
@@ -10855,7 +10878,8 @@ before attempting the transition again.</p>
 <span class="normal">636</span>
 <span class="normal">637</span>
 <span class="normal">638</span>
-<span class="normal">639</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">HandleResumingPausedFlows</span><span class="p">(</span><span class="n">BaseOrchestrationRule</span><span class="p">):</span>
+<span class="normal">639</span>
+<span class="normal">640</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">HandleResumingPausedFlows</span><span class="p">(</span><span class="n">BaseOrchestrationRule</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Governs runs attempting to leave a Paused state</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -10961,8 +10985,7 @@ before attempting the transition again.</p>
 
             <details class="quote">
               <summary>Source code in <code>prefect/server/orchestration/core_policy.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">642</span>
-<span class="normal">643</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">643</span>
 <span class="normal">644</span>
 <span class="normal">645</span>
 <span class="normal">646</span>
@@ -10985,7 +11008,8 @@ before attempting the transition again.</p>
 <span class="normal">663</span>
 <span class="normal">664</span>
 <span class="normal">665</span>
-<span class="normal">666</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">UpdateFlowRunTrackerOnTasks</span><span class="p">(</span><span class="n">BaseOrchestrationRule</span><span class="p">):</span>
+<span class="normal">666</span>
+<span class="normal">667</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">UpdateFlowRunTrackerOnTasks</span><span class="p">(</span><span class="n">BaseOrchestrationRule</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Tracks the flow run attempt a task run state is associated with.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -11058,8 +11082,7 @@ which resets task run retries; this is particularly relevant for flow run retrie
 
             <details class="quote">
               <summary>Source code in <code>prefect/server/orchestration/core_policy.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">669</span>
-<span class="normal">670</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">670</span>
 <span class="normal">671</span>
 <span class="normal">672</span>
 <span class="normal">673</span>
@@ -11115,7 +11138,8 @@ which resets task run retries; this is particularly relevant for flow run retrie
 <span class="normal">723</span>
 <span class="normal">724</span>
 <span class="normal">725</span>
-<span class="normal">726</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">HandleTaskTerminalStateTransitions</span><span class="p">(</span><span class="n">BaseOrchestrationRule</span><span class="p">):</span>
+<span class="normal">726</span>
+<span class="normal">727</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">HandleTaskTerminalStateTransitions</span><span class="p">(</span><span class="n">BaseOrchestrationRule</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    We do not allow tasks to leave terminal states if:</span>
 <span class="sd">    - The task is completed and has a persisted result</span>
@@ -11222,8 +11246,7 @@ state. This resets pause behavior during manual flow run retries.</p>
 
             <details class="quote">
               <summary>Source code in <code>prefect/server/orchestration/core_policy.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">729</span>
-<span class="normal">730</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">730</span>
 <span class="normal">731</span>
 <span class="normal">732</span>
 <span class="normal">733</span>
@@ -11288,7 +11311,8 @@ state. This resets pause behavior during manual flow run retries.</p>
 <span class="normal">792</span>
 <span class="normal">793</span>
 <span class="normal">794</span>
-<span class="normal">795</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">HandleFlowTerminalStateTransitions</span><span class="p">(</span><span class="n">BaseOrchestrationRule</span><span class="p">):</span>
+<span class="normal">795</span>
+<span class="normal">796</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">HandleFlowTerminalStateTransitions</span><span class="p">(</span><span class="n">BaseOrchestrationRule</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    We do not allow flows to leave terminal states if:</span>
 <span class="sd">    - The flow is completed and has a persisted result</span>
@@ -11412,8 +11436,7 @@ For re-runs of ad-hoc runs, they should transition directly to RUNNING.</p>
 
             <details class="quote">
               <summary>Source code in <code>prefect/server/orchestration/core_policy.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">798</span>
-<span class="normal">799</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">799</span>
 <span class="normal">800</span>
 <span class="normal">801</span>
 <span class="normal">802</span>
@@ -11453,7 +11476,8 @@ For re-runs of ad-hoc runs, they should transition directly to RUNNING.</p>
 <span class="normal">836</span>
 <span class="normal">837</span>
 <span class="normal">838</span>
-<span class="normal">839</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">PreventPendingTransitions</span><span class="p">(</span><span class="n">BaseOrchestrationRule</span><span class="p">):</span>
+<span class="normal">839</span>
+<span class="normal">840</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">PreventPendingTransitions</span><span class="p">(</span><span class="n">BaseOrchestrationRule</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Prevents transitions to PENDING.</span>
 
@@ -11541,8 +11565,7 @@ flow's tasks cannot be run unless the flow is also running.</p>
 
             <details class="quote">
               <summary>Source code in <code>prefect/server/orchestration/core_policy.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">842</span>
-<span class="normal">843</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">843</span>
 <span class="normal">844</span>
 <span class="normal">845</span>
 <span class="normal">846</span>
@@ -11585,7 +11608,8 @@ flow's tasks cannot be run unless the flow is also running.</p>
 <span class="normal">883</span>
 <span class="normal">884</span>
 <span class="normal">885</span>
-<span class="normal">886</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">PreventRunningTasksFromStoppedFlows</span><span class="p">(</span><span class="n">BaseOrchestrationRule</span><span class="p">):</span>
+<span class="normal">886</span>
+<span class="normal">887</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">PreventRunningTasksFromStoppedFlows</span><span class="p">(</span><span class="n">BaseOrchestrationRule</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Prevents running tasks from stopped flows.</span>
 
@@ -11674,8 +11698,7 @@ flow's tasks cannot be run unless the flow is also running.</p>
 
             <details class="quote">
               <summary>Source code in <code>prefect/server/orchestration/core_policy.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">889</span>
-<span class="normal">890</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">890</span>
 <span class="normal">891</span>
 <span class="normal">892</span>
 <span class="normal">893</span>
@@ -11695,7 +11718,8 @@ flow's tasks cannot be run unless the flow is also running.</p>
 <span class="normal">907</span>
 <span class="normal">908</span>
 <span class="normal">909</span>
-<span class="normal">910</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">EnforceCancellingToCancelledTransition</span><span class="p">(</span><span class="n">BaseOrchestrationRule</span><span class="p">):</span>
+<span class="normal">910</span>
+<span class="normal">911</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">EnforceCancellingToCancelledTransition</span><span class="p">(</span><span class="n">BaseOrchestrationRule</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Rejects transitions from Cancelling to any terminal state except for Cancelled.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -11765,8 +11789,7 @@ a <code>Scheduled</code> state that may have associated infrastructure.</p>
 
             <details class="quote">
               <summary>Source code in <code>prefect/server/orchestration/core_policy.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">913</span>
-<span class="normal">914</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">914</span>
 <span class="normal">915</span>
 <span class="normal">916</span>
 <span class="normal">917</span>
@@ -11787,7 +11810,8 @@ a <code>Scheduled</code> state that may have associated infrastructure.</p>
 <span class="normal">932</span>
 <span class="normal">933</span>
 <span class="normal">934</span>
-<span class="normal">935</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">BypassCancellingScheduledFlowRuns</span><span class="p">(</span><span class="n">BaseOrchestrationRule</span><span class="p">):</span>
+<span class="normal">935</span>
+<span class="normal">936</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">BypassCancellingScheduledFlowRuns</span><span class="p">(</span><span class="n">BaseOrchestrationRule</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Rejects transitions from Scheduled to Cancelling, and instead sets the state to Cancelled,</span>
 <span class="sd">    if the flow run has no associated infrastructure process ID.</span>
 
@@ -11809,6 +11833,153 @@ a <code>Scheduled</code> state that may have associated infrastructure.</p>
             <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">reject_transition</span><span class="p">(</span>
                 <span class="n">state</span><span class="o">=</span><span class="n">states</span><span class="o">.</span><span class="n">Cancelled</span><span class="p">(),</span>
                 <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;Scheduled flow run has no infrastructure to terminate.&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+
+  
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+  </div>
+
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="prefect.server.orchestration.core_policy.PreventDuplicateTransitions" class="doc doc-heading">
+          <code>PreventDuplicateTransitions</code>
+
+
+<a href="#prefect.server.orchestration.core_policy.PreventDuplicateTransitions" class="headerlink" title="Permanent link">&para;</a></h2>
+
+
+  <div class="doc doc-contents ">
+          <p class="doc doc-class-bases">
+            Bases: <code><a class="autorefs autorefs-internal" title="prefect.server.orchestration.rules.BaseOrchestrationRule" href="../rules/#prefect.server.orchestration.rules.BaseOrchestrationRule">BaseOrchestrationRule</a></code></p>
+
+  
+      <p>Prevent duplicate transitions from being made right after one another.</p>
+<p>This rule allows for clients to set an optional transition_id on a state. If the
+run's next transition has the same transition_id, the transition will be
+rejected and the existing state will be returned.</p>
+<p>This allows for clients to make state transition requests without worrying about
+the following case:
+- A client making a state transition request
+- The server accepts transition and commits the transition
+- The client is unable to receive the response and retries the request</p>
+
+            <details class="quote">
+              <summary>Source code in <code>prefect/server/orchestration/core_policy.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">939</span>
+<span class="normal">940</span>
+<span class="normal">941</span>
+<span class="normal">942</span>
+<span class="normal">943</span>
+<span class="normal">944</span>
+<span class="normal">945</span>
+<span class="normal">946</span>
+<span class="normal">947</span>
+<span class="normal">948</span>
+<span class="normal">949</span>
+<span class="normal">950</span>
+<span class="normal">951</span>
+<span class="normal">952</span>
+<span class="normal">953</span>
+<span class="normal">954</span>
+<span class="normal">955</span>
+<span class="normal">956</span>
+<span class="normal">957</span>
+<span class="normal">958</span>
+<span class="normal">959</span>
+<span class="normal">960</span>
+<span class="normal">961</span>
+<span class="normal">962</span>
+<span class="normal">963</span>
+<span class="normal">964</span>
+<span class="normal">965</span>
+<span class="normal">966</span>
+<span class="normal">967</span>
+<span class="normal">968</span>
+<span class="normal">969</span>
+<span class="normal">970</span>
+<span class="normal">971</span>
+<span class="normal">972</span>
+<span class="normal">973</span>
+<span class="normal">974</span>
+<span class="normal">975</span>
+<span class="normal">976</span>
+<span class="normal">977</span>
+<span class="normal">978</span>
+<span class="normal">979</span>
+<span class="normal">980</span>
+<span class="normal">981</span>
+<span class="normal">982</span>
+<span class="normal">983</span>
+<span class="normal">984</span>
+<span class="normal">985</span>
+<span class="normal">986</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">PreventDuplicateTransitions</span><span class="p">(</span><span class="n">BaseOrchestrationRule</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Prevent duplicate transitions from being made right after one another.</span>
+
+<span class="sd">    This rule allows for clients to set an optional transition_id on a state. If the</span>
+<span class="sd">    run&#39;s next transition has the same transition_id, the transition will be</span>
+<span class="sd">    rejected and the existing state will be returned.</span>
+
+<span class="sd">    This allows for clients to make state transition requests without worrying about</span>
+<span class="sd">    the following case:</span>
+<span class="sd">    - A client making a state transition request</span>
+<span class="sd">    - The server accepts transition and commits the transition</span>
+<span class="sd">    - The client is unable to receive the response and retries the request</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">FROM_STATES</span> <span class="o">=</span> <span class="n">ALL_ORCHESTRATION_STATES</span>
+    <span class="n">TO_STATES</span> <span class="o">=</span> <span class="n">ALL_ORCHESTRATION_STATES</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">before_transition</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">initial_state</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">states</span><span class="o">.</span><span class="n">State</span><span class="p">],</span>
+        <span class="n">proposed_state</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">states</span><span class="o">.</span><span class="n">State</span><span class="p">],</span>
+        <span class="n">context</span><span class="p">:</span> <span class="n">OrchestrationContext</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="n">initial_state</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="ow">or</span> <span class="n">proposed_state</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="ow">or</span> <span class="n">initial_state</span><span class="o">.</span><span class="n">state_details</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="ow">or</span> <span class="n">proposed_state</span><span class="o">.</span><span class="n">state_details</span> <span class="ow">is</span> <span class="kc">None</span>
+        <span class="p">):</span>
+            <span class="k">return</span>
+
+        <span class="n">initial_transition_id</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span>
+            <span class="n">initial_state</span><span class="o">.</span><span class="n">state_details</span><span class="p">,</span> <span class="s2">&quot;transition_id&quot;</span><span class="p">,</span> <span class="kc">None</span>
+        <span class="p">)</span>
+        <span class="n">proposed_transition_id</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span>
+            <span class="n">proposed_state</span><span class="o">.</span><span class="n">state_details</span><span class="p">,</span> <span class="s2">&quot;transition_id&quot;</span><span class="p">,</span> <span class="kc">None</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="n">initial_transition_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+            <span class="ow">and</span> <span class="n">proposed_transition_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+            <span class="ow">and</span> <span class="n">initial_transition_id</span> <span class="o">==</span> <span class="n">proposed_transition_id</span>
+        <span class="p">):</span>
+            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">reject_transition</span><span class="p">(</span>
+                <span class="c1"># state=None will return the initial (current) state</span>
+                <span class="n">state</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;This run has already made this state transition.&quot;</span><span class="p">,</span>
             <span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
