@@ -9026,7 +9026,10 @@ between <code>interval * (1 - range) &lt; rv &lt; interval * (1 + range)</code><
 <span class="normal">146</span>
 <span class="normal">147</span>
 <span class="normal">148</span>
-<span class="normal">149</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">critical_service_loop</span><span class="p">(</span>
+<span class="normal">149</span>
+<span class="normal">150</span>
+<span class="normal">151</span>
+<span class="normal">152</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">critical_service_loop</span><span class="p">(</span>
     <span class="n">workload</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Coroutine</span><span class="p">],</span>
     <span class="n">interval</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
     <span class="n">memory</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
@@ -9065,7 +9068,10 @@ between <code>interval * (1 - range) &lt; rv &lt; interval * (1 + range)</code><
 
     <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Starting run of </span><span class="si">{</span><span class="n">workload</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">workload_display_name</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">workload</span><span class="o">.</span><span class="vm">__name__</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">workload</span><span class="p">,</span> <span class="s2">&quot;__name__&quot;</span><span class="p">)</span> <span class="k">else</span> <span class="n">workload</span>
+            <span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Starting run of </span><span class="si">{</span><span class="n">workload_display_name</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="k">await</span> <span class="n">workload</span><span class="p">()</span>
 
             <span class="c1"># Reset the backoff count on success; we may want to consider resetting</span>

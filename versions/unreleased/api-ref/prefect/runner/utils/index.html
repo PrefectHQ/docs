@@ -8816,7 +8816,7 @@ if (amplitudeKey){
 
   <div class="doc doc-contents ">
   
-      <p>Augments the webserver's OpenAPI schema with additional schemas from deployments.</p>
+      <p>Augments the webserver's OpenAPI schema with additional schemas from deployments / flows / tasks.</p>
 
 
 
@@ -8846,13 +8846,13 @@ if (amplitudeKey){
           </td>
         </tr>
         <tr>
-          <td><code>deployment_schemas</code></td>
+          <td><code>schemas_to_inject</code></td>
           <td>
                 <code><span title="typing.Dict">Dict</span>[str, <span title="typing.Any">Any</span>]</code>
           </td>
           <td>
             <div class="doc-md-description">
-              <p>A dictionary of deployment schemas to integrate.</p>
+              <p>A dictionary of OpenAPI schemas to integrate.</p>
             </div>
           </td>
           <td>
@@ -8907,14 +8907,14 @@ if (amplitudeKey){
 <span class="normal">26</span>
 <span class="normal">27</span>
 <span class="normal">28</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">inject_schemas_into_openapi</span><span class="p">(</span>
-    <span class="n">webserver</span><span class="p">:</span> <span class="n">FastAPI</span><span class="p">,</span> <span class="n">deployment_schemas</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>
+    <span class="n">webserver</span><span class="p">:</span> <span class="n">FastAPI</span><span class="p">,</span> <span class="n">schemas_to_inject</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Augments the webserver&#39;s OpenAPI schema with additional schemas from deployments.</span>
+<span class="sd">    Augments the webserver&#39;s OpenAPI schema with additional schemas from deployments / flows / tasks.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        webserver: The FastAPI instance representing the webserver.</span>
-<span class="sd">        deployment_schemas: A dictionary of deployment schemas to integrate.</span>
+<span class="sd">        schemas_to_inject: A dictionary of OpenAPI schemas to integrate.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        The augmented OpenAPI schema dictionary.</span>
@@ -8923,7 +8923,7 @@ if (amplitudeKey){
         <span class="n">title</span><span class="o">=</span><span class="s2">&quot;FastAPI Prefect Runner&quot;</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="n">PREFECT_VERSION</span><span class="p">,</span> <span class="n">routes</span><span class="o">=</span><span class="n">webserver</span><span class="o">.</span><span class="n">routes</span>
     <span class="p">)</span>
 
-    <span class="n">augmented_schema</span> <span class="o">=</span> <span class="n">merge_definitions</span><span class="p">(</span><span class="n">deployment_schemas</span><span class="p">,</span> <span class="n">openapi_schema</span><span class="p">)</span>
+    <span class="n">augmented_schema</span> <span class="o">=</span> <span class="n">merge_definitions</span><span class="p">(</span><span class="n">schemas_to_inject</span><span class="p">,</span> <span class="n">openapi_schema</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">update_refs_to_components</span><span class="p">(</span><span class="n">augmented_schema</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
           </details>
@@ -8944,7 +8944,7 @@ if (amplitudeKey){
 
   <div class="doc doc-contents ">
   
-      <p>Integrates definitions from deployment schemas into the OpenAPI components.</p>
+      <p>Integrates definitions from injected schemas into the OpenAPI components.</p>
 
 
 
@@ -8960,7 +8960,7 @@ if (amplitudeKey){
     </thead>
     <tbody>
         <tr>
-          <td><code>deployment_schemas</code></td>
+          <td><code>injected_schemas</code></td>
           <td>
                 <code><span title="typing.Dict">Dict</span>[str, <span title="typing.Any">Any</span>]</code>
           </td>
@@ -9013,20 +9013,20 @@ if (amplitudeKey){
 <span class="normal">49</span>
 <span class="normal">50</span>
 <span class="normal">51</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">merge_definitions</span><span class="p">(</span>
-    <span class="n">deployment_schemas</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">openapi_schema</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>
+    <span class="n">injected_schemas</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">openapi_schema</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Integrates definitions from deployment schemas into the OpenAPI components.</span>
+<span class="sd">    Integrates definitions from injected schemas into the OpenAPI components.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        deployment_schemas: A dictionary of deployment-specific schemas.</span>
+<span class="sd">        injected_schemas: A dictionary of deployment-specific schemas.</span>
 <span class="sd">        openapi_schema: The base OpenAPI schema to update.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">openapi_schema_copy</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">openapi_schema</span><span class="p">)</span>
     <span class="n">components</span> <span class="o">=</span> <span class="n">openapi_schema_copy</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;components&quot;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span>
         <span class="s2">&quot;schemas&quot;</span><span class="p">,</span> <span class="p">{}</span>
     <span class="p">)</span>
-    <span class="k">for</span> <span class="n">definitions</span> <span class="ow">in</span> <span class="n">deployment_schemas</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+    <span class="k">for</span> <span class="n">definitions</span> <span class="ow">in</span> <span class="n">injected_schemas</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
         <span class="k">if</span> <span class="s2">&quot;definitions&quot;</span> <span class="ow">in</span> <span class="n">definitions</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">def_name</span><span class="p">,</span> <span class="n">def_schema</span> <span class="ow">in</span> <span class="n">definitions</span><span class="p">[</span><span class="s2">&quot;definitions&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                 <span class="n">def_schema_copy</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">def_schema</span><span class="p">)</span>
