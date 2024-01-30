@@ -8957,7 +8957,7 @@ if (amplitudeKey){
 
 
 <h1 id="creating-interactive-workflows">Creating Interactive Workflows<a class="headerlink" href="#creating-interactive-workflows" title="Permanent link">&para;</a></h1>
-<p>Flows can now pause or suspend execution and automatically resume when they receive type-checked input in Prefect's UI. Flows can also send and receive type-checked input at any time while running, without pausing or suspending. This guide will show you how to use these features to build <em>interactive workflows</em>.</p>
+<p>Flows can pause or suspend execution and automatically resume when they receive type-checked input in Prefect's UI. Flows can also send and receive type-checked input at any time while running, without pausing or suspending. This guide will show you how to use these features to build <em>interactive workflows</em>.</p>
 <div class="admonition note">
 <p class="admonition-title">A note on async Python syntax</p>
 <p>Most of the example code in this section uses async Python functions and <code>await</code>. However, as with other Prefect features, you can call these functions with or without <code>await</code>.</p>
@@ -9039,7 +9039,7 @@ if (amplitudeKey){
 </code></pre></div>
 <h3 id="providing-initial-data">Providing initial data<a class="headerlink" href="#providing-initial-data" title="Permanent link">&para;</a></h3>
 <p>You can set default values for fields in your model by using the <code>with_initial_data</code> method. This is useful when you want to provide default values for the fields in your own <code>RunInput</code> class.</p>
-<p>Expanding on the example above, you could default the <code>name</code> field to "anonymous."</p>
+<p>Expanding on the example above, you could make the <code>name</code> field default to "anonymous":</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect.input</span> <span class="kn">import</span> <span class="n">RunInput</span>
 
 <span class="k">class</span> <span class="nc">UserInput</span><span class="p">(</span><span class="n">RunInput</span><span class="p">):</span>
@@ -9265,7 +9265,7 @@ if (amplitudeKey){
         <span class="n">greeting</span> <span class="o">=</span> <span class="k">await</span> <span class="n">receiver</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
         <span class="nb">print</span><span class="p">(</span><span class="n">greeting</span><span class="p">)</span>
 </code></pre></div>
-<p>So, an iterator helps to keep track of the inputs your flow has already received. But what if you want your flow to suspend and then resume later, picking up where it left off? In that case, you will need to save the keys of the inputs you've seen so that the flow can read them back out when it resumes. You might use a <a href="/concepts/blocks/">Block</a>, such as a <code>JSONBlock</code>, scoped to a workspace.</p>
+<p>So, an iterator helps to keep track of the inputs your flow has already received. But what if you want your flow to suspend and then resume later, picking up where it left off? In that case, you will need to save the keys of the inputs you've seen so that the flow can read them back out when it resumes. You might use a <a href="/concepts/blocks/">Block</a>, such as a <code>JSONBlock</code>.</p>
 <p>The following flow receives input for 30 seconds then suspends itself, which exits the flow and tears down infrastructure:</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">get_run_logger</span><span class="p">,</span> <span class="n">suspend_flow_run</span>
 <span class="kn">from</span> <span class="nn">prefect.blocks.system</span> <span class="kn">import</span> <span class="n">JSON</span>
@@ -9484,32 +9484,51 @@ if (amplitudeKey){
         <span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">sender</span><span class="p">())</span>
 </code></pre></div>
 <p>To run the example, you'll need a Python environment with Prefect installed, pointed at either open-source Prefect or Prefect Cloud.</p>
-<p>With your environment set up, start a flow runner in one terminal with the following command:
-    $ python <filename> greeter</p>
-<p>For example, with Prefect Cloud, you should see output like this:
-<div class="highlight"><pre><span></span><code>╭──────────────────────────────────────────────────────────────────────────────────────────────────╮
-│ Your flow &#39;greeter&#39; is being served and polling for scheduled runs!                              │
-│                                                                                                  │
-│ To trigger a run for this flow, use the following command:                                       │
-│                                                                                                  │
-│         $ prefect deployment run &#39;greeter/send-receive&#39;                                          │
-│                                                                                                  │
-│ You can also run your flow via the Prefect UI:                                                   │
-│ https://app.prefect.cloud/account/...(a URL for your account)                                    │
-│                                                                                                  │
-╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
-</code></pre></div></p>
-<p>Then start the greeter in another process in another terminal:
-    $ python <filename> sender</p>
-<p>You should see:
-<div class="highlight"><pre><span></span><code>11:38:41.800 | INFO    | prefect.engine - Created flow run &#39;gregarious-owl&#39; for flow &#39;sender&#39;
-11:38:41.802 | INFO    | Flow run &#39;gregarious-owl&#39; - View at https://app.prefect.cloud/account/...
-What is your name?
-</code></pre></div></p>
-<p>Type a name and press the enter key to see a greeting, and you'll see sending and receiving in action:</p>
-<div class="highlight"><pre><span></span><code>What is your name? andrew
-Hello, andrew!
+<p>With your environment set up, start a flow runner in one terminal with the following command:</p>
+<div class="terminal">
+<div class="highlight"><pre><span></span><code><span class="w">    </span>$<span class="w"> </span>python<span class="w"> </span>&lt;filename&gt;<span class="w"> </span>greeter
 </code></pre></div>
+</div>
+
+<div class="codehilite"><pre><span></span><code>
+</code></pre></div>
+
+<p>For example, with Prefect Cloud, you should see output like this:</p>
+<div class="terminal">
+<div class="highlight"><pre><span></span><code>╭──────────────────────────────────────────────────────────────────────────────────────────────────╮
+│<span class="w"> </span>Your<span class="w"> </span>flow<span class="w"> </span><span class="s1">&#39;greeter&#39;</span><span class="w"> </span>is<span class="w"> </span>being<span class="w"> </span>served<span class="w"> </span>and<span class="w"> </span>polling<span class="w"> </span><span class="k">for</span><span class="w"> </span>scheduled<span class="w"> </span>runs!<span class="w">                              </span>│
+│<span class="w">                                                                                                  </span>│
+│<span class="w"> </span>To<span class="w"> </span>trigger<span class="w"> </span>a<span class="w"> </span>run<span class="w"> </span><span class="k">for</span><span class="w"> </span>this<span class="w"> </span>flow,<span class="w"> </span>use<span class="w"> </span>the<span class="w"> </span>following<span class="w"> </span>command:<span class="w">                                       </span>│
+│<span class="w">                                                                                                  </span>│
+│<span class="w">         </span>$<span class="w"> </span>prefect<span class="w"> </span>deployment<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;greeter/send-receive&#39;</span><span class="w">                                          </span>│
+│<span class="w">                                                                                                  </span>│
+│<span class="w"> </span>You<span class="w"> </span>can<span class="w"> </span>also<span class="w"> </span>run<span class="w"> </span>your<span class="w"> </span>flow<span class="w"> </span>via<span class="w"> </span>the<span class="w"> </span>Prefect<span class="w"> </span>UI:<span class="w">                                                   </span>│
+│<span class="w"> </span>https://app.prefect.cloud/account/...<span class="o">(</span>a<span class="w"> </span>URL<span class="w"> </span><span class="k">for</span><span class="w"> </span>your<span class="w"> </span>account<span class="o">)</span><span class="w">                                    </span>│
+│<span class="w">                                                                                                  </span>│
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+</code></pre></div>
+</div>
+
+<p>Then start the greeter in another process in another terminal:</p>
+<div class="terminal">
+<div class="highlight"><pre><span></span><code><span class="w">    </span>$<span class="w"> </span>python<span class="w"> </span>&lt;filename&gt;<span class="w"> </span>sender
+</code></pre></div>
+</div>
+
+<p>You should see:</p>
+<div class="terminal">
+<div class="highlight"><pre><span></span><code><span class="m">11</span>:38:41.800<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>prefect.engine<span class="w"> </span>-<span class="w"> </span>Created<span class="w"> </span>flow<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;gregarious-owl&#39;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>flow<span class="w"> </span><span class="s1">&#39;sender&#39;</span>
+<span class="m">11</span>:38:41.802<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>Flow<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;gregarious-owl&#39;</span><span class="w"> </span>-<span class="w"> </span>View<span class="w"> </span>at<span class="w"> </span>https://app.prefect.cloud/account/...
+What<span class="w"> </span>is<span class="w"> </span>your<span class="w"> </span>name?
+</code></pre></div>
+</div>
+
+<p>Type a name and press the enter key to see a greeting, and you'll see sending and receiving in action:</p>
+<div class="terminal">
+<div class="highlight"><pre><span></span><code>What<span class="w"> </span>is<span class="w"> </span>your<span class="w"> </span>name?<span class="w"> </span>andrew
+Hello,<span class="w"> </span>andrew!
+</code></pre></div>
+</div>
 
 
 
