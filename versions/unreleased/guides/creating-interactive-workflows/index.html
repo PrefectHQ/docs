@@ -1183,6 +1183,19 @@ if (amplitudeKey){
 </li>
         
           <li class="md-nav__item">
+  <a href="#providing-a-description-with-runtime-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Providing a description with runtime data
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#handling-custom-validation" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -8784,6 +8797,19 @@ if (amplitudeKey){
 </li>
         
           <li class="md-nav__item">
+  <a href="#providing-a-description-with-runtime-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Providing a description with runtime data
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#handling-custom-validation" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -9060,6 +9086,44 @@ if (amplitudeKey){
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Hello, </span><span class="si">{</span><span class="n">user_input</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">!&quot;</span><span class="p">)</span>
 </code></pre></div>
 <p>When a user sees the form for this input, the name field will contain "anonymous" as the default.</p>
+<h3 id="providing-a-description-with-runtime-data">Providing a description with runtime data<a class="headerlink" href="#providing-a-description-with-runtime-data" title="Permanent link">&para;</a></h3>
+<p>You can provide a dynamic, markdown description that will appear in the Prefect UI when the flow run pauses. This feature enables context-specific prompts, enhancing clarity and user interaction. Building on the example above:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">pause_flow_run</span><span class="p">,</span> <span class="n">get_run_logger</span>
+<span class="kn">from</span> <span class="nn">prefect.input</span> <span class="kn">import</span> <span class="n">RunInput</span>
+
+
+<span class="k">class</span> <span class="nc">UserInput</span><span class="p">(</span><span class="n">RunInput</span><span class="p">):</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">age</span><span class="p">:</span> <span class="nb">int</span>
+
+
+<span class="nd">@flow</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">greet_user</span><span class="p">():</span>
+    <span class="n">logger</span> <span class="o">=</span> <span class="n">get_run_logger</span><span class="p">()</span>
+    <span class="n">current_date</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%B </span><span class="si">%d</span><span class="s2">, %Y&quot;</span><span class="p">)</span>
+
+    <span class="n">description_md</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">**Welcome to the User Greeting Flow!**</span>
+<span class="s2">Today&#39;s Date: </span><span class="si">{</span><span class="n">current_date</span><span class="si">}</span>
+
+<span class="s2">Please enter your details below:</span>
+<span class="s2">- **Name**: What should we call you?</span>
+<span class="s2">- **Age**: Just a number, nothing more.</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+    <span class="n">user_input</span> <span class="o">=</span> <span class="k">await</span> <span class="n">pause_flow_run</span><span class="p">(</span>
+        <span class="n">wait_for_input</span><span class="o">=</span><span class="n">UserInput</span><span class="o">.</span><span class="n">with_initial_data</span><span class="p">(</span>
+            <span class="n">description</span><span class="o">=</span><span class="n">description_md</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;anonymous&quot;</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">user_input</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;anonymous&quot;</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Hello, stranger!&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Hello, </span><span class="si">{</span><span class="n">user_input</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">!&quot;</span><span class="p">)</span>
+</code></pre></div>
+<p>When a user sees the form for this input, the given markdown will appear above the input fields.</p>
 <h3 id="handling-custom-validation">Handling custom validation<a class="headerlink" href="#handling-custom-validation" title="Permanent link">&para;</a></h3>
 <p>Prefect uses the fields and type hints on your <code>RunInput</code> or <code>BaseModel</code> class to validate the general structure of input your flow receives, but you might require more complex validation. If you do, you can use Pydantic <a href="https://docs.pydantic.dev/1.10/usage/validators/">validators</a>.</p>
 <div class="admonition warning">
