@@ -10091,7 +10091,24 @@ to its retry policy.</p>
 <span class="normal">953</span>
 <span class="normal">954</span>
 <span class="normal">955</span>
-<span class="normal">956</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@PrefectObjectRegistry</span><span class="o">.</span><span class="n">register_instances</span>
+<span class="normal">956</span>
+<span class="normal">957</span>
+<span class="normal">958</span>
+<span class="normal">959</span>
+<span class="normal">960</span>
+<span class="normal">961</span>
+<span class="normal">962</span>
+<span class="normal">963</span>
+<span class="normal">964</span>
+<span class="normal">965</span>
+<span class="normal">966</span>
+<span class="normal">967</span>
+<span class="normal">968</span>
+<span class="normal">969</span>
+<span class="normal">970</span>
+<span class="normal">971</span>
+<span class="normal">972</span>
+<span class="normal">973</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@PrefectObjectRegistry</span><span class="o">.</span><span class="n">register_instances</span>
 <span class="k">class</span> <span class="nc">Task</span><span class="p">(</span><span class="n">Generic</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">R</span><span class="p">]):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A Prefect task definition.</span>
@@ -10642,18 +10659,35 @@ to its retry policy.</p>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">State</span><span class="p">[</span><span class="n">T</span><span class="p">]:</span>
         <span class="o">...</span>
 
+    <span class="nd">@overload</span>
+    <span class="k">def</span> <span class="nf">submit</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">:</span> <span class="s2">&quot;Task[P, T]&quot;</span><span class="p">,</span>
+        <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">P</span><span class="o">.</span><span class="n">args</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">P</span><span class="o">.</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TaskRun</span><span class="p">:</span>
+        <span class="o">...</span>
+
+    <span class="nd">@overload</span>
+    <span class="k">def</span> <span class="nf">submit</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">:</span> <span class="s2">&quot;Task[P, Coroutine[Any, Any, T]]&quot;</span><span class="p">,</span>
+        <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">P</span><span class="o">.</span><span class="n">args</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">P</span><span class="o">.</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Awaitable</span><span class="p">[</span><span class="n">TaskRun</span><span class="p">]:</span>
+        <span class="o">...</span>
+
     <span class="k">def</span> <span class="nf">submit</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
         <span class="n">return_state</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">wait_for</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Iterable</span><span class="p">[</span><span class="n">PrefectFuture</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">PrefectFuture</span><span class="p">,</span> <span class="n">Awaitable</span><span class="p">[</span><span class="n">PrefectFuture</span><span class="p">]]:</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">PrefectFuture</span><span class="p">,</span> <span class="n">Awaitable</span><span class="p">[</span><span class="n">PrefectFuture</span><span class="p">],</span> <span class="n">TaskRun</span><span class="p">,</span> <span class="n">Awaitable</span><span class="p">[</span><span class="n">TaskRun</span><span class="p">]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Submit a run of the task to a worker.</span>
+<span class="sd">        Submit a run of the task to the engine.</span>
 
-<span class="sd">        Must be called within a flow function. If writing an async task, this call must</span>
-<span class="sd">        be awaited.</span>
+<span class="sd">        If writing an async task, this call must be awaited.</span>
+
+<span class="sd">        If called from within a flow function,</span>
 
 <span class="sd">        Will create a new task run in the backing API and submit the task to the flow&#39;s</span>
 <span class="sd">        task runner. This call only blocks execution while the task is being submitted,</span>
@@ -11168,24 +11202,7 @@ task</p>
 
           <details class="quote">
             <summary>Source code in <code>prefect/tasks.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">816</span>
-<span class="normal">817</span>
-<span class="normal">818</span>
-<span class="normal">819</span>
-<span class="normal">820</span>
-<span class="normal">821</span>
-<span class="normal">822</span>
-<span class="normal">823</span>
-<span class="normal">824</span>
-<span class="normal">825</span>
-<span class="normal">826</span>
-<span class="normal">827</span>
-<span class="normal">828</span>
-<span class="normal">829</span>
-<span class="normal">830</span>
-<span class="normal">831</span>
-<span class="normal">832</span>
-<span class="normal">833</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">833</span>
 <span class="normal">834</span>
 <span class="normal">835</span>
 <span class="normal">836</span>
@@ -11308,7 +11325,24 @@ task</p>
 <span class="normal">953</span>
 <span class="normal">954</span>
 <span class="normal">955</span>
-<span class="normal">956</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">map</span><span class="p">(</span>
+<span class="normal">956</span>
+<span class="normal">957</span>
+<span class="normal">958</span>
+<span class="normal">959</span>
+<span class="normal">960</span>
+<span class="normal">961</span>
+<span class="normal">962</span>
+<span class="normal">963</span>
+<span class="normal">964</span>
+<span class="normal">965</span>
+<span class="normal">966</span>
+<span class="normal">967</span>
+<span class="normal">968</span>
+<span class="normal">969</span>
+<span class="normal">970</span>
+<span class="normal">971</span>
+<span class="normal">972</span>
+<span class="normal">973</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">map</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
     <span class="n">return_state</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -11468,9 +11502,9 @@ task</p>
 
   <div class="doc doc-contents ">
   
-      <p>Submit a run of the task to a worker.</p>
-<p>Must be called within a flow function. If writing an async task, this call must
-be awaited.</p>
+      <p>Submit a run of the task to the engine.</p>
+<p>If writing an async task, this call must be awaited.</p>
+<p>If called from within a flow function,</p>
 <p>Will create a new task run in the backing API and submit the task to the flow's
 task runner. This call only blocks execution while the task is being submitted,
 once it is submitted, the flow function will continue executing. However, note
@@ -11563,7 +11597,7 @@ Prefect State.</p>
     <tbody>
         <tr>
           <td>
-                <code><span title="typing.Union">Union</span>[<a class="autorefs autorefs-internal" title="prefect.futures.PrefectFuture" href="../futures/#prefect.futures.PrefectFuture">PrefectFuture</a>, <span title="typing.Awaitable">Awaitable</span>[<a class="autorefs autorefs-internal" title="prefect.futures.PrefectFuture" href="../futures/#prefect.futures.PrefectFuture">PrefectFuture</a>]]</code>
+                <code><span title="typing.Union">Union</span>[<a class="autorefs autorefs-internal" title="prefect.futures.PrefectFuture" href="../futures/#prefect.futures.PrefectFuture">PrefectFuture</a>, <span title="typing.Awaitable">Awaitable</span>[<a class="autorefs autorefs-internal" title="prefect.futures.PrefectFuture" href="../futures/#prefect.futures.PrefectFuture">PrefectFuture</a>], <span title="prefect.client.schemas.TaskRun">TaskRun</span>, <span title="typing.Awaitable">Awaitable</span>[<span title="prefect.client.schemas.TaskRun">TaskRun</span>]]</code>
           </td>
           <td>
             <div class="doc-md-description">
@@ -11574,7 +11608,7 @@ the state of the task</p>
         </tr>
         <tr>
           <td>
-                <code><span title="typing.Union">Union</span>[<a class="autorefs autorefs-internal" title="prefect.futures.PrefectFuture" href="../futures/#prefect.futures.PrefectFuture">PrefectFuture</a>, <span title="typing.Awaitable">Awaitable</span>[<a class="autorefs autorefs-internal" title="prefect.futures.PrefectFuture" href="../futures/#prefect.futures.PrefectFuture">PrefectFuture</a>]]</code>
+                <code><span title="typing.Union">Union</span>[<a class="autorefs autorefs-internal" title="prefect.futures.PrefectFuture" href="../futures/#prefect.futures.PrefectFuture">PrefectFuture</a>, <span title="typing.Awaitable">Awaitable</span>[<a class="autorefs autorefs-internal" title="prefect.futures.PrefectFuture" href="../futures/#prefect.futures.PrefectFuture">PrefectFuture</a>], <span title="prefect.client.schemas.TaskRun">TaskRun</span>, <span title="typing.Awaitable">Awaitable</span>[<span title="prefect.client.schemas.TaskRun">TaskRun</span>]]</code>
           </td>
           <td>
             <div class="doc-md-description">
@@ -11649,23 +11683,7 @@ the state of the task</p>
 
           <details class="quote">
             <summary>Source code in <code>prefect/tasks.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">663</span>
-<span class="normal">664</span>
-<span class="normal">665</span>
-<span class="normal">666</span>
-<span class="normal">667</span>
-<span class="normal">668</span>
-<span class="normal">669</span>
-<span class="normal">670</span>
-<span class="normal">671</span>
-<span class="normal">672</span>
-<span class="normal">673</span>
-<span class="normal">674</span>
-<span class="normal">675</span>
-<span class="normal">676</span>
-<span class="normal">677</span>
-<span class="normal">678</span>
-<span class="normal">679</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">679</span>
 <span class="normal">680</span>
 <span class="normal">681</span>
 <span class="normal">682</span>
@@ -11765,18 +11783,36 @@ the state of the task</p>
 <span class="normal">776</span>
 <span class="normal">777</span>
 <span class="normal">778</span>
-<span class="normal">779</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">submit</span><span class="p">(</span>
+<span class="normal">779</span>
+<span class="normal">780</span>
+<span class="normal">781</span>
+<span class="normal">782</span>
+<span class="normal">783</span>
+<span class="normal">784</span>
+<span class="normal">785</span>
+<span class="normal">786</span>
+<span class="normal">787</span>
+<span class="normal">788</span>
+<span class="normal">789</span>
+<span class="normal">790</span>
+<span class="normal">791</span>
+<span class="normal">792</span>
+<span class="normal">793</span>
+<span class="normal">794</span>
+<span class="normal">795</span>
+<span class="normal">796</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">submit</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
     <span class="n">return_state</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">wait_for</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Iterable</span><span class="p">[</span><span class="n">PrefectFuture</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">PrefectFuture</span><span class="p">,</span> <span class="n">Awaitable</span><span class="p">[</span><span class="n">PrefectFuture</span><span class="p">]]:</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">PrefectFuture</span><span class="p">,</span> <span class="n">Awaitable</span><span class="p">[</span><span class="n">PrefectFuture</span><span class="p">],</span> <span class="n">TaskRun</span><span class="p">,</span> <span class="n">Awaitable</span><span class="p">[</span><span class="n">TaskRun</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Submit a run of the task to a worker.</span>
+<span class="sd">    Submit a run of the task to the engine.</span>
 
-<span class="sd">    Must be called within a flow function. If writing an async task, this call must</span>
-<span class="sd">    be awaited.</span>
+<span class="sd">    If writing an async task, this call must be awaited.</span>
+
+<span class="sd">    If called from within a flow function,</span>
 
 <span class="sd">    Will create a new task run in the backing API and submit the task to the flow&#39;s</span>
 <span class="sd">    task runner. This call only blocks execution while the task is being submitted,</span>
@@ -13148,24 +13184,7 @@ to its retry policy.</p>
 
           <details class="quote">
             <summary>Source code in <code>prefect/tasks.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 998</span>
-<span class="normal"> 999</span>
-<span class="normal">1000</span>
-<span class="normal">1001</span>
-<span class="normal">1002</span>
-<span class="normal">1003</span>
-<span class="normal">1004</span>
-<span class="normal">1005</span>
-<span class="normal">1006</span>
-<span class="normal">1007</span>
-<span class="normal">1008</span>
-<span class="normal">1009</span>
-<span class="normal">1010</span>
-<span class="normal">1011</span>
-<span class="normal">1012</span>
-<span class="normal">1013</span>
-<span class="normal">1014</span>
-<span class="normal">1015</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1015</span>
 <span class="normal">1016</span>
 <span class="normal">1017</span>
 <span class="normal">1018</span>
@@ -13345,7 +13364,24 @@ to its retry policy.</p>
 <span class="normal">1192</span>
 <span class="normal">1193</span>
 <span class="normal">1194</span>
-<span class="normal">1195</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">task</span><span class="p">(</span>
+<span class="normal">1195</span>
+<span class="normal">1196</span>
+<span class="normal">1197</span>
+<span class="normal">1198</span>
+<span class="normal">1199</span>
+<span class="normal">1200</span>
+<span class="normal">1201</span>
+<span class="normal">1202</span>
+<span class="normal">1203</span>
+<span class="normal">1204</span>
+<span class="normal">1205</span>
+<span class="normal">1206</span>
+<span class="normal">1207</span>
+<span class="normal">1208</span>
+<span class="normal">1209</span>
+<span class="normal">1210</span>
+<span class="normal">1211</span>
+<span class="normal">1212</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">task</span><span class="p">(</span>
     <span class="n">__fn</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
