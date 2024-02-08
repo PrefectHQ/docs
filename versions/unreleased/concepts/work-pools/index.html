@@ -9614,6 +9614,10 @@ If all flow runs are capable of being executed with no limitation due to concurr
 If not all flow runs can be executed, usually as a result of concurrency limits, priority is used to determine which queues receive precedence to submit runs for execution.</p>
 <p>Priority for flow run submission proceeds from the highest priority to the lowest priority. In the preceding example, all work from the "critical" queue (priority 1) will be submitted, before any work is submitted from "high" (priority 5). Once all work has been submitted from priority queue "critical", work from the "high" queue will begin submission.</p>
 <p>If new flow runs are received on the "critical" queue while flow runs are still in scheduled on the "high" and "low" queues, flow run submission goes back to ensuring all scheduled work is first satisfied from the highest priority queue, until it is empty, in waterfall fashion.</p>
+<div class="admonition tip">
+<p class="admonition-title">Work queue status</p>
+<p>A work queue has a <code>READY</code> status when it has been polled by a worker in the last 60 seconds. Pausing a work queue will give it a <code>PAUSED</code> status and mean that it will accept no new work until it is unpaused. A user can control the work queue's paused status in the UI. Unpausing a work queue will give the work queue a <code>NOT_READY</code> status unless a worker has polled it in the last 60 seconds.</p>
+</div>
 <h3 id="local-debugging">Local debugging<a class="headerlink" href="#local-debugging" title="Permanent link">&para;</a></h3>
 <p>As long as your deployment's infrastructure block supports it, you can use work pools to temporarily send runs to a worker running on your local machine for debugging by running <code>prefect worker start -p my-local-machine</code> and updating the deployment's work pool to <code>my-local-machine</code>.</p>
 <h2 id="worker-overview">Worker overview<a class="headerlink" href="#worker-overview" title="Permanent link">&para;</a></h2>
