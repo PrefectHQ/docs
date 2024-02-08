@@ -9317,7 +9317,8 @@ if (amplitudeKey){
 <span class="normal">715</span>
 <span class="normal">716</span>
 <span class="normal">717</span>
-<span class="normal">718</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">CustomWebhookNotificationBlock</span><span class="p">(</span><span class="n">NotificationBlock</span><span class="p">):</span>
+<span class="normal">718</span>
+<span class="normal">719</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">CustomWebhookNotificationBlock</span><span class="p">(</span><span class="n">NotificationBlock</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Enables sending notifications via any custom webhook.</span>
 
@@ -9442,7 +9443,8 @@ if (amplitudeKey){
 
         <span class="c1"># make request with httpx</span>
         <span class="n">client</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">AsyncClient</span><span class="p">(</span><span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;user-agent&quot;</span><span class="p">:</span> <span class="s2">&quot;Prefect Notifications&quot;</span><span class="p">})</span>
-        <span class="n">resp</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_build_request_args</span><span class="p">(</span><span class="n">body</span><span class="p">,</span> <span class="n">subject</span><span class="p">))</span>
+        <span class="k">async</span> <span class="k">with</span> <span class="n">client</span><span class="p">:</span>
+            <span class="n">resp</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_build_request_args</span><span class="p">(</span><span class="n">body</span><span class="p">,</span> <span class="n">subject</span><span class="p">))</span>
         <span class="n">resp</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
 </code></pre></div></td></tr></table></div>
             </details>
@@ -10584,8 +10586,7 @@ from prefect.blocks.notifications import SendgridEmail</p>
 
             <details class="quote">
               <summary>Source code in <code>prefect/blocks/notifications.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">721</span>
-<span class="normal">722</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">722</span>
 <span class="normal">723</span>
 <span class="normal">724</span>
 <span class="normal">725</span>
@@ -10635,7 +10636,8 @@ from prefect.blocks.notifications import SendgridEmail</p>
 <span class="normal">769</span>
 <span class="normal">770</span>
 <span class="normal">771</span>
-<span class="normal">772</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">SendgridEmail</span><span class="p">(</span><span class="n">AbstractAppriseNotificationBlock</span><span class="p">):</span>
+<span class="normal">772</span>
+<span class="normal">773</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">SendgridEmail</span><span class="p">(</span><span class="n">AbstractAppriseNotificationBlock</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Enables sending notifications via any sendgrid account.</span>
 <span class="sd">    See [Apprise Notify_sendgrid docs](https://github.com/caronc/apprise/wiki/Notify_Sendgrid)</span>
