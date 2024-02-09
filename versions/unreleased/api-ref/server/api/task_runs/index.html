@@ -9044,14 +9044,7 @@ if (amplitudeKey){
 
             <details class="quote">
               <summary>Source code in <code>prefect/server/api/task_runs.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">382</span>
-<span class="normal">383</span>
-<span class="normal">384</span>
-<span class="normal">385</span>
-<span class="normal">386</span>
-<span class="normal">387</span>
-<span class="normal">388</span>
-<span class="normal">389</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">389</span>
 <span class="normal">390</span>
 <span class="normal">391</span>
 <span class="normal">392</span>
@@ -9069,17 +9062,7 @@ if (amplitudeKey){
 <span class="normal">404</span>
 <span class="normal">405</span>
 <span class="normal">406</span>
-<span class="normal">407</span>
-<span class="normal">408</span>
-<span class="normal">409</span>
-<span class="normal">410</span>
-<span class="normal">411</span>
-<span class="normal">412</span>
-<span class="normal">413</span>
-<span class="normal">414</span>
-<span class="normal">415</span>
-<span class="normal">416</span>
-<span class="normal">417</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">MultiQueue</span><span class="p">:</span>
+<span class="normal">407</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">MultiQueue</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A queue that can pull tasks from from any of a number of task queues&quot;&quot;&quot;</span>
 
     <span class="n">_queues</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">TaskQueue</span><span class="p">]</span>
@@ -9091,30 +9074,13 @@ if (amplitudeKey){
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Gets the next task_run from any of the given queues&quot;&quot;&quot;</span>
         <span class="k">await</span> <span class="n">TaskQueue</span><span class="o">.</span><span class="n">restore_scheduled_tasks_if_necessary</span><span class="p">()</span>
 
-        <span class="c1"># This implements a &quot;race&quot; among the queue.get() calls for each of the queues</span>
-        <span class="c1"># by waiting for the first one to finish, reenqueing any ties, and then</span>
-        <span class="c1"># cancelling any others</span>
-
-        <span class="n">loop</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span>
-        <span class="n">gets</span> <span class="o">=</span> <span class="p">[</span><span class="n">loop</span><span class="o">.</span><span class="n">create_task</span><span class="p">(</span><span class="n">queue</span><span class="o">.</span><span class="n">get</span><span class="p">())</span> <span class="k">for</span> <span class="n">queue</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_queues</span><span class="p">]</span>
-
-        <span class="n">finishers</span><span class="p">,</span> <span class="n">losers</span> <span class="o">=</span> <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span>
-            <span class="n">gets</span><span class="p">,</span> <span class="n">return_when</span><span class="o">=</span><span class="n">asyncio</span><span class="o">.</span><span class="n">FIRST_COMPLETED</span>
-        <span class="p">)</span>
-
-        <span class="n">winner</span><span class="p">,</span> <span class="o">*</span><span class="n">placers</span> <span class="o">=</span> <span class="n">finishers</span>
-        <span class="k">for</span> <span class="n">future</span> <span class="ow">in</span> <span class="n">placers</span><span class="p">:</span>
-            <span class="n">task_run</span> <span class="o">=</span> <span class="n">future</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
-            <span class="k">await</span> <span class="n">TaskQueue</span><span class="o">.</span><span class="n">for_key</span><span class="p">(</span><span class="n">task_run</span><span class="o">.</span><span class="n">task_key</span><span class="p">)</span><span class="o">.</span><span class="n">retry</span><span class="p">(</span><span class="n">task_run</span><span class="p">)</span>
-
-        <span class="k">for</span> <span class="n">task</span> <span class="ow">in</span> <span class="n">losers</span><span class="p">:</span>
-            <span class="n">task</span><span class="o">.</span><span class="n">cancel</span><span class="p">()</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="k">await</span> <span class="n">task</span>
-            <span class="k">except</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">CancelledError</span><span class="p">:</span>
-                <span class="k">pass</span>
-
-        <span class="k">return</span> <span class="n">winner</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">queue</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_queues</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">queue</span><span class="o">.</span><span class="n">get_nowait</span><span class="p">()</span>
+                <span class="k">except</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">QueueEmpty</span><span class="p">:</span>
+                    <span class="k">continue</span>
+            <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.01</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
 
@@ -9151,14 +9117,7 @@ if (amplitudeKey){
 
           <details class="quote">
             <summary>Source code in <code>prefect/server/api/task_runs.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">390</span>
-<span class="normal">391</span>
-<span class="normal">392</span>
-<span class="normal">393</span>
-<span class="normal">394</span>
-<span class="normal">395</span>
-<span class="normal">396</span>
-<span class="normal">397</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">397</span>
 <span class="normal">398</span>
 <span class="normal">399</span>
 <span class="normal">400</span>
@@ -9168,44 +9127,17 @@ if (amplitudeKey){
 <span class="normal">404</span>
 <span class="normal">405</span>
 <span class="normal">406</span>
-<span class="normal">407</span>
-<span class="normal">408</span>
-<span class="normal">409</span>
-<span class="normal">410</span>
-<span class="normal">411</span>
-<span class="normal">412</span>
-<span class="normal">413</span>
-<span class="normal">414</span>
-<span class="normal">415</span>
-<span class="normal">416</span>
-<span class="normal">417</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">schemas</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">TaskRun</span><span class="p">:</span>
+<span class="normal">407</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">schemas</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">TaskRun</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets the next task_run from any of the given queues&quot;&quot;&quot;</span>
     <span class="k">await</span> <span class="n">TaskQueue</span><span class="o">.</span><span class="n">restore_scheduled_tasks_if_necessary</span><span class="p">()</span>
 
-    <span class="c1"># This implements a &quot;race&quot; among the queue.get() calls for each of the queues</span>
-    <span class="c1"># by waiting for the first one to finish, reenqueing any ties, and then</span>
-    <span class="c1"># cancelling any others</span>
-
-    <span class="n">loop</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span>
-    <span class="n">gets</span> <span class="o">=</span> <span class="p">[</span><span class="n">loop</span><span class="o">.</span><span class="n">create_task</span><span class="p">(</span><span class="n">queue</span><span class="o">.</span><span class="n">get</span><span class="p">())</span> <span class="k">for</span> <span class="n">queue</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_queues</span><span class="p">]</span>
-
-    <span class="n">finishers</span><span class="p">,</span> <span class="n">losers</span> <span class="o">=</span> <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span>
-        <span class="n">gets</span><span class="p">,</span> <span class="n">return_when</span><span class="o">=</span><span class="n">asyncio</span><span class="o">.</span><span class="n">FIRST_COMPLETED</span>
-    <span class="p">)</span>
-
-    <span class="n">winner</span><span class="p">,</span> <span class="o">*</span><span class="n">placers</span> <span class="o">=</span> <span class="n">finishers</span>
-    <span class="k">for</span> <span class="n">future</span> <span class="ow">in</span> <span class="n">placers</span><span class="p">:</span>
-        <span class="n">task_run</span> <span class="o">=</span> <span class="n">future</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
-        <span class="k">await</span> <span class="n">TaskQueue</span><span class="o">.</span><span class="n">for_key</span><span class="p">(</span><span class="n">task_run</span><span class="o">.</span><span class="n">task_key</span><span class="p">)</span><span class="o">.</span><span class="n">retry</span><span class="p">(</span><span class="n">task_run</span><span class="p">)</span>
-
-    <span class="k">for</span> <span class="n">task</span> <span class="ow">in</span> <span class="n">losers</span><span class="p">:</span>
-        <span class="n">task</span><span class="o">.</span><span class="n">cancel</span><span class="p">()</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="k">await</span> <span class="n">task</span>
-        <span class="k">except</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">CancelledError</span><span class="p">:</span>
-            <span class="k">pass</span>
-
-    <span class="k">return</span> <span class="n">winner</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">queue</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_queues</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">queue</span><span class="o">.</span><span class="n">get_nowait</span><span class="p">()</span>
+            <span class="k">except</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">QueueEmpty</span><span class="p">:</span>
+                <span class="k">continue</span>
+        <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.01</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
           </details>
   </div>
@@ -9334,7 +9266,14 @@ if (amplitudeKey){
 <span class="normal">376</span>
 <span class="normal">377</span>
 <span class="normal">378</span>
-<span class="normal">379</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">TaskQueue</span><span class="p">:</span>
+<span class="normal">379</span>
+<span class="normal">380</span>
+<span class="normal">381</span>
+<span class="normal">382</span>
+<span class="normal">383</span>
+<span class="normal">384</span>
+<span class="normal">385</span>
+<span class="normal">386</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">TaskQueue</span><span class="p">:</span>
     <span class="n">_task_queues</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Self</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="n">_scheduled_tasks_already_restored</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
 
@@ -9390,6 +9329,13 @@ if (amplitudeKey){
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_retry_queue</span><span class="o">.</span><span class="n">get_nowait</span><span class="p">()</span>
         <span class="k">except</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">QueueEmpty</span><span class="p">:</span>
             <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_scheduled_queue</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">get_nowait</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">schemas</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">TaskRun</span><span class="p">:</span>
+        <span class="c1"># First, check if there&#39;s anything in the retry queue</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_retry_queue</span><span class="o">.</span><span class="n">get_nowait</span><span class="p">()</span>
+        <span class="k">except</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">QueueEmpty</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_scheduled_queue</span><span class="o">.</span><span class="n">get_nowait</span><span class="p">()</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">put</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task_run</span><span class="p">:</span> <span class="n">schemas</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">TaskRun</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_scheduled_queue</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">task_run</span><span class="p">)</span>
@@ -9505,14 +9451,7 @@ if (amplitudeKey){
 
           <details class="quote">
             <summary>Source code in <code>prefect/server/api/task_runs.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">345</span>
-<span class="normal">346</span>
-<span class="normal">347</span>
-<span class="normal">348</span>
-<span class="normal">349</span>
-<span class="normal">350</span>
-<span class="normal">351</span>
-<span class="normal">352</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">352</span>
 <span class="normal">353</span>
 <span class="normal">354</span>
 <span class="normal">355</span>
@@ -9539,7 +9478,14 @@ if (amplitudeKey){
 <span class="normal">376</span>
 <span class="normal">377</span>
 <span class="normal">378</span>
-<span class="normal">379</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@classmethod</span>
+<span class="normal">379</span>
+<span class="normal">380</span>
+<span class="normal">381</span>
+<span class="normal">382</span>
+<span class="normal">383</span>
+<span class="normal">384</span>
+<span class="normal">385</span>
+<span class="normal">386</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@classmethod</span>
 <span class="nd">@inject_db</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">restore_scheduled_tasks_if_necessary</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">db</span><span class="p">:</span> <span class="n">PrefectDBInterface</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Restores scheduled task runs from the database, if necessary.&quot;&quot;&quot;</span>

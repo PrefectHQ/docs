@@ -8882,8 +8882,7 @@ if (amplitudeKey){
 
           <details class="quote">
             <summary>Source code in <code>prefect/flow_runs.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">12</span>
-<span class="normal">13</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">13</span>
 <span class="normal">14</span>
 <span class="normal">15</span>
 <span class="normal">16</span>
@@ -8954,12 +8953,17 @@ if (amplitudeKey){
 <span class="normal">81</span>
 <span class="normal">82</span>
 <span class="normal">83</span>
-<span class="normal">84</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@inject_client</span>
+<span class="normal">84</span>
+<span class="normal">85</span>
+<span class="normal">86</span>
+<span class="normal">87</span>
+<span class="normal">88</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@inject_client</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">wait_for_flow_run</span><span class="p">(</span>
     <span class="n">flow_run_id</span><span class="p">:</span> <span class="n">UUID</span><span class="p">,</span>
     <span class="n">timeout</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">10800</span><span class="p">,</span>
     <span class="n">poll_interval</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span>
     <span class="n">client</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PrefectClient</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">log_states</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FlowRun</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Waits for the prefect flow run to finish and returns the FlowRun</span>
@@ -9016,14 +9020,16 @@ if (amplitudeKey){
 <span class="sd">            ```</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">assert</span> <span class="n">client</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;Client injection failed&quot;</span>
+    <span class="n">logger</span> <span class="o">=</span> <span class="n">get_logger</span><span class="p">()</span>
     <span class="k">with</span> <span class="n">anyio</span><span class="o">.</span><span class="n">move_on_after</span><span class="p">(</span><span class="n">timeout</span><span class="p">):</span>
         <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
             <span class="n">flow_run</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">read_flow_run</span><span class="p">(</span><span class="n">flow_run_id</span><span class="p">)</span>
             <span class="n">flow_state</span> <span class="o">=</span> <span class="n">flow_run</span><span class="o">.</span><span class="n">state</span>
+            <span class="k">if</span> <span class="n">log_states</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Flow run is in state </span><span class="si">{</span><span class="n">flow_run</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">name</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">flow_state</span> <span class="ow">and</span> <span class="n">flow_state</span><span class="o">.</span><span class="n">is_final</span><span class="p">():</span>
                 <span class="k">return</span> <span class="n">flow_run</span>
             <span class="k">await</span> <span class="n">anyio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">poll_interval</span><span class="p">)</span>
-
     <span class="k">raise</span> <span class="n">FlowRunWaitTimeout</span><span class="p">(</span>
         <span class="sa">f</span><span class="s2">&quot;Flow run with ID </span><span class="si">{</span><span class="n">flow_run_id</span><span class="si">}</span><span class="s2"> exceeded watch timeout of </span><span class="si">{</span><span class="n">timeout</span><span class="si">}</span><span class="s2"> seconds&quot;</span>
     <span class="p">)</span>
