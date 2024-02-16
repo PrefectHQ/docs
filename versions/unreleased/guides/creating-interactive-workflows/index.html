@@ -9407,7 +9407,7 @@ if (amplitudeKey){
 </ul>
 <div class="admonition type">
 <p class="admonition-title">When to use a <code>BaseModel</code> or <code>RunInput</code> instead of a built-in type</p>
-<p>Most built-in types and collections of built-in types should work with <code>send_input</code> and <code>receive_input</code>, but there is a caveat with nested collection types, such as lists of tuples, e.g. <code>List[Tuple[str, float]])</code>. In this case, validation may happen after your flow receives the data, so calling <code>receive_input</code> may raise a <code>ValidationError</code>. You can plan to catch this exception, but also, consider placing the field in an explicit <code>BaseModel</code> or <code>RunInput</code> so that your flow only receives exact type matches. </p>
+<p>Most built-in types and collections of built-in types should work with <code>send_input</code> and <code>receive_input</code>, but there is a caveat with nested collection types, such as lists of tuples, e.g. <code>List[Tuple[str, float]])</code>. In this case, validation may happen after your flow receives the data, so calling <code>receive_input</code> may raise a <code>ValidationError</code>. You can plan to catch this exception, but also, consider placing the field in an explicit <code>BaseModel</code> or <code>RunInput</code> so that your flow only receives exact type matches.</p>
 </div>
 <p>Let's look at some examples! We'll check out <code>receive_input</code> first, followed by <code>send_input</code>, and then we'll see the two functions working together.</p>
 <h3 id="receiving-input">Receiving input<a class="headerlink" href="#receiving-input" title="Permanent link">&para;</a></h3>
@@ -9602,7 +9602,7 @@ if (amplitudeKey){
             <span class="k">return</span>
         <span class="k">await</span> <span class="n">name_input</span><span class="o">.</span><span class="n">respond</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Hello, </span><span class="si">{</span><span class="n">name_input</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2">!&quot;</span><span class="p">)</span>
 </code></pre></div>
-<p>With a <code>greeter</code> flow in place, now we're ready to create the flow that sends <code>greeter</code> names!</p>
+<p>With a <code>greeter</code> flow in place, we're ready to create the flow that sends <code>greeter</code> names!</p>
 <h3 id="sending-input">Sending input<a class="headerlink" href="#sending-input" title="Permanent link">&para;</a></h3>
 <p>You can send input to a flow with the <code>send_input</code> function. This works similarly to <code>receive_input</code> and, like that function, accepts the same <code>run_input</code> argument, which can be a built-in type such as <code>str</code>, or else a <code>BaseModel</code> or <code>RunInput</code> subclass.</p>
 <div class="admonition note">
@@ -9728,15 +9728,12 @@ if (amplitudeKey){
     <span class="k">elif</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;sender&quot;</span><span class="p">:</span>
         <span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">sender</span><span class="p">())</span>
 </code></pre></div>
-<p>To run the example, you'll need a Python environment with Prefect installed, pointed at either open-source Prefect or Prefect Cloud.</p>
+<p>To run the example, you'll need a Python environment with Prefect installed, pointed at either an open-source Prefect server instance or Prefect Cloud.</p>
 <p>With your environment set up, start a flow runner in one terminal with the following command:</p>
 <div class="terminal">
-<div class="highlight"><pre><span></span><code><span class="w">    </span>$<span class="w"> </span>python<span class="w"> </span>&lt;filename&gt;<span class="w"> </span>greeter
+<div class="highlight"><pre><span></span><code>python<span class="w"> </span>my_file_name<span class="w"> </span>greeter
 </code></pre></div>
 </div>
-
-<div class="codehilite"><pre><span></span><code>
-</code></pre></div>
 
 <p>For example, with Prefect Cloud, you should see output like this:</p>
 <div class="terminal">
@@ -9754,13 +9751,13 @@ if (amplitudeKey){
 </code></pre></div>
 </div>
 
-<p>Then start the greeter in another process in another terminal:</p>
+<p>Then start the greeter process in another terminal:</p>
 <div class="terminal">
-<div class="highlight"><pre><span></span><code><span class="w">    </span>$<span class="w"> </span>python<span class="w"> </span>&lt;filename&gt;<span class="w"> </span>sender
+<div class="highlight"><pre><span></span><code>python<span class="w"> </span>my_file_name<span class="w"> </span>sender
 </code></pre></div>
 </div>
 
-<p>You should see:</p>
+<p>You should see output like this:</p>
 <div class="terminal">
 <div class="highlight"><pre><span></span><code><span class="m">11</span>:38:41.800<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>prefect.engine<span class="w"> </span>-<span class="w"> </span>Created<span class="w"> </span>flow<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;gregarious-owl&#39;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>flow<span class="w"> </span><span class="s1">&#39;sender&#39;</span>
 <span class="m">11</span>:38:41.802<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>Flow<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;gregarious-owl&#39;</span><span class="w"> </span>-<span class="w"> </span>View<span class="w"> </span>at<span class="w"> </span>https://app.prefect.cloud/account/...
