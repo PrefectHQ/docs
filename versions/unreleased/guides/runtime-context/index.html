@@ -205,7 +205,7 @@ if (amplitudeKey){
     <div data-md-component="skip">
       
         
-        <a href="#runtime-context" class="md-skip">
+        <a href="#get-information-about-the-runtime-context" class="md-skip">
           Skip to content
         </a>
       
@@ -8905,20 +8905,19 @@ if (amplitudeKey){
   
 
 
-<h1 id="runtime-context">Runtime context<a class="headerlink" href="#runtime-context" title="Permanent link">&para;</a></h1>
-<p>Prefect tracks information about the current flow or task run with a run context. The run context can be thought of as a global variable that allows the Prefect engine to determine relationships between your runs, e.g. which flow your task is called from.</p>
-<p>The run context itself contains many internal objects used by Prefect to manage execution of your run and is only available in specific situations. For this reason, we expose a simple interface that only includes the items you care about and dynamically retrieves additional information when necessary. We call this the "runtime context" as it contains information that can only be accessed when a run is happening.</p>
+<h1 id="get-information-about-the-runtime-context">Get Information about the Runtime Context<a class="headerlink" href="#get-information-about-the-runtime-context" title="Permanent link">&para;</a></h1>
+<p>Prefect tracks information about the current flow or task run with a run context. The run context can be thought of as a global variable that allows the Prefect engine to determine relationships between your runs, such as which flow your task was called from.</p>
+<p>The run context itself contains many internal objects used by Prefect to manage execution of your run and is only available in specific situations. For this reason, we expose a simple interface that only includes the items you care about and dynamically retrieves additional information when necessary. We call this the "runtime context" as it contains information that can be accessed only when a run is happening.</p>
 <div class="admonition tip">
 <p class="admonition-title">Mock values via environment variable</p>
 <p>Oftentimes, you may want to mock certain values for testing purposes.  For example, by manually setting an ID or a scheduled start time to ensure your code is functioning properly.  Starting in version <code>2.10.3</code>, you can mock values in runtime via environment variable using the schema <code>PREFECT__RUNTIME__{SUBMODULE}__{KEY_NAME}=value</code>:
 <div class="terminal">
-```bash
-$ export PREFECT__RUNTIME__TASK_RUN__FAKE_KEY='foo'
-$ python -c 'from prefect.runtime import task_run; print(task_run.fake_key)' # "foo"</p>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span><span class="nb">export</span><span class="w"> </span><span class="nv">PREFECT__RUNTIME__TASK_RUN__FAKE_KEY</span><span class="o">=</span><span class="s1">&#39;foo&#39;</span>
+$<span class="w"> </span>python<span class="w"> </span>-c<span class="w"> </span><span class="s1">&#39;from prefect.runtime import task_run; print(task_run.fake_key)&#39;</span><span class="w"> </span><span class="c1"># &quot;foo&quot;</span>
+</code></pre></div>
+</div></p>
+<p>If the environment variable mocks an existing runtime attribute, the value is cast to the same type. This works for runtime attributes of basic types (<code>bool</code>, <code>int</code>, <code>float</code> and <code>str</code>) and <code>pendulum.DateTime</code>. For complex types like <code>list</code> or <code>dict</code>, we suggest mocking them using <a href="https://docs.pytest.org/en/latest/how-to/monkeypatch.html">monkeypatch</a> or a similar tool.</p>
 </div>
-<p><code>``
-    &lt;/div&gt;
-    If the environment variable mocks an existing runtime attribute, the value is cast to the same type. This works for runtime attributes of basic types (</code>bool<code>,</code>int<code>,</code>float<code>and</code>str<code>) and</code>pendulum.DateTime<code>. For complex types like</code>list<code>or</code>dict`, we suggest mocking them using <a href="https://docs.pytest.org/en/latest/how-to/monkeypatch.html">monkeypatch</a> or a similar tool.</p>
 <h2 id="accessing-runtime-information">Accessing runtime information<a class="headerlink" href="#accessing-runtime-information" title="Permanent link">&para;</a></h2>
 <p>The <code>prefect.runtime</code> module is the home for all runtime context access. Each major runtime concept has its own submodule:</p>
 <ul>
@@ -8927,7 +8926,7 @@ $ python -c 'from prefect.runtime import task_run; print(task_run.fake_key)' # "
 <li><code>task_run</code>: Access information about the current task run</li>
 </ul>
 <p>For example:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
+<div class="highlight"><span class="filename">my_runtime_info.py</span><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
 <span class="hll"><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">runtime</span>
 </span>
 <span class="nd">@flow</span><span class="p">(</span><span class="n">log_prints</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -8943,10 +8942,9 @@ $ python -c 'from prefect.runtime import task_run; print(task_run.fake_key)' # "
 </span>
 <span class="n">my_flow</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 </code></pre></div>
-<p>Outputs:</p>
+<p>Running this file will produce output similar to the following:</p>
 <div class="terminal">
-<div class="highlight"><pre><span></span><code>$<span class="w"> </span>python<span class="w"> </span>my_runtime_info.py
-<span class="m">10</span>:08:02.948<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>prefect.engine<span class="w"> </span>-<span class="w"> </span>Created<span class="w"> </span>flow<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;solid-gibbon&#39;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>flow<span class="w"> </span><span class="s1">&#39;my-flow&#39;</span>
+<div class="highlight"><pre><span></span><code><span class="m">10</span>:08:02.948<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>prefect.engine<span class="w"> </span>-<span class="w"> </span>Created<span class="w"> </span>flow<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;solid-gibbon&#39;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>flow<span class="w"> </span><span class="s1">&#39;my-flow&#39;</span>
 <span class="m">10</span>:08:03.555<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>Flow<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;solid-gibbon&#39;</span><span class="w"> </span>-<span class="w"> </span>My<span class="w"> </span>name<span class="w"> </span>is<span class="w"> </span>solid-gibbon
 <span class="m">10</span>:08:03.558<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>Flow<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;solid-gibbon&#39;</span><span class="w"> </span>-<span class="w"> </span>I<span class="w"> </span>belong<span class="w"> </span>to<span class="w"> </span>deployment<span class="w"> </span>None
 <span class="m">10</span>:08:03.703<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>Flow<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;solid-gibbon&#39;</span><span class="w"> </span>-<span class="w"> </span>Created<span class="w"> </span>task<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;my_task-0&#39;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>task<span class="w"> </span><span class="s1">&#39;my_task&#39;</span>
@@ -8957,17 +8955,26 @@ $ python -c 'from prefect.runtime import task_run; print(task_run.fake_key)' # "
 <span class="m">10</span>:08:04.968<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>Flow<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;solid-gibbon&#39;</span><span class="w"> </span>-<span class="w"> </span>Finished<span class="w"> </span><span class="k">in</span><span class="w"> </span>state<span class="w"> </span>Completed<span class="o">(</span><span class="s1">&#39;All states completed.&#39;</span><span class="o">)</span>
 </code></pre></div>
 </div>
-<p>Above, we demonstrate access to information about the current flow run, task run, and deployment. When run without a deployment (via <code>python my_runtime_info.py</code>), you should see <code>"I belong to deployment None"</code> logged. When information is not available, the runtime will always return an empty value. Because this flow was run without a deployment, there is no deployment data. If this flow were deployed and executed by a worker, we'd see the name of the deployment instead.</p>
+
+<p>Above, we demonstrated access to information about the current flow run, task run, and deployment.
+When run without a deployment (via <code>python my_runtime_info.py</code>), you should see <code>"I belong to deployment None"</code> logged.
+When information is not available, the runtime will always return an empty value.
+Because this flow was run outside of a deployment, there is no deployment data.
+If this flow was run as part of a deployment, we'd see the name of the deployment instead.</p>
 <p>See the <a href="/api-ref/prefect/runtime/flow_run/">runtime API reference</a> for a full list of available attributes.</p>
 <h2 id="accessing-the-run-context-directly">Accessing the run context directly<a class="headerlink" href="#accessing-the-run-context-directly" title="Permanent link">&para;</a></h2>
-<p>The current run context can be accessed with <code>prefect.context.get_run_context()</code>. This will raise an exception if no run context is available, meaning you are not in a flow or task run. If a task run context is available, it will be returned even if a flow run context is available.</p>
-<p>Alternatively, you can access the flow run or task run context explicitly. This will, for example, allow you to access the flow run context from a task run. Note that we do not send the flow run context to distributed task workers because the context is costly to serialize and deserialize.</p>
+<p>The current run context can be accessed with <code>prefect.context.get_run_context()</code>.
+This function will raise an exception if no run context is available, meaning you are not in a flow or task run.
+If a task run context is available, it will be returned even if a flow run context is available.</p>
+<p>Alternatively, you can access the flow run or task run context explicitly.
+This will, for example, allow you to access the flow run context from a task run.</p>
+<p>Note that we do not send the flow run context to distributed task workers because the context is costly to serialize and deserialize.</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect.context</span> <span class="kn">import</span> <span class="n">FlowRunContext</span><span class="p">,</span> <span class="n">TaskRunContext</span>
 
 <span class="n">flow_run_ctx</span> <span class="o">=</span> <span class="n">FlowRunContext</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
 <span class="n">task_run_ctx</span> <span class="o">=</span> <span class="n">TaskRunContext</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
 </code></pre></div>
-<p>Unlike <code>get_run_context</code>, this will not raise an error if the context is not available. Instead, it will return <code>None</code>.</p>
+<p>Unlike <code>get_run_context</code>, these method calls will not raise an error if the context is not available. Instead, they will return <code>None</code>.</p>
 
 
 

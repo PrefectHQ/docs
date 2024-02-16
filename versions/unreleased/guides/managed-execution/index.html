@@ -9190,7 +9190,9 @@ if (amplitudeKey){
 
 
 <h1 id="managed-execution">Managed Execution <span class="badge cloud"></span> <span class="badge beta"/><a class="headerlink" href="#managed-execution" title="Permanent link">&para;</a></h1>
-<p>Prefect Cloud can run your flows on your behalf with <strong>prefect:managed</strong> work pools. Flows run with this work pool do not require a worker or cloud provider account. Prefect handles the infrastructure and code execution for you.</p>
+<p>Prefect Cloud can run your flows on your behalf with Prefect Managed work pools.
+Flows run with this work pool do not require a worker or cloud provider account.
+Prefect handles the infrastructure and code execution for you.</p>
 <p>Managed execution is a great option for users who want to get started quickly, with no infrastructure setup.</p>
 <div class="admonition warning">
 <p class="admonition-title">Managed Execution is in beta</p>
@@ -9200,9 +9202,13 @@ Features are likely to change without warning.</p>
 <h2 id="usage-guide">Usage guide<a class="headerlink" href="#usage-guide" title="Permanent link">&para;</a></h2>
 <p>Run a flow with managed infrastructure in three steps.</p>
 <h3 id="step-1">Step 1<a class="headerlink" href="#step-1" title="Permanent link">&para;</a></h3>
-<p>Create a new work pool of type <strong>prefect:managed</strong>. you can do this via the UI wizard, or via the CLI</p>
-<div class="highlight"><pre><span></span><code>prefect work-pool create my-managed-pool --type prefect:managed
+<p>Create a new work pool of type Prefect Managed in the UI or the CLI.
+Here's the command to create a new work pool using the CLI:</p>
+<div class="terminal">
+<div class="highlight"><pre><span></span><code>prefect<span class="w"> </span>work-pool<span class="w"> </span>create<span class="w"> </span>my-managed-pool<span class="w"> </span>--type<span class="w"> </span>prefect:managed
 </code></pre></div>
+</div>
+
 <h3 id="step-2">Step 2<a class="headerlink" href="#step-2" title="Permanent link">&para;</a></h3>
 <p>Create a deployment using the flow <code>deploy</code> method or <code>prefect.yaml</code>.</p>
 <p>Specify the name of your managed work pool, as shown in this example that uses the <code>deploy</code> method:</p>
@@ -9217,7 +9223,7 @@ Features are likely to change without warning.</p>
 <span class="hll">        <span class="n">work_pool_name</span><span class="o">=</span><span class="s2">&quot;my-managed-pool&quot;</span><span class="p">,</span>
 </span>    <span class="p">)</span>
 </code></pre></div>
-<p>With your CLI authenticated to your Prefect Cloud workspace, run the script to create your deployment:</p>
+<p>With your <a href="/cloud/users/api-keys/">CLI authenticated to your Prefect Cloud workspace</a>, run the script to create your deployment:</p>
 <div class="terminal">
 <div class="highlight"><pre><span></span><code>python<span class="w"> </span>managed-execution.py
 </code></pre></div>
@@ -9226,9 +9232,10 @@ Features are likely to change without warning.</p>
 <p>Note that this deployment uses flow code stored in a GitHub repository.</p>
 <h3 id="step-3">Step 3<a class="headerlink" href="#step-3" title="Permanent link">&para;</a></h3>
 <p>Run the deployment from the UI or from the CLI.</p>
-<p>That's it! You ran a flow on remote infrastructure without any infrastructure setup, worker, or cloud provider account.</p>
+<p>That's it! You ran a flow on remote infrastructure without any infrastructure setup, starting a worker, or needing a cloud provider account.</p>
 <h3 id="adding-dependencies">Adding dependencies<a class="headerlink" href="#adding-dependencies" title="Permanent link">&para;</a></h3>
-<p>You can install Python package dependencies at runtime by configuring <code>job_variables={"pip_packages": ["pandas", "prefect-aws"]}</code> like this:</p>
+<p>Prefect can install Python packages in the container that runs your flow at runtime.
+You can specify these dependencies in the <strong>Pip Packages</strong> field in the UI, or by configuring <code>job_variables={"pip_packages": ["pandas", "prefect-aws"]}</code> in your deployment creation like this:</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span>
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
@@ -9241,7 +9248,7 @@ Features are likely to change without warning.</p>
 <span class="hll">        <span class="n">job_variables</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;pip_packages&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;pandas&quot;</span><span class="p">,</span> <span class="s2">&quot;prefect-aws&quot;</span><span class="p">]}</span>
 </span>    <span class="p">)</span>
 </code></pre></div>
-<p>Alternatively, you can specify a <code>requirements.txt</code> file and reference it in your <code>prefect.yaml</code> <code>pull_step</code>.</p>
+<p>Alternatively, you can create a <code>requirements.txt</code> file and reference it in your <code>prefect.yaml</code> <code>pull_step</code>.</p>
 <h2 id="limitations">Limitations<a class="headerlink" href="#limitations" title="Permanent link">&para;</a></h2>
 <p>Managed execution requires Prefect 2.14.4 or newer.</p>
 <p>All limitations listed below may change without warning during the beta period.
@@ -9266,7 +9273,7 @@ Remote block-based storage is also supported, so S3, GCS, and Azure Blob are add
 <h3 id="resources">Resources<a class="headerlink" href="#resources" title="Permanent link">&para;</a></h3>
 <p>Memory is limited to 2GB of RAM, which includes all operations such as dependency installation. Maximum job run time is 24 hours.</p>
 <h2 id="usage-limits">Usage limits<a class="headerlink" href="#usage-limits" title="Permanent link">&para;</a></h2>
-<p>Free tier accounts are limited to ten compute hours per workspace per month. Pro tier and above accounts are limited to 250 hours per workspace per month. you can view your compute hours quota usage on the work pools page.</p>
+<p>Free tier accounts are limited to ten compute hours per workspace per month. Pro tier and above accounts are limited to 250 hours per workspace per month. You can view your compute hours quota usage on the <strong>Work Pools</strong> page in the UI.</p>
 <h2 id="next-steps">Next steps<a class="headerlink" href="#next-steps" title="Permanent link">&para;</a></h2>
 <p>Read more about creating deployments in the <a href="/guides/prefect-deploy/">deployment guide</a>.</p>
 <p>If you find that you need more control over your infrastructure, such as the ability to run custom Docker images, serverless push work pools might be a good option.

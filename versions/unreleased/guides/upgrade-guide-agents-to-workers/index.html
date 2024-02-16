@@ -1741,11 +1741,11 @@ if (amplitudeKey){
 </li>
         
           <li class="md-nav__item">
-  <a href="#improved-deployment-apis" class="md-nav__link">
+  <a href="#improved-deployment-interfaces" class="md-nav__link">
     <span class="md-ellipsis">
       
         <span class="md-typeset">
-          Improved deployment APIs
+          Improved deployment interfaces
         </span>
       
     </span>
@@ -8977,11 +8977,11 @@ if (amplitudeKey){
 </li>
         
           <li class="md-nav__item">
-  <a href="#improved-deployment-apis" class="md-nav__link">
+  <a href="#improved-deployment-interfaces" class="md-nav__link">
     <span class="md-ellipsis">
       
         <span class="md-typeset">
-          Improved deployment APIs
+          Improved deployment interfaces
         </span>
       
     </span>
@@ -9177,11 +9177,12 @@ if (amplitudeKey){
 <h3 id="work-pools">Work pools<a class="headerlink" href="#work-pools" title="Permanent link">&para;</a></h3>
 <ul>
 <li>Work pools allow greater customization and governance of infrastructure parameters for deployments via their <a href="/concepts/work-pools/#base-job-template">base job template</a>.</li>
-<li>Prefect Cloud <a href="/guides/deployment/push-work-pools/">push work pools</a> enable flow execution in your environment without needing to host a worker.</li>
+<li>Prefect Cloud <a href="/guides/deployment/push-work-pools/">push work pools</a> enable flow execution in your cloud provider environment without needing to host a worker.</li>
+<li>Prefect Cloud <a href="/guides/managed-execution/">managed work pools</a> allow you to run flows on Prefect's infrastructure, without needing to host a worker or configure cloud provider infrastructure.</li>
 </ul>
-<h3 id="improved-deployment-apis">Improved deployment APIs<a class="headerlink" href="#improved-deployment-apis" title="Permanent link">&para;</a></h3>
+<h3 id="improved-deployment-interfaces">Improved deployment interfaces<a class="headerlink" href="#improved-deployment-interfaces" title="Permanent link">&para;</a></h3>
 <ul>
-<li>The new YAML-based and Python deployment APIs are more flexible and easier to use than block and agent-based deployments.</li>
+<li>The Python deployment experience with <code>.deploy()</code> or the alternative deployment experience with <code>prefect.yaml</code> are more flexible and easier to use than block and agent-based deployments.</li>
 <li>Both options allow you to <a href="/concepts/deployments/#working-with-multiple-deployments">deploy multiple flows</a> with a single command.</li>
 <li>Both options allow you to build Docker images for your flows to create portable execution environments.</li>
 <li>The YAML-based API supports <a href="/concepts/deployments/#templating-options">templating</a> to enable <a href="/concepts/deployments/#reusing-configuration-across-deployments">dryer deployment definitions</a>.</li>
@@ -9190,7 +9191,7 @@ if (amplitudeKey){
 <h2 id="whats-different">What's different<a class="headerlink" href="#whats-different" title="Permanent link">&para;</a></h2>
 <ol>
 <li>
-<p><strong>Deployment CLI and Python API:</strong></p>
+<p><strong>Deployment CLI and Python SDK:</strong></p>
 <p><code>prefect deployment build &lt;entrypoint&gt;</code>/<code>prefect deployment apply</code> --&gt; <a href="/concepts/deployments/#deployment-declaration-reference"><code>prefect deploy</code></a></p>
 <p>Prefect will now automatically detect flows in your repo and provide a <a href="/#step-5-deploy-the-flow">wizard</a> 🧙 to guide you through setting required attributes for your deployments.</p>
 <p><code>Deployment.build_from_flow</code> --&gt; <a href="/api-ref/prefect/flows/#prefect.flows.Flow.deploy"><code>flow.deploy</code></a></p>
@@ -9232,8 +9233,8 @@ if (amplitudeKey){
 <p>If you have existing deployments that use infrastructure blocks, you can quickly upgrade them to be compatible with workers by following these steps:</p>
 <ol>
 <li>
-<p><strong><a href="/concepts/work-pools/#work-pool-configuration">Create a work pool</a></strong> </p>
-<p>This new work pool will replace your infrastructure block. </p>
+<p><strong><a href="/concepts/work-pools/#work-pool-configuration">Create a work pool</a></strong></p>
+<p>This new work pool will replace your infrastructure block.</p>
 <p>You can use the <a href="/api-ref/prefect/infrastructure/#prefect.infrastructure.Infrastructure.publish_as_work_pool"><code>.publish_as_work_pool</code></a> method on any infrastructure block to create a work pool with the same configuration.</p>
 <p>For example, if you have a <code>KubernetesJob</code> infrastructure block named 'my-k8s-job', you can create a work pool with the same configuration with this script:</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect.infrastructure</span> <span class="kn">import</span> <span class="n">KubernetesJob</span>
@@ -9243,8 +9244,8 @@ if (amplitudeKey){
 <p>Running this script will create a work pool named 'my-k8s-job' with the same configuration as your infrastructure block.</p>
 <div class="admonition tip">
 <p class="admonition-title">Serving flows</p>
-<p>If you are using a <code>Process</code> infrastructure block and a <code>LocalFilesystem</code> storage block (or aren't using an infrastructure and storage block at all), you can use <a href="/api-ref/prefect/flows/#prefect.flows.Flow.deploy"><code>flow.serve</code></a> to create a deployment without needing to specify a work pool name or start a worker. </p>
-<p>This is a quick way to create a deployment for a flow and is a great way to manage your deployments if you don't need dynamic infrastructure creation or configuration offered by workers.</p>
+<p>If you are using a <code>Process</code> infrastructure block and a <code>LocalFilesystem</code> storage block (or aren't using an infrastructure and storage block at all), you can use <a href="/api-ref/prefect/flows/#prefect.flows.Flow.deploy"><code>flow.serve</code></a> to create a deployment without needing to specify a work pool name or start a worker.</p>
+<p>This is a quick way to create a deployment for a flow and is a great way to manage your deployments if you don't need the dynamic infrastructure creation or configuration offered by workers.</p>
 <p>Check out our <a href="/guides/docker/">Docker guide</a> for how to build a served flow into a Docker image and host it in your environment.</p>
 </div>
 </li>
@@ -9258,7 +9259,7 @@ if (amplitudeKey){
 </li>
 <li>
 <p><strong>Deploy your flows to the new work pool</strong></p>
-<p>To deploy your flows to the new work pool, you can use <code>flow.deploy</code> for a Pythonic deployment experience or <code>prefect deploy</code> for a YAML-based deployment experience. </p>
+<p>To deploy your flows to the new work pool, you can use <code>flow.deploy</code> for a Pythonic deployment experience or <code>prefect deploy</code> for a YAML-based deployment experience.</p>
 <p>If you currently use <code>Deployment.build_from_flow</code>, we recommend using <code>flow.deploy</code>.</p>
 <p>If you currently use <code>prefect deployment build</code> and <code>prefect deployment apply</code>, we recommend using <code>prefect deploy</code>.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">.deploy</label><label for="__tabbed_1_2">prefect deploy</label></div>
@@ -9408,7 +9409,7 @@ if (amplitudeKey){
 <div class="highlight"><pre><span></span><code>perfect<span class="w"> </span>deploy
 </code></pre></div>
 </div></p>
-<p>This will start a wizard that will guide you through setting up your first deployment.</p>
+<p>This will start a wizard that will guide you through setting up your deployment.</p>
 <div class="admonition note">
 <p class="admonition-title">For step 4, select <code>y</code> on the last prompt to save the configuration for the deployment.</p>
 <p>Saving the configuration for your deployment will result in a <code>prefect.yaml</code> file populated with your first deployment. You can use this YAML file to edit and <a href="/concepts/deployments/#working-with-multiple-deployments">define multiple deployments</a> for this repo.</p>
