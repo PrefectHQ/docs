@@ -1563,6 +1563,8 @@ if (amplitudeKey){
       
         
       
+        
+      
     
     
     
@@ -1804,6 +1806,33 @@ if (amplitudeKey){
     
   
     Custom Workers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../guides/deployment/overriding-job-variables/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    Job Variable Overrides
   
 
     
@@ -9019,20 +9048,7 @@ accelerate scheduling for any deployments that users are interacting with.</p>
 
             <details class="quote">
               <summary>Source code in <code>prefect/server/services/scheduler.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">282</span>
-<span class="normal">283</span>
-<span class="normal">284</span>
-<span class="normal">285</span>
-<span class="normal">286</span>
-<span class="normal">287</span>
-<span class="normal">288</span>
-<span class="normal">289</span>
-<span class="normal">290</span>
-<span class="normal">291</span>
-<span class="normal">292</span>
-<span class="normal">293</span>
-<span class="normal">294</span>
-<span class="normal">295</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">295</span>
 <span class="normal">296</span>
 <span class="normal">297</span>
 <span class="normal">298</span>
@@ -9055,7 +9071,33 @@ accelerate scheduling for any deployments that users are interacting with.</p>
 <span class="normal">315</span>
 <span class="normal">316</span>
 <span class="normal">317</span>
-<span class="normal">318</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">RecentDeploymentsScheduler</span><span class="p">(</span><span class="n">Scheduler</span><span class="p">):</span>
+<span class="normal">318</span>
+<span class="normal">319</span>
+<span class="normal">320</span>
+<span class="normal">321</span>
+<span class="normal">322</span>
+<span class="normal">323</span>
+<span class="normal">324</span>
+<span class="normal">325</span>
+<span class="normal">326</span>
+<span class="normal">327</span>
+<span class="normal">328</span>
+<span class="normal">329</span>
+<span class="normal">330</span>
+<span class="normal">331</span>
+<span class="normal">332</span>
+<span class="normal">333</span>
+<span class="normal">334</span>
+<span class="normal">335</span>
+<span class="normal">336</span>
+<span class="normal">337</span>
+<span class="normal">338</span>
+<span class="normal">339</span>
+<span class="normal">340</span>
+<span class="normal">341</span>
+<span class="normal">342</span>
+<span class="normal">343</span>
+<span class="normal">344</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">RecentDeploymentsScheduler</span><span class="p">(</span><span class="n">Scheduler</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A scheduler that only schedules deployments that were updated very recently.</span>
 <span class="sd">    This scheduler can run on a tight loop and ensure that runs from</span>
@@ -9078,15 +9120,28 @@ accelerate scheduling for any deployments that users are interacting with.</p>
         <span class="n">query</span> <span class="o">=</span> <span class="p">(</span>
             <span class="n">sa</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Deployment</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
             <span class="o">.</span><span class="n">where</span><span class="p">(</span>
-                <span class="n">db</span><span class="o">.</span><span class="n">Deployment</span><span class="o">.</span><span class="n">is_schedule_active</span><span class="o">.</span><span class="n">is_</span><span class="p">(</span><span class="kc">True</span><span class="p">),</span>
-                <span class="n">db</span><span class="o">.</span><span class="n">Deployment</span><span class="o">.</span><span class="n">schedule</span><span class="o">.</span><span class="n">is_not</span><span class="p">(</span><span class="kc">None</span><span class="p">),</span>
-                <span class="c1"># use a slightly larger window than the loop interval to pick up</span>
-                <span class="c1"># any deployments that were created *while* the scheduler was</span>
-                <span class="c1"># last running (assuming the scheduler takes less than one</span>
-                <span class="c1"># second to run). Scheduling is idempotent so picking up schedules</span>
-                <span class="c1"># multiple times is not a concern.</span>
-                <span class="n">db</span><span class="o">.</span><span class="n">Deployment</span><span class="o">.</span><span class="n">updated</span>
-                <span class="o">&gt;=</span> <span class="n">pendulum</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="s2">&quot;UTC&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">subtract</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">loop_seconds</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span>
+                <span class="n">sa</span><span class="o">.</span><span class="n">and_</span><span class="p">(</span>
+                    <span class="n">db</span><span class="o">.</span><span class="n">Deployment</span><span class="o">.</span><span class="n">paused</span><span class="o">.</span><span class="n">is_not</span><span class="p">(</span><span class="kc">True</span><span class="p">),</span>
+                    <span class="c1"># use a slightly larger window than the loop interval to pick up</span>
+                    <span class="c1"># any deployments that were created *while* the scheduler was</span>
+                    <span class="c1"># last running (assuming the scheduler takes less than one</span>
+                    <span class="c1"># second to run). Scheduling is idempotent so picking up schedules</span>
+                    <span class="c1"># multiple times is not a concern.</span>
+                    <span class="n">db</span><span class="o">.</span><span class="n">Deployment</span><span class="o">.</span><span class="n">updated</span>
+                    <span class="o">&gt;=</span> <span class="n">pendulum</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="s2">&quot;UTC&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">subtract</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">loop_seconds</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span>
+                    <span class="p">(</span>
+                        <span class="c1"># Only include deployments that have at least one</span>
+                        <span class="c1"># active schedule.</span>
+                        <span class="n">sa</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">DeploymentSchedule</span><span class="o">.</span><span class="n">deployment_id</span><span class="p">)</span>
+                        <span class="o">.</span><span class="n">where</span><span class="p">(</span>
+                            <span class="n">sa</span><span class="o">.</span><span class="n">and_</span><span class="p">(</span>
+                                <span class="n">db</span><span class="o">.</span><span class="n">DeploymentSchedule</span><span class="o">.</span><span class="n">deployment_id</span> <span class="o">==</span> <span class="n">db</span><span class="o">.</span><span class="n">Deployment</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+                                <span class="n">db</span><span class="o">.</span><span class="n">DeploymentSchedule</span><span class="o">.</span><span class="n">active</span><span class="o">.</span><span class="n">is_</span><span class="p">(</span><span class="kc">True</span><span class="p">),</span>
+                            <span class="p">)</span>
+                        <span class="p">)</span>
+                        <span class="o">.</span><span class="n">exists</span><span class="p">()</span>
+                    <span class="p">),</span>
+                <span class="p">)</span>
             <span class="p">)</span>
             <span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Deployment</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
             <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">deployment_batch_size</span><span class="p">)</span>
@@ -9382,7 +9437,20 @@ accelerate scheduling for any deployments that users are interacting with.</p>
 <span class="normal">276</span>
 <span class="normal">277</span>
 <span class="normal">278</span>
-<span class="normal">279</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">Scheduler</span><span class="p">(</span><span class="n">LoopService</span><span class="p">):</span>
+<span class="normal">279</span>
+<span class="normal">280</span>
+<span class="normal">281</span>
+<span class="normal">282</span>
+<span class="normal">283</span>
+<span class="normal">284</span>
+<span class="normal">285</span>
+<span class="normal">286</span>
+<span class="normal">287</span>
+<span class="normal">288</span>
+<span class="normal">289</span>
+<span class="normal">290</span>
+<span class="normal">291</span>
+<span class="normal">292</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">Scheduler</span><span class="p">(</span><span class="n">LoopService</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A loop service that schedules flow runs from deployments.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -9499,8 +9567,21 @@ accelerate scheduling for any deployments that users are interacting with.</p>
                 <span class="n">isouter</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="o">.</span><span class="n">where</span><span class="p">(</span>
-                <span class="n">db</span><span class="o">.</span><span class="n">Deployment</span><span class="o">.</span><span class="n">is_schedule_active</span><span class="o">.</span><span class="n">is_</span><span class="p">(</span><span class="kc">True</span><span class="p">),</span>
-                <span class="n">db</span><span class="o">.</span><span class="n">Deployment</span><span class="o">.</span><span class="n">schedule</span><span class="o">.</span><span class="n">is_not</span><span class="p">(</span><span class="kc">None</span><span class="p">),</span>
+                <span class="n">sa</span><span class="o">.</span><span class="n">and_</span><span class="p">(</span>
+                    <span class="n">db</span><span class="o">.</span><span class="n">Deployment</span><span class="o">.</span><span class="n">paused</span><span class="o">.</span><span class="n">is_not</span><span class="p">(</span><span class="kc">True</span><span class="p">),</span>
+                    <span class="p">(</span>
+                        <span class="c1"># Only include deployments that have at least one</span>
+                        <span class="c1"># active schedule.</span>
+                        <span class="n">sa</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">DeploymentSchedule</span><span class="o">.</span><span class="n">deployment_id</span><span class="p">)</span>
+                        <span class="o">.</span><span class="n">where</span><span class="p">(</span>
+                            <span class="n">sa</span><span class="o">.</span><span class="n">and_</span><span class="p">(</span>
+                                <span class="n">db</span><span class="o">.</span><span class="n">DeploymentSchedule</span><span class="o">.</span><span class="n">deployment_id</span> <span class="o">==</span> <span class="n">db</span><span class="o">.</span><span class="n">Deployment</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+                                <span class="n">db</span><span class="o">.</span><span class="n">DeploymentSchedule</span><span class="o">.</span><span class="n">active</span><span class="o">.</span><span class="n">is_</span><span class="p">(</span><span class="kc">True</span><span class="p">),</span>
+                            <span class="p">)</span>
+                        <span class="p">)</span>
+                        <span class="o">.</span><span class="n">exists</span><span class="p">()</span>
+                    <span class="p">),</span>
+                <span class="p">)</span>
             <span class="p">)</span>
             <span class="o">.</span><span class="n">group_by</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Deployment</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
             <span class="c1"># having EITHER fewer than three runs OR runs not scheduled far enough out</span>
