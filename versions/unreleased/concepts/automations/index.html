@@ -9214,12 +9214,14 @@ if (amplitudeKey){
 
 
 <h1 id="automations">Automations <span class="badge cloud"></span><a class="headerlink" href="#automations" title="Permanent link">&para;</a></h1>
-<p>Automations in Prefect Cloud enable you to configure <a href="#actions">actions</a> that Prefect executes automatically based on <a href="#triggers">trigger</a> conditions related to your flows and work pools.</p>
-<p>Using triggers and actions you can automatically kick off flow runs, pause deployments, or send custom notifications in response to real-time monitoring events.</p>
+<p>Automations in Prefect Cloud enable you to configure <a href="#actions">actions</a> that Prefect executes automatically based on <a href="#triggers">trigger</a> conditions.</p>
+<p>Potential triggers include the occurrence of events from changes in a flow run's state - or the absence of such events. You can event define your own custom trigger to fire based on an <a href="/cloud/events/">event</a> created from a webhook or a custom event defined in Python code. </p>
+<p>Potential actions include kicking off flow runs, pausing schedules, and sending custom notifications.</p>
 <div class="admonition cloud-ad">
 <p class="admonition-title">Automations are only available in Prefect Cloud</p>
 <p><a href="/concepts/notifications/">Notifications</a> in an open-source Prefect server provide a subset of the notification message-sending features available in Automations.</p>
 </div>
+<p>Automations provide a flexible and powerful framework for automatically taking action in response to events.</p>
 <h2 id="automations-overview">Automations overview<a class="headerlink" href="#automations-overview" title="Permanent link">&para;</a></h2>
 <p>The <strong>Automations</strong> page provides an overview of all configured automations for your workspace.</p>
 <p><img alt="Viewing automations for a workspace in Prefect Cloud." src="/img/ui/automations.png" /></p>
@@ -9239,29 +9241,33 @@ if (amplitudeKey){
 <li>Flow run state change</li>
 <li>Note - Flow Run Tags currently are only evaluated with <code>OR</code> criteria</li>
 <li>Work pool status</li>
+<li>Work queue status</li>
 <li>Deployment status</li>
 <li>Metric thresholds, such as average duration, lateness, or completion percentage</li>
+<li>Incident declarations (available on Pro and Enterprise plans)</li>
 <li>Custom event triggers</li>
 </ul>
 <div class="admonition note">
 <p class="admonition-title">Automations API</p>
 <p>The <a href="https://app.prefect.cloud/api/docs#tag/Automations">automations API</a> enables further programmatic customization of trigger and action policies based on arbitrary <a href="https://app.prefect.cloud/api/docs#tag/Events">events</a>.</p>
 </div>
-<p>Importantly, triggers can be configured not only in reaction to events, but also proactively: to trigger in the absence of an event you expect to see.</p>
+<p>Importantly, triggers can be configured not only in reaction to events, but also proactively: to fire in the absence of an expected event.</p>
 <p><img alt="Configuring a trigger for an automation in Prefect Cloud." src="/img/ui/automations-trigger.png" /></p>
-<p>For example, in the case of flow run state change triggers, you might expect production flows to finish in no longer than thirty minutes. But transient infrastructure or network issues could cause your flow to get “stuck” in a running state. A trigger could kick off an action if the flow stays in a running state for more than 30 minutes. This action could be on the flow itself, such as canceling or restarting it, or it could take the form of a notification so someone can take manual remediation steps.</p>
+<p>For example, in the case of flow run state change triggers, you might expect production flows to finish in no longer than thirty minutes. But transient infrastructure or network issues could cause your flow to get “stuck” in a running state. A trigger could kick off an action if the flow stays in a running state for more than 30 minutes. This action could be taken on the flow itself, such as canceling or restarting it. Or the action could take the form of a notification so someone can take manual remediation steps. Or you could set both actions to to take place when the trigger occurs.</p>
 <h3 id="actions">Actions<a class="headerlink" href="#actions" title="Permanent link">&para;</a></h3>
 <p>Actions specify what your automation does when its trigger criteria are met. Current action types include:</p>
 <ul>
 <li>Cancel a flow run</li>
-<li>Pause a flow run</li>
+<li>Pause or resume a schedule</li>
 <li>Run a deployment</li>
 <li>Pause or resume a deployment schedule</li>
+<li>Pause or resume a work pool</li>
 <li>Pause or resume a work queue</li>
 <li>Pause or resume an automation</li>
 <li>Send a <a href="#automation-notifications">notification</a></li>
 <li>Call a webhook</li>
-<li>Open an incident</li>
+<li>Suspend a flow run</li>
+<li>Declare an incident (available on Pro and Enterprise plans)</li>
 </ul>
 <p><img alt="Configuring an action for an automation in Prefect Cloud." src="/img/ui/automations-action.png" /></p>
 <h3 id="selected-and-inferred-action-targets">Selected and inferred action targets<a class="headerlink" href="#selected-and-inferred-action-targets" title="Permanent link">&para;</a></h3>
