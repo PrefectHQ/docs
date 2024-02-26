@@ -815,17 +815,17 @@ if (amplitudeKey){
 </li>
       
         <li class="md-nav__item">
-  <a href="#set-up-a-worker-and-work-pool" class="md-nav__link">
+  <a href="#set-up-a-work-pool-and-worker" class="md-nav__link">
     <span class="md-ellipsis">
       
         <span class="md-typeset">
-          Set up a worker and work pool
+          Set up a work pool and worker
         </span>
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Set up a worker and work pool">
+    <nav class="md-nav" aria-label="Set up a work pool and worker">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -8951,17 +8951,17 @@ if (amplitudeKey){
 </li>
       
         <li class="md-nav__item">
-  <a href="#set-up-a-worker-and-work-pool" class="md-nav__link">
+  <a href="#set-up-a-work-pool-and-worker" class="md-nav__link">
     <span class="md-ellipsis">
       
         <span class="md-typeset">
-          Set up a worker and work pool
+          Set up a work pool and worker
         </span>
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Set up a worker and work pool">
+    <nav class="md-nav" aria-label="Set up a work pool and worker">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -9102,7 +9102,7 @@ You saw how you can transition from persistent infrastructure to dynamic infrast
 In context of this tutorial, that flow run infrastructure is an ephemeral Docker container to host each flow run.
 Different <a href="/concepts/work-pools/#worker-types">worker types</a> create different types of flow run infrastructure.</sup></p>
 <p>Now that we’ve reviewed the concepts of a work pool and worker, let’s create them so that you can deploy your tutorial flow, and execute it later using the Prefect API.</p>
-<h2 id="set-up-a-worker-and-work-pool">Set up a worker and work pool<a class="headerlink" href="#set-up-a-worker-and-work-pool" title="Permanent link">&para;</a></h2>
+<h2 id="set-up-a-work-pool-and-worker">Set up a work pool and worker<a class="headerlink" href="#set-up-a-work-pool-and-worker" title="Permanent link">&para;</a></h2>
 <p>For this tutorial you will create a <strong>Docker</strong> type work pool via the CLI.</p>
 <p>Using the <strong>Docker</strong> work pool type means that all work sent to this work pool will run within a dedicated Docker container using a Docker client available to the worker.</p>
 <div class="admonition tip">
@@ -9120,8 +9120,7 @@ Kubernetes is also a popular work pool type.</p>
 
 </div>
 
-<p>Let’s confirm that the work pool was successfully created by running the following command in the same terminal.
-You should see your new <code>my-docker-pool</code> in the output list.</p>
+<p>Let’s confirm that the work pool was successfully created by running the following command in the same terminal.</p>
 <div class="terminal">
 
 <div class="highlight"><pre><span></span><code>prefect<span class="w"> </span>work-pool<span class="w"> </span>ls
@@ -9129,13 +9128,14 @@ You should see your new <code>my-docker-pool</code> in the output list.</p>
 
 </div>
 
+<p>You should see your new <code>my-docker-pool</code> listed in the output.</p>
 <p>Finally, let’s double check that you can see this work pool in your Prefect UI.</p>
-<p>Navigate to the <em>Work Pools</em> tab and verify that you see <code>my-docker-pool</code> listed.</p>
-<p>When you click into <code>my-docker-pool</code> you should see a red status icon signifying that this work pool is not ready to submit work.</p>
-<p>To get the work pool ready to submit flow runs, you need to start a worker.</p>
+<p>Navigate to the <strong>Work Pools</strong> tab and verify that you see <code>my-docker-pool</code> listed.</p>
+<p>When you click into <code>my-docker-pool</code> you should see a red status icon signifying that this work pool is not ready.</p>
+<p>To make the work pool ready, you need to start a worker.</p>
 <h3 id="start-a-worker">Start a worker<a class="headerlink" href="#start-a-worker" title="Permanent link">&para;</a></h3>
-<p>Workers are a lightweight polling process that kick off scheduled flow runs on a certain type of infrastructure (such as Docker).
-To start a worker on your laptop, open a new terminal and confirm that your virtual environment has <code>prefect</code> installed.</p>
+<p>Workers are a lightweight polling process that kick off scheduled flow runs on a specific type of infrastructure (such as Docker).
+To start a worker on your local machine, open a new terminal and confirm that your virtual environment has <code>prefect</code> installed.</p>
 <p>Run the following command in this new terminal to start the worker:</p>
 <div class="terminal">
 
@@ -9145,10 +9145,10 @@ To start a worker on your laptop, open a new terminal and confirm that your virt
 </div>
 
 <p>You should see the worker start.
-It's now polling the Prefect API to request any scheduled flow runs it should pick up and then submit for execution.
-You’ll see your new worker listed in the UI under the Workers tab of the Work Pools page with a recent last polled date.</p>
+It's now polling the Prefect API to check for any scheduled flow runs it should pick up and then submit for execution.
+You’ll see your new worker listed in the UI under the <strong>Workers</strong> tab of the Work Pools page with a recent last polled date.</p>
 <p>You should also be able to see a <code>Ready</code> status indicator on your work pool - progress!</p>
-<p>You will need to keep this terminal session active in order for the worker to continue to pick up jobs.
+<p>You will need to keep this terminal session active for the worker to continue to pick up jobs.
 Since you are running this worker locally, the worker will terminate if you close the terminal.
 Therefore, in a production setting this worker should run as a <a href="/guides/deployment/daemonize/">daemonized or managed process</a>.</p>
 <p>Now that you’ve set up your work pool and worker, we have what we need to kick off and execute flow runs of flows deployed to this work pool.
@@ -9166,7 +9166,7 @@ We're going to update our <code>repo_info.py</code> file to build a Docker image
 <ol>
 <li>Change <code>flow.serve</code> to <code>flow.deploy</code>.</li>
 <li>Tell <code>flow.deploy</code> which work pool to deploy to.</li>
-<li>Tell <code>flow.deploy</code> the name to use for the Docker image it builds.</li>
+<li>Tell <code>flow.deploy</code> the name to use for the Docker image that will be built.</li>
 </ol>
 <p>Here's what the updated <code>repo_info.py</code> looks like:</p>
 <div class="highlight"><span class="filename">repo_info.py</span><pre><span></span><code><span class="kn">import</span> <span class="nn">httpx</span>
@@ -9243,7 +9243,7 @@ We're going to update our <code>repo_info.py</code> file to build a Docker image
 <p>If you need to make updates to your deployment, you can do so by modifying your script and rerunning it. You'll need to make one update to specify a value for <code>job_variables</code> to ensure your Docker worker can successfully execute scheduled runs for this flow. See the example below.</p>
 <p>The <code>job_variables</code> section allows you to fine-tune the infrastructure settings for a specific deployment. These values override default values in the specified work pool's <a href="/concepts/work-pools/#base-job-template">base job template</a>.</p>
 <p>When testing images locally without pushing them to a registry (to avoid potential errors like docker.errors.NotFound), it's recommended to include an <code>image_pull_policy</code> job_variable set to <code>Never</code>. However, for production workflows, always consider pushing images to a remote registry for more reliability and accessibility.</p>
-<p>Here's how you can easily set the <code>image_pull_policy</code> to be <code>Never</code> for this tutorial deployment without affecting the default value set on your work pool:</p>
+<p>Here's how you can quickly set the <code>image_pull_policy</code> to be <code>Never</code> for this tutorial deployment without affecting the default value set on your work pool:</p>
 <div class="highlight"><span class="filename">repo_info.py</span><pre><span></span><code><span class="kn">import</span> <span class="nn">httpx</span>
 <span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span>
 
@@ -9292,7 +9292,8 @@ We're going to update our <code>repo_info.py</code> file to build a Docker image
 </div>
 <div class="admonition tip">
 <p class="admonition-title">Did you know?</p>
-<p>A Prefect flow can have more than one deployment. This can be useful if you want your flow to run in different execution environments or have multiple schedules.</p>
+<p>A Prefect flow can have more than one deployment. 
+This pattern can be useful if you want your flow to run in different execution environments.</p>
 </div>
 <h2 id="next-steps">Next steps<a class="headerlink" href="#next-steps" title="Permanent link">&para;</a></h2>
 <ul>
