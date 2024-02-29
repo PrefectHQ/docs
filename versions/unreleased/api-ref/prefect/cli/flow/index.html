@@ -8992,8 +8992,7 @@ if (amplitudeKey){
 
           <details class="quote">
             <summary>Source code in <code>prefect/cli/flow.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">25</span>
-<span class="normal">26</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">26</span>
 <span class="normal">27</span>
 <span class="normal">28</span>
 <span class="normal">29</span>
@@ -9017,7 +9016,8 @@ if (amplitudeKey){
 <span class="normal">47</span>
 <span class="normal">48</span>
 <span class="normal">49</span>
-<span class="normal">50</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@flow_app</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="normal">50</span>
+<span class="normal">51</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@flow_app</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">ls</span><span class="p">(</span>
     <span class="n">limit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">15</span><span class="p">,</span>
 <span class="p">):</span>
@@ -9070,8 +9070,7 @@ if (amplitudeKey){
 
           <details class="quote">
             <summary>Source code in <code>prefect/cli/flow.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 53</span>
-<span class="normal"> 54</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 54</span>
 <span class="normal"> 55</span>
 <span class="normal"> 56</span>
 <span class="normal"> 57</span>
@@ -9179,7 +9178,10 @@ if (amplitudeKey){
 <span class="normal">159</span>
 <span class="normal">160</span>
 <span class="normal">161</span>
-<span class="normal">162</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@flow_app</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="normal">162</span>
+<span class="normal">163</span>
+<span class="normal">164</span>
+<span class="normal">165</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@flow_app</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">serve</span><span class="p">(</span>
     <span class="n">entrypoint</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Argument</span><span class="p">(</span>
         <span class="o">...</span><span class="p">,</span>
@@ -9254,7 +9256,7 @@ if (amplitudeKey){
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">runner</span> <span class="o">=</span> <span class="n">Runner</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">pause_on_shutdown</span><span class="o">=</span><span class="n">pause_on_shutdown</span><span class="p">)</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">schedule</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">schedules</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">if</span> <span class="n">interval</span> <span class="ow">or</span> <span class="n">cron</span> <span class="ow">or</span> <span class="n">rrule</span><span class="p">:</span>
             <span class="n">schedule</span> <span class="o">=</span> <span class="n">construct_schedule</span><span class="p">(</span>
                 <span class="n">interval</span><span class="o">=</span><span class="n">interval</span><span class="p">,</span>
@@ -9263,10 +9265,12 @@ if (amplitudeKey){
                 <span class="n">timezone</span><span class="o">=</span><span class="n">timezone</span><span class="p">,</span>
                 <span class="n">anchor_date</span><span class="o">=</span><span class="n">interval_anchor</span><span class="p">,</span>
             <span class="p">)</span>
+            <span class="n">schedules</span> <span class="o">=</span> <span class="p">[</span><span class="n">MinimalDeploymentSchedule</span><span class="p">(</span><span class="n">schedule</span><span class="o">=</span><span class="n">schedule</span><span class="p">,</span> <span class="n">active</span><span class="o">=</span><span class="kc">True</span><span class="p">)]</span>
+
         <span class="n">runner_deployment</span> <span class="o">=</span> <span class="n">RunnerDeployment</span><span class="o">.</span><span class="n">from_entrypoint</span><span class="p">(</span>
             <span class="n">entrypoint</span><span class="o">=</span><span class="n">entrypoint</span><span class="p">,</span>
             <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
-            <span class="n">schedule</span><span class="o">=</span><span class="n">schedule</span><span class="p">,</span>
+            <span class="n">schedules</span><span class="o">=</span><span class="n">schedules</span><span class="p">,</span>
             <span class="n">description</span><span class="o">=</span><span class="n">description</span><span class="p">,</span>
             <span class="n">tags</span><span class="o">=</span><span class="n">tags</span> <span class="ow">or</span> <span class="p">[],</span>
             <span class="n">version</span><span class="o">=</span><span class="n">version</span><span class="p">,</span>

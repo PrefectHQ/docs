@@ -9002,8 +9002,7 @@ Prefect REST API Settings.</p>
 
             <details class="quote">
               <summary>Source code in <code>prefect/server/services/late_runs.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 24</span>
-<span class="normal"> 25</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 25</span>
 <span class="normal"> 26</span>
 <span class="normal"> 27</span>
 <span class="normal"> 28</span>
@@ -9097,7 +9096,8 @@ Prefect REST API Settings.</p>
 <span class="normal">116</span>
 <span class="normal">117</span>
 <span class="normal">118</span>
-<span class="normal">119</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">MarkLateRuns</span><span class="p">(</span><span class="n">LoopService</span><span class="p">):</span>
+<span class="normal">119</span>
+<span class="normal">120</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">MarkLateRuns</span><span class="p">(</span><span class="n">LoopService</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A simple loop service responsible for identifying flow runs that are &quot;late&quot;.</span>
 
@@ -9191,7 +9191,7 @@ Prefect REST API Settings.</p>
             <span class="n">session</span><span class="o">=</span><span class="n">session</span><span class="p">,</span>
             <span class="n">flow_run_id</span><span class="o">=</span><span class="n">flow_run</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
             <span class="n">state</span><span class="o">=</span><span class="n">states</span><span class="o">.</span><span class="n">Late</span><span class="p">(</span><span class="n">scheduled_time</span><span class="o">=</span><span class="n">flow_run</span><span class="o">.</span><span class="n">next_scheduled_start_time</span><span class="p">),</span>
-            <span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">flow_policy</span><span class="o">=</span><span class="n">MarkLateRunsPolicy</span><span class="p">,</span>  <span class="c1"># type: ignore</span>
         <span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
@@ -9233,8 +9233,7 @@ Prefect REST API Settings.</p>
 
           <details class="quote">
             <summary>Source code in <code>prefect/server/services/late_runs.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">48</span>
-<span class="normal">49</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">49</span>
 <span class="normal">50</span>
 <span class="normal">51</span>
 <span class="normal">52</span>
@@ -9262,7 +9261,8 @@ Prefect REST API Settings.</p>
 <span class="normal">74</span>
 <span class="normal">75</span>
 <span class="normal">76</span>
-<span class="normal">77</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@inject_db</span>
+<span class="normal">77</span>
+<span class="normal">78</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@inject_db</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">run_once</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">:</span> <span class="n">PrefectDBInterface</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Mark flow runs as late by:</span>
