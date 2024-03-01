@@ -9840,7 +9840,10 @@ and services will be disabled.</p>
 <span class="normal">678</span>
 <span class="normal">679</span>
 <span class="normal">680</span>
-<span class="normal">681</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">create_app</span><span class="p">(</span>
+<span class="normal">681</span>
+<span class="normal">682</span>
+<span class="normal">683</span>
+<span class="normal">684</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">create_app</span><span class="p">(</span>
     <span class="n">settings</span><span class="p">:</span> <span class="n">prefect</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">Settings</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">ephemeral</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">ignore_cache</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -9918,6 +9921,9 @@ and services will be disabled.</p>
             <span class="n">service_instances</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
                 <span class="n">services</span><span class="o">.</span><span class="n">flow_run_notifications</span><span class="o">.</span><span class="n">FlowRunNotifications</span><span class="p">()</span>
             <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">prefect</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">PREFECT_EXPERIMENTAL_ENABLE_TASK_SCHEDULING</span><span class="o">.</span><span class="n">value</span><span class="p">():</span>
+            <span class="n">service_instances</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">services</span><span class="o">.</span><span class="n">task_scheduling</span><span class="o">.</span><span class="n">TaskSchedulingTimeouts</span><span class="p">())</span>
 
         <span class="n">loop</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_running_loop</span><span class="p">()</span>
 
