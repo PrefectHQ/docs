@@ -1801,6 +1801,20 @@ if (amplitudeKey){
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#flowdeploy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          <code>flow.deploy</code>
+        </span>
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="flow.deploy">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
   <a href="#deploying-without-any-blocks" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1845,6 +1859,24 @@ if (amplitudeKey){
       
         <span class="md-typeset">
           Deploying via a Docker image
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#using-prefect-deploy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Using <code>prefect deploy</code>
         </span>
       
     </span>
@@ -9064,6 +9096,20 @@ if (amplitudeKey){
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#flowdeploy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          <code>flow.deploy</code>
+        </span>
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="flow.deploy">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
   <a href="#deploying-without-any-blocks" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -9108,6 +9154,24 @@ if (amplitudeKey){
       
         <span class="md-typeset">
           Deploying via a Docker image
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#using-prefect-deploy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Using <code>prefect deploy</code>
         </span>
       
     </span>
@@ -9261,8 +9325,8 @@ if (amplitudeKey){
 <h2 id="upgrade-guide">Upgrade guide<a class="headerlink" href="#upgrade-guide" title="Permanent link">&para;</a></h2>
 <p>If you have existing deployments that use infrastructure blocks, you can quickly upgrade them to be compatible with workers by following these steps:</p>
 <ol>
-<li>
-<p><strong><a href="/concepts/work-pools/#work-pool-configuration">Create a work pool</a></strong></p>
+<li><strong><a href="/concepts/work-pools/#work-pool-configuration">Create a work pool</a></strong></li>
+</ol>
 <p>This new work pool will replace your infrastructure block.</p>
 <p>You can use the <a href="/api-ref/prefect/infrastructure/#prefect.infrastructure.Infrastructure.publish_as_work_pool"><code>.publish_as_work_pool</code></a> method on any infrastructure block to create a work pool with the same configuration.</p>
 <p>For example, if you have a <code>KubernetesJob</code> infrastructure block named 'my-k8s-job', you can create a work pool with the same configuration with this script:</p>
@@ -9270,186 +9334,178 @@ if (amplitudeKey){
 
 <span class="n">KubernetesJob</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;my-k8s-job&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">publish_as_work_pool</span><span class="p">()</span>
 </code></pre></div>
-<p>Running this script will create a work pool named 'my-k8s-job' with the same configuration as your infrastructure block.</p>
+<div class="codehilite"><pre><span></span><code>Running this script will create a work pool named &#39;my-k8s-job&#39; with the same configuration as your infrastructure block.
+</code></pre></div>
+
 <div class="admonition tip">
 <p class="admonition-title">Serving flows</p>
 <p>If you are using a <code>Process</code> infrastructure block and a <code>LocalFilesystem</code> storage block (or aren't using an infrastructure and storage block at all), you can use <a href="/api-ref/prefect/flows/#prefect.flows.Flow.deploy"><code>flow.serve</code></a> to create a deployment without needing to specify a work pool name or start a worker.</p>
 <p>This is a quick way to create a deployment for a flow and is a great way to manage your deployments if you don't need the dynamic infrastructure creation or configuration offered by workers.</p>
 <p>Check out our <a href="/guides/docker/">Docker guide</a> for how to build a served flow into a Docker image and host it in your environment.</p>
 </div>
-</li>
-<li>
-<p><strong><a href="/concepts/work-pools/#starting-a-worker">Start a worker</a></strong></p>
+<ol>
+<li><strong><a href="/concepts/work-pools/#starting-a-worker">Start a worker</a></strong></li>
+</ol>
 <p>This worker will replace your agent and poll your new work pool for flow runs to execute.</p>
-<p><div class="terminal">
+<div class="terminal">
 <div class="highlight"><pre><span></span><code>prefect<span class="w"> </span>worker<span class="w"> </span>start<span class="w"> </span>-p<span class="w"> </span>&lt;work<span class="w"> </span>pool<span class="w"> </span>name&gt;
 </code></pre></div>
-</div></p>
-</li>
-<li>
-<p><strong>Deploy your flows to the new work pool</strong></p>
+</div>
+
+<ol>
+<li><strong>Deploy your flows to the new work pool</strong></li>
+</ol>
 <p>To deploy your flows to the new work pool, you can use <code>flow.deploy</code> for a Pythonic deployment experience or <code>prefect deploy</code> for a YAML-based deployment experience.</p>
 <p>If you currently use <code>Deployment.build_from_flow</code>, we recommend using <code>flow.deploy</code>.</p>
 <p>If you currently use <code>prefect deployment build</code> and <code>prefect deployment apply</code>, we recommend using <code>prefect deploy</code>.</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">.deploy</label><label for="__tabbed_1_2">prefect deploy</label></div>
-<div class="tabbed-content">
-<div class="tabbed-block">
+<h3 id="flowdeploy"><code>flow.deploy</code><a class="headerlink" href="#flowdeploy" title="Permanent link">&para;</a></h3>
 <p>If you have a Python script that uses <code>Deployment.build_from_flow</code>, you can replace it with <code>flow.deploy</code>.</p>
 <p>Most arguments to <code>Deployment.build_from_flow</code> can be translated directly to <code>flow.deploy</code>, but here are some changes that you may need to make:</p>
 <ul>
-<li>Replace <code>infrastructure</code> with <code>work_pool_name</code>. <ul>
+<li>Replace <code>infrastructure</code> with <code>work_pool_name</code>.</li>
 <li>If you've used the <code>.publish_as_work_pool</code> method on your infrastructure block, use the name of the created work pool.</li>
-</ul>
-</li>
 <li>Replace <code>infra_overrides</code> with <code>job_variables</code>.</li>
-<li>Replace <code>storage</code> with a call to <a href="/api-ref/prefect/flows/#prefect.flows.Flow.deploy"><code>flow.from_source</code></a>. <ul>
+<li>Replace <code>storage</code> with a call to <a href="/api-ref/prefect/flows/#prefect.flows.Flow.deploy"><code>flow.from_source</code></a>.</li>
 <li><code>flow.from_source</code> will load your flow from a remote storage location and make it deployable. Your existing storage block can be passed to the <code>source</code> argument of <code>flow.from_source</code>.</li>
-</ul>
-</li>
 </ul>
 <p>Below are some examples of how to translate <code>Deployment.build_from_flow</code> to <code>flow.deploy</code>.</p>
 <h4 id="deploying-without-any-blocks">Deploying without any blocks<a class="headerlink" href="#deploying-without-any-blocks" title="Permanent link">&para;</a></h4>
 <p>If you aren't using any blocks:</p>
-<div class="highlight"><pre><span></span><code>    <span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span>
 
-    <span class="nd">@flow</span><span class="p">(</span><span class="n">log_prints</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">my_flow</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;world&quot;</span><span class="p">):</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Hello </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">! I&#39;m a flow from a Python script!&quot;</span><span class="p">)</span>
+<span class="nd">@flow</span><span class="p">(</span><span class="n">log_prints</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">my_flow</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;world&quot;</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Hello </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">! I&#39;m a flow from a Python script!&quot;</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-        <span class="n">Deployment</span><span class="o">.</span><span class="n">build_from_flow</span><span class="p">(</span>
-            <span class="n">my_flow</span><span class="p">,</span>
-            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;my-deployment&quot;</span><span class="p">,</span>
-            <span class="n">parameters</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Marvin&quot;</span><span class="p">),</span>
-        <span class="p">)</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">Deployment</span><span class="o">.</span><span class="n">build_from_flow</span><span class="p">(</span>
+        <span class="n">my_flow</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;my-deployment&quot;</span><span class="p">,</span>
+        <span class="n">parameters</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Marvin&quot;</span><span class="p">),</span>
+    <span class="p">)</span>
 </code></pre></div>
 <p>You can replace <code>Deployment.build_from_flow</code> with <code>flow.serve</code> :</p>
-<div class="highlight"><pre><span></span><code>    from prefect import flow
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span>
 
-    @flow(log_prints=True)
-    def my_flow(name: str = &quot;world&quot;):
-        print(f&quot;Hello {name}! I&#39;m a flow from a Python script!&quot;)
+<span class="nd">@flow</span><span class="p">(</span><span class="n">log_prints</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">my_flow</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;world&quot;</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Hello </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">! I&#39;m a flow from a Python script!&quot;</span><span class="p">)</span>
 
-    if __name__ == &quot;__main__&quot;:
-        my_flow.serve(
-            name=&quot;my-deployment&quot;,
-            parameters=dict(name=&quot;Marvin&quot;),
-        )
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">my_flow</span><span class="o">.</span><span class="n">serve</span><span class="p">(</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;my-deployment&quot;</span><span class="p">,</span>
+        <span class="n">parameters</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Marvin&quot;</span><span class="p">),</span>
+    <span class="p">)</span>
 </code></pre></div>
 <p>This will start a process that will serve your flow and execute any flow runs that are scheduled to start.</p>
 <h4 id="deploying-using-a-storage-block">Deploying using a storage block<a class="headerlink" href="#deploying-using-a-storage-block" title="Permanent link">&para;</a></h4>
 <p>If you currently use a storage block to load your flow code but no infrastructure block:</p>
-<div class="highlight"><pre><span></span><code>    <span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span>
-    <span class="kn">from</span> <span class="nn">prefect.storage</span> <span class="kn">import</span> <span class="n">GitHub</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span>
+<span class="kn">from</span> <span class="nn">prefect.storage</span> <span class="kn">import</span> <span class="n">GitHub</span>
 
-    <span class="nd">@flow</span><span class="p">(</span><span class="n">log_prints</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">my_flow</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;world&quot;</span><span class="p">):</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Hello </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">! I&#39;m a flow from a GitHub repo!&quot;</span><span class="p">)</span>
+<span class="nd">@flow</span><span class="p">(</span><span class="n">log_prints</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">my_flow</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;world&quot;</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Hello </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">! I&#39;m a flow from a GitHub repo!&quot;</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-        <span class="n">Deployment</span><span class="o">.</span><span class="n">build_from_flow</span><span class="p">(</span>
-            <span class="n">my_flow</span><span class="p">,</span>
-            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;my-deployment&quot;</span><span class="p">,</span>
-            <span class="n">storage</span><span class="o">=</span><span class="n">GitHub</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;demo-repo&quot;</span><span class="p">),</span>
-            <span class="n">parameters</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Marvin&quot;</span><span class="p">),</span>
-        <span class="p">)</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">Deployment</span><span class="o">.</span><span class="n">build_from_flow</span><span class="p">(</span>
+        <span class="n">my_flow</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;my-deployment&quot;</span><span class="p">,</span>
+        <span class="n">storage</span><span class="o">=</span><span class="n">GitHub</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;demo-repo&quot;</span><span class="p">),</span>
+        <span class="n">parameters</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Marvin&quot;</span><span class="p">),</span>
+    <span class="p">)</span>
 </code></pre></div>
 <p>you can use <code>flow.from_source</code> to load your flow from the same location and <code>flow.serve</code> to create a deployment:</p>
-<div class="highlight"><pre><span></span><code>    <span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span>
-    <span class="kn">from</span> <span class="nn">prefect.storage</span> <span class="kn">import</span> <span class="n">GitHub</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span>
+<span class="kn">from</span> <span class="nn">prefect.storage</span> <span class="kn">import</span> <span class="n">GitHub</span>
 
-    <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-        <span class="n">flow</span><span class="o">.</span><span class="n">from_source</span><span class="p">(</span>
-            <span class="n">source</span><span class="o">=</span><span class="n">GitHub</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;demo-repo&quot;</span><span class="p">),</span>
-            <span class="n">entrypoint</span><span class="o">=</span><span class="s2">&quot;example.py:my_flow&quot;</span>
-        <span class="p">)</span><span class="o">.</span><span class="n">serve</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;my-deployment&quot;</span><span class="p">,</span>
-            <span class="n">parameters</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Marvin&quot;</span><span class="p">),</span>
-        <span class="p">)</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">flow</span><span class="o">.</span><span class="n">from_source</span><span class="p">(</span>
+        <span class="n">source</span><span class="o">=</span><span class="n">GitHub</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;demo-repo&quot;</span><span class="p">),</span>
+        <span class="n">entrypoint</span><span class="o">=</span><span class="s2">&quot;example.py:my_flow&quot;</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">serve</span><span class="p">(</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;my-deployment&quot;</span><span class="p">,</span>
+        <span class="n">parameters</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Marvin&quot;</span><span class="p">),</span>
+    <span class="p">)</span>
 </code></pre></div>
 <p>This will allow you to execute scheduled flow runs without starting a worker. Additionally, the process serving your flow will regularly check for updates to your flow code and automatically update the flow if it detects any changes to the code.</p>
 <h4 id="deploying-using-an-infrastructure-and-storage-block">Deploying using an infrastructure and storage block<a class="headerlink" href="#deploying-using-an-infrastructure-and-storage-block" title="Permanent link">&para;</a></h4>
 <p>For the code below, we'll need to create a work pool from our infrastructure block and pass it to <code>flow.deploy</code> as the <code>work_pool_name</code> argument. We'll also need to pass our storage block to <code>flow.from_source</code> as the <code>source</code> argument.</p>
-<div class="highlight"><pre><span></span><code>    <span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span>
-    <span class="kn">from</span> <span class="nn">prefect.deployments</span> <span class="kn">import</span> <span class="n">Deployment</span>
-    <span class="kn">from</span> <span class="nn">prefect.filesystems</span> <span class="kn">import</span> <span class="n">GitHub</span>
-    <span class="kn">from</span> <span class="nn">prefect.infrastructure.kubernetes</span> <span class="kn">import</span> <span class="n">KubernetesJob</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span>
+<span class="kn">from</span> <span class="nn">prefect.deployments</span> <span class="kn">import</span> <span class="n">Deployment</span>
+<span class="kn">from</span> <span class="nn">prefect.filesystems</span> <span class="kn">import</span> <span class="n">GitHub</span>
+<span class="kn">from</span> <span class="nn">prefect.infrastructure.kubernetes</span> <span class="kn">import</span> <span class="n">KubernetesJob</span>
 
 
-    <span class="nd">@flow</span><span class="p">(</span><span class="n">log_prints</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">my_flow</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;world&quot;</span><span class="p">):</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Hello </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">! I&#39;m a flow from a GitHub repo!&quot;</span><span class="p">)</span>
+<span class="nd">@flow</span><span class="p">(</span><span class="n">log_prints</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">my_flow</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;world&quot;</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Hello </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">! I&#39;m a flow from a GitHub repo!&quot;</span><span class="p">)</span>
 
 
-    <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-        <span class="n">Deployment</span><span class="o">.</span><span class="n">build_from_flow</span><span class="p">(</span>
-            <span class="n">my_flow</span><span class="p">,</span>
-            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;my-deployment&quot;</span><span class="p">,</span>
-            <span class="n">storage</span><span class="o">=</span><span class="n">GitHub</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;demo-repo&quot;</span><span class="p">),</span>
-            <span class="n">entrypoint</span><span class="o">=</span><span class="s2">&quot;example.py:my_flow&quot;</span><span class="p">,</span>
-            <span class="n">infrastructure</span><span class="o">=</span><span class="n">KubernetesJob</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;my-k8s-job&quot;</span><span class="p">),</span>
-            <span class="n">infra_overrides</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">pull_policy</span><span class="o">=</span><span class="s2">&quot;Never&quot;</span><span class="p">),</span>
-            <span class="n">parameters</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Marvin&quot;</span><span class="p">),</span>
-        <span class="p">)</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">Deployment</span><span class="o">.</span><span class="n">build_from_flow</span><span class="p">(</span>
+        <span class="n">my_flow</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;my-deployment&quot;</span><span class="p">,</span>
+        <span class="n">storage</span><span class="o">=</span><span class="n">GitHub</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;demo-repo&quot;</span><span class="p">),</span>
+        <span class="n">entrypoint</span><span class="o">=</span><span class="s2">&quot;example.py:my_flow&quot;</span><span class="p">,</span>
+        <span class="n">infrastructure</span><span class="o">=</span><span class="n">KubernetesJob</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;my-k8s-job&quot;</span><span class="p">),</span>
+        <span class="n">infra_overrides</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">pull_policy</span><span class="o">=</span><span class="s2">&quot;Never&quot;</span><span class="p">),</span>
+        <span class="n">parameters</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Marvin&quot;</span><span class="p">),</span>
+    <span class="p">)</span>
 </code></pre></div>
 <p>The equivalent deployment code using <code>flow.deploy</code> would look like this:</p>
-<div class="highlight"><pre><span></span><code>    <span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span>
-    <span class="kn">from</span> <span class="nn">prefect.storage</span> <span class="kn">import</span> <span class="n">GitHub</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span>
+<span class="kn">from</span> <span class="nn">prefect.storage</span> <span class="kn">import</span> <span class="n">GitHub</span>
 
-    <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-        <span class="n">flow</span><span class="o">.</span><span class="n">from_source</span><span class="p">(</span>
-            <span class="n">source</span><span class="o">=</span><span class="n">GitHub</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;demo-repo&quot;</span><span class="p">),</span>
-            <span class="n">entrypoint</span><span class="o">=</span><span class="s2">&quot;example.py:my_flow&quot;</span>
-        <span class="p">)</span><span class="o">.</span><span class="n">deploy</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;my-deployment&quot;</span><span class="p">,</span>
-            <span class="n">work_pool_name</span><span class="o">=</span><span class="s2">&quot;my-k8s-job&quot;</span><span class="p">,</span>
-            <span class="n">job_variables</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">pull_policy</span><span class="o">=</span><span class="s2">&quot;Never&quot;</span><span class="p">),</span>
-            <span class="n">parameters</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Marvin&quot;</span><span class="p">),</span>
-        <span class="p">)</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">flow</span><span class="o">.</span><span class="n">from_source</span><span class="p">(</span>
+        <span class="n">source</span><span class="o">=</span><span class="n">GitHub</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;demo-repo&quot;</span><span class="p">),</span>
+        <span class="n">entrypoint</span><span class="o">=</span><span class="s2">&quot;example.py:my_flow&quot;</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">deploy</span><span class="p">(</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;my-deployment&quot;</span><span class="p">,</span>
+        <span class="n">work_pool_name</span><span class="o">=</span><span class="s2">&quot;my-k8s-job&quot;</span><span class="p">,</span>
+        <span class="n">job_variables</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">pull_policy</span><span class="o">=</span><span class="s2">&quot;Never&quot;</span><span class="p">),</span>
+        <span class="n">parameters</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Marvin&quot;</span><span class="p">),</span>
+    <span class="p">)</span>
 </code></pre></div>
 <p>Note that when using <code>flow.from_source(...).deploy(...)</code>, the flow you're deploying does not need to be available locally before running your script.</p>
 <h4 id="deploying-via-a-docker-image">Deploying via a Docker image<a class="headerlink" href="#deploying-via-a-docker-image" title="Permanent link">&para;</a></h4>
 <p>If you currently bake your flow code into a Docker image before deploying, you can use the <code>image</code> argument of <code>flow.deploy</code> to build a Docker image as part of your deployment process:</p>
-<div class="highlight"><pre><span></span><code>    <span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span>
 
-    <span class="nd">@flow</span><span class="p">(</span><span class="n">log_prints</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">my_flow</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;world&quot;</span><span class="p">):</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Hello </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">! I&#39;m a flow from a Docker image!&quot;</span><span class="p">)</span>
+<span class="nd">@flow</span><span class="p">(</span><span class="n">log_prints</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">my_flow</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;world&quot;</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Hello </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">! I&#39;m a flow from a Docker image!&quot;</span><span class="p">)</span>
 
 
-    <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-        <span class="n">my_flow</span><span class="o">.</span><span class="n">deploy</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;my-deployment&quot;</span><span class="p">,</span>
-            <span class="n">image</span><span class="o">=</span><span class="s2">&quot;my-repo/my-image:latest&quot;</span><span class="p">,</span>
-            <span class="n">work_pool_name</span><span class="o">=</span><span class="s2">&quot;my-k8s-job&quot;</span><span class="p">,</span>
-            <span class="n">job_variables</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">pull_policy</span><span class="o">=</span><span class="s2">&quot;Never&quot;</span><span class="p">),</span>
-            <span class="n">parameters</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Marvin&quot;</span><span class="p">),</span>
-        <span class="p">)</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">my_flow</span><span class="o">.</span><span class="n">deploy</span><span class="p">(</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;my-deployment&quot;</span><span class="p">,</span>
+        <span class="n">image</span><span class="o">=</span><span class="s2">&quot;my-repo/my-image:latest&quot;</span><span class="p">,</span>
+        <span class="n">work_pool_name</span><span class="o">=</span><span class="s2">&quot;my-k8s-job&quot;</span><span class="p">,</span>
+        <span class="n">job_variables</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">pull_policy</span><span class="o">=</span><span class="s2">&quot;Never&quot;</span><span class="p">),</span>
+        <span class="n">parameters</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Marvin&quot;</span><span class="p">),</span>
+    <span class="p">)</span>
 </code></pre></div>
 <p>You can skip a <code>flow.from_source</code> call when building an image with <code>flow.deploy</code>. Prefect will keep track of the flow's source code location in the image and load it from that location when the flow is executed.</p>
-</div>
-<div class="tabbed-block">
+<h3 id="using-prefect-deploy">Using <code>prefect deploy</code><a class="headerlink" href="#using-prefect-deploy" title="Permanent link">&para;</a></h3>
 <div class="admonition warning">
 <p class="admonition-title">Always run <code>prefect deploy</code> commands from the <strong>root</strong> level of your repo!</p>
 <p>With agents, you might have had multiple <code>deployment.yaml</code> files, but under worker deployment patterns, each repo will have a single <code>prefect.yaml</code> file located at the <strong>root</strong> of the repo that contains <a href="/concepts/deployments/#working-with-multiple-deployments">deployment configuration</a> for all flows in that repo.</p>
 </div>
 <p>To set up a new <code>prefect.yaml</code> file for your deployments, run the following command from the root level of your repo:</p>
-<p><div class="terminal">
+<div class="terminal">
 <div class="highlight"><pre><span></span><code>perfect<span class="w"> </span>deploy
 </code></pre></div>
-</div></p>
+</div>
+
 <p>This will start a wizard that will guide you through setting up your deployment.</p>
 <div class="admonition note">
 <p class="admonition-title">For step 4, select <code>y</code> on the last prompt to save the configuration for the deployment.</p>
 <p>Saving the configuration for your deployment will result in a <code>prefect.yaml</code> file populated with your first deployment. You can use this YAML file to edit and <a href="/concepts/deployments/#working-with-multiple-deployments">define multiple deployments</a> for this repo.</p>
 </div>
 <p>You can add more <a href="/concepts/deployments/#deployment-declaration-reference">deployments</a> to the <code>deployments</code> list in your <code>prefect.yaml</code> file and/or by continuing to use the deployment creation wizard.</p>
-</div>
-</div>
-</div>
-</li>
-</ol>
-<p>For more information, check out our <a href="/guides/prefect-deploy/">in-depth guide for deploying flows to work pools</a>.</p>
+<p>For more information on deployments, check out our <a href="/guides/prefect-deploy/">in-depth guide for deploying flows to work pools</a>.</p>
 
 
 
