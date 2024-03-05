@@ -1041,14 +1041,33 @@ if (amplitudeKey){
     </span>
   </a>
   
-</li>
+    <nav class="md-nav" aria-label="Configuring a PostgreSQL database">
+      <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#in-memory-database" class="md-nav__link">
+  <a href="#quick-start-configuring-a-postgresql-database-with-docker" class="md-nav__link">
     <span class="md-ellipsis">
       
         <span class="md-typeset">
-          In-memory database
+          Quick start: configuring a PostgreSQL database with Docker
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#confirming-your-postgresql-database-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Confirming your PostgreSQL database configuration
         </span>
       
     </span>
@@ -1057,11 +1076,11 @@ if (amplitudeKey){
 </li>
         
           <li class="md-nav__item">
-  <a href="#database-versions" class="md-nav__link">
+  <a href="#in-memory-database" class="md-nav__link">
     <span class="md-ellipsis">
       
         <span class="md-typeset">
-          Database versions
+          In-memory database
         </span>
       
     </span>
@@ -9042,14 +9061,33 @@ if (amplitudeKey){
     </span>
   </a>
   
-</li>
+    <nav class="md-nav" aria-label="Configuring a PostgreSQL database">
+      <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#in-memory-database" class="md-nav__link">
+  <a href="#quick-start-configuring-a-postgresql-database-with-docker" class="md-nav__link">
     <span class="md-ellipsis">
       
         <span class="md-typeset">
-          In-memory database
+          Quick start: configuring a PostgreSQL database with Docker
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#confirming-your-postgresql-database-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Confirming your PostgreSQL database configuration
         </span>
       
     </span>
@@ -9058,11 +9096,11 @@ if (amplitudeKey){
 </li>
         
           <li class="md-nav__item">
-  <a href="#database-versions" class="md-nav__link">
+  <a href="#in-memory-database" class="md-nav__link">
     <span class="md-ellipsis">
       
         <span class="md-typeset">
-          Database versions
+          In-memory database
         </span>
       
     </span>
@@ -9280,7 +9318,8 @@ If you would like to host a Prefect server instance on Kubernetes, check out the
 <li>You use the default PostgreSQL port <code>5432</code></li>
 <li>Your PostgreSQL instance has a database called <code>prefect</code></li>
 </ul>
-<p>If you want to quickly start a PostgreSQL instance that can be used as your Prefect database, you can use the following command that will start a Docker container running PostgreSQL:</p>
+<h4 id="quick-start-configuring-a-postgresql-database-with-docker">Quick start: configuring a PostgreSQL database with Docker<a class="headerlink" href="#quick-start-configuring-a-postgresql-database-with-docker" title="Permanent link">&para;</a></h4>
+<p>To quickly start a PostgreSQL instance that can be used as your Prefect database, use the following command, which will start a Docker container running PostgreSQL:</p>
 <div class="terminal">
 <div class="highlight"><pre><span></span><code>docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span>--name<span class="w"> </span>prefect-postgres<span class="w"> </span>-v<span class="w"> </span>prefectdb:/var/lib/postgresql/data<span class="w"> </span>-p<span class="w"> </span><span class="m">5432</span>:5432<span class="w"> </span>-e<span class="w"> </span><span class="nv">POSTGRES_USER</span><span class="o">=</span>postgres<span class="w"> </span>-e<span class="w"> </span><span class="nv">POSTGRES_PASSWORD</span><span class="o">=</span>yourTopSecretPassword<span class="w"> </span>-e<span class="w"> </span><span class="nv">POSTGRES_DB</span><span class="o">=</span>prefect<span class="w"> </span>postgres:latest
 </code></pre></div>
@@ -9293,13 +9332,29 @@ If you would like to host a Prefect server instance on Kubernetes, check out the
 <li>Creates a database <code>prefect</code> with a user <code>postgres</code> and <code>yourTopSecretPassword</code> password.</li>
 <li>Mounts the PostgreSQL data to a Docker volume called <code>prefectdb</code> to provide persistence if you ever have to restart or rebuild that container.</li>
 </ul>
-<p>You can inspect your profile to be sure that the environment variable has been set properly:</p>
+<p>Then you'll want to run the command above to set your current Prefect Profile to the PostgreSQL database instance running in your Docker container.</p>
+<div class="terminal">
+<div class="highlight"><pre><span></span><code>prefect<span class="w"> </span>config<span class="w"> </span><span class="nb">set</span><span class="w"> </span><span class="nv">PREFECT_API_DATABASE_CONNECTION_URL</span><span class="o">=</span><span class="s2">&quot;postgresql+asyncpg://postgres:yourTopSecretPassword@localhost:5432/prefect&quot;</span>
+</code></pre></div>
+</div>
+
+<h3 id="confirming-your-postgresql-database-configuration">Confirming your PostgreSQL database configuration<a class="headerlink" href="#confirming-your-postgresql-database-configuration" title="Permanent link">&para;</a></h3>
+<p>Inspect your Prefect profile to confirm that the environment variable has been set properly:</p>
 <div class="terminal">
 <div class="highlight"><pre><span></span><code>prefect<span class="w"> </span>config<span class="w"> </span>view<span class="w"> </span>--show-sources
 </code></pre></div>
 </div>
 
-<p>Start the Prefect server and it should from now on use your PostgreSQL database instance:</p>
+<div class="terminal">
+<div class="highlight"><pre><span></span><code>You<span class="w"> </span>should<span class="w"> </span>see<span class="w"> </span>output<span class="w"> </span>similar<span class="w"> </span>to<span class="w"> </span>the<span class="w"> </span>following:
+
+<span class="nv">PREFECT_PROFILE</span><span class="o">=</span><span class="s1">&#39;my_profile&#39;</span>
+<span class="nv">PREFECT_API_DATABASE_CONNECTION_URL</span><span class="o">=</span><span class="s1">&#39;********&#39;</span><span class="w"> </span><span class="o">(</span>from<span class="w"> </span>profile<span class="o">)</span>
+<span class="nv">PREFECT_API_URL</span><span class="o">=</span><span class="s1">&#39;http://127.0.0.1:4200/api&#39;</span><span class="w"> </span><span class="o">(</span>from<span class="w"> </span>profile<span class="o">)</span>
+</code></pre></div>
+</div>
+
+<p>Start the Prefect server and it should begin to use your PostgreSQL database instance:</p>
 <div class="terminal">
 <div class="highlight"><pre><span></span><code>prefect<span class="w"> </span>server<span class="w"> </span>start
 </code></pre></div>
@@ -9317,12 +9372,6 @@ If you would like to host a Prefect server instance on Kubernetes, check out the
 <p class="admonition-title">Use SQLite database for testing only</p>
 <p>SQLite is only supported by Prefect for testing purposes and is not compatible with multiprocessing.  </p>
 </div>
-<h3 id="database-versions">Database versions<a class="headerlink" href="#database-versions" title="Permanent link">&para;</a></h3>
-<p>The following database versions are required for use with Prefect:</p>
-<ul>
-<li>SQLite 3.24 or newer</li>
-<li>PostgreSQL 13.0 or newer</li>
-</ul>
 <h3 id="migrations">Migrations<a class="headerlink" href="#migrations" title="Permanent link">&para;</a></h3>
 <p>Prefect uses <a href="https://alembic.sqlalchemy.org/en/latest/">Alembic</a> to manage database migrations. Alembic is a
 database migration tool for usage with the SQLAlchemy Database Toolkit for Python. Alembic provides a framework for
