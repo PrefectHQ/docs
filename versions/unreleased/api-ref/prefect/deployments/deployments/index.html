@@ -4660,6 +4660,8 @@ if (amplitudeKey){
       
         
       
+        
+      
     
     
     
@@ -4950,6 +4952,33 @@ if (amplitudeKey){
     
   
     runner
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../schedules/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    schedules
   
 
     
@@ -9515,11 +9544,7 @@ parameter schema for this deployment.</p>
 
             <details class="quote">
               <summary>Source code in <code>prefect/deployments/deployments.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 315</span>
-<span class="normal"> 316</span>
-<span class="normal"> 317</span>
-<span class="normal"> 318</span>
-<span class="normal"> 319</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 319</span>
 <span class="normal"> 320</span>
 <span class="normal"> 321</span>
 <span class="normal"> 322</span>
@@ -10223,7 +10248,30 @@ parameter schema for this deployment.</p>
 <span class="normal">1020</span>
 <span class="normal">1021</span>
 <span class="normal">1022</span>
-<span class="normal">1023</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@experimental_field</span><span class="p">(</span>
+<span class="normal">1023</span>
+<span class="normal">1024</span>
+<span class="normal">1025</span>
+<span class="normal">1026</span>
+<span class="normal">1027</span>
+<span class="normal">1028</span>
+<span class="normal">1029</span>
+<span class="normal">1030</span>
+<span class="normal">1031</span>
+<span class="normal">1032</span>
+<span class="normal">1033</span>
+<span class="normal">1034</span>
+<span class="normal">1035</span>
+<span class="normal">1036</span>
+<span class="normal">1037</span>
+<span class="normal">1038</span>
+<span class="normal">1039</span>
+<span class="normal">1040</span>
+<span class="normal">1041</span>
+<span class="normal">1042</span>
+<span class="normal">1043</span>
+<span class="normal">1044</span>
+<span class="normal">1045</span>
+<span class="normal">1046</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@experimental_field</span><span class="p">(</span>
     <span class="s2">&quot;work_pool_name&quot;</span><span class="p">,</span>
     <span class="n">group</span><span class="o">=</span><span class="s2">&quot;work_pools&quot;</span><span class="p">,</span>
     <span class="n">when</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">x</span> <span class="o">!=</span> <span class="n">DEFAULT_AGENT_WORK_POOL_NAME</span><span class="p">,</span>
@@ -10560,11 +10608,17 @@ parameter schema for this deployment.</p>
             <span class="bp">cls</span><span class="o">.</span><span class="n">_validate_schedule</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">value</span>
 
-    <span class="nd">@validator</span><span class="p">(</span><span class="s2">&quot;schedules&quot;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">validate_schedules</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="k">for</span> <span class="n">schedule</span> <span class="ow">in</span> <span class="n">value</span><span class="p">:</span>
-            <span class="bp">cls</span><span class="o">.</span><span class="n">_validate_schedule</span><span class="p">(</span><span class="n">schedule</span><span class="o">.</span><span class="n">schedule</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">value</span>
+    <span class="nd">@root_validator</span><span class="p">(</span><span class="n">pre</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">validate_schedules</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
+        <span class="k">if</span> <span class="s2">&quot;schedules&quot;</span> <span class="ow">in</span> <span class="n">values</span><span class="p">:</span>
+            <span class="n">values</span><span class="p">[</span><span class="s2">&quot;schedules&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">normalize_to_minimal_deployment_schedules</span><span class="p">(</span>
+                <span class="n">values</span><span class="p">[</span><span class="s2">&quot;schedules&quot;</span><span class="p">]</span>
+            <span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">schedule</span> <span class="ow">in</span> <span class="n">values</span><span class="p">[</span><span class="s2">&quot;schedules&quot;</span><span class="p">]:</span>
+                <span class="bp">cls</span><span class="o">.</span><span class="n">_validate_schedule</span><span class="p">(</span><span class="n">schedule</span><span class="o">.</span><span class="n">schedule</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">values</span>
 
     <span class="nd">@classmethod</span>
     <span class="nd">@sync_compatible</span>
@@ -10847,6 +10901,7 @@ parameter schema for this deployment.</p>
         <span class="n">ignore_file</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;.prefectignore&quot;</span><span class="p">,</span>
         <span class="n">apply</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">load_existing</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">schedules</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">FlexibleScheduleList</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Deployment&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -10866,6 +10921,14 @@ parameter schema for this deployment.</p>
 <span class="sd">            load_existing: if True, load any settings that may already be configured for</span>
 <span class="sd">                the named deployment server-side (e.g., schedules, default parameter</span>
 <span class="sd">                values, etc.)</span>
+<span class="sd">            schedules: An optional list of schedules. Each item in the list can be:</span>
+<span class="sd">                  - An instance of `MinimalDeploymentSchedule`.</span>
+<span class="sd">                  - A dictionary with a `schedule` key, and optionally, an</span>
+<span class="sd">                    `active` key. The `schedule` key should correspond to a</span>
+<span class="sd">                    schedule type, and `active` is a boolean indicating whether</span>
+<span class="sd">                    the schedule is active or not.</span>
+<span class="sd">                  - An instance of one of the predefined schedule types:</span>
+<span class="sd">                    `IntervalSchedule`, `CronSchedule`, or `RRuleSchedule`.</span>
 <span class="sd">            **kwargs: other keyword arguments to pass to the constructor for the</span>
 <span class="sd">                `Deployment` class</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -10874,7 +10937,11 @@ parameter schema for this deployment.</p>
 
         <span class="c1"># note that `deployment.load` only updates settings that were *not*</span>
         <span class="c1"># provided at initialization</span>
-        <span class="n">deployment</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">deployment</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">schedules</span><span class="o">=</span><span class="n">schedules</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+        <span class="p">)</span>
         <span class="n">deployment</span><span class="o">.</span><span class="n">flow_name</span> <span class="o">=</span> <span class="n">flow</span><span class="o">.</span><span class="n">name</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">deployment</span><span class="o">.</span><span class="n">entrypoint</span><span class="p">:</span>
             <span class="c1">## first see if an entrypoint can be determined</span>
@@ -11037,17 +11104,7 @@ deployment's work queue</p>
 
           <details class="quote">
             <summary>Source code in <code>prefect/deployments/deployments.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">829</span>
-<span class="normal">830</span>
-<span class="normal">831</span>
-<span class="normal">832</span>
-<span class="normal">833</span>
-<span class="normal">834</span>
-<span class="normal">835</span>
-<span class="normal">836</span>
-<span class="normal">837</span>
-<span class="normal">838</span>
-<span class="normal">839</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">839</span>
 <span class="normal">840</span>
 <span class="normal">841</span>
 <span class="normal">842</span>
@@ -11134,7 +11191,17 @@ deployment's work queue</p>
 <span class="normal">923</span>
 <span class="normal">924</span>
 <span class="normal">925</span>
-<span class="normal">926</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@sync_compatible</span>
+<span class="normal">926</span>
+<span class="normal">927</span>
+<span class="normal">928</span>
+<span class="normal">929</span>
+<span class="normal">930</span>
+<span class="normal">931</span>
+<span class="normal">932</span>
+<span class="normal">933</span>
+<span class="normal">934</span>
+<span class="normal">935</span>
+<span class="normal">936</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@sync_compatible</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">apply</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span> <span class="n">upload</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">work_queue_concurrency</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">UUID</span><span class="p">:</span>
@@ -11376,6 +11443,27 @@ values, etc.)</p>
           </td>
         </tr>
         <tr>
+          <td><code>schedules</code></td>
+          <td>
+                <code><span title="typing.Optional">Optional</span>[<span title="prefect.deployments.schedules.FlexibleScheduleList">FlexibleScheduleList</span>]</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>An optional list of schedules. Each item in the list can be:
+  - An instance of <code>MinimalDeploymentSchedule</code>.
+  - A dictionary with a <code>schedule</code> key, and optionally, an
+    <code>active</code> key. The <code>schedule</code> key should correspond to a
+    schedule type, and <code>active</code> is a boolean indicating whether
+    the schedule is active or not.
+  - An instance of one of the predefined schedule types:
+    <code>IntervalSchedule</code>, <code>CronSchedule</code>, or <code>RRuleSchedule</code>.</p>
+            </div>
+          </td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+        <tr>
           <td><code>**kwargs</code></td>
           <td>
           </td>
@@ -11394,17 +11482,7 @@ values, etc.)</p>
 
           <details class="quote">
             <summary>Source code in <code>prefect/deployments/deployments.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 928</span>
-<span class="normal"> 929</span>
-<span class="normal"> 930</span>
-<span class="normal"> 931</span>
-<span class="normal"> 932</span>
-<span class="normal"> 933</span>
-<span class="normal"> 934</span>
-<span class="normal"> 935</span>
-<span class="normal"> 936</span>
-<span class="normal"> 937</span>
-<span class="normal"> 938</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 938</span>
 <span class="normal"> 939</span>
 <span class="normal"> 940</span>
 <span class="normal"> 941</span>
@@ -11489,7 +11567,30 @@ values, etc.)</p>
 <span class="normal">1020</span>
 <span class="normal">1021</span>
 <span class="normal">1022</span>
-<span class="normal">1023</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@classmethod</span>
+<span class="normal">1023</span>
+<span class="normal">1024</span>
+<span class="normal">1025</span>
+<span class="normal">1026</span>
+<span class="normal">1027</span>
+<span class="normal">1028</span>
+<span class="normal">1029</span>
+<span class="normal">1030</span>
+<span class="normal">1031</span>
+<span class="normal">1032</span>
+<span class="normal">1033</span>
+<span class="normal">1034</span>
+<span class="normal">1035</span>
+<span class="normal">1036</span>
+<span class="normal">1037</span>
+<span class="normal">1038</span>
+<span class="normal">1039</span>
+<span class="normal">1040</span>
+<span class="normal">1041</span>
+<span class="normal">1042</span>
+<span class="normal">1043</span>
+<span class="normal">1044</span>
+<span class="normal">1045</span>
+<span class="normal">1046</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@classmethod</span>
 <span class="nd">@sync_compatible</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">build_from_flow</span><span class="p">(</span>
     <span class="bp">cls</span><span class="p">,</span>
@@ -11500,6 +11601,7 @@ values, etc.)</p>
     <span class="n">ignore_file</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;.prefectignore&quot;</span><span class="p">,</span>
     <span class="n">apply</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">load_existing</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">schedules</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">FlexibleScheduleList</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Deployment&quot;</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -11519,6 +11621,14 @@ values, etc.)</p>
 <span class="sd">        load_existing: if True, load any settings that may already be configured for</span>
 <span class="sd">            the named deployment server-side (e.g., schedules, default parameter</span>
 <span class="sd">            values, etc.)</span>
+<span class="sd">        schedules: An optional list of schedules. Each item in the list can be:</span>
+<span class="sd">              - An instance of `MinimalDeploymentSchedule`.</span>
+<span class="sd">              - A dictionary with a `schedule` key, and optionally, an</span>
+<span class="sd">                `active` key. The `schedule` key should correspond to a</span>
+<span class="sd">                schedule type, and `active` is a boolean indicating whether</span>
+<span class="sd">                the schedule is active or not.</span>
+<span class="sd">              - An instance of one of the predefined schedule types:</span>
+<span class="sd">                `IntervalSchedule`, `CronSchedule`, or `RRuleSchedule`.</span>
 <span class="sd">        **kwargs: other keyword arguments to pass to the constructor for the</span>
 <span class="sd">            `Deployment` class</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -11527,7 +11637,11 @@ values, etc.)</p>
 
     <span class="c1"># note that `deployment.load` only updates settings that were *not*</span>
     <span class="c1"># provided at initialization</span>
-    <span class="n">deployment</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="n">deployment</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span>
+        <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+        <span class="n">schedules</span><span class="o">=</span><span class="n">schedules</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">)</span>
     <span class="n">deployment</span><span class="o">.</span><span class="n">flow_name</span> <span class="o">=</span> <span class="n">flow</span><span class="o">.</span><span class="n">name</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">deployment</span><span class="o">.</span><span class="n">entrypoint</span><span class="p">:</span>
         <span class="c1">## first see if an entrypoint can be determined</span>
@@ -11608,14 +11722,14 @@ values, etc.)</p>
 
           <details class="quote">
             <summary>Source code in <code>prefect/deployments/deployments.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">612</span>
-<span class="normal">613</span>
-<span class="normal">614</span>
-<span class="normal">615</span>
-<span class="normal">616</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">616</span>
 <span class="normal">617</span>
 <span class="normal">618</span>
-<span class="normal">619</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@validator</span><span class="p">(</span><span class="s2">&quot;parameter_openapi_schema&quot;</span><span class="p">,</span> <span class="n">pre</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="normal">619</span>
+<span class="normal">620</span>
+<span class="normal">621</span>
+<span class="normal">622</span>
+<span class="normal">623</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@validator</span><span class="p">(</span><span class="s2">&quot;parameter_openapi_schema&quot;</span><span class="p">,</span> <span class="n">pre</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">handle_openapi_schema</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This method ensures setting a value of `None` is handled gracefully.</span>
@@ -11676,17 +11790,7 @@ prepopulates any settings that were not set at initialization.</p>
 
           <details class="quote">
             <summary>Source code in <code>prefect/deployments/deployments.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">681</span>
-<span class="normal">682</span>
-<span class="normal">683</span>
-<span class="normal">684</span>
-<span class="normal">685</span>
-<span class="normal">686</span>
-<span class="normal">687</span>
-<span class="normal">688</span>
-<span class="normal">689</span>
-<span class="normal">690</span>
-<span class="normal">691</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">691</span>
 <span class="normal">692</span>
 <span class="normal">693</span>
 <span class="normal">694</span>
@@ -11756,7 +11860,17 @@ prepopulates any settings that were not set at initialization.</p>
 <span class="normal">758</span>
 <span class="normal">759</span>
 <span class="normal">760</span>
-<span class="normal">761</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@sync_compatible</span>
+<span class="normal">761</span>
+<span class="normal">762</span>
+<span class="normal">763</span>
+<span class="normal">764</span>
+<span class="normal">765</span>
+<span class="normal">766</span>
+<span class="normal">767</span>
+<span class="normal">768</span>
+<span class="normal">769</span>
+<span class="normal">770</span>
+<span class="normal">771</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@sync_compatible</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Queries the API for a deployment with this name for this flow, and if found,</span>
@@ -11895,24 +12009,24 @@ update</p>
 
           <details class="quote">
             <summary>Source code in <code>prefect/deployments/deployments.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">763</span>
-<span class="normal">764</span>
-<span class="normal">765</span>
-<span class="normal">766</span>
-<span class="normal">767</span>
-<span class="normal">768</span>
-<span class="normal">769</span>
-<span class="normal">770</span>
-<span class="normal">771</span>
-<span class="normal">772</span>
-<span class="normal">773</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">773</span>
 <span class="normal">774</span>
 <span class="normal">775</span>
 <span class="normal">776</span>
 <span class="normal">777</span>
 <span class="normal">778</span>
 <span class="normal">779</span>
-<span class="normal">780</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@sync_compatible</span>
+<span class="normal">780</span>
+<span class="normal">781</span>
+<span class="normal">782</span>
+<span class="normal">783</span>
+<span class="normal">784</span>
+<span class="normal">785</span>
+<span class="normal">786</span>
+<span class="normal">787</span>
+<span class="normal">788</span>
+<span class="normal">789</span>
+<span class="normal">790</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@sync_compatible</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ignore_none</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Performs an in-place update with the provided settings.</span>
@@ -12005,17 +12119,7 @@ provided, looks for <code>.prefectignore</code> in the current working directory
 
           <details class="quote">
             <summary>Source code in <code>prefect/deployments/deployments.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">782</span>
-<span class="normal">783</span>
-<span class="normal">784</span>
-<span class="normal">785</span>
-<span class="normal">786</span>
-<span class="normal">787</span>
-<span class="normal">788</span>
-<span class="normal">789</span>
-<span class="normal">790</span>
-<span class="normal">791</span>
-<span class="normal">792</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">792</span>
 <span class="normal">793</span>
 <span class="normal">794</span>
 <span class="normal">795</span>
@@ -12050,7 +12154,17 @@ provided, looks for <code>.prefectignore</code> in the current working directory
 <span class="normal">824</span>
 <span class="normal">825</span>
 <span class="normal">826</span>
-<span class="normal">827</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@sync_compatible</span>
+<span class="normal">827</span>
+<span class="normal">828</span>
+<span class="normal">829</span>
+<span class="normal">830</span>
+<span class="normal">831</span>
+<span class="normal">832</span>
+<span class="normal">833</span>
+<span class="normal">834</span>
+<span class="normal">835</span>
+<span class="normal">836</span>
+<span class="normal">837</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@sync_compatible</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">upload_to_storage</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span> <span class="n">storage_block</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">ignore_file</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;.prefectignore&quot;</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
@@ -12119,14 +12233,14 @@ provided, looks for <code>.prefectignore</code> in the current working directory
 
           <details class="quote">
             <summary>Source code in <code>prefect/deployments/deployments.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">621</span>
-<span class="normal">622</span>
-<span class="normal">623</span>
-<span class="normal">624</span>
-<span class="normal">625</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">625</span>
 <span class="normal">626</span>
 <span class="normal">627</span>
-<span class="normal">628</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@validator</span><span class="p">(</span><span class="s2">&quot;triggers&quot;</span><span class="p">)</span>
+<span class="normal">628</span>
+<span class="normal">629</span>
+<span class="normal">630</span>
+<span class="normal">631</span>
+<span class="normal">632</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@validator</span><span class="p">(</span><span class="s2">&quot;triggers&quot;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">validate_automation_names</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">field_value</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Ensure that each trigger has a name for its automation if none is provided.&quot;&quot;&quot;</span>
     <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">trigger</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">field_value</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
@@ -12167,11 +12281,7 @@ provided, looks for <code>.prefectignore</code> in the current working directory
 
           <details class="quote">
             <summary>Source code in <code>prefect/deployments/deployments.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">292</span>
-<span class="normal">293</span>
-<span class="normal">294</span>
-<span class="normal">295</span>
-<span class="normal">296</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">296</span>
 <span class="normal">297</span>
 <span class="normal">298</span>
 <span class="normal">299</span>
@@ -12187,7 +12297,11 @@ provided, looks for <code>.prefectignore</code> in the current working directory
 <span class="normal">309</span>
 <span class="normal">310</span>
 <span class="normal">311</span>
-<span class="normal">312</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">load_deployments_from_yaml</span><span class="p">(</span>
+<span class="normal">312</span>
+<span class="normal">313</span>
+<span class="normal">314</span>
+<span class="normal">315</span>
+<span class="normal">316</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">load_deployments_from_yaml</span><span class="p">(</span>
     <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PrefectObjectRegistry</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -12237,11 +12351,7 @@ is largely for testing, and assumes the flow is already available locally.</p>
 
           <details class="quote">
             <summary>Source code in <code>prefect/deployments/deployments.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">211</span>
-<span class="normal">212</span>
-<span class="normal">213</span>
-<span class="normal">214</span>
-<span class="normal">215</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">215</span>
 <span class="normal">216</span>
 <span class="normal">217</span>
 <span class="normal">218</span>
@@ -12315,7 +12425,11 @@ is largely for testing, and assumes the flow is already available locally.</p>
 <span class="normal">286</span>
 <span class="normal">287</span>
 <span class="normal">288</span>
-<span class="normal">289</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@inject_client</span>
+<span class="normal">289</span>
+<span class="normal">290</span>
+<span class="normal">291</span>
+<span class="normal">292</span>
+<span class="normal">293</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@inject_client</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">load_flow_from_flow_run</span><span class="p">(</span>
     <span class="n">flow_run</span><span class="p">:</span> <span class="n">FlowRun</span><span class="p">,</span>
     <span class="n">client</span><span class="p">:</span> <span class="n">PrefectClient</span><span class="p">,</span>
@@ -12596,11 +12710,7 @@ flow or task run.</p>
 
           <details class="quote">
             <summary>Source code in <code>prefect/deployments/deployments.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 60</span>
-<span class="normal"> 61</span>
-<span class="normal"> 62</span>
-<span class="normal"> 63</span>
-<span class="normal"> 64</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 64</span>
 <span class="normal"> 65</span>
 <span class="normal"> 66</span>
 <span class="normal"> 67</span>
@@ -12744,7 +12854,11 @@ flow or task run.</p>
 <span class="normal">205</span>
 <span class="normal">206</span>
 <span class="normal">207</span>
-<span class="normal">208</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@sync_compatible</span>
+<span class="normal">208</span>
+<span class="normal">209</span>
+<span class="normal">210</span>
+<span class="normal">211</span>
+<span class="normal">212</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@sync_compatible</span>
 <span class="nd">@inject_client</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">run_deployment</span><span class="p">(</span>
     <span class="n">name</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">UUID</span><span class="p">],</span>
