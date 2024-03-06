@@ -1320,6 +1320,51 @@ if (amplitudeKey){
 </li>
       
         <li class="md-nav__item">
+  <a href="#advanced-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Advanced example
+        </span>
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Advanced example">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#deploying-to-multiple-workspaces" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Deploying to multiple workspaces
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#caching-build-dependencies" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Caching build dependencies
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#prefect-github-actions" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -8995,6 +9040,51 @@ if (amplitudeKey){
 </li>
       
         <li class="md-nav__item">
+  <a href="#advanced-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Advanced example
+        </span>
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Advanced example">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#deploying-to-multiple-workspaces" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Deploying to multiple workspaces
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#caching-build-dependencies" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Caching build dependencies
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#prefect-github-actions" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -9279,18 +9369,91 @@ This guide uses <a href="https://docs.github.com/en/actions">GitHub Actions</a> 
 <p>After pushing commits to your repository, GitHub will automatically trigger a run of your workflow. The status of running and completed workflows can be monitored from the <strong>Actions</strong> tab of your repository.</p>
 <p><img alt="A GitHub Action triggered via push" src="/img/guides/github-actions-trigger.png" /></p>
 <p>You can view the logs from each workflow step as they run. The <code>Prefect Deploy</code> step will include output about your image build and push, and the creation/update of your deployment.</p>
-<div class="highlight"><pre><span></span><code>Successfully built image &#39;***/cicd-example:latest&#39;
+<div class="terminal">
+<div class="highlight"><pre><span></span><code>Successfully<span class="w"> </span>built<span class="w"> </span>image<span class="w"> </span><span class="s1">&#39;***/cicd-example:latest&#39;</span>
 
-Successfully pushed image &#39;***/cicd-example:latest&#39;
+Successfully<span class="w"> </span>pushed<span class="w"> </span>image<span class="w"> </span><span class="s1">&#39;***/cicd-example:latest&#39;</span>
 
-Successfully created/updated all deployments!
+Successfully<span class="w"> </span>created/updated<span class="w"> </span>all<span class="w"> </span>deployments!
 
-                Deployments
+<span class="w">                </span>Deployments
 ┏━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┓
-┃ Name                ┃ Status  ┃ Details ┃
+┃<span class="w"> </span>Name<span class="w">                </span>┃<span class="w"> </span>Status<span class="w">  </span>┃<span class="w"> </span>Details<span class="w"> </span>┃
 ┡━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━╇━━━━━━━━━┩
-│ hello/my-deployment │ applied │         │
+│<span class="w"> </span>hello/my-deployment<span class="w"> </span>│<span class="w"> </span>applied<span class="w"> </span>│<span class="w">         </span>│
 └─────────────────────┴─────────┴─────────┘
+</code></pre></div>
+</div>
+
+<h2 id="advanced-example">Advanced example<a class="headerlink" href="#advanced-example" title="Permanent link">&para;</a></h2>
+<p>In more complex scenarios, CI/CD processes often need to accommodate several additional considerations to enable a smooth development workflow:</p>
+<ul>
+<li>Making code available in different environments as it advances through stages of development</li>
+<li>Handling independent deployment of distinct groupings of work, as in a monorepo</li>
+<li>Efficiently using build time to avoid repeated work</li>
+</ul>
+<p>This <a href="https://github.com/kevingrismore/cicd-example-workspaces">example repository</a> demonstrates how each of these considerations can be addressed using a combination of Prefect's and GitHub's capabilities.</p>
+<h3 id="deploying-to-multiple-workspaces">Deploying to multiple workspaces<a class="headerlink" href="#deploying-to-multiple-workspaces" title="Permanent link">&para;</a></h3>
+<p>Which deployment processes should run are automatically selected when changes are pushed depending on two conditions:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">on</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">push</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">branches</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">stg</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">main</span>
+<span class="w">    </span><span class="nt">paths</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;project_1/**&quot;</span>
+</code></pre></div>
+<ol>
+<li><strong><code>branches:</code></strong> - which branch has changed. This will ultimately select which Prefect workspace a deployment is created or updated in. In this example, changes on the <code>stg</code> branch will deploy flows to a staging workspace, and changes on the <code>main</code> branch will deploy flows to a production workspace.</li>
+<li><strong><code>paths:</code></strong> - which project folders' files have changed. Since each project folder contains its own flows, dependencies, and <code>prefect.yaml</code>, it represents a complete set of logic and configuration that can be deployed independently. Each project in this repository gets its own GitHub Actions workflow YAML file.</li>
+</ol>
+<p>The <code>prefect.yaml</code> file in each project folder depends on environment variables that are dictated by the selected job in each CI/CD workflow, enabling external code storage for Prefect deployments that is clearly separated across projects and environments.</p>
+<div class="highlight"><pre><span></span><code>  .
+  ├── cicd-example-workspaces-prod  # production bucket
+  │   ├── project_1
+  │   └── project_2
+  └── cicd-example-workspaces-stg  # staging bucket
+      ├── project_1
+      └── project_2  
+</code></pre></div>
+<p>Since the deployments in this example use S3 for code storage, it's important that push steps place flow files in separate locations depending upon their respective environment and project so no deployment overwrites another deployment's files.</p>
+<h3 id="caching-build-dependencies">Caching build dependencies<a class="headerlink" href="#caching-build-dependencies" title="Permanent link">&para;</a></h3>
+<p>Since building Docker images and installing Python dependencies are essential parts of the deployment process, it's useful to rely on caching to skip repeated build steps.</p>
+<p>The <code>setup-python</code> action offers <a href="https://github.com/actions/setup-python#caching-packages-dependencies">caching options</a> so Python packages do not have to be downloaded on repeat workflow runs.</p>
+<div class="highlight"><pre><span></span><code><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Setup Python</span>
+<span class="w">  </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/setup-python@v5</span>
+<span class="w">  </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">python-version</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;3.11&quot;</span>
+<span class="w">    </span><span class="nt">cache</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;pip&quot;</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>Using cached prefect-2.16.1-py3-none-any.whl (2.9 MB)
+Using cached prefect_aws-0.4.10-py3-none-any.whl (61 kB)
+</code></pre></div>
+<p>The <code>build-push-action</code> for building Docker images also offers <a href="https://docs.docker.com/build/cache/backends/gha/">caching options for GitHub Actions</a>. If you are not using GitHub, other remote <a href="https://docs.docker.com/build/cache/backends/">cache backends</a> are available as well.</p>
+<div class="highlight"><pre><span></span><code><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Build and push</span>
+<span class="w">  </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">build-docker-image</span>
+<span class="w">  </span><span class="nt">env</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">GITHUB_SHA</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ steps.get-commit-hash.outputs.COMMIT_HASH }}</span>
+<span class="w">  </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">docker/build-push-action@v5</span>
+<span class="w">  </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">context</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ env.PROJECT_NAME }}/</span>
+<span class="w">    </span><span class="nt">push</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">    </span><span class="nt">tags</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.DOCKER_USERNAME }}/${{ env.PROJECT_NAME }}:${{ env.GITHUB_SHA }}-stg</span>
+<span class="w">    </span><span class="nt">cache-from</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">type=gha</span>
+<span class="w">    </span><span class="nt">cache-to</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">type=gha,mode=max</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>importing cache manifest from gha:***
+DONE 0.1s
+
+[internal] load build context
+transferring context: 70B done
+DONE 0.0s
+
+[2/3] COPY requirements.txt requirements.txt
+CACHED
+
+[3/3] RUN pip install -r requirements.txt
+CACHED
 </code></pre></div>
 <h2 id="prefect-github-actions">Prefect GitHub Actions<a class="headerlink" href="#prefect-github-actions" title="Permanent link">&para;</a></h2>
 <p>Prefect provides its own GitHub Actions for <a href="https://github.com/PrefectHQ/actions-prefect-auth">authentication</a> and <a href="https://github.com/PrefectHQ/actions-prefect-deploy">deployment creation</a>. These actions can simplify deploying with CI/CD when using <code>prefect.yaml</code>, especially in cases where a repository contains flows that are used in multiple deployments across multiple Prefect Cloud workspaces.</p>
