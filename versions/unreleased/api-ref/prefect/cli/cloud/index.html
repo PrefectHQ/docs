@@ -9429,13 +9429,7 @@ Uses a previously configured profile if it exists.</p>
 <span class="normal">483</span>
 <span class="normal">484</span>
 <span class="normal">485</span>
-<span class="normal">486</span>
-<span class="normal">487</span>
-<span class="normal">488</span>
-<span class="normal">489</span>
-<span class="normal">490</span>
-<span class="normal">491</span>
-<span class="normal">492</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@cloud_app</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="normal">486</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@cloud_app</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">login</span><span class="p">(</span>
     <span class="n">key</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
         <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;--key&quot;</span><span class="p">,</span> <span class="s2">&quot;-k&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;API Key to authenticate with Prefect&quot;</span>
@@ -9509,25 +9503,19 @@ Uses a previously configured profile if it exists.</p>
         <span class="n">app</span><span class="o">.</span><span class="n">console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span>
             <span class="s2">&quot;It looks like you&#39;re already authenticated with another profile.&quot;</span>
         <span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">typer</span><span class="o">.</span><span class="n">confirm</span><span class="p">(</span>
-            <span class="s2">&quot;? Would you like to reauthenticate with this profile?&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span>
+        <span class="k">if</span> <span class="n">typer</span><span class="o">.</span><span class="n">confirm</span><span class="p">(</span>
+            <span class="s2">&quot;? Would you like to switch profiles?&quot;</span><span class="p">,</span>
+            <span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="p">):</span>
-            <span class="k">if</span> <span class="n">typer</span><span class="o">.</span><span class="n">confirm</span><span class="p">(</span>
-                <span class="s2">&quot;? Would you like to switch to an authenticated profile?&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">True</span>
-            <span class="p">):</span>
-                <span class="n">profile_name</span> <span class="o">=</span> <span class="n">prompt_select_from_list</span><span class="p">(</span>
-                    <span class="n">app</span><span class="o">.</span><span class="n">console</span><span class="p">,</span>
-                    <span class="s2">&quot;Which authenticated profile would you like to switch to?&quot;</span><span class="p">,</span>
-                    <span class="n">already_logged_in_profiles</span><span class="p">,</span>
-                <span class="p">)</span>
+            <span class="n">profile_name</span> <span class="o">=</span> <span class="n">prompt_select_from_list</span><span class="p">(</span>
+                <span class="n">app</span><span class="o">.</span><span class="n">console</span><span class="p">,</span>
+                <span class="s2">&quot;Which authenticated profile would you like to switch to?&quot;</span><span class="p">,</span>
+                <span class="n">already_logged_in_profiles</span><span class="p">,</span>
+            <span class="p">)</span>
 
-                <span class="n">profiles</span><span class="o">.</span><span class="n">set_active</span><span class="p">(</span><span class="n">profile_name</span><span class="p">)</span>
-                <span class="n">save_profiles</span><span class="p">(</span><span class="n">profiles</span><span class="p">)</span>
-                <span class="n">exit_with_success</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;Switched to authenticated profile </span><span class="si">{</span><span class="n">profile_name</span><span class="si">!r}</span><span class="s2">.&quot;</span>
-                <span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">return</span>
+            <span class="n">profiles</span><span class="o">.</span><span class="n">set_active</span><span class="p">(</span><span class="n">profile_name</span><span class="p">)</span>
+            <span class="n">save_profiles</span><span class="p">(</span><span class="n">profiles</span><span class="p">)</span>
+            <span class="n">exit_with_success</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Switched to authenticated profile </span><span class="si">{</span><span class="n">profile_name</span><span class="si">!r}</span><span class="s2">.&quot;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">key</span><span class="p">:</span>
         <span class="n">choice</span> <span class="o">=</span> <span class="n">prompt_select_from_list</span><span class="p">(</span>
@@ -9799,7 +9787,13 @@ Reset PREFECT_API_KEY and PREFECT_API_URL to default.</p>
 
           <details class="quote">
             <summary>Source code in <code>prefect/cli/cloud/__init__.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">495</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">489</span>
+<span class="normal">490</span>
+<span class="normal">491</span>
+<span class="normal">492</span>
+<span class="normal">493</span>
+<span class="normal">494</span>
+<span class="normal">495</span>
 <span class="normal">496</span>
 <span class="normal">497</span>
 <span class="normal">498</span>
@@ -9813,13 +9807,7 @@ Reset PREFECT_API_KEY and PREFECT_API_URL to default.</p>
 <span class="normal">506</span>
 <span class="normal">507</span>
 <span class="normal">508</span>
-<span class="normal">509</span>
-<span class="normal">510</span>
-<span class="normal">511</span>
-<span class="normal">512</span>
-<span class="normal">513</span>
-<span class="normal">514</span>
-<span class="normal">515</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@cloud_app</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="normal">509</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@cloud_app</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">logout</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Logout the current workspace.</span>
@@ -9867,7 +9855,13 @@ Reset PREFECT_API_KEY and PREFECT_API_URL to default.</p>
 
           <details class="quote">
             <summary>Source code in <code>prefect/cli/cloud/__init__.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">548</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">542</span>
+<span class="normal">543</span>
+<span class="normal">544</span>
+<span class="normal">545</span>
+<span class="normal">546</span>
+<span class="normal">547</span>
+<span class="normal">548</span>
 <span class="normal">549</span>
 <span class="normal">550</span>
 <span class="normal">551</span>
@@ -9888,13 +9882,7 @@ Reset PREFECT_API_KEY and PREFECT_API_URL to default.</p>
 <span class="normal">566</span>
 <span class="normal">567</span>
 <span class="normal">568</span>
-<span class="normal">569</span>
-<span class="normal">570</span>
-<span class="normal">571</span>
-<span class="normal">572</span>
-<span class="normal">573</span>
-<span class="normal">574</span>
-<span class="normal">575</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@workspace_app</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="normal">569</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@workspace_app</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">ls</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;List available workspaces.&quot;&quot;&quot;</span>
 
@@ -9949,7 +9937,13 @@ Reset PREFECT_API_KEY and PREFECT_API_URL to default.</p>
 
           <details class="quote">
             <summary>Source code in <code>prefect/cli/cloud/__init__.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">518</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">512</span>
+<span class="normal">513</span>
+<span class="normal">514</span>
+<span class="normal">515</span>
+<span class="normal">516</span>
+<span class="normal">517</span>
+<span class="normal">518</span>
 <span class="normal">519</span>
 <span class="normal">520</span>
 <span class="normal">521</span>
@@ -9970,13 +9964,7 @@ Reset PREFECT_API_KEY and PREFECT_API_URL to default.</p>
 <span class="normal">536</span>
 <span class="normal">537</span>
 <span class="normal">538</span>
-<span class="normal">539</span>
-<span class="normal">540</span>
-<span class="normal">541</span>
-<span class="normal">542</span>
-<span class="normal">543</span>
-<span class="normal">544</span>
-<span class="normal">545</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@cloud_app</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="normal">539</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@cloud_app</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">open</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Open the Prefect Cloud UI in the browser.</span>
@@ -10244,7 +10232,13 @@ key will be returned.</p>
 
           <details class="quote">
             <summary>Source code in <code>prefect/cli/cloud/__init__.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">578</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">572</span>
+<span class="normal">573</span>
+<span class="normal">574</span>
+<span class="normal">575</span>
+<span class="normal">576</span>
+<span class="normal">577</span>
+<span class="normal">578</span>
 <span class="normal">579</span>
 <span class="normal">580</span>
 <span class="normal">581</span>
@@ -10279,13 +10273,7 @@ key will be returned.</p>
 <span class="normal">610</span>
 <span class="normal">611</span>
 <span class="normal">612</span>
-<span class="normal">613</span>
-<span class="normal">614</span>
-<span class="normal">615</span>
-<span class="normal">616</span>
-<span class="normal">617</span>
-<span class="normal">618</span>
-<span class="normal">619</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@workspace_app</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="normal">613</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@workspace_app</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">set</span><span class="p">(</span>
     <span class="n">workspace_handle</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
         <span class="kc">None</span><span class="p">,</span>
