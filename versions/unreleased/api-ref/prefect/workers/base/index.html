@@ -11007,7 +11007,12 @@ the flow run.</p>
 <span class="normal">1201</span>
 <span class="normal">1202</span>
 <span class="normal">1203</span>
-<span class="normal">1204</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@register_base_type</span>
+<span class="normal">1204</span>
+<span class="normal">1205</span>
+<span class="normal">1206</span>
+<span class="normal">1207</span>
+<span class="normal">1208</span>
+<span class="normal">1209</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@register_base_type</span>
 <span class="k">class</span> <span class="nc">BaseWorker</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
     <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">job_configuration</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">BaseJobConfiguration</span><span class="p">]</span> <span class="o">=</span> <span class="n">BaseJobConfiguration</span>
@@ -11636,9 +11641,14 @@ the flow run.</p>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BaseJobConfiguration</span><span class="p">:</span>
         <span class="n">deployment</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">read_deployment</span><span class="p">(</span><span class="n">flow_run</span><span class="o">.</span><span class="n">deployment_id</span><span class="p">)</span>
         <span class="n">flow</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">read_flow</span><span class="p">(</span><span class="n">flow_run</span><span class="o">.</span><span class="n">flow_id</span><span class="p">)</span>
+
+        <span class="n">deployment_vars</span> <span class="o">=</span> <span class="n">deployment</span><span class="o">.</span><span class="n">infra_overrides</span> <span class="ow">or</span> <span class="p">{}</span>
+        <span class="n">flow_run_vars</span> <span class="o">=</span> <span class="n">flow_run</span><span class="o">.</span><span class="n">job_variables</span> <span class="ow">or</span> <span class="p">{}</span>
+        <span class="n">job_variables</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="n">deployment_vars</span><span class="p">,</span> <span class="o">**</span><span class="n">flow_run_vars</span><span class="p">}</span>
+
         <span class="n">configuration</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">job_configuration</span><span class="o">.</span><span class="n">from_template_and_values</span><span class="p">(</span>
             <span class="n">base_job_template</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_work_pool</span><span class="o">.</span><span class="n">base_job_template</span><span class="p">,</span>
-            <span class="n">values</span><span class="o">=</span><span class="n">deployment</span><span class="o">.</span><span class="n">infra_overrides</span> <span class="ow">or</span> <span class="p">{},</span>
+            <span class="n">values</span><span class="o">=</span><span class="n">job_variables</span><span class="p">,</span>
             <span class="n">client</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="n">configuration</span><span class="o">.</span><span class="n">prepare_for_flow_run</span><span class="p">(</span>
