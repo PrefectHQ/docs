@@ -9245,7 +9245,7 @@ if (amplitudeKey){
 <p>There are a few reasons to use a <code>RunModel</code> or <code>BaseModel</code>. The first is that when you let Prefect automatically create one of these classes for your input type, the field that users will see in Prefect's UI when they click "Resume" on a flow run is named <code>value</code> and has no help text to suggest what the field is. If you create a <code>RunInput</code> or <code>BaseModel</code>, you can change details like the field name, help text, and default value, and users will see those reflected in the "Resume" form.</p>
 </div>
 <p>The simplest way to pause or suspend and wait for input is to pass a built-in type:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">pause_flow_run</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">pause_flow_run</span><span class="p">,</span> <span class="n">get_run_logger</span>
 
 <span class="nd">@flow</span>
 <span class="k">def</span> <span class="nf">greet_user</span><span class="p">():</span>
@@ -9261,7 +9261,7 @@ if (amplitudeKey){
 <p>When you pass a built-in type such as <code>int</code> as an argument for the <code>wait_for_input</code> parameter to <code>pause_flow_run</code> or <code>suspend_flow_run</code>, Prefect automatically creates a Pydantic model containing one field annotated with the type you specified. This means you can use <a href="https://docs.pydantic.dev/1.10/usage/types/">any type annotation that Pydantic accepts for model fields</a> with these functions.</p>
 </div>
 <p>Instead of a built-in type, you can pass in a <code>pydantic.BaseModel</code> class. This is useful if you already have a <code>BaseModel</code> you want to use:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">pause_flow_run</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">pause_flow_run</span><span class="p">,</span> <span class="n">get_run_logger</span>
 <span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">BaseModel</span>
 
 
@@ -9284,7 +9284,8 @@ if (amplitudeKey){
 <p><code>RunInput</code> classes contain extra logic that allows flows to send and receive them at runtime. You shouldn't notice any difference!</p>
 </div>
 <p>Finally, for advanced use cases like overriding how Prefect stores flow run inputs, you can create a <code>RunInput</code> class:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect.input</span> <span class="kn">import</span> <span class="n">RunInput</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">get_run_logger</span>
+<span class="kn">from</span> <span class="nn">prefect.input</span> <span class="kn">import</span> <span class="n">RunInput</span>
 
 <span class="k">class</span> <span class="nc">UserInput</span><span class="p">(</span><span class="n">RunInput</span><span class="p">):</span>
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
@@ -9305,7 +9306,8 @@ if (amplitudeKey){
 <h3 id="providing-initial-data">Providing initial data<a class="headerlink" href="#providing-initial-data" title="Permanent link">&para;</a></h3>
 <p>You can set default values for fields in your model by using the <code>with_initial_data</code> method. This is useful when you want to provide default values for the fields in your own <code>RunInput</code> class.</p>
 <p>Expanding on the example above, you could make the <code>name</code> field default to "anonymous":</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect.input</span> <span class="kn">import</span> <span class="n">RunInput</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">get_run_logger</span>
+<span class="kn">from</span> <span class="nn">prefect.input</span> <span class="kn">import</span> <span class="n">RunInput</span>
 
 <span class="k">class</span> <span class="nc">UserInput</span><span class="p">(</span><span class="n">RunInput</span><span class="p">):</span>
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
