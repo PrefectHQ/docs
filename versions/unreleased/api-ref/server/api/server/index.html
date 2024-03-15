@@ -7114,6 +7114,8 @@ if (amplitudeKey){
       
         
       
+        
+      
     
     
     
@@ -7328,6 +7330,33 @@ if (amplitudeKey){
     
   
     server.api.flow_run_states
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../middleware/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    server.api.middleware
   
 
     
@@ -9757,7 +9786,10 @@ and services will be disabled.</p>
 <span class="normal">683</span>
 <span class="normal">684</span>
 <span class="normal">685</span>
-<span class="normal">686</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">create_app</span><span class="p">(</span>
+<span class="normal">686</span>
+<span class="normal">687</span>
+<span class="normal">688</span>
+<span class="normal">689</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">create_app</span><span class="p">(</span>
     <span class="n">settings</span><span class="p">:</span> <span class="n">prefect</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">Settings</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">ephemeral</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">ignore_cache</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -9918,6 +9950,9 @@ and services will be disabled.</p>
         <span class="o">==</span> <span class="s2">&quot;sqlite&quot;</span>
     <span class="p">):</span>
         <span class="n">app</span><span class="o">.</span><span class="n">add_middleware</span><span class="p">(</span><span class="n">RequestLimitMiddleware</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">prefect</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">PREFECT_SERVER_CSRF_PROTECTION_ENABLED</span><span class="o">.</span><span class="n">value</span><span class="p">():</span>
+        <span class="n">app</span><span class="o">.</span><span class="n">add_middleware</span><span class="p">(</span><span class="n">api</span><span class="o">.</span><span class="n">middleware</span><span class="o">.</span><span class="n">CsrfMiddleware</span><span class="p">)</span>
 
     <span class="n">api_app</span><span class="o">.</span><span class="n">mount</span><span class="p">(</span>
         <span class="s2">&quot;/static&quot;</span><span class="p">,</span>

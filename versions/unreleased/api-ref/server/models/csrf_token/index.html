@@ -7108,6 +7108,8 @@ if (amplitudeKey){
       
         
       
+        
+      
     
     
     
@@ -7322,6 +7324,33 @@ if (amplitudeKey){
     
   
     server.api.flow_run_states
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/middleware/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    server.api.middleware
   
 
     
@@ -9147,23 +9176,23 @@ token, it will be updated.</p>
 
           <details class="quote">
             <summary>Source code in <code>prefect/server/models/csrf_token.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">81</span>
-<span class="normal">82</span>
-<span class="normal">83</span>
-<span class="normal">84</span>
-<span class="normal">85</span>
-<span class="normal">86</span>
-<span class="normal">87</span>
-<span class="normal">88</span>
-<span class="normal">89</span>
-<span class="normal">90</span>
-<span class="normal">91</span>
-<span class="normal">92</span>
-<span class="normal">93</span>
-<span class="normal">94</span>
-<span class="normal">95</span>
-<span class="normal">96</span>
-<span class="normal">97</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@inject_db</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 87</span>
+<span class="normal"> 88</span>
+<span class="normal"> 89</span>
+<span class="normal"> 90</span>
+<span class="normal"> 91</span>
+<span class="normal"> 92</span>
+<span class="normal"> 93</span>
+<span class="normal"> 94</span>
+<span class="normal"> 95</span>
+<span class="normal"> 96</span>
+<span class="normal"> 97</span>
+<span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span>
+<span class="normal">101</span>
+<span class="normal">102</span>
+<span class="normal">103</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@inject_db</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">delete_expired_tokens</span><span class="p">(</span><span class="n">db</span><span class="p">:</span> <span class="n">PrefectDBInterface</span><span class="p">,</span> <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Delete expired CSRF tokens.</span>
 
@@ -9266,7 +9295,8 @@ token, it will be updated.</p>
           </td>
           <td>
             <div class="doc-md-description">
-              <p>Optional[core.CsrfToken]: The CSRF token, if it exists</p>
+              <p>Optional[core.CsrfToken]: The CSRF token, if it exists and is not
+expired.</p>
             </div>
           </td>
         </tr>
@@ -9299,7 +9329,13 @@ token, it will be updated.</p>
 <span class="normal">75</span>
 <span class="normal">76</span>
 <span class="normal">77</span>
-<span class="normal">78</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@inject_db</span>
+<span class="normal">78</span>
+<span class="normal">79</span>
+<span class="normal">80</span>
+<span class="normal">81</span>
+<span class="normal">82</span>
+<span class="normal">83</span>
+<span class="normal">84</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@inject_db</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">read_token_for_client</span><span class="p">(</span>
     <span class="n">db</span><span class="p">:</span> <span class="n">PrefectDBInterface</span><span class="p">,</span>
     <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span>
@@ -9312,11 +9348,17 @@ token, it will be updated.</p>
 <span class="sd">        client (str): The client identifier</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        Optional[core.CsrfToken]: The CSRF token, if it exists</span>
+<span class="sd">        Optional[core.CsrfToken]: The CSRF token, if it exists and is not</span>
+<span class="sd">            expired.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">token</span> <span class="o">=</span> <span class="p">(</span>
         <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
-            <span class="n">sa</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">CsrfToken</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">CsrfToken</span><span class="o">.</span><span class="n">client</span> <span class="o">==</span> <span class="n">client</span><span class="p">)</span>
+            <span class="n">sa</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">CsrfToken</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+                <span class="n">sa</span><span class="o">.</span><span class="n">and_</span><span class="p">(</span>
+                    <span class="n">db</span><span class="o">.</span><span class="n">CsrfToken</span><span class="o">.</span><span class="n">expiration</span> <span class="o">&gt;</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">),</span>
+                    <span class="n">db</span><span class="o">.</span><span class="n">CsrfToken</span><span class="o">.</span><span class="n">client</span> <span class="o">==</span> <span class="n">client</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
         <span class="p">)</span>
     <span class="p">)</span><span class="o">.</span><span class="n">scalar_one_or_none</span><span class="p">()</span>
 
