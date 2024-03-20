@@ -858,6 +858,8 @@ if (amplitudeKey){
       
         
       
+        
+      
     
     
     
@@ -1207,6 +1209,33 @@ if (amplitudeKey){
     
   
     CI/CD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../guides/specifying-upstream-dependencies/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    Specifying Upstream Dependencies
   
 
     
@@ -8911,25 +8940,43 @@ if (amplitudeKey){
 
           <details class="quote">
             <summary>Source code in <code>prefect/server/api/csrf_token.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">14</span>
-<span class="normal">15</span>
-<span class="normal">16</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">16</span>
 <span class="normal">17</span>
 <span class="normal">18</span>
 <span class="normal">19</span>
 <span class="normal">20</span>
 <span class="normal">21</span>
 <span class="normal">22</span>
-<span class="normal">23</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@router</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@router</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">create_csrf_token</span><span class="p">(</span>
     <span class="n">db</span><span class="p">:</span> <span class="n">PrefectDBInterface</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">provide_database_interface</span><span class="p">),</span>
     <span class="n">client</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Query</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The client to create a CSRF token for&quot;</span><span class="p">),</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">schemas</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">CsrfToken</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Create or update a CSRF token for a client&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">PREFECT_SERVER_CSRF_PROTECTION_ENABLED</span><span class="o">.</span><span class="n">value</span><span class="p">()</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span>
+            <span class="n">status_code</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_422_UNPROCESSABLE_ENTITY</span><span class="p">,</span>
+            <span class="n">detail</span><span class="o">=</span><span class="s2">&quot;CSRF protection is disabled.&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+
     <span class="k">async</span> <span class="k">with</span> <span class="n">db</span><span class="o">.</span><span class="n">session_context</span><span class="p">(</span><span class="n">begin_transaction</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
-        <span class="k">return</span> <span class="k">await</span> <span class="n">models</span><span class="o">.</span><span class="n">csrf_token</span><span class="o">.</span><span class="n">create_or_update_csrf_token</span><span class="p">(</span>
+        <span class="n">token</span> <span class="o">=</span> <span class="k">await</span> <span class="n">models</span><span class="o">.</span><span class="n">csrf_token</span><span class="o">.</span><span class="n">create_or_update_csrf_token</span><span class="p">(</span>
             <span class="n">session</span><span class="o">=</span><span class="n">session</span><span class="p">,</span> <span class="n">client</span><span class="o">=</span><span class="n">client</span>
         <span class="p">)</span>
+        <span class="k">await</span> <span class="n">models</span><span class="o">.</span><span class="n">csrf_token</span><span class="o">.</span><span class="n">delete_expired_tokens</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">session</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">token</span>
 </code></pre></div></td></tr></table></div>
           </details>
   </div>
