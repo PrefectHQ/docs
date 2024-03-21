@@ -10398,7 +10398,11 @@ to its retry policy.</p>
 <span class="normal">1060</span>
 <span class="normal">1061</span>
 <span class="normal">1062</span>
-<span class="normal">1063</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@PrefectObjectRegistry</span><span class="o">.</span><span class="n">register_instances</span>
+<span class="normal">1063</span>
+<span class="normal">1064</span>
+<span class="normal">1065</span>
+<span class="normal">1066</span>
+<span class="normal">1067</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@PrefectObjectRegistry</span><span class="o">.</span><span class="n">register_instances</span>
 <span class="k">class</span> <span class="nc">Task</span><span class="p">(</span><span class="n">Generic</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">R</span><span class="p">]):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A Prefect task definition.</span>
@@ -10676,8 +10680,12 @@ to its retry policy.</p>
         <span class="n">timeout_seconds</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">log_prints</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">NotSet</span><span class="p">,</span>
         <span class="n">refresh_cache</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">NotSet</span><span class="p">,</span>
-        <span class="n">on_completion</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[</span><span class="s2">&quot;Task&quot;</span><span class="p">,</span> <span class="n">TaskRun</span><span class="p">,</span> <span class="n">State</span><span class="p">],</span> <span class="kc">None</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">on_failure</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[</span><span class="s2">&quot;Task&quot;</span><span class="p">,</span> <span class="n">TaskRun</span><span class="p">,</span> <span class="n">State</span><span class="p">],</span> <span class="kc">None</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">on_completion</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span>
+            <span class="n">List</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[</span><span class="s2">&quot;Task&quot;</span><span class="p">,</span> <span class="n">TaskRun</span><span class="p">,</span> <span class="n">State</span><span class="p">],</span> <span class="n">Union</span><span class="p">[</span><span class="n">Awaitable</span><span class="p">[</span><span class="kc">None</span><span class="p">],</span> <span class="kc">None</span><span class="p">]]]</span>
+        <span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">on_failure</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span>
+            <span class="n">List</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[</span><span class="s2">&quot;Task&quot;</span><span class="p">,</span> <span class="n">TaskRun</span><span class="p">,</span> <span class="n">State</span><span class="p">],</span> <span class="n">Union</span><span class="p">[</span><span class="n">Awaitable</span><span class="p">[</span><span class="kc">None</span><span class="p">],</span> <span class="kc">None</span><span class="p">]]]</span>
+        <span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">retry_condition_fn</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[</span><span class="s2">&quot;Task&quot;</span><span class="p">,</span> <span class="n">TaskRun</span><span class="p">,</span> <span class="n">State</span><span class="p">],</span> <span class="nb">bool</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">viz_return_value</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
@@ -11578,11 +11586,7 @@ task</p>
 
           <details class="quote">
             <summary>Source code in <code>prefect/tasks.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 876</span>
-<span class="normal"> 877</span>
-<span class="normal"> 878</span>
-<span class="normal"> 879</span>
-<span class="normal"> 880</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 880</span>
 <span class="normal"> 881</span>
 <span class="normal"> 882</span>
 <span class="normal"> 883</span>
@@ -11737,7 +11741,11 @@ task</p>
 <span class="normal">1032</span>
 <span class="normal">1033</span>
 <span class="normal">1034</span>
-<span class="normal">1035</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">map</span><span class="p">(</span>
+<span class="normal">1035</span>
+<span class="normal">1036</span>
+<span class="normal">1037</span>
+<span class="normal">1038</span>
+<span class="normal">1039</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">map</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
     <span class="n">return_state</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -11964,11 +11972,7 @@ the default ConcurrentTaskRunner will be used.</p>
 
           <details class="quote">
             <summary>Source code in <code>prefect/tasks.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1037</span>
-<span class="normal">1038</span>
-<span class="normal">1039</span>
-<span class="normal">1040</span>
-<span class="normal">1041</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1041</span>
 <span class="normal">1042</span>
 <span class="normal">1043</span>
 <span class="normal">1044</span>
@@ -11990,7 +11994,11 @@ the default ConcurrentTaskRunner will be used.</p>
 <span class="normal">1060</span>
 <span class="normal">1061</span>
 <span class="normal">1062</span>
-<span class="normal">1063</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">serve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task_runner</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">BaseTaskRunner</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Task&quot;</span><span class="p">:</span>
+<span class="normal">1063</span>
+<span class="normal">1064</span>
+<span class="normal">1065</span>
+<span class="normal">1066</span>
+<span class="normal">1067</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">serve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task_runner</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">BaseTaskRunner</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Task&quot;</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Serve the task using the provided task runner. This method is used to</span>
 <span class="sd">    establish a websocket connection with the Prefect server and listen for</span>
 <span class="sd">    submitted task runs to execute.</span>
@@ -12217,11 +12225,7 @@ the state of the task</p>
 
           <details class="quote">
             <summary>Source code in <code>prefect/tasks.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">706</span>
-<span class="normal">707</span>
-<span class="normal">708</span>
-<span class="normal">709</span>
-<span class="normal">710</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">710</span>
 <span class="normal">711</span>
 <span class="normal">712</span>
 <span class="normal">713</span>
@@ -12350,7 +12354,11 @@ the state of the task</p>
 <span class="normal">836</span>
 <span class="normal">837</span>
 <span class="normal">838</span>
-<span class="normal">839</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">submit</span><span class="p">(</span>
+<span class="normal">839</span>
+<span class="normal">840</span>
+<span class="normal">841</span>
+<span class="normal">842</span>
+<span class="normal">843</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">submit</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
     <span class="n">return_state</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -12756,7 +12764,7 @@ retry can be jittered in order to avoid a "thundering herd".</p>
         <tr>
           <td><code>on_completion</code></td>
           <td>
-                <code><span title="typing.Optional">Optional</span>[<span title="typing.List">List</span>[<span title="typing.Callable">Callable</span>[[<a class="autorefs autorefs-internal" title="prefect.tasks.Task" href="#prefect.tasks.Task">Task</a>, <span title="prefect.client.schemas.TaskRun">TaskRun</span>, <a class="autorefs autorefs-internal" title="prefect.states.State" href="../client/schemas/#prefect.client.schemas.objects.State">State</a>], None]]]</code>
+                <code><span title="typing.Optional">Optional</span>[<span title="typing.List">List</span>[<span title="typing.Callable">Callable</span>[[<a class="autorefs autorefs-internal" title="prefect.tasks.Task" href="#prefect.tasks.Task">Task</a>, <span title="prefect.client.schemas.TaskRun">TaskRun</span>, <a class="autorefs autorefs-internal" title="prefect.states.State" href="../client/schemas/#prefect.client.schemas.objects.State">State</a>], <span title="typing.Union">Union</span>[<span title="typing.Awaitable">Awaitable</span>[None], None]]]]</code>
           </td>
           <td>
             <div class="doc-md-description">
@@ -12770,7 +12778,7 @@ retry can be jittered in order to avoid a "thundering herd".</p>
         <tr>
           <td><code>on_failure</code></td>
           <td>
-                <code><span title="typing.Optional">Optional</span>[<span title="typing.List">List</span>[<span title="typing.Callable">Callable</span>[[<a class="autorefs autorefs-internal" title="prefect.tasks.Task" href="#prefect.tasks.Task">Task</a>, <span title="prefect.client.schemas.TaskRun">TaskRun</span>, <a class="autorefs autorefs-internal" title="prefect.states.State" href="../client/schemas/#prefect.client.schemas.objects.State">State</a>], None]]]</code>
+                <code><span title="typing.Optional">Optional</span>[<span title="typing.List">List</span>[<span title="typing.Callable">Callable</span>[[<a class="autorefs autorefs-internal" title="prefect.tasks.Task" href="#prefect.tasks.Task">Task</a>, <span title="prefect.client.schemas.TaskRun">TaskRun</span>, <a class="autorefs autorefs-internal" title="prefect.states.State" href="../client/schemas/#prefect.client.schemas.objects.State">State</a>], <span title="typing.Union">Union</span>[<span title="typing.Awaitable">Awaitable</span>[None], None]]]]</code>
           </td>
           <td>
             <div class="doc-md-description">
@@ -13031,7 +13039,11 @@ always continue to its retry policy.</p>
 <span class="normal">523</span>
 <span class="normal">524</span>
 <span class="normal">525</span>
-<span class="normal">526</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">with_options</span><span class="p">(</span>
+<span class="normal">526</span>
+<span class="normal">527</span>
+<span class="normal">528</span>
+<span class="normal">529</span>
+<span class="normal">530</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">with_options</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -13058,8 +13070,12 @@ always continue to its retry policy.</p>
     <span class="n">timeout_seconds</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">log_prints</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">NotSet</span><span class="p">,</span>
     <span class="n">refresh_cache</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">NotSet</span><span class="p">,</span>
-    <span class="n">on_completion</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[</span><span class="s2">&quot;Task&quot;</span><span class="p">,</span> <span class="n">TaskRun</span><span class="p">,</span> <span class="n">State</span><span class="p">],</span> <span class="kc">None</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">on_failure</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[</span><span class="s2">&quot;Task&quot;</span><span class="p">,</span> <span class="n">TaskRun</span><span class="p">,</span> <span class="n">State</span><span class="p">],</span> <span class="kc">None</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">on_completion</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span>
+        <span class="n">List</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[</span><span class="s2">&quot;Task&quot;</span><span class="p">,</span> <span class="n">TaskRun</span><span class="p">,</span> <span class="n">State</span><span class="p">],</span> <span class="n">Union</span><span class="p">[</span><span class="n">Awaitable</span><span class="p">[</span><span class="kc">None</span><span class="p">],</span> <span class="kc">None</span><span class="p">]]]</span>
+    <span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">on_failure</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span>
+        <span class="n">List</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[</span><span class="s2">&quot;Task&quot;</span><span class="p">,</span> <span class="n">TaskRun</span><span class="p">,</span> <span class="n">State</span><span class="p">],</span> <span class="n">Union</span><span class="p">[</span><span class="n">Awaitable</span><span class="p">[</span><span class="kc">None</span><span class="p">],</span> <span class="kc">None</span><span class="p">]]]</span>
+    <span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">retry_condition_fn</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[</span><span class="s2">&quot;Task&quot;</span><span class="p">,</span> <span class="n">TaskRun</span><span class="p">,</span> <span class="n">State</span><span class="p">],</span> <span class="nb">bool</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">viz_return_value</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">):</span>
@@ -13750,11 +13766,7 @@ to its retry policy.</p>
 
           <details class="quote">
             <summary>Source code in <code>prefect/tasks.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1105</span>
-<span class="normal">1106</span>
-<span class="normal">1107</span>
-<span class="normal">1108</span>
-<span class="normal">1109</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1109</span>
 <span class="normal">1110</span>
 <span class="normal">1111</span>
 <span class="normal">1112</span>
@@ -13947,7 +13959,11 @@ to its retry policy.</p>
 <span class="normal">1299</span>
 <span class="normal">1300</span>
 <span class="normal">1301</span>
-<span class="normal">1302</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">task</span><span class="p">(</span>
+<span class="normal">1302</span>
+<span class="normal">1303</span>
+<span class="normal">1304</span>
+<span class="normal">1305</span>
+<span class="normal">1306</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">task</span><span class="p">(</span>
     <span class="n">__fn</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
