@@ -2401,6 +2401,19 @@ if (amplitudeKey){
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#event-triggers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Event triggers
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#resource-matching" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2432,6 +2445,32 @@ if (amplitudeKey){
       
         <span class="md-typeset">
           Evaluation strategy
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#metric-triggers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Metric triggers
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#composite-triggers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Composite triggers
         </span>
       
     </span>
@@ -9053,6 +9092,19 @@ if (amplitudeKey){
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#event-triggers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Event triggers
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#resource-matching" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -9084,6 +9136,32 @@ if (amplitudeKey){
       
         <span class="md-typeset">
           Evaluation strategy
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#metric-triggers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Metric triggers
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#composite-triggers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Composite triggers
         </span>
       
     </span>
@@ -9187,7 +9265,7 @@ if (amplitudeKey){
 
 <h1 id="automations">Automations <span class="badge cloud"></span><a class="headerlink" href="#automations" title="Permanent link">&para;</a></h1>
 <p>Automations in Prefect Cloud enable you to configure <a href="#actions">actions</a> that Prefect executes automatically based on <a href="#triggers">trigger</a> conditions.</p>
-<p>Potential triggers include the occurrence of events from changes in a flow run's state - or the absence of such events. You can event define your own custom trigger to fire based on an <a href="/cloud/events/">event</a> created from a webhook or a custom event defined in Python code. </p>
+<p>Potential triggers include the occurrence of events from changes in a flow run's state - or the absence of such events. You can even define your own custom trigger to fire based on an <a href="/cloud/events/">event</a> created from a webhook or a custom event defined in Python code.</p>
 <p>Potential actions include kicking off flow runs, pausing schedules, and sending custom notifications.</p>
 <div class="admonition cloud-ad">
 <p class="admonition-title">Automations are only available in Prefect Cloud</p>
@@ -9208,10 +9286,12 @@ if (amplitudeKey){
 <li><a href="#details">Details</a> about the automation, such as a name and description.</li>
 </ul>
 <h3 id="triggers">Triggers<a class="headerlink" href="#triggers" title="Permanent link">&para;</a></h3>
-<p>Triggers specify the conditions under which your action should be performed. Triggers can be of several types, including triggers based on:</p>
+<p>Triggers specify the conditions under which your action should be performed. The Prefect UI includes templates for many common conditions, such as:</p>
 <ul>
-<li>Flow run state change</li>
+<li>Flow run state change<ul>
 <li>Note - Flow Run Tags currently are only evaluated with <code>OR</code> criteria</li>
+</ul>
+</li>
 <li>Work pool status</li>
 <li>Work queue status</li>
 <li>Deployment status</li>
@@ -9251,9 +9331,12 @@ if (amplitudeKey){
 <p>Prefect tries to infer the relevant event whenever possible, but sometimes one does not exist.</p>
 <p>Specify a name and, optionally, a description for the automation.</p>
 <h2 id="custom-triggers">Custom triggers<a class="headerlink" href="#custom-triggers" title="Permanent link">&para;</a></h2>
-<p>Custom triggers allow advanced configuration of the conditions on which an automation executes its actions. Several custom trigger fields accept values that end with trailing wildcards, like <code>"prefect.flow-run.*"</code>.</p>
+<p>When you need a trigger that doesn't quite fit the templates in UI trigger builder, you can define a custom trigger in JSON.  With custom triggers, you have access to the full capabilities of Prefect's automation system - allowing you to react to many kinds of events and metrics in your workspace.</p>
+<p>Each automation has a single trigger that, when fired, will cause all of its associated actions to run.  That single trigger may be a reactive or proactive event trigger, a trigger monitoring the value of a metric, or a composite trigger that combines several underlying triggers.</p>
+<h3 id="event-triggers">Event triggers<a class="headerlink" href="#event-triggers" title="Permanent link">&para;</a></h3>
+<p>Event triggers are the most common types of trigger, and they are intended to react to the presence or absence of an event happening in your workspace.  Event triggers are indicated with <code>{"type": "event"}</code>.</p>
 <p><img alt="Viewing a custom trigger for automations for a workspace in Prefect Cloud." src="/img/ui/automations-custom.png" /></p>
-<p>The schema that defines a trigger is as follows:</p>
+<p>The schema that defines an event trigger is as follows:</p>
 <table>
 <thead>
 <tr>
@@ -9277,6 +9360,12 @@ if (amplitudeKey){
 <td>Labels for related resources which this Automation will match.</td>
 </tr>
 <tr>
+<td><strong>posture</strong></td>
+<td>string enum</td>
+<td>N/A</td>
+<td>The posture of this Automation, either Reactive or Proactive. Reactive automations respond to the presence of the expected events, while Proactive automations respond to the absence of those expected events.</td>
+</tr>
+<tr>
 <td><strong>after</strong></td>
 <td>array of strings</td>
 <td><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 7 9 19l-5.5-5.5 1.41-1.41L9 16.17 19.59 5.59 21 7Z"/></svg></span></td>
@@ -9295,12 +9384,6 @@ if (amplitudeKey){
 <td>Evaluate the Automation separately for each distinct value of these labels on the resource. By default, labels refer to the primary resource of the triggering event. You may also refer to labels from related resources by specifying <code>related:&lt;role&gt;:&lt;label&gt;</code>. This will use the value of that label for the first related resource in that role.</td>
 </tr>
 <tr>
-<td><strong>posture</strong></td>
-<td>string enum</td>
-<td>N/A</td>
-<td>The posture of this Automation, either Reactive or Proactive. Reactive automations respond to the presence of the expected events, while Proactive automations respond to the absence of those expected events.</td>
-</tr>
-<tr>
 <td><strong>threshold</strong></td>
 <td>integer</td>
 <td>N/A</td>
@@ -9315,7 +9398,7 @@ if (amplitudeKey){
 </tbody>
 </table>
 <h3 id="resource-matching">Resource matching<a class="headerlink" href="#resource-matching" title="Permanent link">&para;</a></h3>
-<p><code>match</code> and <code>match_related</code> control which events a trigger considers for evaluation by filtering on the contents of their <code>resource</code> and <code>related</code> fields, respectively. Each label added to a <code>match</code> filter is <code>AND</code>ed with the other labels, and can accept a single value or a list of multiple values that are <code>OR</code>ed together.</p>
+<p>Both the <code>event</code> and <code>metric</code> triggers support matching events for specific resources in your workspace, including most Prefect objects (like flows, deployment, blocks, work pools, tags, etc) as well as resources you have defined in any events you emit yourself.  The <code>match</code> and <code>match_related</code> fields control which events a trigger considers for evaluation by filtering on the contents of their <code>resource</code> and <code>related</code> fields, respectively. Each label added to a <code>match</code> filter is <code>AND</code>ed with the other labels, and can accept a single value or a list of multiple values that are <code>OR</code>ed together.</p>
 <p>Consider the <code>resource</code> and <code>related</code> fields on the following <code>prefect.flow-run.Completed</code> event, truncated for the sake of example. Its primary resource is a flow run, and since that flow run was started via a deployment, it is related to both its flow and its deployment:</p>
 <div class="highlight"><pre><span></span><code><span class="nt">&quot;resource&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;prefect.resource.id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;prefect.flow-run.925eacce-7fe5-4753-8f02-77f1511543db&quot;</span><span class="p">,</span>
@@ -9425,7 +9508,7 @@ if (amplitudeKey){
 <span class="err">...</span>
 </code></pre></div>
 <h3 id="evaluation-strategy">Evaluation strategy<a class="headerlink" href="#evaluation-strategy" title="Permanent link">&para;</a></h3>
-<p>All of the previous examples were designed around a reactive <code>posture</code> - that is, count up events toward the <code>threshold</code> until it is met, then execute actions. To respond to the absence of events, use a proactive <code>posture</code>. A proactive trigger will fire when its <code>threshold</code> has <em>not</em> been met by the end of the window of time defined by <code>within</code>. Proactive triggers must have a <code>within</code> of at least 10 seconds. </p>
+<p>All of the previous examples were designed around a reactive <code>posture</code> - that is, count up events toward the <code>threshold</code> until it is met, then execute actions. To respond to the absence of events, use a proactive <code>posture</code>. A proactive trigger will fire when its <code>threshold</code> has <em>not</em> been met by the end of the window of time defined by <code>within</code>. Proactive triggers must have a <code>within</code> value of at least 10 seconds.</p>
 <p>The following trigger will fire if a <code>prefect.flow-run.Completed</code> event is not seen within 60 seconds after a <code>prefect.flow-run.Running</code> event is seen.</p>
 <p><div class="highlight"><pre><span></span><code><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;match&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
@@ -9464,6 +9547,123 @@ However, without <code>for_each</code>, a <code>prefect.flow-run.Completed</code
 <span class="w">  </span><span class="nt">&quot;within&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">60</span>
 <span class="p">}</span>
 </code></pre></div>
+<h3 id="metric-triggers">Metric triggers<a class="headerlink" href="#metric-triggers" title="Permanent link">&para;</a></h3>
+<p>Metric triggers (<code>{"type": "metric"}</code>) fire when the value of a metric in your workspace crosses a threshold you've defined.  For example, you can trigger an automation when the success rate of flows in your workspace drops below 95% over the course of an hour.</p>
+<p>Prefect's metrics are all derived by examining your workspace's events, and if applicable, use the <code>occurred</code> times of those events as the basis for their calculations.</p>
+<p>Prefect defines three metrics today:</p>
+<ul>
+<li><strong>Successes</strong> (<code>{"name": "successes"}</code>), defined as the number of flow runs that went <code>Pending</code> and then the latest state we saw was not a failure (<code>Failed</code> or <code>Crashed</code>).  This metric accounts for retries if the ultimate state was successful.</li>
+<li><strong>Duration</strong> (<code>{"name": "duration"}</code>), defined as the <em>length of time</em> that a flow remains in a <code>Running</code> state before transitioning to a terminal state such as <code>Completed</code>, <code>Failed</code>, or <code>Crashed</code>.  Because this time is derived in terms of flow run state change events, it may be greater than the runtime of your function.</li>
+<li><strong>Lateness</strong> (<code>{"name": "lateness"}</code>), defined as the <em>length of time</em> that a <code>Scheduled</code> flow remains in a <code>Late</code> state before transitioning to a <code>Running</code> and/or <code>Crashed</code> state.  Only flow runs that the system marks <code>Late</code> are included.</li>
+</ul>
+<p>The schema of a metric trigger is as follows:</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Supports trailing wildcards</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>match</strong></td>
+<td>object</td>
+<td><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 7 9 19l-5.5-5.5 1.41-1.41L9 16.17 19.59 5.59 21 7Z"/></svg></span></td>
+<td>Labels for resources which this Automation will match.</td>
+</tr>
+<tr>
+<td><strong>match_related</strong></td>
+<td>object</td>
+<td><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 7 9 19l-5.5-5.5 1.41-1.41L9 16.17 19.59 5.59 21 7Z"/></svg></span></td>
+<td>Labels for related resources which this Automation will match.</td>
+</tr>
+<tr>
+<td><strong>metric</strong></td>
+<td><code>MetricTriggerQuery</code></td>
+<td>N/A</td>
+<td>The definition of the metric query to run</td>
+</tr>
+</tbody>
+</table>
+<p>And the <code>MetricTriggerQuery</code> query is defined as:</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>name</strong></td>
+<td>string</td>
+<td>The name of the Prefect metric to evaluate (see above).</td>
+</tr>
+<tr>
+<td><strong>threshold</strong></td>
+<td>number</td>
+<td>The threshold to which the current metric value is compared</td>
+</tr>
+<tr>
+<td><strong>operator</strong></td>
+<td>string (<code>"&lt;"</code>, <code>"&lt;="</code>, <code>"&gt;"</code>, <code>"&gt;="</code>)</td>
+<td>The comparison operator to use to decide if the threshold value is met</td>
+</tr>
+<tr>
+<td><strong>range</strong></td>
+<td>duration in seconds</td>
+<td>How far back to evaluate the metric</td>
+</tr>
+<tr>
+<td><strong>firing_for</strong></td>
+<td>duration in seconds</td>
+<td>How long the value must exceed the threshold before this trigger fires</td>
+</tr>
+</tbody>
+</table>
+<p>For example, to fire when flow runs tagged <code>production</code> in your workspace are failing at a rate of 10% or worse for the last hour (in other words, your success rate is below 90%), create this trigger:</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;metric&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;match&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;prefect.resource.id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;prefect.flow-run.*&quot;</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;match_related&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;prefect.resource.id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;prefect.tag.production&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;prefect.resource.role&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;tag&quot;</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;metric&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;successes&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;threshold&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.9</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;operator&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&lt;&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;range&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">3600</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;firing_for&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>To detect when the average lateness of your Kubernetes workloads (running on a work pool named <code>kubernetes</code>) in the last day exceeds 5 minutes late, and that number hasn't gotten better for the last 10 minutes, use a trigger like this:</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;metric&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;match&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;prefect.resource.id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;prefect.flow-run.*&quot;</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;match_related&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;prefect.resource.id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;prefect.work-pool.kubernetes&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;prefect.resource.role&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;work-pool&quot;</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;metric&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;lateness&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;threshold&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">300</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;operator&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&gt;&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;range&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">86400</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;firing_for&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">600</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3 id="composite-triggers">Composite triggers<a class="headerlink" href="#composite-triggers" title="Permanent link">&para;</a></h3>
+<p>[more information coming soon]</p>
 <h2 id="create-an-automation-via-deployment-triggers">Create an automation via deployment triggers<a class="headerlink" href="#create-an-automation-via-deployment-triggers" title="Permanent link">&para;</a></h2>
 <p>To enable the simple configuration of event-driven deployments, Prefect provides deployment triggers - a shorthand for creating automations that are linked to specific deployments to run them based on the presence or absence of events.</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># prefect.yaml</span>
@@ -9487,10 +9687,10 @@ However, without <code>for_each</code>, a <code>prefect.flow-run.Completed</code
 <div class="highlight"><pre><span></span><code><span class="c1"># Pass a trigger as a JSON string</span>
 prefect<span class="w"> </span>deploy<span class="w"> </span>-n<span class="w"> </span>test-deployment<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--trigger<span class="w"> </span><span class="s1">&#39;{</span>
-<span class="s1">    &quot;enabled&quot;: true, </span>
+<span class="s1">    &quot;enabled&quot;: true,</span>
 <span class="s1">    &quot;match&quot;: {</span>
 <span class="s1">      &quot;prefect.resource.id&quot;: &quot;prefect.flow-run.*&quot;</span>
-<span class="s1">    }, </span>
+<span class="s1">    },</span>
 <span class="s1">    &quot;expect&quot;: [&quot;prefect.flow-run.Completed&quot;]</span>
 <span class="s1">  }&#39;</span>
 
@@ -9545,7 +9745,7 @@ take precedence over those defined in <code>prefect.yaml</code>.</p>
 <p>In addition to its native properties, each object includes an <code>id</code> along with <code>created</code> and <code>updated</code> timestamps.</p>
 <p>The <code>flow_run|ui_url</code> token returns the URL for viewing the flow run in Prefect Cloud.</p>
 <p>Here’s an example for something that would be relevant to a flow run state-based notification:</p>
-<div class="highlight"><pre><span></span><code>Flow run {{ flow_run.name }} entered state {{ flow_run.state.name }}. 
+<div class="highlight"><pre><span></span><code>Flow run {{ flow_run.name }} entered state {{ flow_run.state.name }}.
 
     Timestamp: {{ flow_run.state.timestamp }}
     Flow ID: {{ flow_run.flow_id }}
