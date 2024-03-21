@@ -9663,7 +9663,187 @@ However, without <code>for_each</code>, a <code>prefect.flow-run.Completed</code
 <span class="p">}</span>
 </code></pre></div>
 <h3 id="composite-triggers">Composite triggers<a class="headerlink" href="#composite-triggers" title="Permanent link">&para;</a></h3>
-<p>[more information coming soon]</p>
+<p>To create a trigger from multiple kinds of events and metrics, use a <code>compound</code> or <code>sequence</code> trigger.  These higher-order triggers are composed from a set of underlying <code>event</code> and <code>metric</code> triggers.</p>
+<p>For example, if you want to run a deployment only after three different flows in your workspace have written their results to a remote filesystem, combine them with a 'compound' trigger:</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;compound&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;require&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;all&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;within&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">3600</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;triggers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;event&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;posture&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Reactive&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;expect&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;prefect.block.remote-file-system.write_path.called&quot;</span><span class="p">],</span>
+<span class="w">      </span><span class="nt">&quot;match_related&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;prefect.resource.name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;daily-customer-export&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;prefect.resource.role&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;flow&quot;</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;event&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;posture&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Reactive&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;expect&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;prefect.block.remote-file-system.write_path.called&quot;</span><span class="p">],</span>
+<span class="w">      </span><span class="nt">&quot;match_related&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;prefect.resource.name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;daily-revenue-export&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;prefect.resource.role&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;flow&quot;</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;event&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;posture&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Reactive&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;expect&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;prefect.block.remote-file-system.write_path.called&quot;</span><span class="p">],</span>
+<span class="w">      </span><span class="nt">&quot;match_related&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;prefect.resource.name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;daily-expenses-export&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;prefect.resource.role&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;flow&quot;</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>This trigger will fire once it sees at least one of each of the underlying event triggers fire within the time frame specified. Then the trigger will reset its state and fire the next time these three events all happen.  The order the events occur doesn't matter, just that all of the events occur within one hour.</p>
+<p>If you want a flow run to complete prior to starting to watch for those three events,  you can combine the entire previous trigger as the second part of a sequence of two triggers:</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="c1">// the outer trigger is now a &quot;sequence&quot; trigger</span>
+<span class="w">  </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sequence&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;within&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">7200</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;triggers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="c1">// with the first child trigger expecting a Completed event</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;event&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;posture&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Reactive&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;expect&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;prefect.flow-run.Completed&quot;</span><span class="p">],</span>
+<span class="w">      </span><span class="nt">&quot;match_related&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;prefect.resource.name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;daily-export-initiator&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;prefect.resource.role&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;flow&quot;</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="c1">// and the second child trigger being the compound trigger from the prior example</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;compound&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;require&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;all&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;within&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">3600</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;triggers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">          </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;event&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;posture&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Reactive&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;expect&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;prefect.block.remote-file-system.write_path.called&quot;</span><span class="p">],</span>
+<span class="w">          </span><span class="nt">&quot;match_related&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;prefect.resource.name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;daily-customer-export&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;prefect.resource.role&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;flow&quot;</span>
+<span class="w">          </span><span class="p">}</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">          </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;event&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;posture&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Reactive&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;expect&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;prefect.block.remote-file-system.write_path.called&quot;</span><span class="p">],</span>
+<span class="w">          </span><span class="nt">&quot;match_related&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;prefect.resource.name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;daily-revenue-export&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;prefect.resource.role&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;flow&quot;</span>
+<span class="w">          </span><span class="p">}</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">          </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;event&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;posture&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Reactive&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;expect&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;prefect.block.remote-file-system.write_path.called&quot;</span><span class="p">],</span>
+<span class="w">          </span><span class="nt">&quot;match_related&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;prefect.resource.name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;daily-expenses-export&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;prefect.resource.role&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;flow&quot;</span>
+<span class="w">          </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">      </span><span class="p">]</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>In this case, the trigger will only fire if it sees the <code>daily-export-initiator</code> flow complete, and then the three files written by the other flows.</p>
+<p>The <code>within</code> parameter for compound and sequence triggers constrains how close in time (in seconds) the child triggers must fire to satisfy the composite trigger.  For example, if the <code>daily-export-initiator</code> flow runs, but the other three flows don't write their result files until three hours later, this trigger won't fire.  Placing these time constraints on the triggers can prevent a misfire if you know that the events will generally happen within a specific timeframe, and you don't want a stray older event to be included in the evaluation of the trigger.  If this isn't a concern for you, you may omit the <code>within</code> period, in which case there is no limit to how far apart in time the child triggers occur.</p>
+<p>Any type of trigger may be composed into higher-order composite triggers, including proactive event triggers and metric triggers.  In the following example, the compound trigger will fire if any of the following events occur: a flow run stuck in <code>Pending</code>, a work pool becoming unready, or the average amount of <code>Late</code> work in your workspace going over 10 minutes:</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;compound&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;require&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;any&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;triggers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;event&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;posture&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Proactive&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;after&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;prefect.flow-run.Pending&quot;</span><span class="p">],</span>
+<span class="w">      </span><span class="nt">&quot;expect&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;prefect.flow-run.Running&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;prefect.flow-run.Crashed&quot;</span><span class="p">],</span>
+<span class="w">      </span><span class="nt">&quot;for_each&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;prefect.resource.id&quot;</span><span class="p">],</span>
+<span class="w">      </span><span class="nt">&quot;match_related&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;prefect.resource.name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;daily-customer-export&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;prefect.resource.role&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;flow&quot;</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;event&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;posture&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Reactive&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;expect&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;prefect.work-pool.not_ready&quot;</span><span class="p">],</span>
+<span class="w">      </span><span class="nt">&quot;match&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;prefect.resource.name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;kubernetes-workers&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;metric&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;metric&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;lateness&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;operator&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&gt;&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;threshold&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">600</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;range&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">3600</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;firing_for&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">300</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>For compound triggers, the <code>require</code> parameter may be <code>"any"</code>, <code>"all"</code>, or a number between 1 and the number of child triggers.  In the example above, if you feel that you are receiving too many spurious notifications for issues that resolve on their own, you can specify <code>{"require": 2}</code> to express that any <strong>two</strong> of the triggers must fire in order for the compound trigger to fire.  Sequence triggers, on the other hand, always require all of their child triggers to fire before they fire.</p>
+<p>Compound triggers are defined as:</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>require</strong></td>
+<td>number, <code>"any"</code>, or <code>"all"</code></td>
+<td>How many of the child triggers must fire for this trigger to fire</td>
+</tr>
+<tr>
+<td><strong>within</strong></td>
+<td>time, in seconds</td>
+<td>How close in time the child triggers must fire for this trigger to fire</td>
+</tr>
+<tr>
+<td><strong>triggers</strong></td>
+<td>array of other triggers</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>Sequence triggers are defined as:</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>within</strong></td>
+<td>time, in seconds</td>
+<td>How close in time the child triggers must fire for this trigger to fire</td>
+</tr>
+<tr>
+<td><strong>triggers</strong></td>
+<td>array of other triggers</td>
+<td></td>
+</tr>
+</tbody>
+</table>
 <h2 id="create-an-automation-via-deployment-triggers">Create an automation via deployment triggers<a class="headerlink" href="#create-an-automation-via-deployment-triggers" title="Permanent link">&para;</a></h2>
 <p>To enable the simple configuration of event-driven deployments, Prefect provides deployment triggers - a shorthand for creating automations that are linked to specific deployments to run them based on the presence or absence of events.</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># prefect.yaml</span>
