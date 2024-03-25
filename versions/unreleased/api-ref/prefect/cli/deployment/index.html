@@ -11820,7 +11820,7 @@ To watch the flow run until it reaches a terminal state, use the <code>--watch</
         <span class="p">),</span>
     <span class="p">),</span>
     <span class="n">tags</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
-        <span class="p">[],</span>
+        <span class="kc">None</span><span class="p">,</span>
         <span class="s2">&quot;--tag&quot;</span><span class="p">,</span>
         <span class="n">help</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;Tag(s) to be applied to flow run.&quot;</span><span class="p">),</span>
     <span class="p">),</span>
@@ -11866,7 +11866,7 @@ To watch the flow run until it reaches a terminal state, use the <code>--watch</
             <span class="n">exit_with_error</span><span class="p">(</span>
                 <span class="s2">&quot;`--watch-interval` can only be used with `--watch`.&quot;</span><span class="p">,</span>
             <span class="p">)</span>
-    <span class="n">cli_params</span> <span class="o">=</span> <span class="n">_load_json_key_values</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="s2">&quot;parameter&quot;</span><span class="p">)</span>
+    <span class="n">cli_params</span> <span class="o">=</span> <span class="n">_load_json_key_values</span><span class="p">(</span><span class="n">params</span> <span class="ow">or</span> <span class="p">[],</span> <span class="s2">&quot;parameter&quot;</span><span class="p">)</span>
     <span class="n">conflicting_keys</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">cli_params</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">multi_params</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
     <span class="k">if</span> <span class="n">conflicting_keys</span><span class="p">:</span>
         <span class="n">app</span><span class="o">.</span><span class="n">console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span>
@@ -11875,7 +11875,7 @@ To watch the flow run until it reaches a terminal state, use the <code>--watch</
         <span class="p">)</span>
     <span class="n">parameters</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="n">multi_params</span><span class="p">,</span> <span class="o">**</span><span class="n">cli_params</span><span class="p">}</span>
 
-    <span class="n">job_vars</span> <span class="o">=</span> <span class="n">_load_json_key_values</span><span class="p">(</span><span class="n">job_variables</span><span class="p">,</span> <span class="s2">&quot;job variable&quot;</span><span class="p">)</span>
+    <span class="n">job_vars</span> <span class="o">=</span> <span class="n">_load_json_key_values</span><span class="p">(</span><span class="n">job_variables</span> <span class="ow">or</span> <span class="p">[],</span> <span class="s2">&quot;job variable&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">start_in</span> <span class="ow">and</span> <span class="n">start_at</span><span class="p">:</span>
         <span class="n">exit_with_error</span><span class="p">(</span>
             <span class="s2">&quot;Only one of `--start-in` or `--start-at` can be set, not both.&quot;</span>
