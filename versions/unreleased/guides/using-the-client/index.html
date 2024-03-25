@@ -1181,6 +1181,19 @@ if (amplitudeKey){
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#transition-all-running-flows-to-cancelled-via-the-client" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Transition all running flows to cancelled via the Client
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -8893,6 +8906,19 @@ if (amplitudeKey){
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#transition-all-running-flows-to-cancelled-via-the-client" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Transition all running flows to cancelled via the Client
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -9104,6 +9130,53 @@ if (amplitudeKey){
     <span class="p">)</span> <span class="o">==</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">end_times</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </code></pre></div>
 <p>Instead of the last three from the whole workspace, you could also use the <code>DeploymentFilter</code> like the previous example to get the last three completed flow runs of a specific deployment.</p>
+<h3 id="transition-all-running-flows-to-cancelled-via-the-client">Transition all running flows to cancelled via the Client<a class="headerlink" href="#transition-all-running-flows-to-cancelled-via-the-client" title="Permanent link">&para;</a></h3>
+<p>It can be cumbersome to cancel many flow runs through the UI. 
+You can use <code>get_client</code>to set multiple runs to a <code>Cancelled</code> state.
+The code below will cancel all flow runs that are in <code>Pending</code>, <code>Running</code>, <code>Scheduled</code>, or <code>Late</code> states when the script is run.
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">anyio</span>
+
+<span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">get_client</span>
+<span class="kn">from</span> <span class="nn">prefect.server.schemas.filters</span> <span class="kn">import</span> <span class="n">FlowRunFilter</span><span class="p">,</span> <span class="n">FlowRunFilterState</span><span class="p">,</span> <span class="n">FlowRunFilterStateName</span>
+<span class="kn">from</span> <span class="nn">prefect.client.schemas.objects</span> <span class="kn">import</span> <span class="n">StateType</span>
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">list_flow_runs_with_states</span><span class="p">(</span><span class="n">states</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+    <span class="k">async</span> <span class="k">with</span> <span class="n">get_client</span><span class="p">()</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+        <span class="n">flow_runs</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">read_flow_runs</span><span class="p">(</span>
+            <span class="n">flow_run_filter</span><span class="o">=</span><span class="n">FlowRunFilter</span><span class="p">(</span>
+                <span class="n">state</span><span class="o">=</span><span class="n">FlowRunFilterState</span><span class="p">(</span>
+                    <span class="n">name</span><span class="o">=</span><span class="n">FlowRunFilterStateName</span><span class="p">(</span><span class="n">any_</span><span class="o">=</span><span class="n">states</span><span class="p">)</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="n">flow_runs</span>
+
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">cancel_flow_runs</span><span class="p">(</span><span class="n">flow_runs</span><span class="p">):</span>
+    <span class="k">async</span> <span class="k">with</span> <span class="n">get_client</span><span class="p">()</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">flow_run</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">flow_runs</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[</span><span class="si">{</span><span class="n">idx</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s2">] Cancelling flow run &#39;</span><span class="si">{</span><span class="n">flow_run</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39; with ID &#39;</span><span class="si">{</span><span class="n">flow_run</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+            <span class="n">state_updates</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">state_updates</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;Cancelled&quot;</span><span class="p">)</span>
+            <span class="n">state_updates</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;type&quot;</span><span class="p">,</span> <span class="n">StateType</span><span class="o">.</span><span class="n">CANCELLED</span><span class="p">)</span>
+            <span class="n">state</span> <span class="o">=</span> <span class="n">flow_run</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">update</span><span class="o">=</span><span class="n">state_updates</span><span class="p">)</span>
+            <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">set_flow_run_state</span><span class="p">(</span><span class="n">flow_run</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">bulk_cancel_flow_runs</span><span class="p">():</span>
+    <span class="n">states</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Pending&quot;</span><span class="p">,</span> <span class="s2">&quot;Running&quot;</span><span class="p">,</span> <span class="s2">&quot;Scheduled&quot;</span><span class="p">,</span> <span class="s2">&quot;Late&quot;</span><span class="p">]</span>
+    <span class="n">flow_runs</span> <span class="o">=</span> <span class="k">await</span> <span class="n">list_flow_runs_with_states</span><span class="p">(</span><span class="n">states</span><span class="p">)</span>
+
+    <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">flow_runs</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cancelling </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">flow_runs</span><span class="p">)</span><span class="si">}</span><span class="s2"> flow runs</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">await</span> <span class="n">cancel_flow_runs</span><span class="p">(</span><span class="n">flow_runs</span><span class="p">)</span>
+        <span class="n">flow_runs</span> <span class="o">=</span> <span class="k">await</span> <span class="n">list_flow_runs_with_states</span><span class="p">(</span><span class="n">states</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Done!&quot;</span><span class="p">)</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">anyio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">bulk_cancel_flow_runs</span><span class="p">)</span>
+</code></pre></div></p>
 <div class="admonition tip">
 <p class="admonition-title">There are other ways to filter objects like flow runs</p>
 <p>See <a href="/api-ref/prefect/client/schemas/#prefect.client.schemas.filters"><code>the filters API reference</code></a> for more ways to filter flow runs and other objects in your Prefect ecosystem.</p>
