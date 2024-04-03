@@ -2423,6 +2423,19 @@ if (amplitudeKey){
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#timeouts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Timeouts
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -9478,6 +9491,19 @@ if (amplitudeKey){
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#timeouts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Timeouts
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -9510,11 +9536,11 @@ if (amplitudeKey){
 
 
 <h1 id="flows">Flows<a class="headerlink" href="#flows" title="Permanent link">&para;</a></h1>
-<p>Flows are the most central Prefect object. A flow is a container for workflow logic as-code and allows users to configure how their workflows behave. 
+<p>Flows are the most central Prefect object. A flow is a container for workflow logic as-code and allows users to configure how their workflows behave.
 Flows are defined as Python functions, and any Python function is eligible to be a flow.</p>
 <h2 id="flows-overview">Flows overview<a class="headerlink" href="#flows-overview" title="Permanent link">&para;</a></h2>
-<p>Flows can be thought of as special types of functions. They can take inputs, perform work, and return an output. 
-In fact, you can turn any function into a Prefect flow by adding the <code>@flow</code> decorator. 
+<p>Flows can be thought of as special types of functions. They can take inputs, perform work, and return an output.
+In fact, you can turn any function into a Prefect flow by adding the <code>@flow</code> decorator.
 When a function becomes a flow, its behavior changes, giving it the following advantages:</p>
 <ul>
 <li>Every invocation of this function is tracked and all state transitions are reported to the API, allowing observation of flow execution.</li>
@@ -9523,7 +9549,7 @@ When a function becomes a flow, its behavior changes, giving it the following ad
 <li>Timeouts can be enforced to prevent unintentional, long-running workflows.</li>
 </ul>
 <p>Flows also take advantage of automatic Prefect logging to capture details about <a href="#flow-runs">flow runs</a> such as run time and final state.</p>
-<p>Flows can include calls to <a href="/concepts/tasks/">tasks</a> as well as to other flows, which Prefect calls <a href="#composing-flows">"subflows"</a> in this context. 
+<p>Flows can include calls to <a href="/concepts/tasks/">tasks</a> as well as to other flows, which Prefect calls <a href="#composing-flows">"subflows"</a> in this context.
 Flows may be defined within modules and imported for use as subflows in your flow definitions.</p>
 <p><a href="/concepts/deployments/">Deployments</a> elevate individual workflows from functions that you call manually to API-managed entities.</p>
 <div class="admonition warning">
@@ -9532,7 +9558,7 @@ Flows may be defined within modules and imported for use as subflows in your flo
 </div>
 <h2 id="flow-runs">Flow runs<a class="headerlink" href="#flow-runs" title="Permanent link">&para;</a></h2>
 <p>A <em>flow run</em> represents a single execution of the flow.</p>
-<p>You can create a flow run by calling the flow manually. 
+<p>You can create a flow run by calling the flow manually.
 For example, by running a Python script or importing the flow into an interactive session and calling it.</p>
 <p>You can also create a flow run by:</p>
 <ul>
@@ -9552,7 +9578,7 @@ For example, by running a Python script or importing the flow into an interactiv
     <span class="k">return</span>
 </code></pre></div>
 <p>There are no rigid rules for what code you include within a flow definition - all valid Python is acceptable.</p>
-<p>Flows are uniquely identified by name. You can provide a <code>name</code> parameter value for the flow. 
+<p>Flows are uniquely identified by name. You can provide a <code>name</code> parameter value for the flow.
 If you don't provide a name, Prefect uses the flow function name.</p>
 <div class="highlight"><pre><span></span><code><span class="hll"><span class="nd">@flow</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;My Flow&quot;</span><span class="p">)</span>
 </span><span class="k">def</span> <span class="nf">my_flow</span><span class="p">():</span>
@@ -9646,7 +9672,7 @@ This allows Prefect to better contain task failures.</p>
     <span class="k">return</span>
 </code></pre></div>
 <p>You can distinguish runs of this flow by providing a <code>flow_run_name</code>.
-This setting accepts a string that can optionally contain templated references to the parameters of your flow. 
+This setting accepts a string that can optionally contain templated references to the parameters of your flow.
 The name will be formatted using Python's standard string formatting syntax as can be seen here:</p>
 <div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">datetime</span>
 <span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span>
@@ -9672,7 +9698,8 @@ The name will be formatted using Python's standard string formatting syntax as c
     <span class="k">pass</span>
 
 <span class="c1"># creates a flow run called &#39;Thursday-is-a-nice-day&#39;</span>
-<span class="n">my_flow</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;marvin&quot;</span><span class="p">)</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">my_flow</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;marvin&quot;</span><span class="p">)</span>
 </code></pre></div>
 <p>If you need access to information about the flow, use the <code>prefect.runtime</code> module. For example:</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span>
@@ -9692,10 +9719,11 @@ The name will be formatted using Python's standard string formatting syntax as c
     <span class="k">pass</span>
 
 <span class="c1"># creates a flow run called &#39;my-flow-with-marvin-and-100&#39;</span>
-<span class="n">my_flow</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;marvin&quot;</span><span class="p">)</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">my_flow</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;marvin&quot;</span><span class="p">)</span>
 </code></pre></div>
-<p>Note that <code>validate_parameters</code> will check that input values conform to the annotated types on the function. 
-Where possible, values will be coerced into the correct type. For example, if a parameter is defined as <code>x: int</code> and "5" is passed, it will be resolved to <code>5</code>. 
+<p>Note that <code>validate_parameters</code> will check that input values conform to the annotated types on the function.
+Where possible, values will be coerced into the correct type. For example, if a parameter is defined as <code>x: int</code> and "5" is passed, it will be resolved to <code>5</code>.
 If set to <code>False</code>, no validation will be performed on flow parameters.</p>
 <h2 id="separating-logic-into-tasks">Separating logic into tasks<a class="headerlink" href="#separating-logic-into-tasks" title="Permanent link">&para;</a></h2>
 <p>The simplest workflow is just a <code>@flow</code> function that does all the work of the workflow.</p>
@@ -9705,7 +9733,8 @@ If set to <code>False</code>, no validation will be performed on flow parameters
 <span class="k">def</span> <span class="nf">hello_world</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;world&quot;</span><span class="p">):</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Hello </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">!&quot;</span><span class="p">)</span>
 
-<span class="n">hello_world</span><span class="p">(</span><span class="s2">&quot;Marvin&quot;</span><span class="p">)</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">hello_world</span><span class="p">(</span><span class="s2">&quot;Marvin&quot;</span><span class="p">)</span>
 </code></pre></div>
 <p>When you run this flow, you'll see output like the following:</p>
 <div class="terminal">
@@ -9730,7 +9759,8 @@ Hello<span class="w"> </span>Marvin!
 <span class="k">def</span> <span class="nf">hello_world</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;world&quot;</span><span class="p">):</span>
     <span class="n">message</span> <span class="o">=</span> <span class="n">print_hello</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
 
-<span class="n">hello_world</span><span class="p">(</span><span class="s2">&quot;Marvin&quot;</span><span class="p">)</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">hello_world</span><span class="p">(</span><span class="s2">&quot;Marvin&quot;</span><span class="p">)</span>
 </code></pre></div>
 <p>When you run this flow, you'll see the following output, which illustrates how the work is encapsulated in a task run.</p>
 <div class="terminal">
@@ -9771,10 +9801,11 @@ Hello<span class="w"> </span>Marvin!
     <span class="n">message</span> <span class="o">=</span> <span class="n">print_hello</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
     <span class="n">message2</span> <span class="o">=</span> <span class="n">print_hello_again</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
 
-<span class="n">hello_world</span><span class="o">.</span><span class="n">visualize</span><span class="p">()</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">hello_world</span><span class="o">.</span><span class="n">visualize</span><span class="p">()</span>
 </code></pre></div>
 <p><img alt="A simple flow visualized with the .visualize() method" src="/img/orchestration/hello-flow-viz.png" /></p>
-<p>Prefect cannot automatically produce a schematic for dynamic workflows, such as those with loops or if/else control flow. 
+<p>Prefect cannot automatically produce a schematic for dynamic workflows, such as those with loops or if/else control flow.
 In this case, you can provide tasks with mock return values for use in the <code>visualize()</code> call.</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
 <span class="nd">@task</span><span class="p">(</span><span class="n">viz_return_value</span><span class="o">=</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span>
@@ -9792,29 +9823,30 @@ In this case, you can provide tasks with mock return values for use in the <code
         <span class="n">l</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
         <span class="n">append_one</span><span class="p">(</span><span class="n">l</span><span class="p">)</span>
 
-<span class="n">viz_return_value_tracked</span><span class="o">.</span><span class="n">visualize</span><span class="p">()</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">viz_return_value_tracked</span><span class="o">.</span><span class="n">visualize</span><span class="p">()</span>
 </code></pre></div>
 <p><img alt="A flow with return values visualized with the .visualize() method" src="/img/orchestration/viz-return-value-tracked.png" /></p>
 <h2 id="composing-flows">Composing flows<a class="headerlink" href="#composing-flows" title="Permanent link">&para;</a></h2>
-<p>A <em>subflow</em> run is created when a flow function is called inside the execution of another flow. 
+<p>A <em>subflow</em> run is created when a flow function is called inside the execution of another flow.
 The primary flow is the "parent" flow. The flow created within the parent is the "child" flow or "subflow."</p>
-<p>Subflow runs behave like normal flow runs. 
-There is a full representation of the flow run in the backend as if it had been called separately. 
-When a subflow starts, it will create a new <a href="/concepts/task-runners/">task runner</a> for tasks within the subflow. 
+<p>Subflow runs behave like normal flow runs.
+There is a full representation of the flow run in the backend as if it had been called separately.
+When a subflow starts, it will create a new <a href="/concepts/task-runners/">task runner</a> for tasks within the subflow.
 When the subflow completes, the task runner is shut down.</p>
-<p>Subflows will block execution of the parent flow until completion. 
+<p>Subflows will block execution of the parent flow until completion.
 However, asynchronous subflows can be run concurrently by using <a href="https://anyio.readthedocs.io/en/stable/tasks.html">AnyIO task groups</a> or <a href="https://docs.python.org/3/library/asyncio-task.html#id6">asyncio.gather</a>.</p>
-<p>Subflows differ from normal flows in that they will resolve any passed task futures into data. 
+<p>Subflows differ from normal flows in that they will resolve any passed task futures into data.
 This allows data to be passed from the parent flow to the child easily.</p>
-<p>The relationship between a child and parent flow is tracked by creating a special task run in the parent flow. 
+<p>The relationship between a child and parent flow is tracked by creating a special task run in the parent flow.
 This task run will mirror the state of the child flow run.</p>
-<p>A task that represents a subflow will be annotated as such in its <code>state_details</code> via the presence of a <code>child_flow_run_id</code> field. 
+<p>A task that represents a subflow will be annotated as such in its <code>state_details</code> via the presence of a <code>child_flow_run_id</code> field.
 A subflow can be identified via the presence of a <code>parent_task_run_id</code> on <code>state_details</code>.</p>
-<p>You can define multiple flows within the same file. 
+<p>You can define multiple flows within the same file.
 Whether running locally or via a <a href="/concepts/deployments/">deployment</a>, you must indicate which flow is the entrypoint for a flow run.</p>
 <div class="admonition warning">
 <p class="admonition-title">Cancelling subflow runs</p>
-<p>Inline subflow runs, specifically those created without <code>run_deployment</code>, cannot be cancelled without cancelling their parent flow run. 
+<p>Inline subflow runs, specifically those created without <code>run_deployment</code>, cannot be cancelled without cancelling their parent flow run.
 If you may need to cancel a subflow run independent of its parent flow run, we recommend deploying it separately and starting it using the <a href="/api-ref/prefect/deployments/deployments/#prefect.deployments.deployments.run_deployment">run_deployment</a> function.</p>
 </div>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
@@ -9834,7 +9866,8 @@ If you may need to cancel a subflow run independent of its parent flow run, we r
     <span class="n">message</span> <span class="o">=</span> <span class="n">print_hello</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
     <span class="n">my_subflow</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
 
-<span class="n">hello_world</span><span class="p">(</span><span class="s2">&quot;Marvin&quot;</span><span class="p">)</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">hello_world</span><span class="p">(</span><span class="s2">&quot;Marvin&quot;</span><span class="p">)</span>
 </code></pre></div>
 <p>You can also define flows or tasks in separate modules and import them for usage. For example, here's a simple subflow module:</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
@@ -9877,7 +9910,7 @@ Subflow<span class="w"> </span>says:<span class="w"> </span>Hello<span class="w"
 
 <div class="admonition tip">
 <p class="admonition-title">Subflows or tasks?</p>
-<p>In Prefect you can call tasks <em>or</em> subflows to do work within your workflow, including passing results from other tasks to your subflow. 
+<p>In Prefect you can call tasks <em>or</em> subflows to do work within your workflow, including passing results from other tasks to your subflow.
 So a common question is:</p>
 <p>"When should I use a subflow instead of a task?"</p>
 <p>We recommend writing tasks that do a discrete, specific piece of work in your workflow: calling an API, performing a database operation, analyzing or transforming a data point. 
@@ -9893,13 +9926,13 @@ Here are some scenarios where you might choose to use a subflow rather than call
 </ul>
 </div>
 <h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h2>
-<p>Flows can be called with both positional and keyword arguments. These arguments are resolved at runtime into a dictionary of <strong>parameters</strong> mapping name to value. 
+<p>Flows can be called with both positional and keyword arguments. These arguments are resolved at runtime into a dictionary of <strong>parameters</strong> mapping name to value.
 These parameters are stored by the Prefect orchestration engine on the flow run object.</p>
 <div class="admonition warning">
 <p class="admonition-title">Prefect API requires keyword arguments</p>
 <p>When creating flow runs from the Prefect API, parameter names must be specified when overriding defaults &mdash; they cannot be positional.</p>
 </div>
-<p>Type hints provide an easy way to enforce typing on your flow parameters via <a href="https://pydantic-docs.helpmanual.io/">pydantic</a>. 
+<p>Type hints provide an easy way to enforce typing on your flow parameters via <a href="https://pydantic-docs.helpmanual.io/">pydantic</a>.
 This means <em>any</em> pydantic model used as a type hint within a flow will be coerced automatically into the relevant object type:</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span>
 <span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">BaseModel</span>
@@ -9913,8 +9946,8 @@ This means <em>any</em> pydantic model used as a type hint within a flow will be
 <span class="k">def</span> <span class="nf">model_validator</span><span class="p">(</span><span class="n">model</span><span class="p">:</span> <span class="n">Model</span><span class="p">):</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
 </code></pre></div>
-<p>Note that parameter values can be provided to a flow via API using a <a href="/concepts/deployments/">deployment</a>. 
-Flow run parameters sent to the API on flow calls are coerced to a serializable form. 
+<p>Note that parameter values can be provided to a flow via API using a <a href="/concepts/deployments/">deployment</a>.
+Flow run parameters sent to the API on flow calls are coerced to a serializable form.
 Type hints on your flow functions provide you a way of automatically coercing JSON provided values to their appropriate Python representation.</p>
 <p>For example, to automatically convert something to a datetime:</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span>
@@ -9926,11 +9959,17 @@ Type hints on your flow functions provide you a way of automatically coercing JS
         <span class="n">date</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;It was </span><span class="si">{</span><span class="n">date</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%A&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2"> on </span><span class="si">{</span><span class="n">date</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-<span class="n">what_day_is_it</span><span class="p">(</span><span class="s2">&quot;2021-01-01T02:00:19.180906&quot;</span><span class="p">)</span>
-<span class="c1"># It was Friday on 2021-01-01T02:00:19.180906</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">what_day_is_it</span><span class="p">(</span><span class="s2">&quot;2021-01-01T02:00:19.180906&quot;</span><span class="p">)</span>
 </code></pre></div>
-<p>Parameters are validated before a flow is run. 
-If a flow call receives invalid parameters, a flow run is created in a <code>Failed</code> state. 
+<p>When you run this flow, you'll see the following output:</p>
+<div class="terminal">
+<div class="highlight"><pre><span></span><code>It<span class="w"> </span>was<span class="w"> </span>Friday<span class="w"> </span>on<span class="w"> </span><span class="m">2021</span>-01-01T02:00:19.180906
+</code></pre></div>
+</div>
+
+<p>Parameters are validated before a flow is run.
+If a flow call receives invalid parameters, a flow run is created in a <code>Failed</code> state.
 If a flow run for a deployment receives invalid parameters, it will move from a <code>Pending</code> state to a <code>Failed</code> without entering a <code>Running</code> state.</p>
 <div class="admonition info">
 <p class="admonition-title">Flow run parameters cannot exceed <code>512kb</code> in size</p>
@@ -9958,7 +9997,8 @@ If a flow run for a deployment receives invalid parameters, it will move from a 
 <span class="k">def</span> <span class="nf">always_fails_flow</span><span class="p">():</span>
 <span class="hll">    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;This flow immediately fails&quot;</span><span class="p">)</span>
 </span>
-<span class="n">always_fails_flow</span><span class="p">()</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">always_fails_flow</span><span class="p">()</span>
 </code></pre></div>
 <p>Running this flow produces the following result:</p>
 <div class="terminal">
@@ -10077,8 +10117,8 @@ I<span class="s1">&#39;m fail safe!</span>
     <span class="n">z</span> <span class="o">=</span> <span class="n">always_succeeds_flow</span><span class="p">()</span>
 <span class="hll">    <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span>
 </span></code></pre></div>
-<p>Running this flow produces the following result. 
-It fails because one of the three returned futures failed. 
+<p>Running this flow produces the following result.
+It fails because one of the three returned futures failed.
 Note that the final state is <code>Failed</code>, but the states of each of the returned futures is included in the flow state:</p>
 <div class="terminal">
 <div class="highlight"><pre><span></span><code><span class="m">20</span>:57:51.547<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>prefect.engine<span class="w"> </span>-<span class="w"> </span>Created<span class="w"> </span>flow<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;impartial-gorilla&#39;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>flow<span class="w"> </span><span class="s1">&#39;always-fails-flow&#39;</span>
@@ -10099,7 +10139,7 @@ Failed<span class="o">(</span><span class="nv">message</span><span class="o">=</
 
 <div class="admonition note">
 <p class="admonition-title">Returning multiple states</p>
-<p>When returning multiple states, they must be contained in a <code>set</code>, <code>list</code>, or <code>tuple</code>. 
+<p>When returning multiple states, they must be contained in a <code>set</code>, <code>list</code>, or <code>tuple</code>.
 If other collection types are used, the result of the contained states will not be checked.</p>
 </div>
 <h3 id="return-a-manual-state">Return a manual state<a class="headerlink" href="#return-a-manual-state" title="Permanent link">&para;</a></h3>
@@ -10178,8 +10218,8 @@ Completed<span class="o">(</span><span class="nv">message</span><span class="o">
 </div>
 
 <h2 id="serving-a-flow">Serving a flow<a class="headerlink" href="#serving-a-flow" title="Permanent link">&para;</a></h2>
-<p>The simplest way to create a <a href="/concepts/deployments/">deployment</a> for your flow is by calling its <a href="/api-ref/prefect/flows/#prefect.flows.Flow.serve"><code>serve</code> method</a>. 
-This method creates a deployment for the flow and starts a long-running process that monitors for work from the Prefect server. 
+<p>The simplest way to create a <a href="/concepts/deployments/">deployment</a> for your flow is by calling its <a href="/api-ref/prefect/flows/#prefect.flows.Flow.serve"><code>serve</code> method</a>.
+This method creates a deployment for the flow and starts a long-running process that monitors for work from the Prefect server.
 When work is found, it is executed within its own isolated subprocess.</p>
 <div class="highlight"><span class="filename">hello_world.py</span><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span>
 
@@ -10209,7 +10249,7 @@ When work is found, it is executed within its own isolated subprocess.</p>
 </ul>
 <div class="admonition tip">
 <p class="admonition-title">Schedules are auto-paused on shutdown</p>
-<p>By default, stopping the process running <code>flow.serve</code> will pause the schedule for the deployment (if it has one). 
+<p>By default, stopping the process running <code>flow.serve</code> will pause the schedule for the deployment (if it has one).
 When running this in environments where restarts are expected use the <code>pause_on_shutdown=False</code> flag to prevent this behavior:</p>
 <div class="highlight"><pre><span></span><code><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
     <span class="n">hello_world</span><span class="o">.</span><span class="n">serve</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;my-first-deployment&quot;</span><span class="p">,</span>
@@ -10304,12 +10344,12 @@ This pattern allows you to update your flow code without restarting the serving 
 When a flow run is paused, code execution is stopped and the process continues to run.
 When a flow run is suspended, code execution is stopped and so is the process.</p>
 <h3 id="pausing-a-flow-run">Pausing a flow run<a class="headerlink" href="#pausing-a-flow-run" title="Permanent link">&para;</a></h3>
-<p>Prefect enables pausing an in-progress flow run for manual approval. 
+<p>Prefect enables pausing an in-progress flow run for manual approval.
 Prefect exposes this functionality via the <a href="/api-ref/prefect/engine/#prefect.engine.pause_flow_run"><code>pause_flow_run</code></a> and <a href="/api-ref/prefect/engine/#prefect.engine.resume_flow_run"><code>resume_flow_run</code></a> functions.</p>
 <div class="admonition note">
 <p class="admonition-title">Timeouts</p>
-<p>Paused flow runs time out after one hour by default. 
-After the timeout, the flow run will fail with a message saying it paused and never resumed. 
+<p>Paused flow runs time out after one hour by default.
+After the timeout, the flow run will fail with a message saying it paused and never resumed.
 You can specify a different timeout period in seconds using the <code>timeout</code> parameter.</p>
 </div>
 <p>Most simply, <code>pause_flow_run</code> can be called inside a flow:</p>
@@ -10340,7 +10380,7 @@ You can specify a different timeout period in seconds using the <code>timeout</c
         <span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
 
-<span class="nd">@flow</span>
+<span class="nd">@flow</span><span class="p">(</span><span class="n">log_prints</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">my_flow</span><span class="p">():</span>
     <span class="n">terminal_state</span> <span class="o">=</span> <span class="n">task_one</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="n">return_state</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">terminal_state</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">StateType</span><span class="o">.</span><span class="n">COMPLETED</span><span class="p">:</span>
@@ -10369,24 +10409,24 @@ You can specify a different timeout period in seconds using the <code>timeout</c
 <p>Similar to pausing a flow run, Prefect enables suspending an in-progress flow run.</p>
 <div class="admonition note">
 <p class="admonition-title">The difference between pausing and suspending a flow run</p>
-<p>There is an important difference between pausing and suspending a flow run. 
-When you pause a flow run, the flow code is still running but is <em>blocked</em> until someone resumes the flow. 
-This is not the case with suspending a flow run! 
+<p>There is an important difference between pausing and suspending a flow run.
+When you pause a flow run, the flow code is still running but is <em>blocked</em> until someone resumes the flow.
+This is not the case with suspending a flow run!
 When you suspend a flow run, the flow exits completely and the infrastructure running it (e.g., a Kubernetes Job) tears down.</p>
 <p>This means that you can suspend flow runs to save costs instead of paying for long-running infrastructure. 
 However, when the flow run resumes, the flow code will execute again from the beginning of the flow, so you should use <a href="/concepts/tasks/">tasks</a> and <a href="/concepts/tasks/#caching">task caching</a> to avoid recomputing expensive operations.</p>
 </div>
 <p>Prefect exposes this functionality via the <a href="/api-ref/prefect/engine/#prefect.engine.suspend_flow_run"><code>suspend_flow_run</code></a> and <a href="/api-ref/prefect/engine/#prefect.engine.resume_flow_run"><code>resume_flow_run</code></a> functions, as well as the Prefect UI.</p>
-<p>When called inside of a flow <code>suspend_flow_run</code> will immediately suspend execution of the flow run. 
+<p>When called inside of a flow <code>suspend_flow_run</code> will immediately suspend execution of the flow run.
 The flow run will be marked as <code>Suspended</code> and will not be resumed until <code>resume_flow_run</code> is called.</p>
 <div class="admonition note">
 <p class="admonition-title">Timeouts</p>
-<p>Suspended flow runs time out after one hour by default. 
-After the timeout, the flow run will fail with a message saying it suspended and never resumed. 
+<p>Suspended flow runs time out after one hour by default.
+After the timeout, the flow run will fail with a message saying it suspended and never resumed.
 You can specify a different timeout period in seconds using the <code>timeout</code> parameter or pass <code>timeout=None</code> for no timeout.</p>
 </div>
-<p>Here is an example of a flow that does not block flow execution while paused. 
-This flow will exit after one task, and will be rescheduled upon resuming. 
+<p>Here is an example of a flow that does not block flow execution while paused.
+This flow will exit after one task, and will be rescheduled upon resuming.
 The stored result of the first task is retrieved instead of being rerun.</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">pause_flow_run</span><span class="p">,</span> <span class="n">task</span>
 
@@ -10420,16 +10460,16 @@ the scheduled flow run independently of the calling flow.</p>
 <h2 id="waiting-for-input-when-pausing-or-suspending-a-flow-run">Waiting for input when pausing or suspending a flow run<a class="headerlink" href="#waiting-for-input-when-pausing-or-suspending-a-flow-run" title="Permanent link">&para;</a></h2>
 <div class="admonition warning">
 <p class="admonition-title">Experimental</p>
-<p>The <code>wait_for_input</code> parameter used in the <code>pause_flow_run</code> or <code>suspend_flow_run</code> functions is an experimental feature. 
-The interface or behavior of this feature may change without warning in future releases. </p>
+<p>The <code>wait_for_input</code> parameter used in the <code>pause_flow_run</code> or <code>suspend_flow_run</code> functions is an experimental feature.
+The interface or behavior of this feature may change without warning in future releases.</p>
 <p>If you encounter any issues, please let us know in Slack or with a Github issue.</p>
 </div>
-<p>When pausing or suspending a flow run you may want to wait for input from a user. 
-Prefect provides a way to do this by leveraging the <code>pause_flow_run</code> and <code>suspend_flow_run</code> functions. 
-These functions accept a <code>wait_for_input</code> argument, the value of which should be a subclass of <code>prefect.input.RunInput</code>, a pydantic model. 
+<p>When pausing or suspending a flow run you may want to wait for input from a user.
+Prefect provides a way to do this by leveraging the <code>pause_flow_run</code> and <code>suspend_flow_run</code> functions.
+These functions accept a <code>wait_for_input</code> argument, the value of which should be a subclass of <code>prefect.input.RunInput</code>, a pydantic model.
 When resuming the flow run, users are required to provide data for this model. Upon successful validation, the flow run resumes, and the return value of the <code>pause_flow_run</code> or <code>suspend_flow_run</code> is an instance of the model containing the provided data.</p>
 <p>Here is an example of a flow that pauses and waits for input from a user:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">get_run_logger</span><span class="p">,</span> <span class="n">pause_flow_run</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">pause_flow_run</span>
 <span class="kn">from</span> <span class="nn">prefect.input</span> <span class="kn">import</span> <span class="n">RunInput</span>
 
 
@@ -10437,43 +10477,41 @@ When resuming the flow run, users are required to provide data for this model. U
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
 
 
-<span class="nd">@flow</span>
+<span class="nd">@flow</span><span class="p">(</span><span class="n">log_prints</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">greet_user</span><span class="p">():</span>
-    <span class="n">logger</span> <span class="o">=</span> <span class="n">get_run_logger</span><span class="p">()</span>
-
     <span class="n">user_input</span> <span class="o">=</span> <span class="k">await</span> <span class="n">pause_flow_run</span><span class="p">(</span>
         <span class="n">wait_for_input</span><span class="o">=</span><span class="n">UserNameInput</span>
     <span class="p">)</span>
 
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Hello, </span><span class="si">{</span><span class="n">user_input</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">!&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Hello, </span><span class="si">{</span><span class="n">user_input</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">!&quot;</span><span class="p">)</span>
 </code></pre></div>
-<p>Running this flow will create a flow run. The flow run will advance until code execution reaches <code>pause_flow_run</code>, at which point it will move into a <code>Paused</code> state. 
-Execution will block and wait for resumption. </p>
-<p>When resuming the flow run, users will be prompted to provide a value for the <code>name</code> field of the <code>UserNameInput</code> model. 
-Upon successful validation, the flow run will resume, and the return value of the <code>pause_flow_run</code> will be an instance of the <code>UserNameInput</code> model containing the provided data. </p>
+<p>Running this flow will create a flow run. The flow run will advance until code execution reaches <code>pause_flow_run</code>, at which point it will move into a <code>Paused</code> state.
+Execution will block and wait for resumption.</p>
+<p>When resuming the flow run, users will be prompted to provide a value for the <code>name</code> field of the <code>UserNameInput</code> model.
+Upon successful validation, the flow run will resume, and the return value of the <code>pause_flow_run</code> will be an instance of the <code>UserNameInput</code> model containing the provided data.</p>
 <p>For more in-depth information on receiving input from users when pausing and suspending flow runs, see the <a href="/guides/creating-interactive-workflows/">Creating interactive workflows</a> guide.</p>
 <h2 id="canceling-a-flow-run">Canceling a flow run<a class="headerlink" href="#canceling-a-flow-run" title="Permanent link">&para;</a></h2>
 <p>You may cancel a scheduled or in-progress flow run from the CLI, UI, REST API, or Python client.</p>
-<p>When cancellation is requested, the flow run is moved to a "Cancelling" state. 
-If the deployment is a work pool-based deployemnt with a worker, then the worker monitors the state of flow runs and detects that cancellation has been requested. 
-The worker then sends a signal to the flow run infrastructure, requesting termination of the run. 
+<p>When cancellation is requested, the flow run is moved to a "Cancelling" state.
+If the deployment is a work pool-based deployemnt with a worker, then the worker monitors the state of flow runs and detects that cancellation has been requested.
+The worker then sends a signal to the flow run infrastructure, requesting termination of the run.
 If the run does not terminate after a grace period (default of 30 seconds), the infrastructure will be killed, ensuring the flow run exits.</p>
 <div class="admonition warning">
 <p class="admonition-title">A deployment is required</p>
-<p>Flow run cancellation requires the flow run to be associated with a <a href="#serving-a-flow">deployment</a>. 
-A monitoring process must be running to enforce the cancellation. 
-Inline subflow runs, i.e. those created without <code>run_deployment</code>, cannot be cancelled without cancelling the parent flow run. 
+<p>Flow run cancellation requires the flow run to be associated with a <a href="#serving-a-flow">deployment</a>.
+A monitoring process must be running to enforce the cancellation.
+Inline subflow runs, i.e. those created without <code>run_deployment</code>, cannot be cancelled without cancelling the parent flow run.
 If you may need to cancel a subflow run independent of its parent flow run, we recommend deploying it separately and starting it using the <a href="/api-ref/prefect/deployments/deployments/#prefect.deployments.deployments.run_deployment">run_deployment</a> function.</p>
 </div>
-<p>Cancellation is robust to restarts of Prefect workers. 
-To enable this, we attach metadata about the created infrastructure to the flow run. 
-Internally, this is referred to as the <code>infrastructure_pid</code> or infrastructure identifier. 
+<p>Cancellation is robust to restarts of Prefect workers.
+To enable this, we attach metadata about the created infrastructure to the flow run.
+Internally, this is referred to as the <code>infrastructure_pid</code> or infrastructure identifier.
 Generally, this is composed of two parts:</p>
 <ol>
 <li>Scope: identifying where the infrastructure is running.</li>
 <li>ID: a unique identifier for the infrastructure within the scope.</li>
 </ol>
-<p>The scope is used to ensure that Prefect does not kill the wrong infrastructure. 
+<p>The scope is used to ensure that Prefect does not kill the wrong infrastructure.
 For example, workers running on multiple machines may have overlapping process IDs but should not have a matching scope.</p>
 <p>The identifiers for infrastructure types:</p>
 <ul>
@@ -10492,7 +10530,7 @@ For example, workers running on multiple machines may have overlapping process I
 </ul>
 <div class="admonition tip">
 <p class="admonition-title">Enhanced cancellation</p>
-<p>We are working on improving cases where cancellation can fail. 
+<p>We are working on improving cases where cancellation can fail.
 You can try the improved cancellation experience by enabling the <code>PREFECT_EXPERIMENTAL_ENABLE_ENHANCED_CANCELLATION</code> setting on your worker or agents:</p>
 <p><div class="terminal">
 <div class="highlight"><pre><span></span><code>prefect<span class="w"> </span>config<span class="w"> </span><span class="nb">set</span><span class="w"> </span><span class="nv">PREFECT_EXPERIMENTAL_ENABLE_ENHANCED_CANCELLATION</span><span class="o">=</span>True
@@ -10510,6 +10548,18 @@ You can try the improved cancellation experience by enabling the <code>PREFECT_E
 <h3 id="cancel-via-the-ui">Cancel via the UI<a class="headerlink" href="#cancel-via-the-ui" title="Permanent link">&para;</a></h3>
 <p>From the UI you can cancel a flow run by navigating to the flow run's detail page and clicking the <code>Cancel</code> button in the upper right corner.</p>
 <p><img alt="Prefect UI" src="/img/ui/flow-run-cancellation-ui.png" /></p>
+<h2 id="timeouts">Timeouts<a class="headerlink" href="#timeouts" title="Permanent link">&para;</a></h2>
+<p>Flow timeouts are used to prevent unintentional long-running flows. When the duration of execution for a flow exceeds the duration specified in the timeout, a timeout exception will be raised and the flow will be marked as failed. In the UI, the flow will be visibly designated as <code>TimedOut</code>.</p>
+<p>Timeout durations are specified using the <code>timeout_seconds</code> keyword argument.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span>
+<span class="kn">import</span> <span class="nn">time</span>
+
+<span class="hll"><span class="nd">@flow</span><span class="p">(</span><span class="n">timeout_seconds</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">log_prints</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span class="k">def</span> <span class="nf">show_timeouts</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;I will execute&quot;</span><span class="p">)</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;I will not execute&quot;</span><span class="p">)</span>
+</code></pre></div>
 
 
 
