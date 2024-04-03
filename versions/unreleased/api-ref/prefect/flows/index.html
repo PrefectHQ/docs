@@ -10733,7 +10733,10 @@ loaded from the parent flow.</p>
 <span class="normal">1320</span>
 <span class="normal">1321</span>
 <span class="normal">1322</span>
-<span class="normal">1323</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@PrefectObjectRegistry</span><span class="o">.</span><span class="n">register_instances</span>
+<span class="normal">1323</span>
+<span class="normal">1324</span>
+<span class="normal">1325</span>
+<span class="normal">1326</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@PrefectObjectRegistry</span><span class="o">.</span><span class="n">register_instances</span>
 <span class="k">class</span> <span class="nc">Flow</span><span class="p">(</span><span class="n">Generic</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">R</span><span class="p">]):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A Prefect workflow definition.</span>
@@ -11575,6 +11578,7 @@ loaded from the parent flow.</p>
         <span class="n">enforce_parameter_schema</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">entrypoint_type</span><span class="p">:</span> <span class="n">EntrypointType</span> <span class="o">=</span> <span class="n">EntrypointType</span><span class="o">.</span><span class="n">FILE_PATH</span><span class="p">,</span>
         <span class="n">print_next_steps</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">ignore_warnings</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">UUID</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Deploys a flow to run on dynamic infrastructure via a work pool.</span>
@@ -11629,6 +11633,7 @@ loaded from the parent flow.</p>
 <span class="sd">                entrypoint, ensure that the module will be importable in the execution environment.</span>
 <span class="sd">            print_next_steps_message: Whether or not to print a message with next steps</span>
 <span class="sd">                after deploying the deployments.</span>
+<span class="sd">            ignore_warnings: Whether or not to ignore warnings about the work pool type.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            The ID of the created/updated deployment.</span>
@@ -11705,6 +11710,7 @@ loaded from the parent flow.</p>
             <span class="n">build</span><span class="o">=</span><span class="n">build</span><span class="p">,</span>
             <span class="n">push</span><span class="o">=</span><span class="n">push</span><span class="p">,</span>
             <span class="n">print_next_steps_message</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">ignore_warnings</span><span class="o">=</span><span class="n">ignore_warnings</span><span class="p">,</span>
         <span class="p">)</span>
 
         <span class="k">if</span> <span class="n">print_next_steps</span><span class="p">:</span>
@@ -12305,6 +12311,20 @@ after deploying the deployments.</p>
               <em>required</em>
           </td>
         </tr>
+        <tr>
+          <td><code>ignore_warnings</code></td>
+          <td>
+                <code>bool</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>Whether or not to ignore warnings about the work pool type.</p>
+            </div>
+          </td>
+          <td>
+                <code>False</code>
+          </td>
+        </tr>
     </tbody>
   </table>
 
@@ -12547,7 +12567,10 @@ after deploying the deployments.</p>
 <span class="normal">1127</span>
 <span class="normal">1128</span>
 <span class="normal">1129</span>
-<span class="normal">1130</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@sync_compatible</span>
+<span class="normal">1130</span>
+<span class="normal">1131</span>
+<span class="normal">1132</span>
+<span class="normal">1133</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@sync_compatible</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">deploy</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -12572,6 +12595,7 @@ after deploying the deployments.</p>
     <span class="n">enforce_parameter_schema</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">entrypoint_type</span><span class="p">:</span> <span class="n">EntrypointType</span> <span class="o">=</span> <span class="n">EntrypointType</span><span class="o">.</span><span class="n">FILE_PATH</span><span class="p">,</span>
     <span class="n">print_next_steps</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">ignore_warnings</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">UUID</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Deploys a flow to run on dynamic infrastructure via a work pool.</span>
@@ -12626,6 +12650,7 @@ after deploying the deployments.</p>
 <span class="sd">            entrypoint, ensure that the module will be importable in the execution environment.</span>
 <span class="sd">        print_next_steps_message: Whether or not to print a message with next steps</span>
 <span class="sd">            after deploying the deployments.</span>
+<span class="sd">        ignore_warnings: Whether or not to ignore warnings about the work pool type.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        The ID of the created/updated deployment.</span>
@@ -12702,6 +12727,7 @@ after deploying the deployments.</p>
         <span class="n">build</span><span class="o">=</span><span class="n">build</span><span class="p">,</span>
         <span class="n">push</span><span class="o">=</span><span class="n">push</span><span class="p">,</span>
         <span class="n">print_next_steps_message</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">ignore_warnings</span><span class="o">=</span><span class="n">ignore_warnings</span><span class="p">,</span>
     <span class="p">)</span>
 
     <span class="k">if</span> <span class="n">print_next_steps</span><span class="p">:</span>
@@ -14561,10 +14587,7 @@ it's rendered inline, otherwise in a new window as a PNG.</p>
 
           <details class="quote">
             <summary>Source code in <code>prefect/flows.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1276</span>
-<span class="normal">1277</span>
-<span class="normal">1278</span>
-<span class="normal">1279</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1279</span>
 <span class="normal">1280</span>
 <span class="normal">1281</span>
 <span class="normal">1282</span>
@@ -14608,7 +14631,10 @@ it's rendered inline, otherwise in a new window as a PNG.</p>
 <span class="normal">1320</span>
 <span class="normal">1321</span>
 <span class="normal">1322</span>
-<span class="normal">1323</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@sync_compatible</span>
+<span class="normal">1323</span>
+<span class="normal">1324</span>
+<span class="normal">1325</span>
+<span class="normal">1326</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@sync_compatible</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">visualize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Generates a graphviz object representing the current flow. In IPython notebooks,</span>
@@ -15672,10 +15698,7 @@ function should accept three arguments: the flow, the flow run, and the current 
 
           <details class="quote">
             <summary>Source code in <code>prefect/flows.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1363</span>
-<span class="normal">1364</span>
-<span class="normal">1365</span>
-<span class="normal">1366</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1366</span>
 <span class="normal">1367</span>
 <span class="normal">1368</span>
 <span class="normal">1369</span>
@@ -15855,7 +15878,10 @@ function should accept three arguments: the flow, the flow run, and the current 
 <span class="normal">1543</span>
 <span class="normal">1544</span>
 <span class="normal">1545</span>
-<span class="normal">1546</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">flow</span><span class="p">(</span>
+<span class="normal">1546</span>
+<span class="normal">1547</span>
+<span class="normal">1548</span>
+<span class="normal">1549</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">flow</span><span class="p">(</span>
     <span class="n">__fn</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -16151,10 +16177,7 @@ to a flow function</p>
 
           <details class="quote">
             <summary>Source code in <code>prefect/flows.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1638</span>
-<span class="normal">1639</span>
-<span class="normal">1640</span>
-<span class="normal">1641</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1641</span>
 <span class="normal">1642</span>
 <span class="normal">1643</span>
 <span class="normal">1644</span>
@@ -16188,7 +16211,10 @@ to a flow function</p>
 <span class="normal">1672</span>
 <span class="normal">1673</span>
 <span class="normal">1674</span>
-<span class="normal">1675</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">load_flow_from_entrypoint</span><span class="p">(</span><span class="n">entrypoint</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Flow</span><span class="p">:</span>
+<span class="normal">1675</span>
+<span class="normal">1676</span>
+<span class="normal">1677</span>
+<span class="normal">1678</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">load_flow_from_entrypoint</span><span class="p">(</span><span class="n">entrypoint</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Flow</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Extract a flow object from a script at an entrypoint by running all of the code in the file.</span>
 
@@ -16373,10 +16399,7 @@ the flow to return.</p>
 
           <details class="quote">
             <summary>Source code in <code>prefect/flows.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1611</span>
-<span class="normal">1612</span>
-<span class="normal">1613</span>
-<span class="normal">1614</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1614</span>
 <span class="normal">1615</span>
 <span class="normal">1616</span>
 <span class="normal">1617</span>
@@ -16397,7 +16420,10 @@ the flow to return.</p>
 <span class="normal">1632</span>
 <span class="normal">1633</span>
 <span class="normal">1634</span>
-<span class="normal">1635</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">load_flow_from_script</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">flow_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Flow</span><span class="p">:</span>
+<span class="normal">1635</span>
+<span class="normal">1636</span>
+<span class="normal">1637</span>
+<span class="normal">1638</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">load_flow_from_script</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">flow_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Flow</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Extract a flow object from a script by running all of the code in the file.</span>
 
@@ -16447,10 +16473,7 @@ to line numbers and contextual tracebacks can be provided.</p>
 
           <details class="quote">
             <summary>Source code in <code>prefect/flows.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1678</span>
-<span class="normal">1679</span>
-<span class="normal">1680</span>
-<span class="normal">1681</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1681</span>
 <span class="normal">1682</span>
 <span class="normal">1683</span>
 <span class="normal">1684</span>
@@ -16468,7 +16491,10 @@ to line numbers and contextual tracebacks can be provided.</p>
 <span class="normal">1696</span>
 <span class="normal">1697</span>
 <span class="normal">1698</span>
-<span class="normal">1699</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">load_flow_from_text</span><span class="p">(</span><span class="n">script_contents</span><span class="p">:</span> <span class="n">AnyStr</span><span class="p">,</span> <span class="n">flow_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="normal">1699</span>
+<span class="normal">1700</span>
+<span class="normal">1701</span>
+<span class="normal">1702</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">load_flow_from_text</span><span class="p">(</span><span class="n">script_contents</span><span class="p">:</span> <span class="n">AnyStr</span><span class="p">,</span> <span class="n">flow_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Load a flow from a text script.</span>
 
@@ -16562,10 +16588,7 @@ will be executed.</p>
 
           <details class="quote">
             <summary>Source code in <code>prefect/flows.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1597</span>
-<span class="normal">1598</span>
-<span class="normal">1599</span>
-<span class="normal">1600</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1600</span>
 <span class="normal">1601</span>
 <span class="normal">1602</span>
 <span class="normal">1603</span>
@@ -16573,7 +16596,10 @@ will be executed.</p>
 <span class="normal">1605</span>
 <span class="normal">1606</span>
 <span class="normal">1607</span>
-<span class="normal">1608</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">load_flows_from_script</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Flow</span><span class="p">]:</span>
+<span class="normal">1608</span>
+<span class="normal">1609</span>
+<span class="normal">1610</span>
+<span class="normal">1611</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">load_flows_from_script</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Flow</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Load all flow objects from the given python script. All of the code in the file</span>
 <span class="sd">    will be executed.</span>
@@ -16654,10 +16680,7 @@ will be executed.</p>
 
           <details class="quote">
             <summary>Source code in <code>prefect/flows.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1553</span>
-<span class="normal">1554</span>
-<span class="normal">1555</span>
-<span class="normal">1556</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1556</span>
 <span class="normal">1557</span>
 <span class="normal">1558</span>
 <span class="normal">1559</span>
@@ -16695,7 +16718,10 @@ will be executed.</p>
 <span class="normal">1591</span>
 <span class="normal">1592</span>
 <span class="normal">1593</span>
-<span class="normal">1594</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">select_flow</span><span class="p">(</span>
+<span class="normal">1594</span>
+<span class="normal">1595</span>
+<span class="normal">1596</span>
+<span class="normal">1597</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">select_flow</span><span class="p">(</span>
     <span class="n">flows</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Flow</span><span class="p">],</span> <span class="n">flow_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">from_message</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Flow</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>

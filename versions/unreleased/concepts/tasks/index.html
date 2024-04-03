@@ -9704,7 +9704,7 @@ prefect config set PREFECT_TASK_DEFAULT_RETRY_DELAY_SECONDS = [1, 10, 100]
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Saying hello&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="s2">&quot;hello &quot;</span> <span class="o">+</span> <span class="n">name_input</span>
 
-<span class="nd">@flow</span>
+<span class="nd">@flow</span><span class="p">(</span><span class="n">log_prints</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">hello_flow</span><span class="p">(</span><span class="n">name_input</span><span class="p">):</span>
     <span class="n">hello_task</span><span class="p">(</span><span class="n">name_input</span><span class="p">)</span>
 </code></pre></div>
@@ -9783,15 +9783,14 @@ prefect config set PREFECT_TASK_DEFAULT_RETRY_DELAY_SECONDS = [1, 10, 100]
 <h2 id="timeouts">Timeouts<a class="headerlink" href="#timeouts" title="Permanent link">&para;</a></h2>
 <p>Task timeouts are used to prevent unintentional long-running tasks. When the duration of execution for a task exceeds the duration specified in the timeout, a timeout exception will be raised and the task will be marked as failed. In the UI, the task will be visibly designated as <code>TimedOut</code>. From the perspective of the flow, the timed-out task will be treated like any other failed task.</p>
 <p>Timeout durations are specified using the <code>timeout_seconds</code> keyword argument.</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">task</span><span class="p">,</span> <span class="n">get_run_logger</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">task</span>
 <span class="kn">import</span> <span class="nn">time</span>
 
-<span class="nd">@task</span><span class="p">(</span><span class="n">timeout_seconds</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">show_timeouts</span><span class="p">():</span>
-    <span class="n">logger</span> <span class="o">=</span> <span class="n">get_run_logger</span><span class="p">()</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;I will execute&quot;</span><span class="p">)</span>
+<span class="hll"><span class="nd">@task</span><span class="p">(</span><span class="n">timeout_seconds</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">log_prints</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span class="k">def</span> <span class="nf">show_timeouts</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;I will execute&quot;</span><span class="p">)</span>
     <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;I will not execute&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;I will not execute&quot;</span><span class="p">)</span>
 </code></pre></div>
 <h2 id="task-results">Task results<a class="headerlink" href="#task-results" title="Permanent link">&para;</a></h2>
 <p>Depending on how you call tasks, they can return different types of results and optionally engage the use of a <a href="/concepts/task-runners/">task runner</a>.</p>
