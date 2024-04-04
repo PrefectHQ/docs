@@ -3829,10 +3829,6 @@ if (amplitudeKey){
       
         
       
-        
-      
-        
-      
     
     
     
@@ -3912,60 +3908,6 @@ if (amplitudeKey){
     
   
     cloud
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../api-ref/prefect/client/collections.md" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    
-  
-    collections
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../api-ref/prefect/client/constants.md" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    
-  
-    constants
   
 
     
@@ -9364,16 +9306,17 @@ A 9am daily schedule with a DST-aware start date will maintain a local 9am time 
 <li>Through the Prefect UI</li>
 <li>Via the <code>cron</code>, <code>interval</code>, or <code>rrule</code> parameters if building your deployment via the <a href="/concepts/flows/#serving-a-flow"><code>serve</code> method</a> of the <code>Flow</code> object or <a href="/concepts/flows/#serving-multiple-flows-at-once">the <code>serve</code> utility</a> for managing multiple flows simultaneously</li>
 <li>If using <a href="/concepts/work-pools/">worker-based deployments</a></li>
+<li>When you define a deployment with <code>flow.serve</code> or <code>flow.deploy</code></li>
 <li>Through the interactive <code>prefect deploy</code> command</li>
-<li>With the <code>deployments</code> -&gt; <code>schedule</code> section of the <code>prefect.yaml</code> file )</li>
-<li>If using <a href="/concepts/deployments/#block-based-deployments">block-based deployments</a></li>
+<li>With the <code>deployments</code> -&gt; <code>schedules</code> section of the <code>prefect.yaml</code> file</li>
+<li>If using <a href="/concepts/deployments/#block-based-deployments">block-based deployments</a> - Deprecated </li>
 <li><code>Through the schedules</code> section of the deployment YAML file</li>
 <li>By passing <code>schedules</code> into the <code>Deployment</code> class or <code>Deployment.build_from_flow</code></li>
 </ul>
 <h3 id="creating-schedules-in-the-ui">Creating schedules in the UI<a class="headerlink" href="#creating-schedules-in-the-ui" title="Permanent link">&para;</a></h3>
 <p>You can add schedules in the <strong>Schedules</strong> section on a <strong>Deployment</strong> page in the UI.</p>
 <h4 id="locating-the-schedules-section">Locating the <strong>Schedules</strong> section<a class="headerlink" href="#locating-the-schedules-section" title="Permanent link">&para;</a></h4>
-<p>On larger displays, the <strong>Schedules</strong> section will appear in a sidebar on the right side of the page. On smaller displays, it will appear on the "Details" tab of the page.</p>
+<p>The <strong>Schedules</strong> section appears in the sidebar on the right side of the page on wider displays. On narrower displays, it appears on the <strong>Details</strong> tab of the page.</p>
 <h4 id="adding-a-schedule">Adding a schedule<a class="headerlink" href="#adding-a-schedule" title="Permanent link">&para;</a></h4>
 <p>Under <strong>Schedules</strong>, select the <strong>+ Schedule</strong> button. A modal dialog will open. Choose <strong>Interval</strong> or <strong>Cron</strong> to create a schedule.</p>
 <p><img alt="Prefect UI with Interval button selected" src="/img/ui/interval-schedule.png" /></p>
@@ -9403,6 +9346,7 @@ schedule: A schedule object defining when to execute runs of this deployment. Us
 <p>Here's an example of creating a cron schedule with <code>serve</code> for a deployment flow that will run every minute of every day:</p>
 <div class="highlight"><pre><span></span><code><span class="n">my_flow</span><span class="o">.</span><span class="n">serve</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;flowing&quot;</span><span class="p">,</span> <span class="n">cron</span><span class="o">=</span><span class="s2">&quot;* * * * *&quot;</span><span class="p">)</span>
 </code></pre></div>
+<p>If using work pool-based deployments, the <code>deploy</code> method has the same schedule-based parameters.</p>
 <p>Here's an example of creating an interval schedule with <code>serve</code> for a deployment flow that will run every 10 minutes with an anchor date and a timezone:</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">timedelta</span><span class="p">,</span> <span class="n">datetime</span>
 <span class="kn">from</span> <span class="nn">prefect.client.schemas.schedules</span> <span class="kn">import</span> <span class="n">IntervalSchedule</span>
@@ -9411,7 +9355,7 @@ schedule: A schedule object defining when to execute runs of this deployment. Us
 </code></pre></div>
 <p>Block and agent-based deployments with Python files are not a recommended way to create deployments.
 However, if you are using that deployment creation method you can create a schedule by passing a <code>schedule</code> argument to the <code>Deployment.build_from_flow</code> method.</p>
-<p>Here's how you create the equivalent schedule in a Python deployment file, with a timezone specified.</p>
+<p>Here's how you create the equivalent schedule in a Python deployment file.</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect.server.schemas.schedules</span> <span class="kn">import</span> <span class="n">CronSchedule</span>
 
 <span class="n">cron_demo</span> <span class="o">=</span> <span class="n">Deployment</span><span class="o">.</span><span class="n">build_from_flow</span><span class="p">(</span>
@@ -9420,7 +9364,6 @@ However, if you are using that deployment creation method you can create a sched
     <span class="n">schedule</span><span class="o">=</span><span class="p">(</span><span class="n">CronSchedule</span><span class="p">(</span><span class="n">cron</span><span class="o">=</span><span class="s2">&quot;0 0 * * *&quot;</span><span class="p">,</span> <span class="n">timezone</span><span class="o">=</span><span class="s2">&quot;America/Chicago&quot;</span><span class="p">))</span>
 <span class="p">)</span>
 </code></pre></div>
-<p><code>IntervalSchedule</code> and <code>RRuleSchedule</code> are the other two Python class schedule options.</p>
 <h3 id="creating-schedules-with-the-interactive-prefect-deploy-command">Creating schedules with the interactive <code>prefect deploy</code> command<a class="headerlink" href="#creating-schedules-with-the-interactive-prefect-deploy-command" title="Permanent link">&para;</a></h3>
 <p>If you are using <a href="/concepts/work-pools/">worker-based deployments</a>, you can create a schedule through the interactive <code>prefect deploy</code> command.
 You will be prompted to choose which type of schedule to create.</p>

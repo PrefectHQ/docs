@@ -3745,10 +3745,6 @@ if (amplitudeKey){
       
         
       
-        
-      
-        
-      
     
     
     
@@ -3828,60 +3824,6 @@ if (amplitudeKey){
     
   
     cloud
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../api-ref/prefect/client/collections.md" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    
-  
-    collections
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../api-ref/prefect/client/constants.md" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    
-  
-    constants
   
 
     
@@ -9163,7 +9105,7 @@ If you make changes to the flow code, you will need to push those changes to you
 ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━┓
 ┃<span class="w"> </span>Name<span class="w">                              </span>┃<span class="w"> </span>Status<span class="w">  </span>┃<span class="w"> </span>Details<span class="w"> </span>┃
 ┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━╇━━━━━━━━━┩
-│<span class="w"> </span>get-repo-info/my-first-deployment<span class="w">  </span><span class="p">|</span><span class="w"> </span>applied<span class="w"> </span>│<span class="w">         </span>│
+│<span class="w"> </span>get-repo-info/my-first-deployment<span class="w"> </span><span class="p">|</span><span class="w"> </span>applied<span class="w"> </span>│<span class="w">         </span>│
 └───────────────────────────────────┴─────────┴─────────┘
 
 To<span class="w"> </span>schedule<span class="w"> </span>a<span class="w"> </span>run<span class="w"> </span><span class="k">for</span><span class="w"> </span>this<span class="w"> </span>deployment,<span class="w"> </span>use<span class="w"> </span>the<span class="w"> </span>following<span class="w"> </span>command:
@@ -9291,12 +9233,14 @@ Created<span class="w"> </span>work<span class="w"> </span>pool<span class="w"> 
     <span class="n">my_flow</span><span class="o">.</span><span class="n">deploy</span><span class="p">(</span>                                                            
         <span class="n">name</span><span class="o">=</span><span class="s2">&quot;my-deployment&quot;</span><span class="p">,</span>
         <span class="n">work_pool_name</span><span class="o">=</span><span class="s2">&quot;above-ground&quot;</span><span class="p">,</span>
-<span class="hll">        <span class="n">image</span><span class="o">=</span><span class="n">DeploymentImage</span><span class="p">(</span>
-</span>            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;my-image:latest&quot;</span><span class="p">,</span>
+<span class="hll">        <span class="n">cron</span><span class="o">=</span><span class="s2">&quot;0 1 * * *&quot;</span><span class="p">,</span>
+</span>        <span class="n">image</span><span class="o">=</span><span class="n">DeploymentImage</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;my-image:latest&quot;</span><span class="p">,</span>
             <span class="n">platform</span><span class="o">=</span><span class="s2">&quot;linux/amd64&quot;</span><span class="p">,</span>
         <span class="p">)</span>
     <span class="p">)</span>
 </code></pre></div>
+<p>Run the script to create the deployment on the Prefect Cloud server.</p>
 <p>Running this script will build a Docker image with the tag <code>&lt;region&gt;-docker.pkg.dev/&lt;project&gt;/&lt;repository-name&gt;/my-image:latest</code> and push it to your repository.</p>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
@@ -9304,6 +9248,8 @@ Created<span class="w"> </span>work<span class="w"> </span>pool<span class="w"> 
 </div>
 <p>Note that you only need to include an object of the <code>DeploymentImage</code> class with the argument <code>platform="linux/amd64</code> if you're building your image on a machine with an ARM-based processor.
 Otherwise, you could just pass <code>image="my-image:latest"</code> to <code>deploy</code>.</p>
+<p>Also note that the <code>cron</code> argument will schedule the deployment to run at 1am every day. 
+See the <a href="/concepts/schedules/">schedules</a> docs for more information on scheduling options.</p>
 <p>See the <a href="/guides/push-work-pools/">Push Work Pool guide</a> for more details and example commands for each cloud provider.</p>
 <h2 id="next-step">Next step<a class="headerlink" href="#next-step" title="Permanent link">&para;</a></h2>
 <p>Congratulations!
