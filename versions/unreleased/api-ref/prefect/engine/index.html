@@ -9575,7 +9575,8 @@ deserialized and validated dictionary of python objects.</p>
 
           <details class="quote">
             <summary>Source code in <code>prefect/engine.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">486</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">485</span>
+<span class="normal">486</span>
 <span class="normal">487</span>
 <span class="normal">488</span>
 <span class="normal">489</span>
@@ -9679,8 +9680,7 @@ deserialized and validated dictionary of python objects.</p>
 <span class="normal">587</span>
 <span class="normal">588</span>
 <span class="normal">589</span>
-<span class="normal">590</span>
-<span class="normal">591</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">begin_flow_run</span><span class="p">(</span>
+<span class="normal">590</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">begin_flow_run</span><span class="p">(</span>
     <span class="n">flow</span><span class="p">:</span> <span class="n">Flow</span><span class="p">,</span>
     <span class="n">flow_run</span><span class="p">:</span> <span class="n">FlowRun</span><span class="p">,</span>
     <span class="n">parameters</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
@@ -9706,7 +9706,7 @@ deserialized and validated dictionary of python objects.</p>
     <span class="n">logger</span> <span class="o">=</span> <span class="n">flow_run_logger</span><span class="p">(</span><span class="n">flow_run</span><span class="p">,</span> <span class="n">flow</span><span class="p">)</span>
 
     <span class="n">log_prints</span> <span class="o">=</span> <span class="n">should_log_prints</span><span class="p">(</span><span class="n">flow</span><span class="p">)</span>
-    <span class="n">flow_run_context</span> <span class="o">=</span> <span class="n">PartialModel</span><span class="p">(</span><span class="n">FlowRunContext</span><span class="p">,</span> <span class="n">log_prints</span><span class="o">=</span><span class="n">log_prints</span><span class="p">)</span>
+    <span class="n">flow_run_context</span> <span class="o">=</span> <span class="n">FlowRunContext</span><span class="o">.</span><span class="n">construct</span><span class="p">(</span><span class="n">log_prints</span><span class="o">=</span><span class="n">log_prints</span><span class="p">)</span>
 
     <span class="k">async</span> <span class="k">with</span> <span class="n">AsyncExitStack</span><span class="p">()</span> <span class="k">as</span> <span class="n">stack</span><span class="p">:</span>
         <span class="k">await</span> <span class="n">stack</span><span class="o">.</span><span class="n">enter_async_context</span><span class="p">(</span>
@@ -9813,10 +9813,7 @@ deserialized and validated dictionary of python objects.</p>
 
           <details class="quote">
             <summary>Source code in <code>prefect/engine.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1420</span>
-<span class="normal">1421</span>
-<span class="normal">1422</span>
-<span class="normal">1423</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1423</span>
 <span class="normal">1424</span>
 <span class="normal">1425</span>
 <span class="normal">1426</span>
@@ -9917,7 +9914,10 @@ deserialized and validated dictionary of python objects.</p>
 <span class="normal">1521</span>
 <span class="normal">1522</span>
 <span class="normal">1523</span>
-<span class="normal">1524</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">begin_task_map</span><span class="p">(</span>
+<span class="normal">1524</span>
+<span class="normal">1525</span>
+<span class="normal">1526</span>
+<span class="normal">1527</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">begin_task_map</span><span class="p">(</span>
     <span class="n">task</span><span class="p">:</span> <span class="n">Task</span><span class="p">,</span>
     <span class="n">flow_run_context</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">FlowRunContext</span><span class="p">],</span>
     <span class="n">parameters</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
@@ -10068,10 +10068,7 @@ remote worker:
 
           <details class="quote">
             <summary>Source code in <code>prefect/engine.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1779</span>
-<span class="normal">1780</span>
-<span class="normal">1781</span>
-<span class="normal">1782</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1782</span>
 <span class="normal">1783</span>
 <span class="normal">1784</span>
 <span class="normal">1785</span>
@@ -10184,7 +10181,10 @@ remote worker:
 <span class="normal">1892</span>
 <span class="normal">1893</span>
 <span class="normal">1894</span>
-<span class="normal">1895</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">begin_task_run</span><span class="p">(</span>
+<span class="normal">1895</span>
+<span class="normal">1896</span>
+<span class="normal">1897</span>
+<span class="normal">1898</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">begin_task_run</span><span class="p">(</span>
     <span class="n">task</span><span class="p">:</span> <span class="n">Task</span><span class="p">,</span>
     <span class="n">task_run</span><span class="p">:</span> <span class="n">TaskRun</span><span class="p">,</span>
     <span class="n">parameters</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
@@ -10338,10 +10338,7 @@ found.</p>
 
           <details class="quote">
             <summary>Source code in <code>prefect/engine.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1527</span>
-<span class="normal">1528</span>
-<span class="normal">1529</span>
-<span class="normal">1530</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1530</span>
 <span class="normal">1531</span>
 <span class="normal">1532</span>
 <span class="normal">1533</span>
@@ -10381,7 +10378,10 @@ found.</p>
 <span class="normal">1567</span>
 <span class="normal">1568</span>
 <span class="normal">1569</span>
-<span class="normal">1570</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">collect_task_run_inputs</span><span class="p">(</span><span class="n">expr</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">max_depth</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Set</span><span class="p">[</span><span class="n">TaskRunInput</span><span class="p">]:</span>
+<span class="normal">1570</span>
+<span class="normal">1571</span>
+<span class="normal">1572</span>
+<span class="normal">1573</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">collect_task_run_inputs</span><span class="p">(</span><span class="n">expr</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">max_depth</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Set</span><span class="p">[</span><span class="n">TaskRunInput</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This function recurses through an expression to generate a set of any discernible</span>
 <span class="sd">    task run inputs it finds in the data structure. It produces a set of all inputs</span>
@@ -10480,7 +10480,8 @@ found.</p>
 
           <details class="quote">
             <summary>Source code in <code>prefect/engine.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">594</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">593</span>
+<span class="normal">594</span>
 <span class="normal">595</span>
 <span class="normal">596</span>
 <span class="normal">597</span>
@@ -10635,9 +10636,7 @@ found.</p>
 <span class="normal">746</span>
 <span class="normal">747</span>
 <span class="normal">748</span>
-<span class="normal">749</span>
-<span class="normal">750</span>
-<span class="normal">751</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@inject_client</span>
+<span class="normal">749</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@inject_client</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">create_and_begin_subflow_run</span><span class="p">(</span>
     <span class="n">flow</span><span class="p">:</span> <span class="n">Flow</span><span class="p">,</span>
     <span class="n">parameters</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
@@ -10768,8 +10767,7 @@ found.</p>
                     <span class="c1"># interruptible as well</span>
                     <span class="n">interruptible</span><span class="o">=</span><span class="n">parent_flow_run_context</span><span class="o">.</span><span class="n">timeout_scope</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span>
                     <span class="n">client</span><span class="o">=</span><span class="n">client</span><span class="p">,</span>
-                    <span class="n">partial_flow_run_context</span><span class="o">=</span><span class="n">PartialModel</span><span class="p">(</span>
-                        <span class="n">FlowRunContext</span><span class="p">,</span>
+                    <span class="n">partial_flow_run_context</span><span class="o">=</span><span class="n">FlowRunContext</span><span class="o">.</span><span class="n">construct</span><span class="p">(</span>
                         <span class="n">sync_portal</span><span class="o">=</span><span class="n">parent_flow_run_context</span><span class="o">.</span><span class="n">sync_portal</span><span class="p">,</span>
                         <span class="n">task_runner</span><span class="o">=</span><span class="n">task_runner</span><span class="p">,</span>
                         <span class="n">background_tasks</span><span class="o">=</span><span class="n">parent_flow_run_context</span><span class="o">.</span><span class="n">background_tasks</span><span class="p">,</span>
@@ -10823,12 +10821,7 @@ the provided parameters using the existing result storage mechanism.</p>
 
           <details class="quote">
             <summary>Source code in <code>prefect/engine.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2953</span>
-<span class="normal">2954</span>
-<span class="normal">2955</span>
-<span class="normal">2956</span>
-<span class="normal">2957</span>
-<span class="normal">2958</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2958</span>
 <span class="normal">2959</span>
 <span class="normal">2960</span>
 <span class="normal">2961</span>
@@ -10848,7 +10841,12 @@ the provided parameters using the existing result storage mechanism.</p>
 <span class="normal">2975</span>
 <span class="normal">2976</span>
 <span class="normal">2977</span>
-<span class="normal">2978</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">create_autonomous_task_run</span><span class="p">(</span><span class="n">task</span><span class="p">:</span> <span class="n">Task</span><span class="p">,</span> <span class="n">parameters</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">TaskRun</span><span class="p">:</span>
+<span class="normal">2978</span>
+<span class="normal">2979</span>
+<span class="normal">2980</span>
+<span class="normal">2981</span>
+<span class="normal">2982</span>
+<span class="normal">2983</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">create_autonomous_task_run</span><span class="p">(</span><span class="n">task</span><span class="p">:</span> <span class="n">Task</span><span class="p">,</span> <span class="n">parameters</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">TaskRun</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a task run in the API for an autonomous task submission and store</span>
 <span class="sd">    the provided parameters using the existing result storage mechanism.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -10902,7 +10900,8 @@ the provided parameters using the existing result storage mechanism.</p>
 
           <details class="quote">
             <summary>Source code in <code>prefect/engine.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">335</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">334</span>
+<span class="normal">335</span>
 <span class="normal">336</span>
 <span class="normal">337</span>
 <span class="normal">338</span>
@@ -10968,8 +10967,7 @@ the provided parameters using the existing result storage mechanism.</p>
 <span class="normal">398</span>
 <span class="normal">399</span>
 <span class="normal">400</span>
-<span class="normal">401</span>
-<span class="normal">402</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@inject_client</span>
+<span class="normal">401</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@inject_client</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">create_then_begin_flow_run</span><span class="p">(</span>
     <span class="n">flow</span><span class="p">:</span> <span class="n">Flow</span><span class="p">,</span>
     <span class="n">parameters</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
@@ -11062,7 +11060,8 @@ for flow run execution with minimal overhead.</p>
 
           <details class="quote">
             <summary>Source code in <code>prefect/engine.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">226</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">225</span>
+<span class="normal">226</span>
 <span class="normal">227</span>
 <span class="normal">228</span>
 <span class="normal">229</span>
@@ -11138,8 +11137,7 @@ for flow run execution with minimal overhead.</p>
 <span class="normal">299</span>
 <span class="normal">300</span>
 <span class="normal">301</span>
-<span class="normal">302</span>
-<span class="normal">303</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">enter_flow_run_engine_from_flow_call</span><span class="p">(</span>
+<span class="normal">302</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">enter_flow_run_engine_from_flow_call</span><span class="p">(</span>
     <span class="n">flow</span><span class="p">:</span> <span class="n">Flow</span><span class="p">,</span>
     <span class="n">parameters</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
     <span class="n">wait_for</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Iterable</span><span class="p">[</span><span class="n">PrefectFuture</span><span class="p">]],</span>
@@ -11244,7 +11242,8 @@ loop as this should be called from a fresh process.</p>
 
           <details class="quote">
             <summary>Source code in <code>prefect/engine.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">306</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">305</span>
+<span class="normal">306</span>
 <span class="normal">307</span>
 <span class="normal">308</span>
 <span class="normal">309</span>
@@ -11269,8 +11268,7 @@ loop as this should be called from a fresh process.</p>
 <span class="normal">328</span>
 <span class="normal">329</span>
 <span class="normal">330</span>
-<span class="normal">331</span>
-<span class="normal">332</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">enter_flow_run_engine_from_subprocess</span><span class="p">(</span><span class="n">flow_run_id</span><span class="p">:</span> <span class="n">UUID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">State</span><span class="p">:</span>
+<span class="normal">331</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">enter_flow_run_engine_from_subprocess</span><span class="p">(</span><span class="n">flow_run_id</span><span class="p">:</span> <span class="n">UUID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">State</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Sync entrypoint for flow runs that have been submitted for execution by an agent</span>
 
@@ -11320,10 +11318,7 @@ loop as this should be called from a fresh process.</p>
 
           <details class="quote">
             <summary>Source code in <code>prefect/engine.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1363</span>
-<span class="normal">1364</span>
-<span class="normal">1365</span>
-<span class="normal">1366</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1366</span>
 <span class="normal">1367</span>
 <span class="normal">1368</span>
 <span class="normal">1369</span>
@@ -11374,7 +11369,10 @@ loop as this should be called from a fresh process.</p>
 <span class="normal">1414</span>
 <span class="normal">1415</span>
 <span class="normal">1416</span>
-<span class="normal">1417</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">enter_task_run_engine</span><span class="p">(</span>
+<span class="normal">1417</span>
+<span class="normal">1418</span>
+<span class="normal">1419</span>
+<span class="normal">1420</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">enter_task_run_engine</span><span class="p">(</span>
     <span class="n">task</span><span class="p">:</span> <span class="n">Task</span><span class="p">,</span>
     <span class="n">parameters</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
     <span class="n">wait_for</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Iterable</span><span class="p">[</span><span class="n">PrefectFuture</span><span class="p">]],</span>
@@ -11453,15 +11451,15 @@ loop as this should be called from a fresh process.</p>
 
           <details class="quote">
             <summary>Source code in <code>prefect/engine.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2626</span>
-<span class="normal">2627</span>
-<span class="normal">2628</span>
-<span class="normal">2629</span>
-<span class="normal">2630</span>
-<span class="normal">2631</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2631</span>
 <span class="normal">2632</span>
 <span class="normal">2633</span>
-<span class="normal">2634</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_state_for_result</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">State</span><span class="p">]:</span>
+<span class="normal">2634</span>
+<span class="normal">2635</span>
+<span class="normal">2636</span>
+<span class="normal">2637</span>
+<span class="normal">2638</span>
+<span class="normal">2639</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_state_for_result</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">State</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get the state related to a result object.</span>
 
@@ -11520,12 +11518,7 @@ We do not hash the result because:
 
           <details class="quote">
             <summary>Source code in <code>prefect/engine.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2637</span>
-<span class="normal">2638</span>
-<span class="normal">2639</span>
-<span class="normal">2640</span>
-<span class="normal">2641</span>
-<span class="normal">2642</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2642</span>
 <span class="normal">2643</span>
 <span class="normal">2644</span>
 <span class="normal">2645</span>
@@ -11574,7 +11567,12 @@ We do not hash the result because:
 <span class="normal">2688</span>
 <span class="normal">2689</span>
 <span class="normal">2690</span>
-<span class="normal">2691</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">link_state_to_result</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">State</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="normal">2691</span>
+<span class="normal">2692</span>
+<span class="normal">2693</span>
+<span class="normal">2694</span>
+<span class="normal">2695</span>
+<span class="normal">2696</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">link_state_to_result</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">State</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Caches a link between a state and a result and its components using</span>
 <span class="sd">    the `id` of the components to map to the state. The cache is persisted to the</span>
@@ -11690,7 +11688,9 @@ which allows it to raise a <code>TimeoutError</code> to respect the timeout.</p>
 
           <details class="quote">
             <summary>Source code in <code>prefect/engine.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">754</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">752</span>
+<span class="normal">753</span>
+<span class="normal">754</span>
 <span class="normal">755</span>
 <span class="normal">756</span>
 <span class="normal">757</span>
@@ -11903,14 +11903,17 @@ which allows it to raise a <code>TimeoutError</code> to respect the timeout.</p>
 <span class="normal">964</span>
 <span class="normal">965</span>
 <span class="normal">966</span>
-<span class="normal">967</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">orchestrate_flow_run</span><span class="p">(</span>
+<span class="normal">967</span>
+<span class="normal">968</span>
+<span class="normal">969</span>
+<span class="normal">970</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">orchestrate_flow_run</span><span class="p">(</span>
     <span class="n">flow</span><span class="p">:</span> <span class="n">Flow</span><span class="p">,</span>
     <span class="n">flow_run</span><span class="p">:</span> <span class="n">FlowRun</span><span class="p">,</span>
     <span class="n">parameters</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
     <span class="n">wait_for</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Iterable</span><span class="p">[</span><span class="n">PrefectFuture</span><span class="p">]],</span>
     <span class="n">interruptible</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
     <span class="n">client</span><span class="p">:</span> <span class="n">PrefectClient</span><span class="p">,</span>
-    <span class="n">partial_flow_run_context</span><span class="p">:</span> <span class="n">PartialModel</span><span class="p">[</span><span class="n">FlowRunContext</span><span class="p">],</span>
+    <span class="n">partial_flow_run_context</span><span class="p">:</span> <span class="n">FlowRunContext</span><span class="p">,</span>
     <span class="n">user_thread</span><span class="p">:</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">State</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -11961,11 +11964,16 @@ which allows it to raise a <code>TimeoutError</code> to respect the timeout.</p>
         <span class="c1"># Update the flow run to the latest data</span>
         <span class="n">flow_run</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">read_flow_run</span><span class="p">(</span><span class="n">flow_run</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="k">with</span> <span class="n">partial_flow_run_context</span><span class="o">.</span><span class="n">finalize</span><span class="p">(</span>
-                <span class="n">flow</span><span class="o">=</span><span class="n">flow</span><span class="p">,</span>
-                <span class="n">flow_run</span><span class="o">=</span><span class="n">flow_run</span><span class="p">,</span>
-                <span class="n">client</span><span class="o">=</span><span class="n">client</span><span class="p">,</span>
-                <span class="n">parameters</span><span class="o">=</span><span class="n">parameters</span><span class="p">,</span>
+            <span class="k">with</span> <span class="n">FlowRunContext</span><span class="p">(</span>
+                <span class="o">**</span><span class="p">{</span>
+                    <span class="o">**</span><span class="n">partial_flow_run_context</span><span class="o">.</span><span class="n">dict</span><span class="p">(),</span>
+                    <span class="o">**</span><span class="p">{</span>
+                        <span class="s2">&quot;flow_run&quot;</span><span class="p">:</span> <span class="n">flow_run</span><span class="p">,</span>
+                        <span class="s2">&quot;flow&quot;</span><span class="p">:</span> <span class="n">flow</span><span class="p">,</span>
+                        <span class="s2">&quot;client&quot;</span><span class="p">:</span> <span class="n">client</span><span class="p">,</span>
+                        <span class="s2">&quot;parameters&quot;</span><span class="p">:</span> <span class="n">parameters</span><span class="p">,</span>
+                    <span class="p">},</span>
+                <span class="p">}</span>
             <span class="p">)</span> <span class="k">as</span> <span class="n">flow_run_context</span><span class="p">:</span>
                 <span class="c1"># update flow run name</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">run_name_set</span> <span class="ow">and</span> <span class="n">flow</span><span class="o">.</span><span class="n">flow_run_name</span><span class="p">:</span>
@@ -12182,10 +12190,7 @@ here instead of receiving it already populated since we may be in a new environm
 
           <details class="quote">
             <summary>Source code in <code>prefect/engine.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1898</span>
-<span class="normal">1899</span>
-<span class="normal">1900</span>
-<span class="normal">1901</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1901</span>
 <span class="normal">1902</span>
 <span class="normal">1903</span>
 <span class="normal">1904</span>
@@ -12522,7 +12527,12 @@ here instead of receiving it already populated since we may be in a new environm
 <span class="normal">2235</span>
 <span class="normal">2236</span>
 <span class="normal">2237</span>
-<span class="normal">2238</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">orchestrate_task_run</span><span class="p">(</span>
+<span class="normal">2238</span>
+<span class="normal">2239</span>
+<span class="normal">2240</span>
+<span class="normal">2241</span>
+<span class="normal">2242</span>
+<span class="normal">2243</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">orchestrate_task_run</span><span class="p">(</span>
     <span class="n">task</span><span class="p">:</span> <span class="n">Task</span><span class="p">,</span>
     <span class="n">task_run</span><span class="p">:</span> <span class="n">TaskRun</span><span class="p">,</span>
     <span class="n">parameters</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
@@ -12564,8 +12574,7 @@ here instead of receiving it already populated since we may be in a new environm
         <span class="n">flow_run</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">read_flow_run</span><span class="p">(</span><span class="n">task_run</span><span class="o">.</span><span class="n">flow_run_id</span><span class="p">)</span>
     <span class="n">logger</span> <span class="o">=</span> <span class="n">task_run_logger</span><span class="p">(</span><span class="n">task_run</span><span class="p">,</span> <span class="n">task</span><span class="o">=</span><span class="n">task</span><span class="p">,</span> <span class="n">flow_run</span><span class="o">=</span><span class="n">flow_run</span><span class="p">)</span>
 
-    <span class="n">partial_task_run_context</span> <span class="o">=</span> <span class="n">PartialModel</span><span class="p">(</span>
-        <span class="n">TaskRunContext</span><span class="p">,</span>
+    <span class="n">partial_task_run_context</span> <span class="o">=</span> <span class="n">TaskRunContext</span><span class="o">.</span><span class="n">construct</span><span class="p">(</span>
         <span class="n">task_run</span><span class="o">=</span><span class="n">task_run</span><span class="p">,</span>
         <span class="n">task</span><span class="o">=</span><span class="n">task</span><span class="p">,</span>
         <span class="n">client</span><span class="o">=</span><span class="n">client</span><span class="p">,</span>
@@ -12605,16 +12614,19 @@ here instead of receiving it already populated since we may be in a new environm
 
     <span class="c1"># Generate the cache key to attach to proposed states</span>
     <span class="c1"># The cache key uses a TaskRunContext that does not include a `timeout_context``</span>
+
+    <span class="n">task_run_context</span> <span class="o">=</span> <span class="n">TaskRunContext</span><span class="p">(</span>
+        <span class="o">**</span><span class="n">partial_task_run_context</span><span class="o">.</span><span class="n">dict</span><span class="p">(),</span> <span class="n">parameters</span><span class="o">=</span><span class="n">resolved_parameters</span>
+    <span class="p">)</span>
+
     <span class="n">cache_key</span> <span class="o">=</span> <span class="p">(</span>
         <span class="n">task</span><span class="o">.</span><span class="n">cache_key_fn</span><span class="p">(</span>
-            <span class="n">partial_task_run_context</span><span class="o">.</span><span class="n">finalize</span><span class="p">(</span><span class="n">parameters</span><span class="o">=</span><span class="n">resolved_parameters</span><span class="p">),</span>
+            <span class="n">task_run_context</span><span class="p">,</span>
             <span class="n">resolved_parameters</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="k">if</span> <span class="n">task</span><span class="o">.</span><span class="n">cache_key_fn</span>
         <span class="k">else</span> <span class="kc">None</span>
     <span class="p">)</span>
-
-    <span class="n">task_run_context</span> <span class="o">=</span> <span class="n">partial_task_run_context</span><span class="o">.</span><span class="n">finalize</span><span class="p">(</span><span class="n">parameters</span><span class="o">=</span><span class="n">resolved_parameters</span><span class="p">)</span>
 
     <span class="c1"># Ignore the cached results for a cache key, default = false</span>
     <span class="c1"># Setting on task level overrules the Prefect setting (env var)</span>
@@ -13029,10 +13041,7 @@ from this function.</p>
 
           <details class="quote">
             <summary>Source code in <code>prefect/engine.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 994</span>
-<span class="normal"> 995</span>
-<span class="normal"> 996</span>
-<span class="normal"> 997</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 997</span>
 <span class="normal"> 998</span>
 <span class="normal"> 999</span>
 <span class="normal">1000</span>
@@ -13122,7 +13131,10 @@ from this function.</p>
 <span class="normal">1084</span>
 <span class="normal">1085</span>
 <span class="normal">1086</span>
-<span class="normal">1087</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@sync_compatible</span>
+<span class="normal">1087</span>
+<span class="normal">1088</span>
+<span class="normal">1089</span>
+<span class="normal">1090</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@sync_compatible</span>
 <span class="nd">@deprecated_parameter</span><span class="p">(</span>
     <span class="s2">&quot;flow_run_id&quot;</span><span class="p">,</span> <span class="n">start_date</span><span class="o">=</span><span class="s2">&quot;Dec 2023&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Use `suspend_flow_run` instead.&quot;</span>
 <span class="p">)</span>
@@ -13369,12 +13381,7 @@ the Prefect API</p>
 
           <details class="quote">
             <summary>Source code in <code>prefect/engine.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2503</span>
-<span class="normal">2504</span>
-<span class="normal">2505</span>
-<span class="normal">2506</span>
-<span class="normal">2507</span>
-<span class="normal">2508</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2508</span>
 <span class="normal">2509</span>
 <span class="normal">2510</span>
 <span class="normal">2511</span>
@@ -13467,7 +13474,12 @@ the Prefect API</p>
 <span class="normal">2598</span>
 <span class="normal">2599</span>
 <span class="normal">2600</span>
-<span class="normal">2601</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">propose_state</span><span class="p">(</span>
+<span class="normal">2601</span>
+<span class="normal">2602</span>
+<span class="normal">2603</span>
+<span class="normal">2604</span>
+<span class="normal">2605</span>
+<span class="normal">2606</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">propose_state</span><span class="p">(</span>
     <span class="n">client</span><span class="p">:</span> <span class="n">PrefectClient</span><span class="p">,</span>
     <span class="n">state</span><span class="p">:</span> <span class="n">State</span><span class="p">,</span>
     <span class="n">force</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -13595,12 +13607,7 @@ state.</p>
 
           <details class="quote">
             <summary>Source code in <code>prefect/engine.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2320</span>
-<span class="normal">2321</span>
-<span class="normal">2322</span>
-<span class="normal">2323</span>
-<span class="normal">2324</span>
-<span class="normal">2325</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2325</span>
 <span class="normal">2326</span>
 <span class="normal">2327</span>
 <span class="normal">2328</span>
@@ -13630,7 +13637,12 @@ state.</p>
 <span class="normal">2352</span>
 <span class="normal">2353</span>
 <span class="normal">2354</span>
-<span class="normal">2355</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@asynccontextmanager</span>
+<span class="normal">2355</span>
+<span class="normal">2356</span>
+<span class="normal">2357</span>
+<span class="normal">2358</span>
+<span class="normal">2359</span>
+<span class="normal">2360</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@asynccontextmanager</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">report_flow_run_crashes</span><span class="p">(</span><span class="n">flow_run</span><span class="p">:</span> <span class="n">FlowRun</span><span class="p">,</span> <span class="n">client</span><span class="p">:</span> <span class="n">PrefectClient</span><span class="p">,</span> <span class="n">flow</span><span class="p">:</span> <span class="n">Flow</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Detect flow run crashes during this context and update the run to a proper final</span>
@@ -13695,12 +13707,7 @@ state.</p>
 
           <details class="quote">
             <summary>Source code in <code>prefect/engine.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2358</span>
-<span class="normal">2359</span>
-<span class="normal">2360</span>
-<span class="normal">2361</span>
-<span class="normal">2362</span>
-<span class="normal">2363</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2363</span>
 <span class="normal">2364</span>
 <span class="normal">2365</span>
 <span class="normal">2366</span>
@@ -13724,7 +13731,12 @@ state.</p>
 <span class="normal">2384</span>
 <span class="normal">2385</span>
 <span class="normal">2386</span>
-<span class="normal">2387</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@asynccontextmanager</span>
+<span class="normal">2387</span>
+<span class="normal">2388</span>
+<span class="normal">2389</span>
+<span class="normal">2390</span>
+<span class="normal">2391</span>
+<span class="normal">2392</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@asynccontextmanager</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">report_task_run_crashes</span><span class="p">(</span><span class="n">task_run</span><span class="p">:</span> <span class="n">TaskRun</span><span class="p">,</span> <span class="n">client</span><span class="p">:</span> <span class="n">PrefectClient</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Detect task run crashes during this context and update the run to a proper final</span>
@@ -13830,12 +13842,7 @@ data.</p>
 
           <details class="quote">
             <summary>Source code in <code>prefect/engine.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2390</span>
-<span class="normal">2391</span>
-<span class="normal">2392</span>
-<span class="normal">2393</span>
-<span class="normal">2394</span>
-<span class="normal">2395</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2395</span>
 <span class="normal">2396</span>
 <span class="normal">2397</span>
 <span class="normal">2398</span>
@@ -13940,7 +13947,12 @@ data.</p>
 <span class="normal">2497</span>
 <span class="normal">2498</span>
 <span class="normal">2499</span>
-<span class="normal">2500</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">resolve_inputs</span><span class="p">(</span>
+<span class="normal">2500</span>
+<span class="normal">2501</span>
+<span class="normal">2502</span>
+<span class="normal">2503</span>
+<span class="normal">2504</span>
+<span class="normal">2505</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">resolve_inputs</span><span class="p">(</span>
     <span class="n">parameters</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">return_data</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">max_depth</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -14121,10 +14133,7 @@ data.</p>
 
           <details class="quote">
             <summary>Source code in <code>prefect/engine.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1338</span>
-<span class="normal">1339</span>
-<span class="normal">1340</span>
-<span class="normal">1341</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1341</span>
 <span class="normal">1342</span>
 <span class="normal">1343</span>
 <span class="normal">1344</span>
@@ -14143,7 +14152,10 @@ data.</p>
 <span class="normal">1357</span>
 <span class="normal">1358</span>
 <span class="normal">1359</span>
-<span class="normal">1360</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@sync_compatible</span>
+<span class="normal">1360</span>
+<span class="normal">1361</span>
+<span class="normal">1362</span>
+<span class="normal">1363</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@sync_compatible</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">resume_flow_run</span><span class="p">(</span><span class="n">flow_run_id</span><span class="p">,</span> <span class="n">run_input</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Resumes a paused flow.</span>
@@ -14198,7 +14210,8 @@ data.</p>
 
           <details class="quote">
             <summary>Source code in <code>prefect/engine.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">405</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">404</span>
+<span class="normal">405</span>
 <span class="normal">406</span>
 <span class="normal">407</span>
 <span class="normal">408</span>
@@ -14275,8 +14288,7 @@ data.</p>
 <span class="normal">479</span>
 <span class="normal">480</span>
 <span class="normal">481</span>
-<span class="normal">482</span>
-<span class="normal">483</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@inject_client</span>
+<span class="normal">482</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@inject_client</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">retrieve_flow_then_begin_flow_run</span><span class="p">(</span>
     <span class="n">flow_run_id</span><span class="p">:</span> <span class="n">UUID</span><span class="p">,</span>
     <span class="n">client</span><span class="p">:</span> <span class="n">PrefectClient</span><span class="p">,</span>
@@ -14473,10 +14485,7 @@ loaded and returned from this function.</p>
 
           <details class="quote">
             <summary>Source code in <code>prefect/engine.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1229</span>
-<span class="normal">1230</span>
-<span class="normal">1231</span>
-<span class="normal">1232</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1232</span>
 <span class="normal">1233</span>
 <span class="normal">1234</span>
 <span class="normal">1235</span>
@@ -14579,7 +14588,10 @@ loaded and returned from this function.</p>
 <span class="normal">1332</span>
 <span class="normal">1333</span>
 <span class="normal">1334</span>
-<span class="normal">1335</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@sync_compatible</span>
+<span class="normal">1335</span>
+<span class="normal">1336</span>
+<span class="normal">1337</span>
+<span class="normal">1338</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@sync_compatible</span>
 <span class="nd">@inject_client</span>
 <span class="nd">@experimental_parameter</span><span class="p">(</span>
     <span class="s2">&quot;wait_for_input&quot;</span><span class="p">,</span> <span class="n">group</span><span class="o">=</span><span class="s2">&quot;flow_run_input&quot;</span><span class="p">,</span> <span class="n">when</span><span class="o">=</span><span class="k">lambda</span> <span class="n">y</span><span class="p">:</span> <span class="n">y</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
