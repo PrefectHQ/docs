@@ -9631,7 +9631,8 @@ If tags are not provided, the deployment's tags will be used.</p>
 <span class="normal">691</span>
 <span class="normal">692</span>
 <span class="normal">693</span>
-<span class="normal">694</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@router</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;/</span><span class="si">{id}</span><span class="s2">/create_flow_run&quot;</span><span class="p">)</span>
+<span class="normal">694</span>
+<span class="normal">695</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@router</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;/</span><span class="si">{id}</span><span class="s2">/create_flow_run&quot;</span><span class="p">)</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">create_flow_run_from_deployment</span><span class="p">(</span>
     <span class="n">flow_run</span><span class="p">:</span> <span class="n">schemas</span><span class="o">.</span><span class="n">actions</span><span class="o">.</span><span class="n">DeploymentFlowRunCreate</span><span class="p">,</span>
     <span class="n">deployment_id</span><span class="p">:</span> <span class="n">UUID</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The deployment id&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;id&quot;</span><span class="p">),</span>
@@ -9722,6 +9723,7 @@ If tags are not provided, the deployment's tags will be used.</p>
             <span class="p">),</span>
             <span class="n">flow_id</span><span class="o">=</span><span class="n">deployment</span><span class="o">.</span><span class="n">flow_id</span><span class="p">,</span>
             <span class="n">deployment_id</span><span class="o">=</span><span class="n">deployment</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+            <span class="n">deployment_version</span><span class="o">=</span><span class="n">deployment</span><span class="o">.</span><span class="n">version</span><span class="p">,</span>
             <span class="n">parameters</span><span class="o">=</span><span class="n">parameters</span><span class="p">,</span>
             <span class="n">tags</span><span class="o">=</span><span class="nb">set</span><span class="p">(</span><span class="n">deployment</span><span class="o">.</span><span class="n">tags</span><span class="p">)</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="n">flow_run</span><span class="o">.</span><span class="n">tags</span><span class="p">),</span>
             <span class="n">infrastructure_document_id</span><span class="o">=</span><span class="p">(</span>
@@ -10478,8 +10480,7 @@ between work queues and deployments.</p>
 
           <details class="quote">
             <summary>Source code in <code>prefect/server/api/deployments.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">698</span>
-<span class="normal">699</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">699</span>
 <span class="normal">700</span>
 <span class="normal">701</span>
 <span class="normal">702</span>
@@ -10501,7 +10502,8 @@ between work queues and deployments.</p>
 <span class="normal">718</span>
 <span class="normal">719</span>
 <span class="normal">720</span>
-<span class="normal">721</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@router</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;/</span><span class="si">{id}</span><span class="s2">/work_queue_check&quot;</span><span class="p">,</span> <span class="n">deprecated</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="normal">721</span>
+<span class="normal">722</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@router</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;/</span><span class="si">{id}</span><span class="s2">/work_queue_check&quot;</span><span class="p">,</span> <span class="n">deprecated</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">work_queue_check_for_deployment</span><span class="p">(</span>
     <span class="n">deployment_id</span><span class="p">:</span> <span class="n">UUID</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The deployment id&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;id&quot;</span><span class="p">),</span>
     <span class="n">db</span><span class="p">:</span> <span class="n">PrefectDBInterface</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">provide_database_interface</span><span class="p">),</span>
