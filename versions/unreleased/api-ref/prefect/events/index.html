@@ -11645,11 +11645,7 @@ relationship will not be set.</p>
 
           <details class="quote">
             <summary>Source code in <code>prefect/events/utilities.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">16</span>
-<span class="normal">17</span>
-<span class="normal">18</span>
-<span class="normal">19</span>
-<span class="normal">20</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">20</span>
 <span class="normal">21</span>
 <span class="normal">22</span>
 <span class="normal">23</span>
@@ -11708,7 +11704,15 @@ relationship will not be set.</p>
 <span class="normal">76</span>
 <span class="normal">77</span>
 <span class="normal">78</span>
-<span class="normal">79</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">emit_event</span><span class="p">(</span>
+<span class="normal">79</span>
+<span class="normal">80</span>
+<span class="normal">81</span>
+<span class="normal">82</span>
+<span class="normal">83</span>
+<span class="normal">84</span>
+<span class="normal">85</span>
+<span class="normal">86</span>
+<span class="normal">87</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">emit_event</span><span class="p">(</span>
     <span class="n">event</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">resource</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
     <span class="n">occurred</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DateTimeTZ</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -11737,10 +11741,14 @@ relationship will not be set.</p>
 <span class="sd">        The event that was emitted if worker is using a client that emit</span>
 <span class="sd">        events, otherwise None</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">emit_events_to_cloud</span><span class="p">():</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">should_emit_events</span><span class="p">():</span>
         <span class="k">return</span> <span class="kc">None</span>
 
-    <span class="n">operational_clients</span> <span class="o">=</span> <span class="p">[</span><span class="n">AssertingEventsClient</span><span class="p">,</span> <span class="n">PrefectCloudEventsClient</span><span class="p">]</span>
+    <span class="n">operational_clients</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">AssertingEventsClient</span><span class="p">,</span>
+        <span class="n">PrefectCloudEventsClient</span><span class="p">,</span>
+        <span class="n">PrefectEventsClient</span><span class="p">,</span>
+    <span class="p">]</span>
     <span class="n">worker_instance</span> <span class="o">=</span> <span class="n">EventsWorker</span><span class="o">.</span><span class="n">instance</span><span class="p">()</span>
 
     <span class="k">if</span> <span class="n">worker_instance</span><span class="o">.</span><span class="n">client_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">operational_clients</span><span class="p">:</span>
