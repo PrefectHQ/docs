@@ -9254,7 +9254,8 @@ contains B".</li>
 
           <details class="quote">
             <summary>Source code in <code>prefect/server/models/deployments.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">728</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">727</span>
+<span class="normal">728</span>
 <span class="normal">729</span>
 <span class="normal">730</span>
 <span class="normal">731</span>
@@ -9307,10 +9308,9 @@ contains B".</li>
 <span class="normal">778</span>
 <span class="normal">779</span>
 <span class="normal">780</span>
-<span class="normal">781</span>
-<span class="normal">782</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@inject_db</span>
+<span class="normal">781</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@db_injector</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">check_work_queues_for_deployment</span><span class="p">(</span>
-    <span class="n">db</span><span class="p">:</span> <span class="n">PrefectDBInterface</span><span class="p">,</span> <span class="n">session</span><span class="p">:</span> <span class="n">sa</span><span class="o">.</span><span class="n">orm</span><span class="o">.</span><span class="n">Session</span><span class="p">,</span> <span class="n">deployment_id</span><span class="p">:</span> <span class="n">UUID</span>
+    <span class="n">db</span><span class="p">:</span> <span class="n">PrefectDBInterface</span><span class="p">,</span> <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">deployment_id</span><span class="p">:</span> <span class="n">UUID</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">schemas</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">WorkQueue</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get work queues that can pick up the specified deployment.</span>
@@ -9404,7 +9404,7 @@ contains B".</li>
         <tr>
           <td><code>session</code></td>
           <td>
-                <code><span title="sqlalchemy.orm.Session">Session</span></code>
+                <code><span title="sqlalchemy.ext.asyncio.AsyncSession">AsyncSession</span></code>
           </td>
           <td>
             <div class="doc-md-description">
@@ -9568,11 +9568,10 @@ contains B".</li>
 <span class="normal">458</span>
 <span class="normal">459</span>
 <span class="normal">460</span>
-<span class="normal">461</span>
-<span class="normal">462</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@inject_db</span>
+<span class="normal">461</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@db_injector</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">count_deployments</span><span class="p">(</span>
-    <span class="n">session</span><span class="p">:</span> <span class="n">sa</span><span class="o">.</span><span class="n">orm</span><span class="o">.</span><span class="n">Session</span><span class="p">,</span>
     <span class="n">db</span><span class="p">:</span> <span class="n">PrefectDBInterface</span><span class="p">,</span>
+    <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span>
     <span class="n">flow_filter</span><span class="p">:</span> <span class="n">schemas</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">FlowFilter</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">flow_run_filter</span><span class="p">:</span> <span class="n">schemas</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">FlowRunFilter</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">task_run_filter</span><span class="p">:</span> <span class="n">schemas</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">TaskRunFilter</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -9606,7 +9605,6 @@ contains B".</li>
         <span class="n">deployment_filter</span><span class="o">=</span><span class="n">deployment_filter</span><span class="p">,</span>
         <span class="n">work_pool_filter</span><span class="o">=</span><span class="n">work_pool_filter</span><span class="p">,</span>
         <span class="n">work_queue_filter</span><span class="o">=</span><span class="n">work_queue_filter</span><span class="p">,</span>
-        <span class="n">db</span><span class="o">=</span><span class="n">db</span><span class="p">,</span>
     <span class="p">)</span>
 
     <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
@@ -9693,6 +9691,7 @@ contains B".</li>
     <tbody>
         <tr>
           <td>
+                <code><span title="typing.Optional">Optional</span>[<span title="prefect.server.database.orm_models.ORMDeployment">ORMDeployment</span>]</code>
           </td>
           <td>
             <div class="doc-md-description">
@@ -9705,8 +9704,7 @@ contains B".</li>
 
           <details class="quote">
             <summary>Source code in <code>prefect/server/models/deployments.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 58</span>
-<span class="normal"> 59</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 59</span>
 <span class="normal"> 60</span>
 <span class="normal"> 61</span>
 <span class="normal"> 62</span>
@@ -9804,12 +9802,13 @@ contains B".</li>
 <span class="normal">154</span>
 <span class="normal">155</span>
 <span class="normal">156</span>
-<span class="normal">157</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@inject_db</span>
+<span class="normal">157</span>
+<span class="normal">158</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@db_injector</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">create_deployment</span><span class="p">(</span>
+    <span class="n">db</span><span class="p">:</span> <span class="n">PrefectDBInterface</span><span class="p">,</span>
     <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span>
     <span class="n">deployment</span><span class="p">:</span> <span class="n">schemas</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">Deployment</span><span class="p">,</span>
-    <span class="n">db</span><span class="p">:</span> <span class="n">PrefectDBInterface</span><span class="p">,</span>
-<span class="p">):</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ORMDeployment</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Upserts a deployment.</span>
 
 <span class="sd">    Args:</span>
@@ -9874,7 +9873,7 @@ contains B".</li>
     <span class="c1"># schedules and any runs from the old deployment.</span>
 
     <span class="k">await</span> <span class="n">_delete_scheduled_runs</span><span class="p">(</span>
-        <span class="n">session</span><span class="o">=</span><span class="n">session</span><span class="p">,</span> <span class="n">deployment_id</span><span class="o">=</span><span class="n">deployment_id</span><span class="p">,</span> <span class="n">db</span><span class="o">=</span><span class="n">db</span><span class="p">,</span> <span class="n">auto_scheduled_only</span><span class="o">=</span><span class="kc">True</span>
+        <span class="n">session</span><span class="o">=</span><span class="n">session</span><span class="p">,</span> <span class="n">deployment_id</span><span class="o">=</span><span class="n">deployment_id</span><span class="p">,</span> <span class="n">auto_scheduled_only</span><span class="o">=</span><span class="kc">True</span>
     <span class="p">)</span>
 
     <span class="k">await</span> <span class="n">delete_schedules_for_deployment</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">session</span><span class="p">,</span> <span class="n">deployment_id</span><span class="o">=</span><span class="n">deployment_id</span><span class="p">)</span>
@@ -9989,7 +9988,8 @@ contains B".</li>
 
           <details class="quote">
             <summary>Source code in <code>prefect/server/models/deployments.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">800</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">799</span>
+<span class="normal">800</span>
 <span class="normal">801</span>
 <span class="normal">802</span>
 <span class="normal">803</span>
@@ -10016,8 +10016,7 @@ contains B".</li>
 <span class="normal">824</span>
 <span class="normal">825</span>
 <span class="normal">826</span>
-<span class="normal">827</span>
-<span class="normal">828</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@inject_db</span>
+<span class="normal">827</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@db_injector</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">create_deployment_schedules</span><span class="p">(</span>
     <span class="n">db</span><span class="p">:</span> <span class="n">PrefectDBInterface</span><span class="p">,</span>
     <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span>
@@ -10087,7 +10086,7 @@ contains B".</li>
         <tr>
           <td><code>session</code></td>
           <td>
-                <code><span title="sqlalchemy.orm.Session">Session</span></code>
+                <code><span title="sqlalchemy.ext.asyncio.AsyncSession">AsyncSession</span></code>
           </td>
           <td>
             <div class="doc-md-description">
@@ -10141,7 +10140,8 @@ contains B".</li>
 
           <details class="quote">
             <summary>Source code in <code>prefect/server/models/deployments.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">465</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">464</span>
+<span class="normal">465</span>
 <span class="normal">466</span>
 <span class="normal">467</span>
 <span class="normal">468</span>
@@ -10163,10 +10163,9 @@ contains B".</li>
 <span class="normal">484</span>
 <span class="normal">485</span>
 <span class="normal">486</span>
-<span class="normal">487</span>
-<span class="normal">488</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@inject_db</span>
+<span class="normal">487</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@db_injector</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">delete_deployment</span><span class="p">(</span>
-    <span class="n">session</span><span class="p">:</span> <span class="n">sa</span><span class="o">.</span><span class="n">orm</span><span class="o">.</span><span class="n">Session</span><span class="p">,</span> <span class="n">deployment_id</span><span class="p">:</span> <span class="n">UUID</span><span class="p">,</span> <span class="n">db</span><span class="p">:</span> <span class="n">PrefectDBInterface</span>
+    <span class="n">db</span><span class="p">:</span> <span class="n">PrefectDBInterface</span><span class="p">,</span> <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">deployment_id</span><span class="p">:</span> <span class="n">UUID</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Delete a deployment by id.</span>
@@ -10259,7 +10258,8 @@ contains B".</li>
 
           <details class="quote">
             <summary>Source code in <code>prefect/server/models/deployments.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">917</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">916</span>
+<span class="normal">917</span>
 <span class="normal">918</span>
 <span class="normal">919</span>
 <span class="normal">920</span>
@@ -10282,8 +10282,7 @@ contains B".</li>
 <span class="normal">937</span>
 <span class="normal">938</span>
 <span class="normal">939</span>
-<span class="normal">940</span>
-<span class="normal">941</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@inject_db</span>
+<span class="normal">940</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@db_injector</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">delete_deployment_schedule</span><span class="p">(</span>
     <span class="n">db</span><span class="p">:</span> <span class="n">PrefectDBInterface</span><span class="p">,</span>
     <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span>
@@ -10379,7 +10378,8 @@ contains B".</li>
 
           <details class="quote">
             <summary>Source code in <code>prefect/server/models/deployments.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">896</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">895</span>
+<span class="normal">896</span>
 <span class="normal">897</span>
 <span class="normal">898</span>
 <span class="normal">899</span>
@@ -10396,8 +10396,7 @@ contains B".</li>
 <span class="normal">910</span>
 <span class="normal">911</span>
 <span class="normal">912</span>
-<span class="normal">913</span>
-<span class="normal">914</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@inject_db</span>
+<span class="normal">913</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@db_injector</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">delete_schedules_for_deployment</span><span class="p">(</span>
     <span class="n">db</span><span class="p">:</span> <span class="n">PrefectDBInterface</span><span class="p">,</span> <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">deployment_id</span><span class="p">:</span> <span class="n">UUID</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
@@ -10457,7 +10456,7 @@ contains B".</li>
         <tr>
           <td><code>session</code></td>
           <td>
-                <code><span title="sqlalchemy.orm.Session">Session</span></code>
+                <code><span title="sqlalchemy.ext.asyncio.AsyncSession">AsyncSession</span></code>
           </td>
           <td>
             <div class="doc-md-description">
@@ -10498,6 +10497,7 @@ contains B".</li>
     <tbody>
         <tr>
           <td>
+                <code><span title="typing.Optional">Optional</span>[<span title="prefect.server.database.orm_models.ORMDeployment">ORMDeployment</span>]</code>
           </td>
           <td>
             <div class="doc-md-description">
@@ -10510,8 +10510,7 @@ contains B".</li>
 
           <details class="quote">
             <summary>Source code in <code>prefect/server/models/deployments.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">261</span>
-<span class="normal">262</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">262</span>
 <span class="normal">263</span>
 <span class="normal">264</span>
 <span class="normal">265</span>
@@ -10524,10 +10523,11 @@ contains B".</li>
 <span class="normal">272</span>
 <span class="normal">273</span>
 <span class="normal">274</span>
-<span class="normal">275</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@inject_db</span>
+<span class="normal">275</span>
+<span class="normal">276</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@db_injector</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">read_deployment</span><span class="p">(</span>
-    <span class="n">session</span><span class="p">:</span> <span class="n">sa</span><span class="o">.</span><span class="n">orm</span><span class="o">.</span><span class="n">Session</span><span class="p">,</span> <span class="n">deployment_id</span><span class="p">:</span> <span class="n">UUID</span><span class="p">,</span> <span class="n">db</span><span class="p">:</span> <span class="n">PrefectDBInterface</span>
-<span class="p">):</span>
+    <span class="n">db</span><span class="p">:</span> <span class="n">PrefectDBInterface</span><span class="p">,</span> <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">deployment_id</span><span class="p">:</span> <span class="n">UUID</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ORMDeployment</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Reads a deployment by id.</span>
 
 <span class="sd">    Args:</span>
@@ -10580,7 +10580,7 @@ contains B".</li>
         <tr>
           <td><code>session</code></td>
           <td>
-                <code><span title="sqlalchemy.orm.Session">Session</span></code>
+                <code><span title="sqlalchemy.ext.asyncio.AsyncSession">AsyncSession</span></code>
           </td>
           <td>
             <div class="doc-md-description">
@@ -10635,6 +10635,7 @@ contains B".</li>
     <tbody>
         <tr>
           <td>
+                <code><span title="typing.Optional">Optional</span>[<span title="prefect.server.database.orm_models.ORMDeployment">ORMDeployment</span>]</code>
           </td>
           <td>
             <div class="doc-md-description">
@@ -10647,8 +10648,7 @@ contains B".</li>
 
           <details class="quote">
             <summary>Source code in <code>prefect/server/models/deployments.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">278</span>
-<span class="normal">279</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">279</span>
 <span class="normal">280</span>
 <span class="normal">281</span>
 <span class="normal">282</span>
@@ -10673,10 +10673,11 @@ contains B".</li>
 <span class="normal">301</span>
 <span class="normal">302</span>
 <span class="normal">303</span>
-<span class="normal">304</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@inject_db</span>
+<span class="normal">304</span>
+<span class="normal">305</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@db_injector</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">read_deployment_by_name</span><span class="p">(</span>
-    <span class="n">session</span><span class="p">:</span> <span class="n">sa</span><span class="o">.</span><span class="n">orm</span><span class="o">.</span><span class="n">Session</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">flow_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">db</span><span class="p">:</span> <span class="n">PrefectDBInterface</span>
-<span class="p">):</span>
+    <span class="n">db</span><span class="p">:</span> <span class="n">PrefectDBInterface</span><span class="p">,</span> <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">flow_name</span><span class="p">:</span> <span class="nb">str</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ORMDeployment</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Reads a deployment by name.</span>
 
 <span class="sd">    Args:</span>
@@ -10795,7 +10796,8 @@ contains B".</li>
 
           <details class="quote">
             <summary>Source code in <code>prefect/server/models/deployments.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">831</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">830</span>
+<span class="normal">831</span>
 <span class="normal">832</span>
 <span class="normal">833</span>
 <span class="normal">834</span>
@@ -10825,8 +10827,7 @@ contains B".</li>
 <span class="normal">858</span>
 <span class="normal">859</span>
 <span class="normal">860</span>
-<span class="normal">861</span>
-<span class="normal">862</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@inject_db</span>
+<span class="normal">861</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@db_injector</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">read_deployment_schedules</span><span class="p">(</span>
     <span class="n">db</span><span class="p">:</span> <span class="n">PrefectDBInterface</span><span class="p">,</span>
     <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span>
@@ -10899,7 +10900,7 @@ contains B".</li>
         <tr>
           <td><code>session</code></td>
           <td>
-                <code><span title="sqlalchemy.orm.Session">Session</span></code>
+                <code><span title="sqlalchemy.ext.asyncio.AsyncSession">AsyncSession</span></code>
           </td>
           <td>
             <div class="doc-md-description">
@@ -11052,6 +11053,7 @@ contains B".</li>
     <tbody>
         <tr>
           <td>
+                <code><span title="typing.Sequence">Sequence</span>[<span title="prefect.server.database.orm_models.ORMDeployment">ORMDeployment</span>]</code>
           </td>
           <td>
             <div class="doc-md-description">
@@ -11064,8 +11066,7 @@ contains B".</li>
 
           <details class="quote">
             <summary>Source code in <code>prefect/server/models/deployments.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">366</span>
-<span class="normal">367</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">367</span>
 <span class="normal">368</span>
 <span class="normal">369</span>
 <span class="normal">370</span>
@@ -11116,10 +11117,10 @@ contains B".</li>
 <span class="normal">415</span>
 <span class="normal">416</span>
 <span class="normal">417</span>
-<span class="normal">418</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@inject_db</span>
+<span class="normal">418</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@db_injector</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">read_deployments</span><span class="p">(</span>
-    <span class="n">session</span><span class="p">:</span> <span class="n">sa</span><span class="o">.</span><span class="n">orm</span><span class="o">.</span><span class="n">Session</span><span class="p">,</span>
     <span class="n">db</span><span class="p">:</span> <span class="n">PrefectDBInterface</span><span class="p">,</span>
+    <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span>
     <span class="n">offset</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">limit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">flow_filter</span><span class="p">:</span> <span class="n">schemas</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">FlowFilter</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -11129,7 +11130,7 @@ contains B".</li>
     <span class="n">work_pool_filter</span><span class="p">:</span> <span class="n">schemas</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">WorkPoolFilter</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">work_queue_filter</span><span class="p">:</span> <span class="n">schemas</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">WorkQueueFilter</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">sort</span><span class="p">:</span> <span class="n">schemas</span><span class="o">.</span><span class="n">sorting</span><span class="o">.</span><span class="n">DeploymentSort</span> <span class="o">=</span> <span class="n">schemas</span><span class="o">.</span><span class="n">sorting</span><span class="o">.</span><span class="n">DeploymentSort</span><span class="o">.</span><span class="n">NAME_ASC</span><span class="p">,</span>
-<span class="p">):</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">ORMDeployment</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Read deployments.</span>
 
@@ -11159,7 +11160,6 @@ contains B".</li>
         <span class="n">deployment_filter</span><span class="o">=</span><span class="n">deployment_filter</span><span class="p">,</span>
         <span class="n">work_pool_filter</span><span class="o">=</span><span class="n">work_pool_filter</span><span class="p">,</span>
         <span class="n">work_queue_filter</span><span class="o">=</span><span class="n">work_queue_filter</span><span class="p">,</span>
-        <span class="n">db</span><span class="o">=</span><span class="n">db</span><span class="p">,</span>
     <span class="p">)</span>
 
     <span class="k">if</span> <span class="n">offset</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -11210,7 +11210,7 @@ contains B".</li>
         <tr>
           <td><code>session</code></td>
           <td>
-                <code><span title="sqlalchemy.orm.Session">Session</span></code>
+                <code><span title="sqlalchemy.ext.asyncio.AsyncSession">AsyncSession</span></code>
           </td>
           <td>
             <div class="doc-md-description">
@@ -11343,7 +11343,8 @@ will be respected.</p>
 
           <details class="quote">
             <summary>Source code in <code>prefect/server/models/deployments.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">491</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">490</span>
+<span class="normal">491</span>
 <span class="normal">492</span>
 <span class="normal">493</span>
 <span class="normal">494</span>
@@ -11403,9 +11404,8 @@ will be respected.</p>
 <span class="normal">548</span>
 <span class="normal">549</span>
 <span class="normal">550</span>
-<span class="normal">551</span>
-<span class="normal">552</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">schedule_runs</span><span class="p">(</span>
-    <span class="n">session</span><span class="p">:</span> <span class="n">sa</span><span class="o">.</span><span class="n">orm</span><span class="o">.</span><span class="n">Session</span><span class="p">,</span>
+<span class="normal">551</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">schedule_runs</span><span class="p">(</span>
+    <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span>
     <span class="n">deployment_id</span><span class="p">:</span> <span class="n">UUID</span><span class="p">,</span>
     <span class="n">start_time</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">end_time</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -11507,7 +11507,7 @@ will be respected.</p>
         <tr>
           <td><code>session</code></td>
           <td>
-                <code><span title="sqlalchemy.orm.Session">Session</span></code>
+                <code><span title="sqlalchemy.ext.asyncio.AsyncSession">AsyncSession</span></code>
           </td>
           <td>
             <div class="doc-md-description">
@@ -11575,8 +11575,7 @@ will be respected.</p>
 
           <details class="quote">
             <summary>Source code in <code>prefect/server/models/deployments.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">160</span>
-<span class="normal">161</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">161</span>
 <span class="normal">162</span>
 <span class="normal">163</span>
 <span class="normal">164</span>
@@ -11673,12 +11672,13 @@ will be respected.</p>
 <span class="normal">255</span>
 <span class="normal">256</span>
 <span class="normal">257</span>
-<span class="normal">258</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@inject_db</span>
+<span class="normal">258</span>
+<span class="normal">259</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@db_injector</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">update_deployment</span><span class="p">(</span>
-    <span class="n">session</span><span class="p">:</span> <span class="n">sa</span><span class="o">.</span><span class="n">orm</span><span class="o">.</span><span class="n">Session</span><span class="p">,</span>
+    <span class="n">db</span><span class="p">:</span> <span class="n">PrefectDBInterface</span><span class="p">,</span>
+    <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span>
     <span class="n">deployment_id</span><span class="p">:</span> <span class="n">UUID</span><span class="p">,</span>
     <span class="n">deployment</span><span class="p">:</span> <span class="n">schemas</span><span class="o">.</span><span class="n">actions</span><span class="o">.</span><span class="n">DeploymentUpdate</span><span class="p">,</span>
-    <span class="n">db</span><span class="p">:</span> <span class="n">PrefectDBInterface</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Updates a deployment.</span>
 
@@ -11750,7 +11750,7 @@ will be respected.</p>
 
     <span class="c1"># delete any auto scheduled runs that would have reflected the old deployment config</span>
     <span class="k">await</span> <span class="n">_delete_scheduled_runs</span><span class="p">(</span>
-        <span class="n">session</span><span class="o">=</span><span class="n">session</span><span class="p">,</span> <span class="n">deployment_id</span><span class="o">=</span><span class="n">deployment_id</span><span class="p">,</span> <span class="n">db</span><span class="o">=</span><span class="n">db</span><span class="p">,</span> <span class="n">auto_scheduled_only</span><span class="o">=</span><span class="kc">True</span>
+        <span class="n">session</span><span class="o">=</span><span class="n">session</span><span class="p">,</span> <span class="n">deployment_id</span><span class="o">=</span><span class="n">deployment_id</span><span class="p">,</span> <span class="n">auto_scheduled_only</span><span class="o">=</span><span class="kc">True</span>
     <span class="p">)</span>
 
     <span class="k">if</span> <span class="n">should_update_schedules</span><span class="p">:</span>
@@ -11857,7 +11857,8 @@ will be respected.</p>
 
           <details class="quote">
             <summary>Source code in <code>prefect/server/models/deployments.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">865</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">864</span>
+<span class="normal">865</span>
 <span class="normal">866</span>
 <span class="normal">867</span>
 <span class="normal">868</span>
@@ -11884,8 +11885,7 @@ will be respected.</p>
 <span class="normal">889</span>
 <span class="normal">890</span>
 <span class="normal">891</span>
-<span class="normal">892</span>
-<span class="normal">893</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@inject_db</span>
+<span class="normal">892</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@db_injector</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">update_deployment_schedule</span><span class="p">(</span>
     <span class="n">db</span><span class="p">:</span> <span class="n">PrefectDBInterface</span><span class="p">,</span>
     <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span>
