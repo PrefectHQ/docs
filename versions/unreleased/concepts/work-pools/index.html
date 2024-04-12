@@ -9667,13 +9667,17 @@ To<span class="w"> </span>change<span class="w"> </span>your<span class="w"> </s
 </code></pre></div>
 </div>
 
-<p>You can override each of these attributes on a per-deployment or per-flow run basis. When deploying a flow, you can specify these overrides in the <code>work_pool.job_variables</code> section of a <code>deployment.yaml</code>.</p>
-<p>If we wanted to turn off streaming output for a specific deployment, we could add the following to our <code>deployment.yaml</code>:</p>
-<div class="highlight"><pre><span></span><code><span class="nt">work_pool</span><span class="p">:</span>
+<p>You can override each of these attributes on a per-deployment or per-flow run basis. When creating a deployment, you can specify these overrides in the <code>deployments.work_pool.job_variables</code> section of a <code>prefect.yaml</code> file or in the <code>job_variables</code> argument of a Python <code>flow.deploy</code> method. </p>
+<p>For example, to turn off streaming output for a specific deployment, we could add the following to our <code>prefect.yaml</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">deployments</span><span class="p">:</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">demo-deployment</span>
+<span class="w">  </span><span class="nt">entrypoint</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">demo_project/demo_flow.py:some_work</span>
+<span class="w">  </span><span class="nt">work_pool</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">above-ground</span><span class="w">  </span>
 <span class="w">    </span><span class="nt">job_variables</span><span class="p">:</span>
 <span class="w">        </span><span class="nt">stream_output</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
 </code></pre></div>
+<p>See more about overriding job variables in the <a href="/guides/deployment/overriding-job-variables/">Overriding Job Variables Guide</a>.</p>
 <div class="admonition tip">
 <p class="admonition-title">Advanced Customization of the Base Job Template</p>
 <p>For advanced use cases, you can create work pools with fully customizable job templates. This customization is available when creating or editing a work pool on the 'Advanced' tab within the UI or when updating a work pool via the Prefect CLI.</p>

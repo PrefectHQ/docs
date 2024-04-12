@@ -9474,7 +9474,12 @@ for the provided status codes (typically 429, 502 and 503).</p>
 <span class="normal">388</span>
 <span class="normal">389</span>
 <span class="normal">390</span>
-<span class="normal">391</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">PrefectHttpxClient</span><span class="p">(</span><span class="n">httpx</span><span class="o">.</span><span class="n">AsyncClient</span><span class="p">):</span>
+<span class="normal">391</span>
+<span class="normal">392</span>
+<span class="normal">393</span>
+<span class="normal">394</span>
+<span class="normal">395</span>
+<span class="normal">396</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">PrefectHttpxClient</span><span class="p">(</span><span class="n">httpx</span><span class="o">.</span><span class="n">AsyncClient</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A Prefect wrapper for the async httpx client with support for retry-after headers</span>
 <span class="sd">    for the provided status codes (typically 429, 502 and 503).</span>
@@ -9485,11 +9490,18 @@ for the provided status codes (typically 429, 502 and 503).</p>
 <span class="sd">    [Configuring Cloudflare Rate Limiting](https://support.cloudflare.com/hc/en-us/articles/115001635128-Configuring-Rate-Limiting-from-UI)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">enable_csrf_support</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="o">*</span><span class="n">args</span><span class="p">,</span>
+        <span class="n">enable_csrf_support</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">raise_on_all_errors</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">enable_csrf_support</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">enable_csrf_support</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">csrf_token</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">csrf_token_expiration</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">csrf_client_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">=</span> <span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">raise_on_all_errors</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">raise_on_all_errors</span>
 
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
@@ -9637,10 +9649,8 @@ for the provided status codes (typically 429, 502 and 503).</p>
         <span class="c1"># Convert to a Prefect response to add nicer errors messages</span>
         <span class="n">response</span> <span class="o">=</span> <span class="n">PrefectResponse</span><span class="o">.</span><span class="n">from_httpx_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
 
-        <span class="c1"># Always raise bad responses</span>
-        <span class="c1"># NOTE: We may want to remove this and handle responses per route in the</span>
-        <span class="c1">#       `PrefectClient`</span>
-        <span class="n">response</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">raise_on_all_errors</span><span class="p">:</span>
+            <span class="n">response</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
 
         <span class="k">return</span> <span class="n">response</span>
 
@@ -9725,14 +9735,7 @@ for the provided status codes (typically 429, 502 and 503).</p>
 
           <details class="quote">
             <summary>Source code in <code>prefect/client/base.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">305</span>
-<span class="normal">306</span>
-<span class="normal">307</span>
-<span class="normal">308</span>
-<span class="normal">309</span>
-<span class="normal">310</span>
-<span class="normal">311</span>
-<span class="normal">312</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">312</span>
 <span class="normal">313</span>
 <span class="normal">314</span>
 <span class="normal">315</span>
@@ -9773,7 +9776,12 @@ for the provided status codes (typically 429, 502 and 503).</p>
 <span class="normal">350</span>
 <span class="normal">351</span>
 <span class="normal">352</span>
-<span class="normal">353</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">send</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">:</span> <span class="n">Request</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Response</span><span class="p">:</span>
+<span class="normal">353</span>
+<span class="normal">354</span>
+<span class="normal">355</span>
+<span class="normal">356</span>
+<span class="normal">357</span>
+<span class="normal">358</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">send</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">:</span> <span class="n">Request</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Response</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Send a request with automatic retry behavior for the following status codes:</span>
 
@@ -9816,10 +9824,8 @@ for the provided status codes (typically 429, 502 and 503).</p>
     <span class="c1"># Convert to a Prefect response to add nicer errors messages</span>
     <span class="n">response</span> <span class="o">=</span> <span class="n">PrefectResponse</span><span class="o">.</span><span class="n">from_httpx_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
 
-    <span class="c1"># Always raise bad responses</span>
-    <span class="c1"># NOTE: We may want to remove this and handle responses per route in the</span>
-    <span class="c1">#       `PrefectClient`</span>
-    <span class="n">response</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">raise_on_all_errors</span><span class="p">:</span>
+        <span class="n">response</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
 
     <span class="k">return</span> <span class="n">response</span>
 </code></pre></div></td></tr></table></div>
