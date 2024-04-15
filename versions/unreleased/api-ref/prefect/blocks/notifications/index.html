@@ -9145,9 +9145,7 @@ if (amplitudeKey){
 
             <details class="quote">
               <summary>Source code in <code>prefect/blocks/notifications.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">22</span>
-<span class="normal">23</span>
-<span class="normal">24</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">24</span>
 <span class="normal">25</span>
 <span class="normal">26</span>
 <span class="normal">27</span>
@@ -9190,7 +9188,16 @@ if (amplitudeKey){
 <span class="normal">64</span>
 <span class="normal">65</span>
 <span class="normal">66</span>
-<span class="normal">67</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">AbstractAppriseNotificationBlock</span><span class="p">(</span><span class="n">NotificationBlock</span><span class="p">,</span> <span class="n">ABC</span><span class="p">):</span>
+<span class="normal">67</span>
+<span class="normal">68</span>
+<span class="normal">69</span>
+<span class="normal">70</span>
+<span class="normal">71</span>
+<span class="normal">72</span>
+<span class="normal">73</span>
+<span class="normal">74</span>
+<span class="normal">75</span>
+<span class="normal">76</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">AbstractAppriseNotificationBlock</span><span class="p">(</span><span class="n">NotificationBlock</span><span class="p">,</span> <span class="n">ABC</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    An abstract class for sending notifications using Apprise.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -9232,10 +9239,17 @@ if (amplitudeKey){
 
     <span class="nd">@sync_compatible</span>
     <span class="nd">@instrument_instance_method_call</span><span class="p">()</span>
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">notify</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">body</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">subject</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_apprise_client</span><span class="o">.</span><span class="n">async_notify</span><span class="p">(</span>
-            <span class="n">body</span><span class="o">=</span><span class="n">body</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">subject</span><span class="p">,</span> <span class="n">notify_type</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">notify_type</span>
-        <span class="p">)</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">notify</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">body</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">subject</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="k">with</span> <span class="n">LogEavesdropper</span><span class="p">(</span><span class="s2">&quot;apprise&quot;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span> <span class="k">as</span> <span class="n">eavesdropper</span><span class="p">:</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_apprise_client</span><span class="o">.</span><span class="n">async_notify</span><span class="p">(</span>
+                <span class="n">body</span><span class="o">=</span><span class="n">body</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">subject</span><span class="p">,</span> <span class="n">notify_type</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">notify_type</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">result</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_raise_on_failure</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">NotificationError</span><span class="p">(</span><span class="n">log</span><span class="o">=</span><span class="n">eavesdropper</span><span class="o">.</span><span class="n">text</span><span class="p">())</span>
 </code></pre></div></td></tr></table></div>
             </details>
 
@@ -9280,18 +9294,18 @@ if (amplitudeKey){
 
             <details class="quote">
               <summary>Source code in <code>prefect/blocks/notifications.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">70</span>
-<span class="normal">71</span>
-<span class="normal">72</span>
-<span class="normal">73</span>
-<span class="normal">74</span>
-<span class="normal">75</span>
-<span class="normal">76</span>
-<span class="normal">77</span>
-<span class="normal">78</span>
-<span class="normal">79</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">79</span>
 <span class="normal">80</span>
-<span class="normal">81</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">AppriseNotificationBlock</span><span class="p">(</span><span class="n">AbstractAppriseNotificationBlock</span><span class="p">,</span> <span class="n">ABC</span><span class="p">):</span>
+<span class="normal">81</span>
+<span class="normal">82</span>
+<span class="normal">83</span>
+<span class="normal">84</span>
+<span class="normal">85</span>
+<span class="normal">86</span>
+<span class="normal">87</span>
+<span class="normal">88</span>
+<span class="normal">89</span>
+<span class="normal">90</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">AppriseNotificationBlock</span><span class="p">(</span><span class="n">AbstractAppriseNotificationBlock</span><span class="p">,</span> <span class="n">ABC</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A base class for sending notifications using Apprise, through webhook URLs.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -9360,16 +9374,7 @@ if (amplitudeKey){
 
             <details class="quote">
               <summary>Source code in <code>prefect/blocks/notifications.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">592</span>
-<span class="normal">593</span>
-<span class="normal">594</span>
-<span class="normal">595</span>
-<span class="normal">596</span>
-<span class="normal">597</span>
-<span class="normal">598</span>
-<span class="normal">599</span>
-<span class="normal">600</span>
-<span class="normal">601</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">601</span>
 <span class="normal">602</span>
 <span class="normal">603</span>
 <span class="normal">604</span>
@@ -9491,7 +9496,16 @@ if (amplitudeKey){
 <span class="normal">720</span>
 <span class="normal">721</span>
 <span class="normal">722</span>
-<span class="normal">723</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">CustomWebhookNotificationBlock</span><span class="p">(</span><span class="n">NotificationBlock</span><span class="p">):</span>
+<span class="normal">723</span>
+<span class="normal">724</span>
+<span class="normal">725</span>
+<span class="normal">726</span>
+<span class="normal">727</span>
+<span class="normal">728</span>
+<span class="normal">729</span>
+<span class="normal">730</span>
+<span class="normal">731</span>
+<span class="normal">732</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">CustomWebhookNotificationBlock</span><span class="p">(</span><span class="n">NotificationBlock</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Enables sending notifications via any custom webhook.</span>
 
@@ -9679,16 +9693,7 @@ See <a href="https://github.com/caronc/apprise/wiki/Notify_Discord">Apprise noti
 
             <details class="quote">
               <summary>Source code in <code>prefect/blocks/notifications.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">499</span>
-<span class="normal">500</span>
-<span class="normal">501</span>
-<span class="normal">502</span>
-<span class="normal">503</span>
-<span class="normal">504</span>
-<span class="normal">505</span>
-<span class="normal">506</span>
-<span class="normal">507</span>
-<span class="normal">508</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">508</span>
 <span class="normal">509</span>
 <span class="normal">510</span>
 <span class="normal">511</span>
@@ -9769,7 +9774,16 @@ See <a href="https://github.com/caronc/apprise/wiki/Notify_Discord">Apprise noti
 <span class="normal">586</span>
 <span class="normal">587</span>
 <span class="normal">588</span>
-<span class="normal">589</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">DiscordWebhook</span><span class="p">(</span><span class="n">AbstractAppriseNotificationBlock</span><span class="p">):</span>
+<span class="normal">589</span>
+<span class="normal">590</span>
+<span class="normal">591</span>
+<span class="normal">592</span>
+<span class="normal">593</span>
+<span class="normal">594</span>
+<span class="normal">595</span>
+<span class="normal">596</span>
+<span class="normal">597</span>
+<span class="normal">598</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">DiscordWebhook</span><span class="p">(</span><span class="n">AbstractAppriseNotificationBlock</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Enables sending notifications via a provided Discord webhook.</span>
 <span class="sd">    See [Apprise notify_Discord docs](https://github.com/caronc/apprise/wiki/Notify_Discord) # noqa</span>
@@ -9916,16 +9930,7 @@ See <a href="https://github.com/caronc/apprise/wiki/Notify_Mattermost">Apprise n
 
             <details class="quote">
               <summary>Source code in <code>prefect/blocks/notifications.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">422</span>
-<span class="normal">423</span>
-<span class="normal">424</span>
-<span class="normal">425</span>
-<span class="normal">426</span>
-<span class="normal">427</span>
-<span class="normal">428</span>
-<span class="normal">429</span>
-<span class="normal">430</span>
-<span class="normal">431</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">431</span>
 <span class="normal">432</span>
 <span class="normal">433</span>
 <span class="normal">434</span>
@@ -9990,7 +9995,16 @@ See <a href="https://github.com/caronc/apprise/wiki/Notify_Mattermost">Apprise n
 <span class="normal">493</span>
 <span class="normal">494</span>
 <span class="normal">495</span>
-<span class="normal">496</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">MattermostWebhook</span><span class="p">(</span><span class="n">AbstractAppriseNotificationBlock</span><span class="p">):</span>
+<span class="normal">496</span>
+<span class="normal">497</span>
+<span class="normal">498</span>
+<span class="normal">499</span>
+<span class="normal">500</span>
+<span class="normal">501</span>
+<span class="normal">502</span>
+<span class="normal">503</span>
+<span class="normal">504</span>
+<span class="normal">505</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">MattermostWebhook</span><span class="p">(</span><span class="n">AbstractAppriseNotificationBlock</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Enables sending notifications via a provided Mattermost webhook.</span>
 <span class="sd">    See [Apprise notify_Mattermost docs](https://github.com/caronc/apprise/wiki/Notify_Mattermost) # noqa</span>
@@ -10118,16 +10132,7 @@ See <a href="https://github.com/caronc/apprise/wiki/Notify_Mattermost">Apprise n
 
             <details class="quote">
               <summary>Source code in <code>prefect/blocks/notifications.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">112</span>
-<span class="normal">113</span>
-<span class="normal">114</span>
-<span class="normal">115</span>
-<span class="normal">116</span>
-<span class="normal">117</span>
-<span class="normal">118</span>
-<span class="normal">119</span>
-<span class="normal">120</span>
-<span class="normal">121</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">121</span>
 <span class="normal">122</span>
 <span class="normal">123</span>
 <span class="normal">124</span>
@@ -10143,7 +10148,16 @@ See <a href="https://github.com/caronc/apprise/wiki/Notify_Mattermost">Apprise n
 <span class="normal">134</span>
 <span class="normal">135</span>
 <span class="normal">136</span>
-<span class="normal">137</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">MicrosoftTeamsWebhook</span><span class="p">(</span><span class="n">AppriseNotificationBlock</span><span class="p">):</span>
+<span class="normal">137</span>
+<span class="normal">138</span>
+<span class="normal">139</span>
+<span class="normal">140</span>
+<span class="normal">141</span>
+<span class="normal">142</span>
+<span class="normal">143</span>
+<span class="normal">144</span>
+<span class="normal">145</span>
+<span class="normal">146</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">MicrosoftTeamsWebhook</span><span class="p">(</span><span class="n">AppriseNotificationBlock</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Enables sending notifications via a provided Microsoft Teams webhook.</span>
 
@@ -10224,16 +10238,7 @@ for more info on formatting the URL.</p>
 
             <details class="quote">
               <summary>Source code in <code>prefect/blocks/notifications.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">310</span>
-<span class="normal">311</span>
-<span class="normal">312</span>
-<span class="normal">313</span>
-<span class="normal">314</span>
-<span class="normal">315</span>
-<span class="normal">316</span>
-<span class="normal">317</span>
-<span class="normal">318</span>
-<span class="normal">319</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">319</span>
 <span class="normal">320</span>
 <span class="normal">321</span>
 <span class="normal">322</span>
@@ -10333,7 +10338,16 @@ for more info on formatting the URL.</p>
 <span class="normal">416</span>
 <span class="normal">417</span>
 <span class="normal">418</span>
-<span class="normal">419</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">OpsgenieWebhook</span><span class="p">(</span><span class="n">AbstractAppriseNotificationBlock</span><span class="p">):</span>
+<span class="normal">419</span>
+<span class="normal">420</span>
+<span class="normal">421</span>
+<span class="normal">422</span>
+<span class="normal">423</span>
+<span class="normal">424</span>
+<span class="normal">425</span>
+<span class="normal">426</span>
+<span class="normal">427</span>
+<span class="normal">428</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">OpsgenieWebhook</span><span class="p">(</span><span class="n">AbstractAppriseNotificationBlock</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Enables sending notifications via a provided Opsgenie webhook.</span>
 <span class="sd">    See [Apprise notify_opsgenie docs](https://github.com/caronc/apprise/wiki/Notify_opsgenie)</span>
@@ -10498,16 +10512,7 @@ for more info on formatting the URL.</p>
 
             <details class="quote">
               <summary>Source code in <code>prefect/blocks/notifications.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">140</span>
-<span class="normal">141</span>
-<span class="normal">142</span>
-<span class="normal">143</span>
-<span class="normal">144</span>
-<span class="normal">145</span>
-<span class="normal">146</span>
-<span class="normal">147</span>
-<span class="normal">148</span>
-<span class="normal">149</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">149</span>
 <span class="normal">150</span>
 <span class="normal">151</span>
 <span class="normal">152</span>
@@ -10603,7 +10608,16 @@ for more info on formatting the URL.</p>
 <span class="normal">242</span>
 <span class="normal">243</span>
 <span class="normal">244</span>
-<span class="normal">245</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">PagerDutyWebHook</span><span class="p">(</span><span class="n">AbstractAppriseNotificationBlock</span><span class="p">):</span>
+<span class="normal">245</span>
+<span class="normal">246</span>
+<span class="normal">247</span>
+<span class="normal">248</span>
+<span class="normal">249</span>
+<span class="normal">250</span>
+<span class="normal">251</span>
+<span class="normal">252</span>
+<span class="normal">253</span>
+<span class="normal">254</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">PagerDutyWebHook</span><span class="p">(</span><span class="n">AbstractAppriseNotificationBlock</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Enables sending notifications via a provided PagerDuty webhook.</span>
 <span class="sd">    See [Apprise notify_pagerduty docs](https://github.com/caronc/apprise/wiki/Notify_pagerduty)</span>
@@ -10763,16 +10777,7 @@ from prefect.blocks.notifications import SendgridEmail</p>
 
             <details class="quote">
               <summary>Source code in <code>prefect/blocks/notifications.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">726</span>
-<span class="normal">727</span>
-<span class="normal">728</span>
-<span class="normal">729</span>
-<span class="normal">730</span>
-<span class="normal">731</span>
-<span class="normal">732</span>
-<span class="normal">733</span>
-<span class="normal">734</span>
-<span class="normal">735</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">735</span>
 <span class="normal">736</span>
 <span class="normal">737</span>
 <span class="normal">738</span>
@@ -10814,7 +10819,16 @@ from prefect.blocks.notifications import SendgridEmail</p>
 <span class="normal">774</span>
 <span class="normal">775</span>
 <span class="normal">776</span>
-<span class="normal">777</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">SendgridEmail</span><span class="p">(</span><span class="n">AbstractAppriseNotificationBlock</span><span class="p">):</span>
+<span class="normal">777</span>
+<span class="normal">778</span>
+<span class="normal">779</span>
+<span class="normal">780</span>
+<span class="normal">781</span>
+<span class="normal">782</span>
+<span class="normal">783</span>
+<span class="normal">784</span>
+<span class="normal">785</span>
+<span class="normal">786</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">SendgridEmail</span><span class="p">(</span><span class="n">AbstractAppriseNotificationBlock</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Enables sending notifications via any sendgrid account.</span>
 <span class="sd">    See [Apprise Notify_sendgrid docs](https://github.com/caronc/apprise/wiki/Notify_Sendgrid)</span>
@@ -10920,16 +10934,7 @@ from prefect.blocks.notifications import SendgridEmail</p>
 
             <details class="quote">
               <summary>Source code in <code>prefect/blocks/notifications.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 86</span>
-<span class="normal"> 87</span>
-<span class="normal"> 88</span>
-<span class="normal"> 89</span>
-<span class="normal"> 90</span>
-<span class="normal"> 91</span>
-<span class="normal"> 92</span>
-<span class="normal"> 93</span>
-<span class="normal"> 94</span>
-<span class="normal"> 95</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 95</span>
 <span class="normal"> 96</span>
 <span class="normal"> 97</span>
 <span class="normal"> 98</span>
@@ -10943,7 +10948,16 @@ from prefect.blocks.notifications import SendgridEmail</p>
 <span class="normal">106</span>
 <span class="normal">107</span>
 <span class="normal">108</span>
-<span class="normal">109</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">SlackWebhook</span><span class="p">(</span><span class="n">AppriseNotificationBlock</span><span class="p">):</span>
+<span class="normal">109</span>
+<span class="normal">110</span>
+<span class="normal">111</span>
+<span class="normal">112</span>
+<span class="normal">113</span>
+<span class="normal">114</span>
+<span class="normal">115</span>
+<span class="normal">116</span>
+<span class="normal">117</span>
+<span class="normal">118</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">SlackWebhook</span><span class="p">(</span><span class="n">AppriseNotificationBlock</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Enables sending notifications via a provided Slack webhook.</span>
 
@@ -11021,16 +11035,7 @@ Find more on sending Twilio SMS messages in the <a href="https://www.twilio.com/
 
             <details class="quote">
               <summary>Source code in <code>prefect/blocks/notifications.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">248</span>
-<span class="normal">249</span>
-<span class="normal">250</span>
-<span class="normal">251</span>
-<span class="normal">252</span>
-<span class="normal">253</span>
-<span class="normal">254</span>
-<span class="normal">255</span>
-<span class="normal">256</span>
-<span class="normal">257</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">257</span>
 <span class="normal">258</span>
 <span class="normal">259</span>
 <span class="normal">260</span>
@@ -11080,7 +11085,16 @@ Find more on sending Twilio SMS messages in the <a href="https://www.twilio.com/
 <span class="normal">304</span>
 <span class="normal">305</span>
 <span class="normal">306</span>
-<span class="normal">307</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">TwilioSMS</span><span class="p">(</span><span class="n">AbstractAppriseNotificationBlock</span><span class="p">):</span>
+<span class="normal">307</span>
+<span class="normal">308</span>
+<span class="normal">309</span>
+<span class="normal">310</span>
+<span class="normal">311</span>
+<span class="normal">312</span>
+<span class="normal">313</span>
+<span class="normal">314</span>
+<span class="normal">315</span>
+<span class="normal">316</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">TwilioSMS</span><span class="p">(</span><span class="n">AbstractAppriseNotificationBlock</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Enables sending notifications via Twilio SMS.</span>
 <span class="sd">    Find more on sending Twilio SMS messages in the [docs](https://www.twilio.com/docs/sms).</span>
 
