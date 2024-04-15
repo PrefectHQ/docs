@@ -9174,50 +9174,7 @@ Uses a previously configured profile if it exists.</p>
 
           <details class="quote">
             <summary>Source code in <code>prefect/cli/cloud/__init__.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">306</span>
-<span class="normal">307</span>
-<span class="normal">308</span>
-<span class="normal">309</span>
-<span class="normal">310</span>
-<span class="normal">311</span>
-<span class="normal">312</span>
-<span class="normal">313</span>
-<span class="normal">314</span>
-<span class="normal">315</span>
-<span class="normal">316</span>
-<span class="normal">317</span>
-<span class="normal">318</span>
-<span class="normal">319</span>
-<span class="normal">320</span>
-<span class="normal">321</span>
-<span class="normal">322</span>
-<span class="normal">323</span>
-<span class="normal">324</span>
-<span class="normal">325</span>
-<span class="normal">326</span>
-<span class="normal">327</span>
-<span class="normal">328</span>
-<span class="normal">329</span>
-<span class="normal">330</span>
-<span class="normal">331</span>
-<span class="normal">332</span>
-<span class="normal">333</span>
-<span class="normal">334</span>
-<span class="normal">335</span>
-<span class="normal">336</span>
-<span class="normal">337</span>
-<span class="normal">338</span>
-<span class="normal">339</span>
-<span class="normal">340</span>
-<span class="normal">341</span>
-<span class="normal">342</span>
-<span class="normal">343</span>
-<span class="normal">344</span>
-<span class="normal">345</span>
-<span class="normal">346</span>
-<span class="normal">347</span>
-<span class="normal">348</span>
-<span class="normal">349</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">349</span>
 <span class="normal">350</span>
 <span class="normal">351</span>
 <span class="normal">352</span>
@@ -9391,7 +9348,23 @@ Uses a previously configured profile if it exists.</p>
 <span class="normal">520</span>
 <span class="normal">521</span>
 <span class="normal">522</span>
-<span class="normal">523</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@cloud_app</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="normal">523</span>
+<span class="normal">524</span>
+<span class="normal">525</span>
+<span class="normal">526</span>
+<span class="normal">527</span>
+<span class="normal">528</span>
+<span class="normal">529</span>
+<span class="normal">530</span>
+<span class="normal">531</span>
+<span class="normal">532</span>
+<span class="normal">533</span>
+<span class="normal">534</span>
+<span class="normal">535</span>
+<span class="normal">536</span>
+<span class="normal">537</span>
+<span class="normal">538</span>
+<span class="normal">539</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@cloud_app</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">login</span><span class="p">(</span>
     <span class="n">key</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
         <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;--key&quot;</span><span class="p">,</span> <span class="s2">&quot;-k&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;API Key to authenticate with Prefect&quot;</span>
@@ -9501,6 +9474,8 @@ Uses a previously configured profile if it exists.</p>
     <span class="k">async</span> <span class="k">with</span> <span class="n">get_cloud_client</span><span class="p">(</span><span class="n">api_key</span><span class="o">=</span><span class="n">key</span><span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">workspaces</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">read_workspaces</span><span class="p">()</span>
+            <span class="n">current_workspace</span> <span class="o">=</span> <span class="n">get_current_workspace</span><span class="p">(</span><span class="n">workspaces</span><span class="p">)</span>
+            <span class="n">prompt_switch_workspace</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="k">except</span> <span class="n">CloudUnauthorizedError</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">key</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;pcu&quot;</span><span class="p">):</span>
                 <span class="n">help_message</span> <span class="o">=</span> <span class="p">(</span>
@@ -9541,8 +9516,6 @@ Uses a previously configured profile if it exists.</p>
         <span class="c1"># Prompt a switch if the number of workspaces is greater than one</span>
         <span class="n">prompt_switch_workspace</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">workspaces</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span>
 
-        <span class="n">current_workspace</span> <span class="o">=</span> <span class="n">get_current_workspace</span><span class="p">(</span><span class="n">workspaces</span><span class="p">)</span>
-
         <span class="c1"># Confirm that we want to switch if the current profile is already logged in</span>
         <span class="k">if</span> <span class="p">(</span>
             <span class="n">current_profile_is_logged_in</span> <span class="ow">and</span> <span class="n">current_workspace</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
@@ -9553,61 +9526,34 @@ Uses a previously configured profile if it exists.</p>
             <span class="n">prompt_switch_workspace</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">confirm</span><span class="p">(</span>
                 <span class="s2">&quot;? Would you like to switch workspaces?&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span>
             <span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">prompt_switch_workspace</span><span class="p">:</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">workspaces</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">10</span><span class="p">:</span>
-                <span class="c1"># Group workspaces by account_id</span>
-                <span class="n">workspace_by_account</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Workspace</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
-                <span class="k">for</span> <span class="n">workspace</span> <span class="ow">in</span> <span class="n">workspaces</span><span class="p">:</span>
-                    <span class="n">workspace_by_account</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">workspace</span><span class="o">.</span><span class="n">account_id</span><span class="p">,</span> <span class="p">[])</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                        <span class="n">workspace</span>
-                    <span class="p">)</span>
-
-                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">workspace_by_account</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-                    <span class="n">account_id</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">workspace_by_account</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
-                    <span class="n">workspaces</span> <span class="o">=</span> <span class="n">workspace_by_account</span><span class="p">[</span><span class="n">account_id</span><span class="p">]</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">accounts</span> <span class="o">=</span> <span class="p">[</span>
-                        <span class="p">{</span>
-                            <span class="s2">&quot;account_id&quot;</span><span class="p">:</span> <span class="n">account_id</span><span class="p">,</span>
-                            <span class="s2">&quot;account_handle&quot;</span><span class="p">:</span> <span class="n">workspace_by_account</span><span class="p">[</span><span class="n">account_id</span><span class="p">][</span>
-                                <span class="mi">0</span>
-                            <span class="p">]</span><span class="o">.</span><span class="n">account_handle</span><span class="p">,</span>
-                        <span class="p">}</span>
-                        <span class="k">for</span> <span class="n">account_id</span> <span class="ow">in</span> <span class="n">workspace_by_account</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
-                    <span class="p">]</span>
-                    <span class="n">account</span> <span class="o">=</span> <span class="n">prompt_select_from_list</span><span class="p">(</span>
-                        <span class="n">app</span><span class="o">.</span><span class="n">console</span><span class="p">,</span>
-                        <span class="s2">&quot;Which account would you like to use?&quot;</span><span class="p">,</span>
-                        <span class="p">[(</span><span class="n">account</span><span class="p">,</span> <span class="n">account</span><span class="p">[</span><span class="s2">&quot;account_handle&quot;</span><span class="p">])</span> <span class="k">for</span> <span class="n">account</span> <span class="ow">in</span> <span class="n">accounts</span><span class="p">],</span>
-                    <span class="p">)</span>
-                    <span class="n">workspaces</span> <span class="o">=</span> <span class="n">workspace_by_account</span><span class="p">[</span><span class="n">account</span><span class="p">[</span><span class="s2">&quot;account_id&quot;</span><span class="p">]]</span>
-
-            <span class="n">workspace</span> <span class="o">=</span> <span class="n">prompt_select_from_list</span><span class="p">(</span>
-                <span class="n">app</span><span class="o">.</span><span class="n">console</span><span class="p">,</span>
-                <span class="s2">&quot;Which workspace would you like to use?&quot;</span><span class="p">,</span>
-                <span class="p">[(</span><span class="n">workspace</span><span class="p">,</span> <span class="n">workspace</span><span class="o">.</span><span class="n">handle</span><span class="p">)</span> <span class="k">for</span> <span class="n">workspace</span> <span class="ow">in</span> <span class="n">workspaces</span><span class="p">],</span>
+    <span class="k">if</span> <span class="n">prompt_switch_workspace</span><span class="p">:</span>
+        <span class="n">go_back</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">while</span> <span class="n">go_back</span><span class="p">:</span>
+            <span class="n">selected_workspace</span><span class="p">,</span> <span class="n">go_back</span> <span class="o">=</span> <span class="k">await</span> <span class="n">_prompt_for_account_and_workspace</span><span class="p">(</span>
+                <span class="n">workspaces</span>
             <span class="p">)</span>
+        <span class="k">if</span> <span class="n">selected_workspace</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">exit_with_error</span><span class="p">(</span><span class="s2">&quot;No workspace selected.&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">current_workspace</span><span class="p">:</span>
+            <span class="n">selected_workspace</span> <span class="o">=</span> <span class="n">current_workspace</span>
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">workspaces</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">selected_workspace</span> <span class="o">=</span> <span class="n">workspaces</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">current_workspace</span><span class="p">:</span>
-                <span class="n">workspace</span> <span class="o">=</span> <span class="n">current_workspace</span>
-            <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">workspaces</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="n">workspace</span> <span class="o">=</span> <span class="n">workspaces</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">exit_with_error</span><span class="p">(</span>
-                    <span class="s2">&quot;No workspaces found! Create a workspace at&quot;</span>
-                    <span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="n">PREFECT_CLOUD_UI_URL</span><span class="o">.</span><span class="n">value</span><span class="p">()</span><span class="si">}</span><span class="s2"> and try again.&quot;</span>
-                <span class="p">)</span>
+            <span class="n">exit_with_error</span><span class="p">(</span>
+                <span class="s2">&quot;No workspaces found! Create a workspace at&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="n">PREFECT_CLOUD_UI_URL</span><span class="o">.</span><span class="n">value</span><span class="p">()</span><span class="si">}</span><span class="s2"> and try again.&quot;</span>
+            <span class="p">)</span>
 
     <span class="n">update_current_profile</span><span class="p">(</span>
         <span class="p">{</span>
             <span class="n">PREFECT_API_KEY</span><span class="p">:</span> <span class="n">key</span><span class="p">,</span>
-            <span class="n">PREFECT_API_URL</span><span class="p">:</span> <span class="n">workspace</span><span class="o">.</span><span class="n">api_url</span><span class="p">(),</span>
+            <span class="n">PREFECT_API_URL</span><span class="p">:</span> <span class="n">selected_workspace</span><span class="o">.</span><span class="n">api_url</span><span class="p">(),</span>
         <span class="p">}</span>
     <span class="p">)</span>
 
     <span class="n">exit_with_success</span><span class="p">(</span>
-        <span class="sa">f</span><span class="s2">&quot;Authenticated with Prefect Cloud! Using workspace </span><span class="si">{</span><span class="n">workspace</span><span class="o">.</span><span class="n">handle</span><span class="si">!r}</span><span class="s2">.&quot;</span>
+        <span class="sa">f</span><span class="s2">&quot;Authenticated with Prefect Cloud! Using workspace </span><span class="si">{</span><span class="n">selected_workspace</span><span class="o">.</span><span class="n">handle</span><span class="si">!r}</span><span class="s2">.&quot;</span>
     <span class="p">)</span>
 </code></pre></div></td></tr></table></div>
           </details>
@@ -9781,27 +9727,27 @@ Reset PREFECT_API_KEY and PREFECT_API_URL to default.</p>
 
           <details class="quote">
             <summary>Source code in <code>prefect/cli/cloud/__init__.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">526</span>
-<span class="normal">527</span>
-<span class="normal">528</span>
-<span class="normal">529</span>
-<span class="normal">530</span>
-<span class="normal">531</span>
-<span class="normal">532</span>
-<span class="normal">533</span>
-<span class="normal">534</span>
-<span class="normal">535</span>
-<span class="normal">536</span>
-<span class="normal">537</span>
-<span class="normal">538</span>
-<span class="normal">539</span>
-<span class="normal">540</span>
-<span class="normal">541</span>
-<span class="normal">542</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">542</span>
 <span class="normal">543</span>
 <span class="normal">544</span>
 <span class="normal">545</span>
-<span class="normal">546</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@cloud_app</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="normal">546</span>
+<span class="normal">547</span>
+<span class="normal">548</span>
+<span class="normal">549</span>
+<span class="normal">550</span>
+<span class="normal">551</span>
+<span class="normal">552</span>
+<span class="normal">553</span>
+<span class="normal">554</span>
+<span class="normal">555</span>
+<span class="normal">556</span>
+<span class="normal">557</span>
+<span class="normal">558</span>
+<span class="normal">559</span>
+<span class="normal">560</span>
+<span class="normal">561</span>
+<span class="normal">562</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@cloud_app</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">logout</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Logout the current workspace.</span>
@@ -9849,23 +9795,7 @@ Reset PREFECT_API_KEY and PREFECT_API_URL to default.</p>
 
           <details class="quote">
             <summary>Source code in <code>prefect/cli/cloud/__init__.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">579</span>
-<span class="normal">580</span>
-<span class="normal">581</span>
-<span class="normal">582</span>
-<span class="normal">583</span>
-<span class="normal">584</span>
-<span class="normal">585</span>
-<span class="normal">586</span>
-<span class="normal">587</span>
-<span class="normal">588</span>
-<span class="normal">589</span>
-<span class="normal">590</span>
-<span class="normal">591</span>
-<span class="normal">592</span>
-<span class="normal">593</span>
-<span class="normal">594</span>
-<span class="normal">595</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">595</span>
 <span class="normal">596</span>
 <span class="normal">597</span>
 <span class="normal">598</span>
@@ -9876,7 +9806,23 @@ Reset PREFECT_API_KEY and PREFECT_API_URL to default.</p>
 <span class="normal">603</span>
 <span class="normal">604</span>
 <span class="normal">605</span>
-<span class="normal">606</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@workspace_app</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="normal">606</span>
+<span class="normal">607</span>
+<span class="normal">608</span>
+<span class="normal">609</span>
+<span class="normal">610</span>
+<span class="normal">611</span>
+<span class="normal">612</span>
+<span class="normal">613</span>
+<span class="normal">614</span>
+<span class="normal">615</span>
+<span class="normal">616</span>
+<span class="normal">617</span>
+<span class="normal">618</span>
+<span class="normal">619</span>
+<span class="normal">620</span>
+<span class="normal">621</span>
+<span class="normal">622</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@workspace_app</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">ls</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;List available workspaces.&quot;&quot;&quot;</span>
 
@@ -9931,23 +9877,7 @@ Reset PREFECT_API_KEY and PREFECT_API_URL to default.</p>
 
           <details class="quote">
             <summary>Source code in <code>prefect/cli/cloud/__init__.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">549</span>
-<span class="normal">550</span>
-<span class="normal">551</span>
-<span class="normal">552</span>
-<span class="normal">553</span>
-<span class="normal">554</span>
-<span class="normal">555</span>
-<span class="normal">556</span>
-<span class="normal">557</span>
-<span class="normal">558</span>
-<span class="normal">559</span>
-<span class="normal">560</span>
-<span class="normal">561</span>
-<span class="normal">562</span>
-<span class="normal">563</span>
-<span class="normal">564</span>
-<span class="normal">565</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">565</span>
 <span class="normal">566</span>
 <span class="normal">567</span>
 <span class="normal">568</span>
@@ -9958,7 +9888,23 @@ Reset PREFECT_API_KEY and PREFECT_API_URL to default.</p>
 <span class="normal">573</span>
 <span class="normal">574</span>
 <span class="normal">575</span>
-<span class="normal">576</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@cloud_app</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="normal">576</span>
+<span class="normal">577</span>
+<span class="normal">578</span>
+<span class="normal">579</span>
+<span class="normal">580</span>
+<span class="normal">581</span>
+<span class="normal">582</span>
+<span class="normal">583</span>
+<span class="normal">584</span>
+<span class="normal">585</span>
+<span class="normal">586</span>
+<span class="normal">587</span>
+<span class="normal">588</span>
+<span class="normal">589</span>
+<span class="normal">590</span>
+<span class="normal">591</span>
+<span class="normal">592</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@cloud_app</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">open</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Open the Prefect Cloud UI in the browser.</span>
@@ -10226,23 +10172,7 @@ key will be returned.</p>
 
           <details class="quote">
             <summary>Source code in <code>prefect/cli/cloud/__init__.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">609</span>
-<span class="normal">610</span>
-<span class="normal">611</span>
-<span class="normal">612</span>
-<span class="normal">613</span>
-<span class="normal">614</span>
-<span class="normal">615</span>
-<span class="normal">616</span>
-<span class="normal">617</span>
-<span class="normal">618</span>
-<span class="normal">619</span>
-<span class="normal">620</span>
-<span class="normal">621</span>
-<span class="normal">622</span>
-<span class="normal">623</span>
-<span class="normal">624</span>
-<span class="normal">625</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">625</span>
 <span class="normal">626</span>
 <span class="normal">627</span>
 <span class="normal">628</span>
@@ -10284,19 +10214,7 @@ key will be returned.</p>
 <span class="normal">664</span>
 <span class="normal">665</span>
 <span class="normal">666</span>
-<span class="normal">667</span>
-<span class="normal">668</span>
-<span class="normal">669</span>
-<span class="normal">670</span>
-<span class="normal">671</span>
-<span class="normal">672</span>
-<span class="normal">673</span>
-<span class="normal">674</span>
-<span class="normal">675</span>
-<span class="normal">676</span>
-<span class="normal">677</span>
-<span class="normal">678</span>
-<span class="normal">679</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@workspace_app</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="normal">667</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@workspace_app</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">set</span><span class="p">(</span>
     <span class="n">workspace_handle</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
         <span class="kc">None</span><span class="p">,</span>
@@ -10325,42 +10243,14 @@ key will be returned.</p>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">exit_with_error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Workspace </span><span class="si">{</span><span class="n">workspace_handle</span><span class="si">!r}</span><span class="s2"> not found.&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">workspaces</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">10</span><span class="p">:</span>
-                <span class="c1"># Group workspaces by account_id</span>
-                <span class="n">workspace_by_account</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Workspace</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
-                <span class="k">for</span> <span class="n">workspace</span> <span class="ow">in</span> <span class="n">workspaces</span><span class="p">:</span>
-                    <span class="n">workspace_by_account</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">workspace</span><span class="o">.</span><span class="n">account_id</span><span class="p">,</span> <span class="p">[])</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                        <span class="n">workspace</span>
-                    <span class="p">)</span>
-
-                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">workspace_by_account</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-                    <span class="n">account_id</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">workspace_by_account</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
-                    <span class="n">workspaces</span> <span class="o">=</span> <span class="n">workspace_by_account</span><span class="p">[</span><span class="n">account_id</span><span class="p">]</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">accounts</span> <span class="o">=</span> <span class="p">[</span>
-                        <span class="p">{</span>
-                            <span class="s2">&quot;account_id&quot;</span><span class="p">:</span> <span class="n">account_id</span><span class="p">,</span>
-                            <span class="s2">&quot;account_handle&quot;</span><span class="p">:</span> <span class="n">workspace_by_account</span><span class="p">[</span><span class="n">account_id</span><span class="p">][</span>
-                                <span class="mi">0</span>
-                            <span class="p">]</span><span class="o">.</span><span class="n">account_handle</span><span class="p">,</span>
-                        <span class="p">}</span>
-                        <span class="k">for</span> <span class="n">account_id</span> <span class="ow">in</span> <span class="n">workspace_by_account</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
-                    <span class="p">]</span>
-                    <span class="n">account</span> <span class="o">=</span> <span class="n">prompt_select_from_list</span><span class="p">(</span>
-                        <span class="n">app</span><span class="o">.</span><span class="n">console</span><span class="p">,</span>
-                        <span class="s2">&quot;Which account would you like to use?&quot;</span><span class="p">,</span>
-                        <span class="p">[(</span><span class="n">account</span><span class="p">,</span> <span class="n">account</span><span class="p">[</span><span class="s2">&quot;account_handle&quot;</span><span class="p">])</span> <span class="k">for</span> <span class="n">account</span> <span class="ow">in</span> <span class="n">accounts</span><span class="p">],</span>
-                    <span class="p">)</span>
-                    <span class="n">workspaces</span> <span class="o">=</span> <span class="n">workspace_by_account</span><span class="p">[</span><span class="n">account</span><span class="p">[</span><span class="s2">&quot;account_id&quot;</span><span class="p">]]</span>
-
             <span class="k">if</span> <span class="ow">not</span> <span class="n">workspaces</span><span class="p">:</span>
                 <span class="n">exit_with_error</span><span class="p">(</span><span class="s2">&quot;No workspaces found in the selected account.&quot;</span><span class="p">)</span>
 
-            <span class="n">workspace</span> <span class="o">=</span> <span class="n">prompt_select_from_list</span><span class="p">(</span>
-                <span class="n">app</span><span class="o">.</span><span class="n">console</span><span class="p">,</span>
-                <span class="s2">&quot;Which workspace would you like to use?&quot;</span><span class="p">,</span>
-                <span class="p">[(</span><span class="n">workspace</span><span class="p">,</span> <span class="n">workspace</span><span class="o">.</span><span class="n">handle</span><span class="p">)</span> <span class="k">for</span> <span class="n">workspace</span> <span class="ow">in</span> <span class="n">workspaces</span><span class="p">],</span>
-            <span class="p">)</span>
+            <span class="n">go_back</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">while</span> <span class="n">go_back</span><span class="p">:</span>
+                <span class="n">workspace</span><span class="p">,</span> <span class="n">go_back</span> <span class="o">=</span> <span class="k">await</span> <span class="n">_prompt_for_account_and_workspace</span><span class="p">(</span><span class="n">workspaces</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">workspace</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">exit_with_error</span><span class="p">(</span><span class="s2">&quot;No workspace selected.&quot;</span><span class="p">)</span>
 
         <span class="n">profile</span> <span class="o">=</span> <span class="n">update_current_profile</span><span class="p">({</span><span class="n">PREFECT_API_URL</span><span class="p">:</span> <span class="n">workspace</span><span class="o">.</span><span class="n">api_url</span><span class="p">()})</span>
         <span class="n">exit_with_success</span><span class="p">(</span>
