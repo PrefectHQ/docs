@@ -2514,6 +2514,32 @@ if (amplitudeKey){
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#defining-triggers-in-prefectyaml" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Defining triggers in <code>prefect.yaml</code>
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#defining-triggers-in-serve-and-deploy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Defining triggers in <code>.serve</code> and <code>.deploy</code>
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#pass-triggers-to-prefect-deploy" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -9176,6 +9202,32 @@ if (amplitudeKey){
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#defining-triggers-in-prefectyaml" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Defining triggers in <code>prefect.yaml</code>
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#defining-triggers-in-serve-and-deploy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Defining triggers in <code>.serve</code> and <code>.deploy</code>
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#pass-triggers-to-prefect-deploy" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -9832,14 +9884,17 @@ if (amplitudeKey){
 </table>
 <h2 id="create-an-automation-via-deployment-triggers">Create an automation via deployment triggers<a class="headerlink" href="#create-an-automation-via-deployment-triggers" title="Permanent link">&para;</a></h2>
 <p>To enable the simple configuration of event-driven deployments, Prefect provides deployment triggers - a shorthand for creating automations that are linked to specific deployments to run them based on the presence or absence of events.</p>
-<div class="highlight"><pre><span></span><code><span class="c1"># prefect.yaml</span>
-<span class="nt">deployments</span><span class="p">:</span>
+<p>Trigger definitions for deployments are supported in <code>prefect.yaml</code>, <code>.serve</code>, and <code>.deploy</code>. At deployment time, specified trigger definitions will create linked automations that are triggered by events matching your chosen <a href="/concepts/events/#event-grammar">grammar</a>. Each trigger definition may include a <a href="https://en.wikipedia.org/wiki/Jinja_(template_engine)">jinja template</a> to render the triggering <code>event</code> as the <code>parameters</code> of your  deployment's flow run.</p>
+<h3 id="defining-triggers-in-prefectyaml">Defining triggers in <code>prefect.yaml</code><a class="headerlink" href="#defining-triggers-in-prefectyaml" title="Permanent link">&para;</a></h3>
+<p>A list of triggers can be included directly on any deployment in a <code>prefect.yaml</code> file:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">deployments</span><span class="p">:</span>
 <span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">my-deployment</span>
 <span class="w">    </span><span class="nt">entrypoint</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">path/to/flow.py:decorated_fn</span>
 <span class="w">    </span><span class="nt">work_pool</span><span class="p">:</span>
-<span class="w">      </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">my-process-pool</span>
+<span class="w">      </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">my-work-pool</span>
 <span class="w">    </span><span class="nt">triggers</span><span class="p">:</span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">event</span>
+<span class="w">        </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
 <span class="w">        </span><span class="nt">match</span><span class="p">:</span>
 <span class="w">          </span><span class="nt">prefect.resource.id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">my.external.resource</span>
 <span class="w">        </span><span class="nt">expect</span><span class="p">:</span>
@@ -9847,7 +9902,91 @@ if (amplitudeKey){
 <span class="w">        </span><span class="nt">parameters</span><span class="p">:</span>
 <span class="w">          </span><span class="nt">param_1</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{{</span><span class="nv"> </span><span class="s">event</span><span class="nv"> </span><span class="s">}}&quot;</span>
 </code></pre></div>
-<p>At deployment time, this will create a linked automation that is triggered by events matching your chosen <a href="/concepts/events/#event-grammar">grammar</a>, which will pass the templatable <code>event</code> as a parameter to the deployment's flow run.</p>
+<p>This deployment will create a flow run when an <code>external.resource.pinged</code> event <em>and</em> an <code>external.resource.replied</code> event have been seen from <code>my.external.resource</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">deployments</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">my-deployment</span>
+<span class="w">    </span><span class="nt">entrypoint</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">path/to/flow.py:decorated_fn</span>
+<span class="w">    </span><span class="nt">work_pool</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">my-work-pool</span>
+<span class="w">    </span><span class="nt">triggers</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">compound</span>
+<span class="w">        </span><span class="nt">require</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">all</span>
+<span class="w">        </span><span class="nt">parameters</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">param_1</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;{{</span><span class="nv"> </span><span class="s">event</span><span class="nv"> </span><span class="s">}}&quot;</span>
+<span class="w">        </span><span class="nt">triggers</span><span class="p">:</span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">event</span>
+<span class="w">            </span><span class="nt">match</span><span class="p">:</span>
+<span class="w">              </span><span class="nt">prefect.resource.id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">my.external.resource</span>
+<span class="w">            </span><span class="nt">expect</span><span class="p">:</span>
+<span class="w">              </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">external.resource.pinged</span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">event</span>
+<span class="w">            </span><span class="nt">match</span><span class="p">:</span>
+<span class="w">              </span><span class="nt">prefect.resource.id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">my.external.resource</span>
+<span class="w">            </span><span class="nt">expect</span><span class="p">:</span>
+<span class="w">              </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">external.resource.replied</span>
+</code></pre></div>
+<h3 id="defining-triggers-in-serve-and-deploy">Defining triggers in <code>.serve</code> and <code>.deploy</code><a class="headerlink" href="#defining-triggers-in-serve-and-deploy" title="Permanent link">&para;</a></h3>
+<p>For creating deployments with triggers in Python, the trigger types <code>DeploymentEventTrigger</code>, <code>DeploymentMetricTrigger</code>, <code>DeploymentCompoundTrigger</code>, and <code>DeploymentSequenceTrigger</code> can be imported from <code>prefect.events</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span>
+<span class="kn">from</span> <span class="nn">prefect.events</span> <span class="kn">import</span> <span class="n">DeploymentEventTrigger</span> 
+
+
+<span class="nd">@flow</span><span class="p">(</span><span class="n">log_prints</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">decorated_fn</span><span class="p">(</span><span class="n">param_1</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">param_1</span><span class="p">)</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span><span class="o">==</span><span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">decorated_fn</span><span class="o">.</span><span class="n">serve</span><span class="p">(</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;my-deployment&quot;</span><span class="p">,</span>
+        <span class="n">triggers</span><span class="o">=</span><span class="p">[</span>
+            <span class="n">DeploymentEventTrigger</span><span class="p">(</span>
+                <span class="n">enabled</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="n">match</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;prefect.resource.id&quot;</span><span class="p">:</span> <span class="s2">&quot;my.external.resource&quot;</span><span class="p">},</span>
+                <span class="n">expect</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;external.resource.pinged&quot;</span><span class="p">],</span>
+                <span class="n">parameters</span><span class="o">=</span><span class="p">{</span>
+                    <span class="s2">&quot;param_1&quot;</span><span class="p">:</span> <span class="s2">&quot;{{ event }}&quot;</span><span class="p">,</span>
+                <span class="p">},</span>
+            <span class="p">)</span>
+        <span class="p">],</span>
+    <span class="p">)</span>
+</code></pre></div>
+<p>As with prior examples, composite triggers must be supplied with a list of underlying triggers:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span>
+<span class="kn">from</span> <span class="nn">prefect.events</span> <span class="kn">import</span> <span class="n">DeploymentEventTrigger</span><span class="p">,</span> <span class="n">DeploymentCompoundTrigger</span>
+
+
+<span class="nd">@flow</span><span class="p">(</span><span class="n">log_prints</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">decorated_fn</span><span class="p">(</span><span class="n">param_1</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">param_1</span><span class="p">)</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span><span class="o">==</span><span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">decorated_fn</span><span class="o">.</span><span class="n">deploy</span><span class="p">(</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;my-deployment&quot;</span><span class="p">,</span>
+        <span class="n">image</span><span class="o">=</span><span class="s2">&quot;prefecthq/prefect:2-latest&quot;</span>
+        <span class="n">triggers</span><span class="o">=</span><span class="p">[</span>
+            <span class="n">DeploymentCompoundTrigger</span><span class="p">(</span>
+                <span class="n">name</span><span class="o">=</span><span class="s2">&quot;my-compound-trigger&quot;</span><span class="p">,</span>
+                <span class="n">require</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">,</span>
+                <span class="n">triggers</span><span class="o">=</span><span class="p">[</span>
+                    <span class="n">DeploymentEventTrigger</span><span class="p">(</span>
+                      <span class="n">match</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;prefect.resource.id&quot;</span><span class="p">:</span> <span class="s2">&quot;my.external.resource&quot;</span><span class="p">},</span>
+                      <span class="n">expect</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;external.resource.pinged&quot;</span><span class="p">],</span>
+                    <span class="p">),</span>
+                    <span class="n">DeploymentEventTrigger</span><span class="p">(</span>
+                      <span class="n">match</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;prefect.resource.id&quot;</span><span class="p">:</span> <span class="s2">&quot;my.external.resource&quot;</span><span class="p">},</span>
+                      <span class="n">expect</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;external.resource.replied&quot;</span><span class="p">],</span>
+                    <span class="p">),</span>
+                <span class="p">],</span>
+                <span class="n">parameters</span><span class="o">=</span><span class="p">{</span>
+                    <span class="s2">&quot;param_1&quot;</span><span class="p">:</span> <span class="s2">&quot;{{ event }}&quot;</span><span class="p">,</span>
+                <span class="p">},</span>
+            <span class="p">)</span>
+        <span class="p">],</span>
+        <span class="n">work_pool_name</span><span class="o">=</span><span class="s2">&quot;my-work-pool&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+</code></pre></div>
 <h3 id="pass-triggers-to-prefect-deploy">Pass triggers to <code>prefect deploy</code><a class="headerlink" href="#pass-triggers-to-prefect-deploy" title="Permanent link">&para;</a></h3>
 <p>You can pass one or more <code>--trigger</code> arguments to <code>prefect deploy</code>, which can be either a JSON string or a path to a <code>.yaml</code> or <code>.json</code> file.</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># Pass a trigger as a JSON string</span>
