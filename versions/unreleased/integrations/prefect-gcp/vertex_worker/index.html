@@ -13717,7 +13717,19 @@ if (amplitudeKey){
 <span class="normal">645</span>
 <span class="normal">646</span>
 <span class="normal">647</span>
-<span class="normal">648</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">VertexAIWorker</span><span class="p">(</span><span class="n">BaseWorker</span><span class="p">):</span>
+<span class="normal">648</span>
+<span class="normal">649</span>
+<span class="normal">650</span>
+<span class="normal">651</span>
+<span class="normal">652</span>
+<span class="normal">653</span>
+<span class="normal">654</span>
+<span class="normal">655</span>
+<span class="normal">656</span>
+<span class="normal">657</span>
+<span class="normal">658</span>
+<span class="normal">659</span>
+<span class="normal">660</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">VertexAIWorker</span><span class="p">(</span><span class="n">BaseWorker</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Prefect worker that executes flow runs within Vertex AI Jobs.&quot;&quot;&quot;</span>
 
     <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;vertex-ai&quot;</span>
@@ -13760,35 +13772,42 @@ if (amplitudeKey){
         <span class="n">job_name</span> <span class="o">=</span> <span class="n">configuration</span><span class="o">.</span><span class="n">job_name</span>
 
         <span class="n">job_spec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_job_spec</span><span class="p">(</span><span class="n">configuration</span><span class="p">)</span>
-        <span class="k">with</span> <span class="n">configuration</span><span class="o">.</span><span class="n">credentials</span><span class="o">.</span><span class="n">get_job_service_client</span><span class="p">(</span>
-            <span class="n">client_options</span><span class="o">=</span><span class="n">client_options</span>
-        <span class="p">)</span> <span class="k">as</span> <span class="n">job_service_client</span><span class="p">:</span>
-            <span class="n">job_run</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_and_begin_job</span><span class="p">(</span>
-                <span class="n">job_name</span><span class="p">,</span> <span class="n">job_spec</span><span class="p">,</span> <span class="n">job_service_client</span><span class="p">,</span> <span class="n">configuration</span><span class="p">,</span> <span class="n">logger</span>
+        <span class="n">job_service_async_client</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">configuration</span><span class="o">.</span><span class="n">credentials</span><span class="o">.</span><span class="n">get_job_service_async_client</span><span class="p">(</span>
+                <span class="n">client_options</span><span class="o">=</span><span class="n">client_options</span>
             <span class="p">)</span>
+        <span class="p">)</span>
 
-            <span class="k">if</span> <span class="n">task_status</span><span class="p">:</span>
-                <span class="n">task_status</span><span class="o">.</span><span class="n">started</span><span class="p">(</span><span class="n">job_run</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">job_run</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_and_begin_job</span><span class="p">(</span>
+            <span class="n">job_name</span><span class="p">,</span>
+            <span class="n">job_spec</span><span class="p">,</span>
+            <span class="n">job_service_async_client</span><span class="p">,</span>
+            <span class="n">configuration</span><span class="p">,</span>
+            <span class="n">logger</span><span class="p">,</span>
+        <span class="p">)</span>
 
-            <span class="n">final_job_run</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_watch_job_run</span><span class="p">(</span>
-                <span class="n">job_name</span><span class="o">=</span><span class="n">job_name</span><span class="p">,</span>
-                <span class="n">full_job_name</span><span class="o">=</span><span class="n">job_run</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
-                <span class="n">job_service_client</span><span class="o">=</span><span class="n">job_service_client</span><span class="p">,</span>
-                <span class="n">current_state</span><span class="o">=</span><span class="n">job_run</span><span class="o">.</span><span class="n">state</span><span class="p">,</span>
-                <span class="n">until_states</span><span class="o">=</span><span class="p">(</span>
-                    <span class="n">JobState</span><span class="o">.</span><span class="n">JOB_STATE_SUCCEEDED</span><span class="p">,</span>
-                    <span class="n">JobState</span><span class="o">.</span><span class="n">JOB_STATE_FAILED</span><span class="p">,</span>
-                    <span class="n">JobState</span><span class="o">.</span><span class="n">JOB_STATE_CANCELLED</span><span class="p">,</span>
-                    <span class="n">JobState</span><span class="o">.</span><span class="n">JOB_STATE_EXPIRED</span><span class="p">,</span>
-                <span class="p">),</span>
-                <span class="n">configuration</span><span class="o">=</span><span class="n">configuration</span><span class="p">,</span>
-                <span class="n">logger</span><span class="o">=</span><span class="n">logger</span><span class="p">,</span>
-                <span class="n">timeout</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span>
-                    <span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span>
-                        <span class="n">hours</span><span class="o">=</span><span class="n">configuration</span><span class="o">.</span><span class="n">job_spec</span><span class="p">[</span><span class="s2">&quot;maximum_run_time_hours&quot;</span><span class="p">]</span>
-                    <span class="p">)</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span>
-                <span class="p">),</span>
-            <span class="p">)</span>
+        <span class="k">if</span> <span class="n">task_status</span><span class="p">:</span>
+            <span class="n">task_status</span><span class="o">.</span><span class="n">started</span><span class="p">(</span><span class="n">job_run</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+        <span class="n">final_job_run</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_watch_job_run</span><span class="p">(</span>
+            <span class="n">job_name</span><span class="o">=</span><span class="n">job_name</span><span class="p">,</span>
+            <span class="n">full_job_name</span><span class="o">=</span><span class="n">job_run</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">job_service_async_client</span><span class="o">=</span><span class="n">job_service_async_client</span><span class="p">,</span>
+            <span class="n">current_state</span><span class="o">=</span><span class="n">job_run</span><span class="o">.</span><span class="n">state</span><span class="p">,</span>
+            <span class="n">until_states</span><span class="o">=</span><span class="p">(</span>
+                <span class="n">JobState</span><span class="o">.</span><span class="n">JOB_STATE_SUCCEEDED</span><span class="p">,</span>
+                <span class="n">JobState</span><span class="o">.</span><span class="n">JOB_STATE_FAILED</span><span class="p">,</span>
+                <span class="n">JobState</span><span class="o">.</span><span class="n">JOB_STATE_CANCELLED</span><span class="p">,</span>
+                <span class="n">JobState</span><span class="o">.</span><span class="n">JOB_STATE_EXPIRED</span><span class="p">,</span>
+            <span class="p">),</span>
+            <span class="n">configuration</span><span class="o">=</span><span class="n">configuration</span><span class="p">,</span>
+            <span class="n">logger</span><span class="o">=</span><span class="n">logger</span><span class="p">,</span>
+            <span class="n">timeout</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span>
+                <span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span>
+                    <span class="n">hours</span><span class="o">=</span><span class="n">configuration</span><span class="o">.</span><span class="n">job_spec</span><span class="p">[</span><span class="s2">&quot;maximum_run_time_hours&quot;</span><span class="p">]</span>
+                <span class="p">)</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span>
+            <span class="p">),</span>
+        <span class="p">)</span>
 
         <span class="n">error_msg</span> <span class="o">=</span> <span class="n">final_job_run</span><span class="o">.</span><span class="n">error</span><span class="o">.</span><span class="n">message</span>
 
@@ -13840,7 +13859,7 @@ if (amplitudeKey){
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">job_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">job_spec</span><span class="p">:</span> <span class="s2">&quot;CustomJobSpec&quot;</span><span class="p">,</span>
-        <span class="n">job_service_client</span><span class="p">:</span> <span class="s2">&quot;JobServiceClient&quot;</span><span class="p">,</span>
+        <span class="n">job_service_async_client</span><span class="p">:</span> <span class="s2">&quot;JobServiceAsyncClient&quot;</span><span class="p">,</span>
         <span class="n">configuration</span><span class="p">:</span> <span class="n">VertexAIWorkerJobConfiguration</span><span class="p">,</span>
         <span class="n">logger</span><span class="p">:</span> <span class="n">PrefectLogAdapter</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;CustomJob&quot;</span><span class="p">:</span>
@@ -13855,24 +13874,23 @@ if (amplitudeKey){
         <span class="p">)</span>
 
         <span class="c1"># run job</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Job </span><span class="si">{</span><span class="n">job_name</span><span class="si">!r}</span><span class="s2"> starting to run &quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Creating job </span><span class="si">{</span><span class="n">job_name</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="n">project</span> <span class="o">=</span> <span class="n">configuration</span><span class="o">.</span><span class="n">project</span>
         <span class="n">resource_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;projects/</span><span class="si">{</span><span class="n">project</span><span class="si">}</span><span class="s2">/locations/</span><span class="si">{</span><span class="n">configuration</span><span class="o">.</span><span class="n">region</span><span class="si">}</span><span class="s2">&quot;</span>
 
-        <span class="n">retry_policy</span> <span class="o">=</span> <span class="n">retry</span><span class="p">(</span>
+        <span class="k">async</span> <span class="k">for</span> <span class="n">attempt</span> <span class="ow">in</span> <span class="n">AsyncRetrying</span><span class="p">(</span>
             <span class="n">stop</span><span class="o">=</span><span class="n">stop_after_attempt</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">wait</span><span class="o">=</span><span class="n">wait_fixed</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">wait_random</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
-        <span class="p">)</span>
-
-        <span class="n">custom_job_run</span> <span class="o">=</span> <span class="k">await</span> <span class="n">run_sync_in_worker_thread</span><span class="p">(</span>
-            <span class="n">retry_policy</span><span class="p">(</span><span class="n">job_service_client</span><span class="o">.</span><span class="n">create_custom_job</span><span class="p">),</span>
-            <span class="n">parent</span><span class="o">=</span><span class="n">resource_name</span><span class="p">,</span>
-            <span class="n">custom_job</span><span class="o">=</span><span class="n">custom_job</span><span class="p">,</span>
-        <span class="p">)</span>
+        <span class="p">):</span>
+            <span class="k">with</span> <span class="n">attempt</span><span class="p">:</span>
+                <span class="n">custom_job_run</span> <span class="o">=</span> <span class="k">await</span> <span class="n">job_service_async_client</span><span class="o">.</span><span class="n">create_custom_job</span><span class="p">(</span>
+                    <span class="n">parent</span><span class="o">=</span><span class="n">resource_name</span><span class="p">,</span>
+                    <span class="n">custom_job</span><span class="o">=</span><span class="n">custom_job</span><span class="p">,</span>
+                <span class="p">)</span>
 
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;Job </span><span class="si">{</span><span class="n">job_name</span><span class="si">!r}</span><span class="s2"> has successfully started; &quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;the full job name is </span><span class="si">{</span><span class="n">custom_job_run</span><span class="o">.</span><span class="n">name</span><span class="si">!r}</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;Job </span><span class="si">{</span><span class="n">job_name</span><span class="si">!r}</span><span class="s2"> created. &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;The full job name is </span><span class="si">{</span><span class="n">custom_job_run</span><span class="o">.</span><span class="n">name</span><span class="si">!r}</span><span class="s2">&quot;</span>
         <span class="p">)</span>
 
         <span class="k">return</span> <span class="n">custom_job_run</span>
@@ -13881,7 +13899,7 @@ if (amplitudeKey){
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">job_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">full_job_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>  <span class="c1"># different from job_name</span>
-        <span class="n">job_service_client</span><span class="p">:</span> <span class="s2">&quot;JobServiceClient&quot;</span><span class="p">,</span>
+        <span class="n">job_service_async_client</span><span class="p">:</span> <span class="s2">&quot;JobServiceAsyncClient&quot;</span><span class="p">,</span>
         <span class="n">current_state</span><span class="p">:</span> <span class="s2">&quot;JobState&quot;</span><span class="p">,</span>
         <span class="n">until_states</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="s2">&quot;JobState&quot;</span><span class="p">],</span>
         <span class="n">configuration</span><span class="p">:</span> <span class="n">VertexAIWorkerJobConfiguration</span><span class="p">,</span>
@@ -13890,14 +13908,19 @@ if (amplitudeKey){
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;CustomJob&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Polls job run to see if status changed.</span>
+
+<span class="sd">        State changes reported by the Vertex AI API may sometimes be inaccurate</span>
+<span class="sd">        immediately upon startup, but should eventually report a correct running</span>
+<span class="sd">        and then terminal state. The minimum training duration for a custom job is</span>
+<span class="sd">        30 seconds, so short-lived jobs may be marked as successful some time</span>
+<span class="sd">        after a flow run has completed.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">state</span> <span class="o">=</span> <span class="n">JobState</span><span class="o">.</span><span class="n">JOB_STATE_UNSPECIFIED</span>
         <span class="n">last_state</span> <span class="o">=</span> <span class="n">current_state</span>
         <span class="n">t0</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
 
         <span class="k">while</span> <span class="n">state</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">until_states</span><span class="p">:</span>
-            <span class="n">job_run</span> <span class="o">=</span> <span class="k">await</span> <span class="n">run_sync_in_worker_thread</span><span class="p">(</span>
-                <span class="n">job_service_client</span><span class="o">.</span><span class="n">get_custom_job</span><span class="p">,</span>
+            <span class="n">job_run</span> <span class="o">=</span> <span class="k">await</span> <span class="n">job_service_async_client</span><span class="o">.</span><span class="n">get_custom_job</span><span class="p">(</span>
                 <span class="n">name</span><span class="o">=</span><span class="n">full_job_name</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="n">state</span> <span class="o">=</span> <span class="n">job_run</span><span class="o">.</span><span class="n">state</span>
@@ -13908,7 +13931,7 @@ if (amplitudeKey){
                     <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;state&quot;</span><span class="p">,</span> <span class="s2">&quot;state is now:&quot;</span><span class="p">)</span>
                 <span class="p">)</span>
                 <span class="c1"># results in &quot;New job state is now: succeeded&quot;</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">job_name</span><span class="si">}</span><span class="s2"> has new </span><span class="si">{</span><span class="n">state_label</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">job_name</span><span class="si">}</span><span class="s2"> has new </span><span class="si">{</span><span class="n">state_label</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
                 <span class="n">last_state</span> <span class="o">=</span> <span class="n">state</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="c1"># Intermittently, the job will not be described. We want to respect the</span>
@@ -13921,7 +13944,7 @@ if (amplitudeKey){
                     <span class="sa">f</span><span class="s2">&quot;Timed out after </span><span class="si">{</span><span class="n">elapsed_time</span><span class="si">}</span><span class="s2">s while watching job for states &quot;</span>
                     <span class="s2">&quot;</span><span class="si">{until_states!r}</span><span class="s2">&quot;</span>
                 <span class="p">)</span>
-            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">configuration</span><span class="o">.</span><span class="n">job_watch_poll_interval</span><span class="p">)</span>
+            <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">configuration</span><span class="o">.</span><span class="n">job_watch_poll_interval</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">job_run</span>
 
@@ -13972,22 +13995,23 @@ if (amplitudeKey){
         <span class="n">client_options</span> <span class="o">=</span> <span class="n">ClientOptions</span><span class="p">(</span>
             <span class="n">api_endpoint</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">configuration</span><span class="o">.</span><span class="n">region</span><span class="si">}</span><span class="s2">-aiplatform.googleapis.com&quot;</span>
         <span class="p">)</span>
-        <span class="k">with</span> <span class="n">configuration</span><span class="o">.</span><span class="n">credentials</span><span class="o">.</span><span class="n">get_job_service_client</span><span class="p">(</span>
-            <span class="n">client_options</span><span class="o">=</span><span class="n">client_options</span>
-        <span class="p">)</span> <span class="k">as</span> <span class="n">job_service_client</span><span class="p">:</span>
-            <span class="k">await</span> <span class="n">run_sync_in_worker_thread</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_stop_job</span><span class="p">,</span>
-                <span class="n">client</span><span class="o">=</span><span class="n">job_service_client</span><span class="p">,</span>
-                <span class="n">vertex_job_name</span><span class="o">=</span><span class="n">infrastructure_pid</span><span class="p">,</span>
+        <span class="n">job_service_async_client</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">configuration</span><span class="o">.</span><span class="n">credentials</span><span class="o">.</span><span class="n">get_job_service_async_client</span><span class="p">(</span>
+                <span class="n">client_options</span><span class="o">=</span><span class="n">client_options</span>
             <span class="p">)</span>
+        <span class="p">)</span>
+        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stop_job</span><span class="p">(</span>
+            <span class="n">client</span><span class="o">=</span><span class="n">job_service_async_client</span><span class="p">,</span>
+            <span class="n">vertex_job_name</span><span class="o">=</span><span class="n">infrastructure_pid</span><span class="p">,</span>
+        <span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_stop_job</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">client</span><span class="p">:</span> <span class="s2">&quot;JobServiceClient&quot;</span><span class="p">,</span> <span class="n">vertex_job_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">_stop_job</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">client</span><span class="p">:</span> <span class="s2">&quot;JobServiceAsyncClient&quot;</span><span class="p">,</span> <span class="n">vertex_job_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Calls the `cancel_custom_job` method on the Vertex AI Job Service Client.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">cancel_custom_job_request</span> <span class="o">=</span> <span class="n">CancelCustomJobRequest</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">vertex_job_name</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">client</span><span class="o">.</span><span class="n">cancel_custom_job</span><span class="p">(</span>
+            <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">cancel_custom_job</span><span class="p">(</span>
                 <span class="n">request</span><span class="o">=</span><span class="n">cancel_custom_job_request</span><span class="p">,</span>
             <span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
@@ -14034,18 +14058,7 @@ based on the provided infrastructure PID + run configuration.</p>
 
           <details class="quote">
             <summary>Source code in <code>prefect_gcp/workers/vertex.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">604</span>
-<span class="normal">605</span>
-<span class="normal">606</span>
-<span class="normal">607</span>
-<span class="normal">608</span>
-<span class="normal">609</span>
-<span class="normal">610</span>
-<span class="normal">611</span>
-<span class="normal">612</span>
-<span class="normal">613</span>
-<span class="normal">614</span>
-<span class="normal">615</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">615</span>
 <span class="normal">616</span>
 <span class="normal">617</span>
 <span class="normal">618</span>
@@ -14061,7 +14074,19 @@ based on the provided infrastructure PID + run configuration.</p>
 <span class="normal">628</span>
 <span class="normal">629</span>
 <span class="normal">630</span>
-<span class="normal">631</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">kill_infrastructure</span><span class="p">(</span>
+<span class="normal">631</span>
+<span class="normal">632</span>
+<span class="normal">633</span>
+<span class="normal">634</span>
+<span class="normal">635</span>
+<span class="normal">636</span>
+<span class="normal">637</span>
+<span class="normal">638</span>
+<span class="normal">639</span>
+<span class="normal">640</span>
+<span class="normal">641</span>
+<span class="normal">642</span>
+<span class="normal">643</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">kill_infrastructure</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">infrastructure_pid</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">configuration</span><span class="p">:</span> <span class="n">VertexAIWorkerJobConfiguration</span><span class="p">,</span>
@@ -14081,14 +14106,15 @@ based on the provided infrastructure PID + run configuration.</p>
     <span class="n">client_options</span> <span class="o">=</span> <span class="n">ClientOptions</span><span class="p">(</span>
         <span class="n">api_endpoint</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">configuration</span><span class="o">.</span><span class="n">region</span><span class="si">}</span><span class="s2">-aiplatform.googleapis.com&quot;</span>
     <span class="p">)</span>
-    <span class="k">with</span> <span class="n">configuration</span><span class="o">.</span><span class="n">credentials</span><span class="o">.</span><span class="n">get_job_service_client</span><span class="p">(</span>
-        <span class="n">client_options</span><span class="o">=</span><span class="n">client_options</span>
-    <span class="p">)</span> <span class="k">as</span> <span class="n">job_service_client</span><span class="p">:</span>
-        <span class="k">await</span> <span class="n">run_sync_in_worker_thread</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_stop_job</span><span class="p">,</span>
-            <span class="n">client</span><span class="o">=</span><span class="n">job_service_client</span><span class="p">,</span>
-            <span class="n">vertex_job_name</span><span class="o">=</span><span class="n">infrastructure_pid</span><span class="p">,</span>
+    <span class="n">job_service_async_client</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">configuration</span><span class="o">.</span><span class="n">credentials</span><span class="o">.</span><span class="n">get_job_service_async_client</span><span class="p">(</span>
+            <span class="n">client_options</span><span class="o">=</span><span class="n">client_options</span>
         <span class="p">)</span>
+    <span class="p">)</span>
+    <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stop_job</span><span class="p">(</span>
+        <span class="n">client</span><span class="o">=</span><span class="n">job_service_async_client</span><span class="p">,</span>
+        <span class="n">vertex_job_name</span><span class="o">=</span><span class="n">infrastructure_pid</span><span class="p">,</span>
+    <span class="p">)</span>
 </code></pre></div></td></tr></table></div>
           </details>
   </div>
@@ -14271,7 +14297,14 @@ final state of the flow run</p>
 <span class="normal">450</span>
 <span class="normal">451</span>
 <span class="normal">452</span>
-<span class="normal">453</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">run</span><span class="p">(</span>
+<span class="normal">453</span>
+<span class="normal">454</span>
+<span class="normal">455</span>
+<span class="normal">456</span>
+<span class="normal">457</span>
+<span class="normal">458</span>
+<span class="normal">459</span>
+<span class="normal">460</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">run</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">flow_run</span><span class="p">:</span> <span class="s2">&quot;FlowRun&quot;</span><span class="p">,</span>
     <span class="n">configuration</span><span class="p">:</span> <span class="n">VertexAIWorkerJobConfiguration</span><span class="p">,</span>
@@ -14300,35 +14333,42 @@ final state of the flow run</p>
     <span class="n">job_name</span> <span class="o">=</span> <span class="n">configuration</span><span class="o">.</span><span class="n">job_name</span>
 
     <span class="n">job_spec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_job_spec</span><span class="p">(</span><span class="n">configuration</span><span class="p">)</span>
-    <span class="k">with</span> <span class="n">configuration</span><span class="o">.</span><span class="n">credentials</span><span class="o">.</span><span class="n">get_job_service_client</span><span class="p">(</span>
-        <span class="n">client_options</span><span class="o">=</span><span class="n">client_options</span>
-    <span class="p">)</span> <span class="k">as</span> <span class="n">job_service_client</span><span class="p">:</span>
-        <span class="n">job_run</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_and_begin_job</span><span class="p">(</span>
-            <span class="n">job_name</span><span class="p">,</span> <span class="n">job_spec</span><span class="p">,</span> <span class="n">job_service_client</span><span class="p">,</span> <span class="n">configuration</span><span class="p">,</span> <span class="n">logger</span>
+    <span class="n">job_service_async_client</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">configuration</span><span class="o">.</span><span class="n">credentials</span><span class="o">.</span><span class="n">get_job_service_async_client</span><span class="p">(</span>
+            <span class="n">client_options</span><span class="o">=</span><span class="n">client_options</span>
         <span class="p">)</span>
+    <span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">task_status</span><span class="p">:</span>
-            <span class="n">task_status</span><span class="o">.</span><span class="n">started</span><span class="p">(</span><span class="n">job_run</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+    <span class="n">job_run</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_and_begin_job</span><span class="p">(</span>
+        <span class="n">job_name</span><span class="p">,</span>
+        <span class="n">job_spec</span><span class="p">,</span>
+        <span class="n">job_service_async_client</span><span class="p">,</span>
+        <span class="n">configuration</span><span class="p">,</span>
+        <span class="n">logger</span><span class="p">,</span>
+    <span class="p">)</span>
 
-        <span class="n">final_job_run</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_watch_job_run</span><span class="p">(</span>
-            <span class="n">job_name</span><span class="o">=</span><span class="n">job_name</span><span class="p">,</span>
-            <span class="n">full_job_name</span><span class="o">=</span><span class="n">job_run</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
-            <span class="n">job_service_client</span><span class="o">=</span><span class="n">job_service_client</span><span class="p">,</span>
-            <span class="n">current_state</span><span class="o">=</span><span class="n">job_run</span><span class="o">.</span><span class="n">state</span><span class="p">,</span>
-            <span class="n">until_states</span><span class="o">=</span><span class="p">(</span>
-                <span class="n">JobState</span><span class="o">.</span><span class="n">JOB_STATE_SUCCEEDED</span><span class="p">,</span>
-                <span class="n">JobState</span><span class="o">.</span><span class="n">JOB_STATE_FAILED</span><span class="p">,</span>
-                <span class="n">JobState</span><span class="o">.</span><span class="n">JOB_STATE_CANCELLED</span><span class="p">,</span>
-                <span class="n">JobState</span><span class="o">.</span><span class="n">JOB_STATE_EXPIRED</span><span class="p">,</span>
-            <span class="p">),</span>
-            <span class="n">configuration</span><span class="o">=</span><span class="n">configuration</span><span class="p">,</span>
-            <span class="n">logger</span><span class="o">=</span><span class="n">logger</span><span class="p">,</span>
-            <span class="n">timeout</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span>
-                <span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span>
-                    <span class="n">hours</span><span class="o">=</span><span class="n">configuration</span><span class="o">.</span><span class="n">job_spec</span><span class="p">[</span><span class="s2">&quot;maximum_run_time_hours&quot;</span><span class="p">]</span>
-                <span class="p">)</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span>
-            <span class="p">),</span>
-        <span class="p">)</span>
+    <span class="k">if</span> <span class="n">task_status</span><span class="p">:</span>
+        <span class="n">task_status</span><span class="o">.</span><span class="n">started</span><span class="p">(</span><span class="n">job_run</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+    <span class="n">final_job_run</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_watch_job_run</span><span class="p">(</span>
+        <span class="n">job_name</span><span class="o">=</span><span class="n">job_name</span><span class="p">,</span>
+        <span class="n">full_job_name</span><span class="o">=</span><span class="n">job_run</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+        <span class="n">job_service_async_client</span><span class="o">=</span><span class="n">job_service_async_client</span><span class="p">,</span>
+        <span class="n">current_state</span><span class="o">=</span><span class="n">job_run</span><span class="o">.</span><span class="n">state</span><span class="p">,</span>
+        <span class="n">until_states</span><span class="o">=</span><span class="p">(</span>
+            <span class="n">JobState</span><span class="o">.</span><span class="n">JOB_STATE_SUCCEEDED</span><span class="p">,</span>
+            <span class="n">JobState</span><span class="o">.</span><span class="n">JOB_STATE_FAILED</span><span class="p">,</span>
+            <span class="n">JobState</span><span class="o">.</span><span class="n">JOB_STATE_CANCELLED</span><span class="p">,</span>
+            <span class="n">JobState</span><span class="o">.</span><span class="n">JOB_STATE_EXPIRED</span><span class="p">,</span>
+        <span class="p">),</span>
+        <span class="n">configuration</span><span class="o">=</span><span class="n">configuration</span><span class="p">,</span>
+        <span class="n">logger</span><span class="o">=</span><span class="n">logger</span><span class="p">,</span>
+        <span class="n">timeout</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span>
+            <span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span>
+                <span class="n">hours</span><span class="o">=</span><span class="n">configuration</span><span class="o">.</span><span class="n">job_spec</span><span class="p">[</span><span class="s2">&quot;maximum_run_time_hours&quot;</span><span class="p">]</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span>
+        <span class="p">),</span>
+    <span class="p">)</span>
 
     <span class="n">error_msg</span> <span class="o">=</span> <span class="n">final_job_run</span><span class="o">.</span><span class="n">error</span><span class="o">.</span><span class="n">message</span>
 

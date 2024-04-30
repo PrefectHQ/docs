@@ -13076,8 +13076,7 @@ printed as text by passing <code>--format text</code>.</p>
 
           <details class="quote">
             <summary>Source code in <code>prefect/cli/events.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">26</span>
-<span class="normal">27</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">27</span>
 <span class="normal">28</span>
 <span class="normal">29</span>
 <span class="normal">30</span>
@@ -13109,7 +13108,8 @@ printed as text by passing <code>--format text</code>.</p>
 <span class="normal">56</span>
 <span class="normal">57</span>
 <span class="normal">58</span>
-<span class="normal">59</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@events_app</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="normal">59</span>
+<span class="normal">60</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@events_app</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">stream</span><span class="p">(</span>
     <span class="nb">format</span><span class="p">:</span> <span class="n">StreamFormat</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
         <span class="n">StreamFormat</span><span class="o">.</span><span class="n">json</span><span class="p">,</span> <span class="s2">&quot;--format&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Output format (json or text)&quot;</span>
@@ -13128,15 +13128,15 @@ printed as text by passing <code>--format text</code>.</p>
 <span class="sd">    as it is received. By default, events are printed as JSON, but can be</span>
 <span class="sd">    printed as text by passing `--format text`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">app</span><span class="o">.</span><span class="n">console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="s2">&quot;Subscribing to event stream...&quot;</span><span class="p">)</span>
 
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">Subscriber</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">PrefectCloudAccountEventSubscriber</span>
-            <span class="k">if</span> <span class="n">account</span>
-            <span class="k">else</span> <span class="n">PrefectCloudEventSubscriber</span>
-        <span class="p">)</span>
-        <span class="k">async</span> <span class="k">with</span> <span class="n">Subscriber</span><span class="p">()</span> <span class="k">as</span> <span class="n">subscriber</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">account</span><span class="p">:</span>
+            <span class="n">events_subscriber</span> <span class="o">=</span> <span class="n">PrefectCloudAccountEventSubscriber</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">events_subscriber</span> <span class="o">=</span> <span class="n">get_events_subscriber</span><span class="p">()</span>
+
+        <span class="n">app</span><span class="o">.</span><span class="n">console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="s2">&quot;Subscribing to event stream...&quot;</span><span class="p">)</span>
+        <span class="k">async</span> <span class="k">with</span> <span class="n">events_subscriber</span> <span class="k">as</span> <span class="n">subscriber</span><span class="p">:</span>
             <span class="k">async</span> <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">subscriber</span><span class="p">:</span>
                 <span class="k">await</span> <span class="n">handle_event</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="nb">format</span><span class="p">,</span> <span class="n">output_file</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">run_once</span><span class="p">:</span>

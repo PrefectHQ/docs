@@ -13081,6 +13081,19 @@ if (amplitudeKey){
 </li>
         
           <li class="md-nav__item">
+  <a href="#registering-blocks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Registering blocks
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#saving-credentials-to-block" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -13236,12 +13249,10 @@ if (amplitudeKey){
 <p>This results in reduced errors, increased confidence in your data, and ultimately, faster insights.</p>
 <p>To set up a table, use the <code>execute</code> and <code>execute_many</code> methods. Then, use the <code>fetch_many</code> method to retrieve data in a stream until there's no more data.</p>
 <p>By using the <code>SnowflakeConnector</code> as a context manager, you can make sure that the Snowflake connection and cursors are closed properly after you're done with them.</p>
-<p>Be sure to install <a href="#installation">prefect-snowflake</a> and <a href="#saving-credentials-to-block">save to block</a> to run the examples below!</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="1:1"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Sync</label></div>
+<p>Be sure to <a href="#installation">install prefect-snowflake</a>, <a href="#registering-blocks">register the blocks</a>, and <a href="#saving-credentials-to-block">create a credentials block</a> to run the examples below!</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Sync</label><label for="__tabbed_1_2">Async</label></div>
 <div class="tabbed-content">
-<div class="tabbed-block"></div>
-</div>
-</div>
+<div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
 <span class="kn">from</span> <span class="nn">prefect_snowflake</span> <span class="kn">import</span> <span class="n">SnowflakeConnector</span>
 
@@ -13280,13 +13291,12 @@ if (amplitudeKey){
     <span class="n">all_rows</span> <span class="o">=</span> <span class="n">fetch_data</span><span class="p">(</span><span class="n">block_name</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">all_rows</span>
 
-<span class="n">snowflake_flow</span><span class="p">()</span>
+
+<span class="k">if</span> <span class="vm">__name__</span><span class="o">==</span><span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">snowflake_flow</span><span class="p">()</span>
 </code></pre></div>
-<div class="tabbed-set tabbed-alternate" data-tabs="2:1"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Async</label></div>
-<div class="tabbed-content">
-<div class="tabbed-block"></div>
 </div>
-</div>
+<div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
 <span class="kn">from</span> <span class="nn">prefect_snowflake</span> <span class="kn">import</span> <span class="n">SnowflakeConnector</span>
 <span class="kn">import</span> <span class="nn">asyncio</span>
@@ -13325,8 +13335,13 @@ if (amplitudeKey){
     <span class="n">all_rows</span> <span class="o">=</span> <span class="k">await</span> <span class="n">fetch_data</span><span class="p">(</span><span class="n">block_name</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">all_rows</span>
 
-<span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">snowflake_flow</span><span class="p">(</span><span class="s2">&quot;example&quot;</span><span class="p">))</span>
+
+<span class="k">if</span> <span class="vm">__name__</span><span class="o">==</span><span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">snowflake_flow</span><span class="p">(</span><span class="s2">&quot;example&quot;</span><span class="p">))</span>
 </code></pre></div>
+</div>
+</div>
+</div>
 <h3 id="access-underlying-snowflake-connection">Access underlying Snowflake connection<a class="headerlink" href="#access-underlying-snowflake-connection" title="Permanent link">&para;</a></h3>
 <p>If the native methods of the block don't meet your requirements, don't worry.</p>
 <p>You have the option to access the underlying Snowflake connection and utilize its built-in methods as well.</p>
@@ -13359,14 +13374,20 @@ if (amplitudeKey){
 <p>For more tips on how to use tasks and flows in an integration, check out <a href="https://docs.prefect.io/integrations/usage/">Using Collections</a>!</p>
 <h3 id="installation">Installation<a class="headerlink" href="#installation" title="Permanent link">&para;</a></h3>
 <p>Install <code>prefect-snowflake</code> with <code>pip</code>:</p>
+<div class="terminal">
 <div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>prefect-snowflake
 </code></pre></div>
-<p>A list of available blocks in <code>prefect-snowflake</code> and their setup instructions can be found <a href="https://PrefectHQ.github.io/prefect-snowflake/blocks_catalog">here</a>.</p>
-<p>Requires an installation of Python 3.8+.</p>
-<p>We recommend using a Python virtual environment manager such as pipenv, conda or virtualenv.</p>
-<p>These tasks are designed to work with Prefect 2. For more information about how to use Prefect, please refer to the <a href="https://docs.prefect.io/">Prefect documentation</a>.</p>
+</div>
+
+<h3 id="registering-blocks">Registering blocks<a class="headerlink" href="#registering-blocks" title="Permanent link">&para;</a></h3>
+<p>Register blocks in this module to make them available for use.</p>
+<div class="terminal">
+<div class="highlight"><pre><span></span><code>prefect<span class="w"> </span>block<span class="w"> </span>register<span class="w"> </span>-m<span class="w"> </span>prefect_aws
+</code></pre></div>
+</div>
+
 <h3 id="saving-credentials-to-block">Saving credentials to block<a class="headerlink" href="#saving-credentials-to-block" title="Permanent link">&para;</a></h3>
-<p>Note, to use the <code>load</code> method on Blocks, you must already have a block document <a href="https://docs.prefect.io/concepts/blocks/#saving-blocks">saved through code</a> or saved through the UI.</p>
+<p>Note, to use the <code>load</code> method on a block, you must already have a block document <a href="https://docs.prefect.io/concepts/blocks/#saving-blocks">saved through code</a> or saved through the UI.</p>
 <p>Below is a walkthrough on saving a <code>SnowflakeCredentials</code> block through code.</p>
 <ol>
 <li>Head over to https://app.snowflake.com/.</li>
@@ -13417,26 +13438,10 @@ on Prefect Cloud:</p>
 </code></pre></div>
 <p>A list of available blocks in <code>prefect-snowflake</code> and their setup instructions can be found <a href="https://PrefectHQ.github.io/prefect-snowflake/blocks_catalog">here</a>.</p>
 <h3 id="feedback">Feedback<a class="headerlink" href="#feedback" title="Permanent link">&para;</a></h3>
-<p>If you encounter any bugs while using <code>prefect-snowflake</code>, feel free to open an issue in the <a href="https://github.com/PrefectHQ/prefect-snowflake">prefect-snowflake</a> repository.</p>
-<p>If you have any questions or issues while using <code>prefect-snowflake</code>, you can find help in either the <a href="https://discourse.prefect.io/">Prefect Discourse forum</a> or the <a href="https://prefect.io/slack">Prefect Slack community</a>.</p>
-<p>Feel free to star or watch <a href="https://github.com/PrefectHQ/prefect-snowflake"><code>prefect-snowflake</code></a> for updates too!</p>
+<p>If you encounter any bugs while using <code>prefect-snowflake</code>, feel free to open an issue in the <a href="https://github.com/PrefectHQ/prefect">prefect</a> repository.</p>
+<p>If you have any questions or issues while using <code>prefect-snowflake</code>, you can find help in the <a href="https://prefect.io/slack">Prefect Slack community</a>.</p>
 <h3 id="contributing">Contributing<a class="headerlink" href="#contributing" title="Permanent link">&para;</a></h3>
-<p>If you'd like to help contribute to fix an issue or add a feature to <code>prefect-snowflake</code>, please <a href="https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork">propose changes through a pull request from a fork of the repository</a>.</p>
-<p>Here are the steps:</p>
-<ol>
-<li><a href="https://docs.github.com/en/get-started/quickstart/fork-a-repo#forking-a-repository">Fork the repository</a></li>
-<li><a href="https://docs.github.com/en/get-started/quickstart/fork-a-repo#cloning-your-forked-repository">Clone the forked repository</a></li>
-<li>Install the repository and its dependencies:
-<div class="highlight"><pre><span></span><code>pip install -e &quot;.[dev]&quot;
-</code></pre></div></li>
-<li>Make desired changes</li>
-<li>Add tests</li>
-<li>Insert an entry to <a href="https://github.com/PrefectHQ/prefect-snowflake/blob/main/CHANGELOG.md">CHANGELOG.md</a></li>
-<li>Install <code>pre-commit</code> to perform quality checks prior to commit:
-<div class="highlight"><pre><span></span><code>pre-commit install
-</code></pre></div></li>
-<li><code>git commit</code>, <code>git push</code>, and create a pull request</li>
-</ol>
+<p>If you'd like to help contribute to fix an issue or add a feature to <code>prefect-snowflake</code>, please <a href="https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork">propose changes through a pull request from a fork of the Prefect repository</a>.</p>
 
 
 

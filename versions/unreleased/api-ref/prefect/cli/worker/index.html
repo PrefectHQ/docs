@@ -13199,8 +13199,7 @@ if (amplitudeKey){
 
           <details class="quote">
             <summary>Source code in <code>prefect/cli/worker.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 47</span>
-<span class="normal"> 48</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 48</span>
 <span class="normal"> 49</span>
 <span class="normal"> 50</span>
 <span class="normal"> 51</span>
@@ -13365,7 +13364,25 @@ if (amplitudeKey){
 <span class="normal">210</span>
 <span class="normal">211</span>
 <span class="normal">212</span>
-<span class="normal">213</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@worker_app</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="normal">213</span>
+<span class="normal">214</span>
+<span class="normal">215</span>
+<span class="normal">216</span>
+<span class="normal">217</span>
+<span class="normal">218</span>
+<span class="normal">219</span>
+<span class="normal">220</span>
+<span class="normal">221</span>
+<span class="normal">222</span>
+<span class="normal">223</span>
+<span class="normal">224</span>
+<span class="normal">225</span>
+<span class="normal">226</span>
+<span class="normal">227</span>
+<span class="normal">228</span>
+<span class="normal">229</span>
+<span class="normal">230</span>
+<span class="normal">231</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@worker_app</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">start</span><span class="p">(</span>
     <span class="n">worker_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
         <span class="kc">None</span><span class="p">,</span>
@@ -13443,6 +13460,23 @@ if (amplitudeKey){
             <span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;The work pool </span><span class="si">{</span><span class="n">work_pool_name</span><span class="si">!r}</span><span class="s2"> is currently paused. This worker&quot;</span>
                 <span class="s2">&quot; will not execute any flow runs until the work pool is unpaused.&quot;</span>
+            <span class="p">),</span>
+            <span class="n">style</span><span class="o">=</span><span class="s2">&quot;yellow&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="n">is_queues_paused</span> <span class="o">=</span> <span class="k">await</span> <span class="n">_check_work_queues_paused</span><span class="p">(</span>
+        <span class="n">work_pool_name</span><span class="p">,</span>
+        <span class="n">work_queues</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">if</span> <span class="n">is_queues_paused</span><span class="p">:</span>
+        <span class="n">queue_scope</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot;All work queues&quot;</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">work_queues</span> <span class="k">else</span> <span class="s2">&quot;Specified work queue(s)&quot;</span>
+        <span class="p">)</span>
+        <span class="n">app</span><span class="o">.</span><span class="n">console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span>
+            <span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">queue_scope</span><span class="si">}</span><span class="s2"> in the work pool </span><span class="si">{</span><span class="n">work_pool_name</span><span class="si">!r}</span><span class="s2"> are currently&quot;</span>
+                <span class="s2">&quot; paused. This worker will not execute any flow runs until the work&quot;</span>
+                <span class="s2">&quot; queues are unpaused.&quot;</span>
             <span class="p">),</span>
             <span class="n">style</span><span class="o">=</span><span class="s2">&quot;yellow&quot;</span><span class="p">,</span>
         <span class="p">)</span>

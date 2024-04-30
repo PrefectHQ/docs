@@ -13881,7 +13881,15 @@ It has been replaced by the Vertex AI worker, which offers enhanced functionalit
 <span class="normal">573</span>
 <span class="normal">574</span>
 <span class="normal">575</span>
-<span class="normal">576</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@deprecated_class</span><span class="p">(</span>
+<span class="normal">576</span>
+<span class="normal">577</span>
+<span class="normal">578</span>
+<span class="normal">579</span>
+<span class="normal">580</span>
+<span class="normal">581</span>
+<span class="normal">582</span>
+<span class="normal">583</span>
+<span class="normal">584</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@deprecated_class</span><span class="p">(</span>
     <span class="n">start_date</span><span class="o">=</span><span class="s2">&quot;Mar 2024&quot;</span><span class="p">,</span>
     <span class="n">help</span><span class="o">=</span><span class="p">(</span>
         <span class="s2">&quot;Use the Vertex AI worker instead.&quot;</span>
@@ -14154,7 +14162,9 @@ It has been replaced by the Vertex AI worker, which offers enhanced functionalit
         <span class="k">return</span> <span class="n">job_spec</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">_create_and_begin_job</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">job_spec</span><span class="p">:</span> <span class="s2">&quot;CustomJobSpec&quot;</span><span class="p">,</span> <span class="n">job_service_client</span><span class="p">:</span> <span class="s2">&quot;JobServiceClient&quot;</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">job_spec</span><span class="p">:</span> <span class="s2">&quot;CustomJobSpec&quot;</span><span class="p">,</span>
+        <span class="n">job_service_async_client</span><span class="p">:</span> <span class="s2">&quot;JobServiceAsyncClient&quot;</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;CustomJob&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Builds a custom job and begins running it.</span>
@@ -14168,27 +14178,26 @@ It has been replaced by the Vertex AI worker, which offers enhanced functionalit
 
         <span class="c1"># run job</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_log_prefix</span><span class="si">}</span><span class="s2">: Job </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">job_name</span><span class="si">!r}</span><span class="s2"> starting to run &quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;the command </span><span class="si">{</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">command</span><span class="p">)</span><span class="si">!r}</span><span class="s2"> in region &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_log_prefix</span><span class="si">}</span><span class="s2">: Creating job </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">job_name</span><span class="si">!r}</span><span class="s2"> &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;with command </span><span class="si">{</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">command</span><span class="p">)</span><span class="si">!r}</span><span class="s2"> in region &quot;</span>
             <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">region</span><span class="si">!r}</span><span class="s2"> using image </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="si">!r}</span><span class="s2">&quot;</span>
         <span class="p">)</span>
 
         <span class="n">project</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gcp_credentials</span><span class="o">.</span><span class="n">project</span>
         <span class="n">resource_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;projects/</span><span class="si">{</span><span class="n">project</span><span class="si">}</span><span class="s2">/locations/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">region</span><span class="si">}</span><span class="s2">&quot;</span>
 
-        <span class="n">retry_policy</span> <span class="o">=</span> <span class="n">retry</span><span class="p">(</span>
+        <span class="k">async</span> <span class="k">for</span> <span class="n">attempt</span> <span class="ow">in</span> <span class="n">AsyncRetrying</span><span class="p">(</span>
             <span class="n">stop</span><span class="o">=</span><span class="n">stop_after_attempt</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">wait</span><span class="o">=</span><span class="n">wait_fixed</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">wait_random</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
-        <span class="p">)</span>
-
-        <span class="n">custom_job_run</span> <span class="o">=</span> <span class="k">await</span> <span class="n">run_sync_in_worker_thread</span><span class="p">(</span>
-            <span class="n">retry_policy</span><span class="p">(</span><span class="n">job_service_client</span><span class="o">.</span><span class="n">create_custom_job</span><span class="p">),</span>
-            <span class="n">parent</span><span class="o">=</span><span class="n">resource_name</span><span class="p">,</span>
-            <span class="n">custom_job</span><span class="o">=</span><span class="n">custom_job</span><span class="p">,</span>
-        <span class="p">)</span>
+        <span class="p">):</span>
+            <span class="k">with</span> <span class="n">attempt</span><span class="p">:</span>
+                <span class="n">custom_job_run</span> <span class="o">=</span> <span class="k">await</span> <span class="n">job_service_async_client</span><span class="o">.</span><span class="n">create_custom_job</span><span class="p">(</span>
+                    <span class="n">parent</span><span class="o">=</span><span class="n">resource_name</span><span class="p">,</span>
+                    <span class="n">custom_job</span><span class="o">=</span><span class="n">custom_job</span><span class="p">,</span>
+                <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_log_prefix</span><span class="si">}</span><span class="s2">: Job </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">job_name</span><span class="si">!r}</span><span class="s2"> has successfully started; &quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;the full job name is </span><span class="si">{</span><span class="n">custom_job_run</span><span class="o">.</span><span class="n">name</span><span class="si">!r}</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_log_prefix</span><span class="si">}</span><span class="s2">: Job </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">job_name</span><span class="si">!r}</span><span class="s2"> created. &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;The full job name is </span><span class="si">{</span><span class="n">custom_job_run</span><span class="o">.</span><span class="n">name</span><span class="si">!r}</span><span class="s2">&quot;</span>
         <span class="p">)</span>
 
         <span class="k">return</span> <span class="n">custom_job_run</span>
@@ -14196,21 +14205,26 @@ It has been replaced by the Vertex AI worker, which offers enhanced functionalit
     <span class="k">async</span> <span class="k">def</span> <span class="nf">_watch_job_run</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">full_job_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>  <span class="c1"># different from self.job_name</span>
-        <span class="n">job_service_client</span><span class="p">:</span> <span class="s2">&quot;JobServiceClient&quot;</span><span class="p">,</span>
+        <span class="n">job_service_async_client</span><span class="p">:</span> <span class="s2">&quot;JobServiceAsyncClient&quot;</span><span class="p">,</span>
         <span class="n">current_state</span><span class="p">:</span> <span class="s2">&quot;JobState&quot;</span><span class="p">,</span>
         <span class="n">until_states</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="s2">&quot;JobState&quot;</span><span class="p">],</span>
         <span class="n">timeout</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;CustomJob&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Polls job run to see if status changed.</span>
+
+<span class="sd">        State changes reported by the Vertex AI API may sometimes be inaccurate</span>
+<span class="sd">        immediately upon startup, but should eventually report a correct running</span>
+<span class="sd">        and then terminal state. The minimum training duration for a custom job is</span>
+<span class="sd">        30 seconds, so short-lived jobs may be marked as successful some time</span>
+<span class="sd">        after a flow run has completed.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">state</span> <span class="o">=</span> <span class="n">JobState</span><span class="o">.</span><span class="n">JOB_STATE_UNSPECIFIED</span>
         <span class="n">last_state</span> <span class="o">=</span> <span class="n">current_state</span>
         <span class="n">t0</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
 
         <span class="k">while</span> <span class="n">state</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">until_states</span><span class="p">:</span>
-            <span class="n">job_run</span> <span class="o">=</span> <span class="k">await</span> <span class="n">run_sync_in_worker_thread</span><span class="p">(</span>
-                <span class="n">job_service_client</span><span class="o">.</span><span class="n">get_custom_job</span><span class="p">,</span>
+            <span class="n">job_run</span> <span class="o">=</span> <span class="k">await</span> <span class="n">job_service_async_client</span><span class="o">.</span><span class="n">get_custom_job</span><span class="p">(</span>
                 <span class="n">name</span><span class="o">=</span><span class="n">full_job_name</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="n">state</span> <span class="o">=</span> <span class="n">job_run</span><span class="o">.</span><span class="n">state</span>
@@ -14221,7 +14235,7 @@ It has been replaced by the Vertex AI worker, which offers enhanced functionalit
                     <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;state&quot;</span><span class="p">,</span> <span class="s2">&quot;state is now:&quot;</span><span class="p">)</span>
                 <span class="p">)</span>
                 <span class="c1"># results in &quot;New job state is now: succeeded&quot;</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
                     <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_log_prefix</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">job_name</span><span class="si">}</span><span class="s2"> has new </span><span class="si">{</span><span class="n">state_label</span><span class="si">}</span><span class="s2">&quot;</span>
                 <span class="p">)</span>
                 <span class="n">last_state</span> <span class="o">=</span> <span class="n">state</span>
@@ -14236,7 +14250,7 @@ It has been replaced by the Vertex AI worker, which offers enhanced functionalit
                     <span class="sa">f</span><span class="s2">&quot;Timed out after </span><span class="si">{</span><span class="n">elapsed_time</span><span class="si">}</span><span class="s2">s while watching job for states &quot;</span>
                     <span class="s2">&quot;</span><span class="si">{until_states!r}</span><span class="s2">&quot;</span>
                 <span class="p">)</span>
-            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">job_watch_poll_interval</span><span class="p">)</span>
+            <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">job_watch_poll_interval</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">job_run</span>
 
@@ -14258,26 +14272,29 @@ It has been replaced by the Vertex AI worker, which offers enhanced functionalit
         <span class="p">)</span>
 
         <span class="n">job_spec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_job_spec</span><span class="p">()</span>
-        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">gcp_credentials</span><span class="o">.</span><span class="n">get_job_service_client</span><span class="p">(</span>
+        <span class="n">job_service_async_client</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gcp_credentials</span><span class="o">.</span><span class="n">get_job_service_async_client</span><span class="p">(</span>
             <span class="n">client_options</span><span class="o">=</span><span class="n">client_options</span>
-        <span class="p">)</span> <span class="k">as</span> <span class="n">job_service_client</span><span class="p">:</span>
-            <span class="n">job_run</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_and_begin_job</span><span class="p">(</span><span class="n">job_spec</span><span class="p">,</span> <span class="n">job_service_client</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">job_run</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_and_begin_job</span><span class="p">(</span>
+            <span class="n">job_spec</span><span class="p">,</span>
+            <span class="n">job_service_async_client</span><span class="p">,</span>
+        <span class="p">)</span>
 
-            <span class="k">if</span> <span class="n">task_status</span><span class="p">:</span>
-                <span class="n">task_status</span><span class="o">.</span><span class="n">started</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">job_name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">task_status</span><span class="p">:</span>
+            <span class="n">task_status</span><span class="o">.</span><span class="n">started</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">job_name</span><span class="p">)</span>
 
-            <span class="n">final_job_run</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_watch_job_run</span><span class="p">(</span>
-                <span class="n">full_job_name</span><span class="o">=</span><span class="n">job_run</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
-                <span class="n">job_service_client</span><span class="o">=</span><span class="n">job_service_client</span><span class="p">,</span>
-                <span class="n">current_state</span><span class="o">=</span><span class="n">job_run</span><span class="o">.</span><span class="n">state</span><span class="p">,</span>
-                <span class="n">until_states</span><span class="o">=</span><span class="p">(</span>
-                    <span class="n">JobState</span><span class="o">.</span><span class="n">JOB_STATE_SUCCEEDED</span><span class="p">,</span>
-                    <span class="n">JobState</span><span class="o">.</span><span class="n">JOB_STATE_FAILED</span><span class="p">,</span>
-                    <span class="n">JobState</span><span class="o">.</span><span class="n">JOB_STATE_CANCELLED</span><span class="p">,</span>
-                    <span class="n">JobState</span><span class="o">.</span><span class="n">JOB_STATE_EXPIRED</span><span class="p">,</span>
-                <span class="p">),</span>
-                <span class="n">timeout</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">maximum_run_time</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">(),</span>
-            <span class="p">)</span>
+        <span class="n">final_job_run</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_watch_job_run</span><span class="p">(</span>
+            <span class="n">full_job_name</span><span class="o">=</span><span class="n">job_run</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">job_service_async_client</span><span class="o">=</span><span class="n">job_service_async_client</span><span class="p">,</span>
+            <span class="n">current_state</span><span class="o">=</span><span class="n">job_run</span><span class="o">.</span><span class="n">state</span><span class="p">,</span>
+            <span class="n">until_states</span><span class="o">=</span><span class="p">(</span>
+                <span class="n">JobState</span><span class="o">.</span><span class="n">JOB_STATE_SUCCEEDED</span><span class="p">,</span>
+                <span class="n">JobState</span><span class="o">.</span><span class="n">JOB_STATE_FAILED</span><span class="p">,</span>
+                <span class="n">JobState</span><span class="o">.</span><span class="n">JOB_STATE_CANCELLED</span><span class="p">,</span>
+                <span class="n">JobState</span><span class="o">.</span><span class="n">JOB_STATE_EXPIRED</span><span class="p">,</span>
+            <span class="p">),</span>
+            <span class="n">timeout</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">maximum_run_time</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">(),</span>
+        <span class="p">)</span>
 
         <span class="n">error_msg</span> <span class="o">=</span> <span class="n">final_job_run</span><span class="o">.</span><span class="n">error</span><span class="o">.</span><span class="n">message</span>
         <span class="k">if</span> <span class="n">error_msg</span><span class="p">:</span>
@@ -14304,18 +14321,17 @@ It has been replaced by the Vertex AI worker, which offers enhanced functionalit
         <span class="n">client_options</span> <span class="o">=</span> <span class="n">ClientOptions</span><span class="p">(</span>
             <span class="n">api_endpoint</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">region</span><span class="si">}</span><span class="s2">-aiplatform.googleapis.com&quot;</span>
         <span class="p">)</span>
-        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">gcp_credentials</span><span class="o">.</span><span class="n">get_job_service_client</span><span class="p">(</span>
+        <span class="n">job_service_async_client</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gcp_credentials</span><span class="o">.</span><span class="n">get_job_service_async_client</span><span class="p">(</span>
             <span class="n">client_options</span><span class="o">=</span><span class="n">client_options</span>
-        <span class="p">)</span> <span class="k">as</span> <span class="n">job_service_client</span><span class="p">:</span>
-            <span class="k">await</span> <span class="n">run_sync_in_worker_thread</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_kill_job</span><span class="p">,</span>
-                <span class="n">job_service_client</span><span class="o">=</span><span class="n">job_service_client</span><span class="p">,</span>
-                <span class="n">full_job_name</span><span class="o">=</span><span class="n">identifier</span><span class="p">,</span>
-            <span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Requested to cancel </span><span class="si">{</span><span class="n">identifier</span><span class="si">}</span><span class="s2">...&quot;</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kill_job</span><span class="p">(</span>
+            <span class="n">job_service_async_client</span><span class="o">=</span><span class="n">job_service_async_client</span><span class="p">,</span>
+            <span class="n">full_job_name</span><span class="o">=</span><span class="n">identifier</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Requested to cancel </span><span class="si">{</span><span class="n">identifier</span><span class="si">}</span><span class="s2">...&quot;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_kill_job</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">job_service_client</span><span class="p">:</span> <span class="s2">&quot;JobServiceClient&quot;</span><span class="p">,</span> <span class="n">full_job_name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">_kill_job</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">job_service_async_client</span><span class="p">:</span> <span class="s2">&quot;JobServiceAsyncClient&quot;</span><span class="p">,</span> <span class="n">full_job_name</span><span class="p">:</span> <span class="nb">str</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Thin wrapper around Job.delete, wrapping a try/except since</span>
@@ -14324,7 +14340,7 @@ It has been replaced by the Vertex AI worker, which offers enhanced functionalit
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">cancel_custom_job_request</span> <span class="o">=</span> <span class="n">CancelCustomJobRequest</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">full_job_name</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">job_service_client</span><span class="o">.</span><span class="n">cancel_custom_job</span><span class="p">(</span>
+            <span class="k">await</span> <span class="n">job_service_async_client</span><span class="o">.</span><span class="n">cancel_custom_job</span><span class="p">(</span>
                 <span class="n">request</span><span class="o">=</span><span class="n">cancel_custom_job_request</span><span class="p">,</span>
             <span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
@@ -14632,16 +14648,7 @@ Returns:
 
           <details class="quote">
             <summary>Source code in <code>prefect_gcp/aiplatform.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">522</span>
-<span class="normal">523</span>
-<span class="normal">524</span>
-<span class="normal">525</span>
-<span class="normal">526</span>
-<span class="normal">527</span>
-<span class="normal">528</span>
-<span class="normal">529</span>
-<span class="normal">530</span>
-<span class="normal">531</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">531</span>
 <span class="normal">532</span>
 <span class="normal">533</span>
 <span class="normal">534</span>
@@ -14655,7 +14662,15 @@ Returns:
 <span class="normal">542</span>
 <span class="normal">543</span>
 <span class="normal">544</span>
-<span class="normal">545</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@sync_compatible</span>
+<span class="normal">545</span>
+<span class="normal">546</span>
+<span class="normal">547</span>
+<span class="normal">548</span>
+<span class="normal">549</span>
+<span class="normal">550</span>
+<span class="normal">551</span>
+<span class="normal">552</span>
+<span class="normal">553</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@sync_compatible</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">kill</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">identifier</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">grace_seconds</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">30</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Kill a job running Cloud Run.</span>
@@ -14670,15 +14685,14 @@ Returns:
     <span class="n">client_options</span> <span class="o">=</span> <span class="n">ClientOptions</span><span class="p">(</span>
         <span class="n">api_endpoint</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">region</span><span class="si">}</span><span class="s2">-aiplatform.googleapis.com&quot;</span>
     <span class="p">)</span>
-    <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">gcp_credentials</span><span class="o">.</span><span class="n">get_job_service_client</span><span class="p">(</span>
+    <span class="n">job_service_async_client</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gcp_credentials</span><span class="o">.</span><span class="n">get_job_service_async_client</span><span class="p">(</span>
         <span class="n">client_options</span><span class="o">=</span><span class="n">client_options</span>
-    <span class="p">)</span> <span class="k">as</span> <span class="n">job_service_client</span><span class="p">:</span>
-        <span class="k">await</span> <span class="n">run_sync_in_worker_thread</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_kill_job</span><span class="p">,</span>
-            <span class="n">job_service_client</span><span class="o">=</span><span class="n">job_service_client</span><span class="p">,</span>
-            <span class="n">full_job_name</span><span class="o">=</span><span class="n">identifier</span><span class="p">,</span>
-        <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Requested to cancel </span><span class="si">{</span><span class="n">identifier</span><span class="si">}</span><span class="s2">...&quot;</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kill_job</span><span class="p">(</span>
+        <span class="n">job_service_async_client</span><span class="o">=</span><span class="n">job_service_async_client</span><span class="p">,</span>
+        <span class="n">full_job_name</span><span class="o">=</span><span class="n">identifier</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Requested to cancel </span><span class="si">{</span><span class="n">identifier</span><span class="si">}</span><span class="s2">...&quot;</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
           </details>
   </div>
@@ -14800,13 +14814,7 @@ Returns:
 
           <details class="quote">
             <summary>Source code in <code>prefect_gcp/aiplatform.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">473</span>
-<span class="normal">474</span>
-<span class="normal">475</span>
-<span class="normal">476</span>
-<span class="normal">477</span>
-<span class="normal">478</span>
-<span class="normal">479</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">479</span>
 <span class="normal">480</span>
 <span class="normal">481</span>
 <span class="normal">482</span>
@@ -14847,7 +14855,16 @@ Returns:
 <span class="normal">517</span>
 <span class="normal">518</span>
 <span class="normal">519</span>
-<span class="normal">520</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@sync_compatible</span>
+<span class="normal">520</span>
+<span class="normal">521</span>
+<span class="normal">522</span>
+<span class="normal">523</span>
+<span class="normal">524</span>
+<span class="normal">525</span>
+<span class="normal">526</span>
+<span class="normal">527</span>
+<span class="normal">528</span>
+<span class="normal">529</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@sync_compatible</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">run</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span> <span class="n">task_status</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s2">&quot;TaskStatus&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">VertexAICustomTrainingJobResult</span><span class="p">:</span>
@@ -14865,26 +14882,29 @@ Returns:
     <span class="p">)</span>
 
     <span class="n">job_spec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_job_spec</span><span class="p">()</span>
-    <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">gcp_credentials</span><span class="o">.</span><span class="n">get_job_service_client</span><span class="p">(</span>
+    <span class="n">job_service_async_client</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gcp_credentials</span><span class="o">.</span><span class="n">get_job_service_async_client</span><span class="p">(</span>
         <span class="n">client_options</span><span class="o">=</span><span class="n">client_options</span>
-    <span class="p">)</span> <span class="k">as</span> <span class="n">job_service_client</span><span class="p">:</span>
-        <span class="n">job_run</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_and_begin_job</span><span class="p">(</span><span class="n">job_spec</span><span class="p">,</span> <span class="n">job_service_client</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="n">job_run</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_and_begin_job</span><span class="p">(</span>
+        <span class="n">job_spec</span><span class="p">,</span>
+        <span class="n">job_service_async_client</span><span class="p">,</span>
+    <span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">task_status</span><span class="p">:</span>
-            <span class="n">task_status</span><span class="o">.</span><span class="n">started</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">job_name</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">task_status</span><span class="p">:</span>
+        <span class="n">task_status</span><span class="o">.</span><span class="n">started</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">job_name</span><span class="p">)</span>
 
-        <span class="n">final_job_run</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_watch_job_run</span><span class="p">(</span>
-            <span class="n">full_job_name</span><span class="o">=</span><span class="n">job_run</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
-            <span class="n">job_service_client</span><span class="o">=</span><span class="n">job_service_client</span><span class="p">,</span>
-            <span class="n">current_state</span><span class="o">=</span><span class="n">job_run</span><span class="o">.</span><span class="n">state</span><span class="p">,</span>
-            <span class="n">until_states</span><span class="o">=</span><span class="p">(</span>
-                <span class="n">JobState</span><span class="o">.</span><span class="n">JOB_STATE_SUCCEEDED</span><span class="p">,</span>
-                <span class="n">JobState</span><span class="o">.</span><span class="n">JOB_STATE_FAILED</span><span class="p">,</span>
-                <span class="n">JobState</span><span class="o">.</span><span class="n">JOB_STATE_CANCELLED</span><span class="p">,</span>
-                <span class="n">JobState</span><span class="o">.</span><span class="n">JOB_STATE_EXPIRED</span><span class="p">,</span>
-            <span class="p">),</span>
-            <span class="n">timeout</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">maximum_run_time</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">(),</span>
-        <span class="p">)</span>
+    <span class="n">final_job_run</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_watch_job_run</span><span class="p">(</span>
+        <span class="n">full_job_name</span><span class="o">=</span><span class="n">job_run</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+        <span class="n">job_service_async_client</span><span class="o">=</span><span class="n">job_service_async_client</span><span class="p">,</span>
+        <span class="n">current_state</span><span class="o">=</span><span class="n">job_run</span><span class="o">.</span><span class="n">state</span><span class="p">,</span>
+        <span class="n">until_states</span><span class="o">=</span><span class="p">(</span>
+            <span class="n">JobState</span><span class="o">.</span><span class="n">JOB_STATE_SUCCEEDED</span><span class="p">,</span>
+            <span class="n">JobState</span><span class="o">.</span><span class="n">JOB_STATE_FAILED</span><span class="p">,</span>
+            <span class="n">JobState</span><span class="o">.</span><span class="n">JOB_STATE_CANCELLED</span><span class="p">,</span>
+            <span class="n">JobState</span><span class="o">.</span><span class="n">JOB_STATE_EXPIRED</span><span class="p">,</span>
+        <span class="p">),</span>
+        <span class="n">timeout</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">maximum_run_time</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">(),</span>
+    <span class="p">)</span>
 
     <span class="n">error_msg</span> <span class="o">=</span> <span class="n">final_job_run</span><span class="o">.</span><span class="n">error</span><span class="o">.</span><span class="n">message</span>
     <span class="k">if</span> <span class="n">error_msg</span><span class="p">:</span>
