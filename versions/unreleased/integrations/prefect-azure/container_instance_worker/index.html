@@ -845,6 +845,8 @@ if (amplitudeKey){
       
         
       
+        
+      
     
     
     
@@ -1221,6 +1223,33 @@ if (amplitudeKey){
     
   
     Specifying Upstream Dependencies
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../guides/secrets/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    
+  
+    Third-party Secrets
   
 
     
@@ -13644,7 +13673,8 @@ template to use any features available in Azure Container Instances.</p>
 <span class="normal">386</span>
 <span class="normal">387</span>
 <span class="normal">388</span>
-<span class="normal">389</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">AzureContainerJobConfiguration</span><span class="p">(</span><span class="n">BaseJobConfiguration</span><span class="p">):</span>
+<span class="normal">389</span>
+<span class="normal">390</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">AzureContainerJobConfiguration</span><span class="p">(</span><span class="n">BaseJobConfiguration</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Configuration for an Azure Container Instance flow run.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -13676,6 +13706,7 @@ template to use any features available in Azure Container Instances.</p>
     <span class="n">task_start_timeout_seconds</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">240</span><span class="p">)</span>
     <span class="n">task_watch_poll_interval</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">5.0</span><span class="p">)</span>
     <span class="n">arm_template</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">template</span><span class="o">=</span><span class="n">_get_default_arm_template</span><span class="p">())</span>
+    <span class="n">keep_container_group</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">prepare_for_flow_run</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -13857,8 +13888,7 @@ template to use any features available in Azure Container Instances.</p>
 
           <details class="quote">
             <summary>Source code in <code>prefect_azure/workers/container_instance.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">242</span>
-<span class="normal">243</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">243</span>
 <span class="normal">244</span>
 <span class="normal">245</span>
 <span class="normal">246</span>
@@ -13901,7 +13931,8 @@ template to use any features available in Azure Container Instances.</p>
 <span class="normal">283</span>
 <span class="normal">284</span>
 <span class="normal">285</span>
-<span class="normal">286</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">prepare_for_flow_run</span><span class="p">(</span>
+<span class="normal">286</span>
+<span class="normal">287</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">prepare_for_flow_run</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">flow_run</span><span class="p">:</span> <span class="s2">&quot;FlowRun&quot;</span><span class="p">,</span>
     <span class="n">deployment</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s2">&quot;DeploymentResponse&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -13981,8 +14012,7 @@ template to use any features available in Azure Container Instances.</p>
 
             <details class="quote">
               <summary>Source code in <code>prefect_azure/workers/container_instance.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">392</span>
-<span class="normal">393</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">393</span>
 <span class="normal">394</span>
 <span class="normal">395</span>
 <span class="normal">396</span>
@@ -14106,7 +14136,13 @@ template to use any features available in Azure Container Instances.</p>
 <span class="normal">514</span>
 <span class="normal">515</span>
 <span class="normal">516</span>
-<span class="normal">517</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">AzureContainerVariables</span><span class="p">(</span><span class="n">BaseVariables</span><span class="p">):</span>
+<span class="normal">517</span>
+<span class="normal">518</span>
+<span class="normal">519</span>
+<span class="normal">520</span>
+<span class="normal">521</span>
+<span class="normal">522</span>
+<span class="normal">523</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">AzureContainerVariables</span><span class="p">(</span><span class="n">BaseVariables</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Variables for an Azure Container Instance flow run.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -14232,6 +14268,11 @@ template to use any features available in Azure Container Instances.</p>
             <span class="s2">&quot;the state of an Azure Container Instances task.&quot;</span>
         <span class="p">),</span>
     <span class="p">)</span>
+    <span class="n">keep_container_group</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Keep Container Group After Completion&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Keep the completed container group on Azure.&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
 
@@ -14276,13 +14317,7 @@ template to use any features available in Azure Container Instances.</p>
 
             <details class="quote">
               <summary>Source code in <code>prefect_azure/workers/container_instance.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 524</span>
-<span class="normal"> 525</span>
-<span class="normal"> 526</span>
-<span class="normal"> 527</span>
-<span class="normal"> 528</span>
-<span class="normal"> 529</span>
-<span class="normal"> 530</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 530</span>
 <span class="normal"> 531</span>
 <span class="normal"> 532</span>
 <span class="normal"> 533</span>
@@ -14806,7 +14841,20 @@ template to use any features available in Azure Container Instances.</p>
 <span class="normal">1051</span>
 <span class="normal">1052</span>
 <span class="normal">1053</span>
-<span class="normal">1054</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">AzureContainerWorker</span><span class="p">(</span><span class="n">BaseWorker</span><span class="p">):</span>
+<span class="normal">1054</span>
+<span class="normal">1055</span>
+<span class="normal">1056</span>
+<span class="normal">1057</span>
+<span class="normal">1058</span>
+<span class="normal">1059</span>
+<span class="normal">1060</span>
+<span class="normal">1061</span>
+<span class="normal">1062</span>
+<span class="normal">1063</span>
+<span class="normal">1064</span>
+<span class="normal">1065</span>
+<span class="normal">1066</span>
+<span class="normal">1067</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">AzureContainerWorker</span><span class="p">(</span><span class="n">BaseWorker</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A Prefect worker that runs flows in an Azure Container Instance.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -14904,9 +14952,16 @@ template to use any features available in Azure Container Instances.</p>
                 <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_log_prefix</span><span class="si">}</span><span class="s2">: Container creation failed.&quot;</span><span class="p">)</span>
 
         <span class="k">finally</span><span class="p">:</span>
-            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wait_for_container_group_deletion</span><span class="p">(</span>
-                <span class="n">aci_client</span><span class="p">,</span> <span class="n">configuration</span><span class="p">,</span> <span class="n">container_group_name</span>
-            <span class="p">)</span>
+            <span class="k">if</span> <span class="n">configuration</span><span class="o">.</span><span class="n">keep_container_group</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_log_prefix</span><span class="si">}</span><span class="s2">: Stopping container group...&quot;</span><span class="p">)</span>
+                <span class="n">aci_client</span><span class="o">.</span><span class="n">container_groups</span><span class="o">.</span><span class="n">stop</span><span class="p">(</span>
+                    <span class="n">resource_group_name</span><span class="o">=</span><span class="n">configuration</span><span class="o">.</span><span class="n">resource_group_name</span><span class="p">,</span>
+                    <span class="n">container_group_name</span><span class="o">=</span><span class="n">container_group_name</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wait_for_container_group_deletion</span><span class="p">(</span>
+                    <span class="n">aci_client</span><span class="p">,</span> <span class="n">configuration</span><span class="p">,</span> <span class="n">container_group_name</span>
+                <span class="p">)</span>
 
         <span class="k">return</span> <span class="n">AzureContainerWorkerResult</span><span class="p">(</span>
             <span class="n">identifier</span><span class="o">=</span><span class="n">created_container_group</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">status_code</span><span class="o">=</span><span class="n">status_code</span>
@@ -15418,20 +15473,7 @@ template to use any features available in Azure Container Instances.</p>
 
           <details class="quote">
             <summary>Source code in <code>prefect_azure/workers/container_instance.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">630</span>
-<span class="normal">631</span>
-<span class="normal">632</span>
-<span class="normal">633</span>
-<span class="normal">634</span>
-<span class="normal">635</span>
-<span class="normal">636</span>
-<span class="normal">637</span>
-<span class="normal">638</span>
-<span class="normal">639</span>
-<span class="normal">640</span>
-<span class="normal">641</span>
-<span class="normal">642</span>
-<span class="normal">643</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">643</span>
 <span class="normal">644</span>
 <span class="normal">645</span>
 <span class="normal">646</span>
@@ -15466,7 +15508,20 @@ template to use any features available in Azure Container Instances.</p>
 <span class="normal">675</span>
 <span class="normal">676</span>
 <span class="normal">677</span>
-<span class="normal">678</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">kill_infrastructure</span><span class="p">(</span>
+<span class="normal">678</span>
+<span class="normal">679</span>
+<span class="normal">680</span>
+<span class="normal">681</span>
+<span class="normal">682</span>
+<span class="normal">683</span>
+<span class="normal">684</span>
+<span class="normal">685</span>
+<span class="normal">686</span>
+<span class="normal">687</span>
+<span class="normal">688</span>
+<span class="normal">689</span>
+<span class="normal">690</span>
+<span class="normal">691</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">kill_infrastructure</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">infrastructure_pid</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">configuration</span><span class="p">:</span> <span class="n">AzureContainerJobConfiguration</span><span class="p">,</span>
@@ -15570,13 +15625,7 @@ Args:
 
           <details class="quote">
             <summary>Source code in <code>prefect_azure/workers/container_instance.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">542</span>
-<span class="normal">543</span>
-<span class="normal">544</span>
-<span class="normal">545</span>
-<span class="normal">546</span>
-<span class="normal">547</span>
-<span class="normal">548</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">548</span>
 <span class="normal">549</span>
 <span class="normal">550</span>
 <span class="normal">551</span>
@@ -15656,7 +15705,20 @@ Args:
 <span class="normal">625</span>
 <span class="normal">626</span>
 <span class="normal">627</span>
-<span class="normal">628</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">run</span><span class="p">(</span>
+<span class="normal">628</span>
+<span class="normal">629</span>
+<span class="normal">630</span>
+<span class="normal">631</span>
+<span class="normal">632</span>
+<span class="normal">633</span>
+<span class="normal">634</span>
+<span class="normal">635</span>
+<span class="normal">636</span>
+<span class="normal">637</span>
+<span class="normal">638</span>
+<span class="normal">639</span>
+<span class="normal">640</span>
+<span class="normal">641</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">run</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">flow_run</span><span class="p">:</span> <span class="n">FlowRun</span><span class="p">,</span>
     <span class="n">configuration</span><span class="p">:</span> <span class="n">AzureContainerJobConfiguration</span><span class="p">,</span>
@@ -15736,9 +15798,16 @@ Args:
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_log_prefix</span><span class="si">}</span><span class="s2">: Container creation failed.&quot;</span><span class="p">)</span>
 
     <span class="k">finally</span><span class="p">:</span>
-        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wait_for_container_group_deletion</span><span class="p">(</span>
-            <span class="n">aci_client</span><span class="p">,</span> <span class="n">configuration</span><span class="p">,</span> <span class="n">container_group_name</span>
-        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">configuration</span><span class="o">.</span><span class="n">keep_container_group</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_log_prefix</span><span class="si">}</span><span class="s2">: Stopping container group...&quot;</span><span class="p">)</span>
+            <span class="n">aci_client</span><span class="o">.</span><span class="n">container_groups</span><span class="o">.</span><span class="n">stop</span><span class="p">(</span>
+                <span class="n">resource_group_name</span><span class="o">=</span><span class="n">configuration</span><span class="o">.</span><span class="n">resource_group_name</span><span class="p">,</span>
+                <span class="n">container_group_name</span><span class="o">=</span><span class="n">container_group_name</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wait_for_container_group_deletion</span><span class="p">(</span>
+                <span class="n">aci_client</span><span class="p">,</span> <span class="n">configuration</span><span class="p">,</span> <span class="n">container_group_name</span>
+            <span class="p">)</span>
 
     <span class="k">return</span> <span class="n">AzureContainerWorkerResult</span><span class="p">(</span>
         <span class="n">identifier</span><span class="o">=</span><span class="n">created_container_group</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">status_code</span><span class="o">=</span><span class="n">status_code</span>
@@ -15778,8 +15847,8 @@ Args:
 
             <details class="quote">
               <summary>Source code in <code>prefect_azure/workers/container_instance.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">520</span>
-<span class="normal">521</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">AzureContainerWorkerResult</span><span class="p">(</span><span class="n">BaseWorkerResult</span><span class="p">):</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">526</span>
+<span class="normal">527</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">AzureContainerWorkerResult</span><span class="p">(</span><span class="n">BaseWorkerResult</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Contains information about the final state of a completed process&quot;&quot;&quot;</span>
 </code></pre></div></td></tr></table></div>
             </details>
