@@ -13029,13 +13029,13 @@ if (amplitudeKey){
     <span class="md-ellipsis">
       
         <span class="md-typeset">
-          Getting Started
+          Getting started
         </span>
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Getting Started">
+    <nav class="md-nav" aria-label="Getting started">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -13129,17 +13129,30 @@ if (amplitudeKey){
 </li>
         
           <li class="md-nav__item">
-  <a href="#saving-credentials-to-block" class="md-nav__link">
+  <a href="#registering-block-types" class="md-nav__link">
     <span class="md-ellipsis">
       
         <span class="md-typeset">
-          Saving credentials to block
+          Registering block types
         </span>
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Saving credentials to block">
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#saving-credentials-to-a-block" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Saving credentials to a block
+        </span>
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Saving credentials to a block">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -13170,32 +13183,6 @@ if (amplitudeKey){
         
       </ul>
     </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#feedback" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        <span class="md-typeset">
-          Feedback
-        </span>
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#contributing" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        <span class="md-typeset">
-          Contributing
-        </span>
-      
-    </span>
-  </a>
   
 </li>
         
@@ -13301,21 +13288,18 @@ if (amplitudeKey){
 
 
 <h1 id="prefect-dbt">prefect-dbt<a class="headerlink" href="#prefect-dbt" title="Permanent link">&para;</a></h1>
-<p align="center">
-    <a href="https://pypi.python.org/pypi/prefect-dbt/" alt="PyPI version">
-        <img alt="PyPI" src="https://img.shields.io/pypi/v/prefect-dbt?color=26272B&amp;labelColor=090422"></a>0
-    <a href="https://pepy.tech/badge/prefect-dbt/" alt="Downloads">
-        <img src="https://img.shields.io/pypi/dm/prefect-dbt?color=26272B&amp;labelColor=090422"></a>
-</p>
-
-<p>With prefect-dbt, you can easily trigger and monitor dbt Cloud jobs, execute dbt Core CLI commands, and incorporate other services, like Snowflake, into your dbt runs!</p>
-<p>Check out the examples below to get started!</p>
-<h2 id="getting-started">Getting Started<a class="headerlink" href="#getting-started" title="Permanent link">&para;</a></h2>
-<p>Be sure to install <a href="#installation">prefect-dbt</a> and <a href="#saving-credentials-to-block">save a block</a> to run the examples below!</p>
+<p>With prefect-dbt, you can trigger and observe dbt Cloud jobs, execute dbt Core CLI commands, and incorporate other tools, such as Snowflake, into your dbt runs.
+Prefect provides a global view of the state of your workflows and allows you to take action based on state changes.</p>
+<h2 id="getting-started">Getting started<a class="headerlink" href="#getting-started" title="Permanent link">&para;</a></h2>
+<ol>
+<li><a href="#installation">Install prefect-dbt</a> </li>
+<li><a href="#registering-block-types">Register newly installed blocks types</a></li>
+</ol>
+<p>Explore the examples below to learn how to use Prefect with dbt.</p>
 <h3 id="integrate-dbt-cloud-jobs-with-prefect-flows">Integrate dbt Cloud jobs with Prefect flows<a class="headerlink" href="#integrate-dbt-cloud-jobs-with-prefect-flows" title="Permanent link">&para;</a></h3>
-<p>If you have an existing dbt Cloud job, take advantage of the flow, <code>run_dbt_cloud_job</code>.</p>
-<p>This flow triggers the job and waits until the job run is finished.</p>
-<p>If certain nodes fail, <code>run_dbt_cloud_job</code> efficiently retries the specific, unsuccessful nodes.</p>
+<p>If you have an existing dbt Cloud job, you can use the pre-built flow <code>run_dbt_cloud_job</code> to trigger a job run and wait until the job run is finished.</p>
+<p>If some nodes fail, <code>run_dbt_cloud_job</code> efficiently retries the unsuccessful nodes.</p>
+<p>Prior to running this flow, <a href="#saving-credentials-to-a-block">save your dbt Cloud credentials to a DbtCloudCredentials block</a></p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span>
 
 <span class="kn">from</span> <span class="nn">prefect_dbt.cloud</span> <span class="kn">import</span> <span class="n">DbtCloudJob</span>
@@ -13332,14 +13316,14 @@ if (amplitudeKey){
 <span class="n">run_dbt_job_flow</span><span class="p">()</span>
 </code></pre></div>
 <h3 id="integrate-dbt-core-cli-commands-with-prefect-flows">Integrate dbt Core CLI commands with Prefect flows<a class="headerlink" href="#integrate-dbt-core-cli-commands-with-prefect-flows" title="Permanent link">&para;</a></h3>
-<p><code>prefect-dbt</code> also supports execution of dbt Core CLI commands.</p>
-<p>To get started, if you don't have a <code>DbtCoreOperation</code> block already saved,
-set the commands that you want to run; it can include a mix of dbt and non-dbt commands.</p>
-<p>Then, optionally specify the <code>project_dir</code>.</p>
-<p>If <code>profiles_dir</code> is unset, it will try to use the <code>DBT_PROFILES_DIR</code> environment variable.
-If that's also not set, it will use the default directory <code>$HOME/.dbt/</code>.</p>
+<p><code>prefect-dbt</code> supports execution of dbt Core CLI commands.</p>
+<p>If you don't have a <code>DbtCoreOperation</code> block saved, create one and set the commands that you want to run. </p>
+<p>Optionally, specify the <code>project_dir</code>.
+If <code>profiles_dir</code> is not set, the <code>DBT_PROFILES_DIR</code> environment variable will be used.
+If <code>DBT_PROFILES_DIR</code> is not set, the default directory will be used <code>$HOME/.dbt/</code>.</p>
 <h4 id="using-an-existing-profile">Using an existing profile<a class="headerlink" href="#using-an-existing-profile" title="Permanent link">&para;</a></h4>
-<p>If you already have an existing dbt profile, specify the <code>profiles_dir</code> where <code>profiles.yml</code> is located.</p>
+<p>If you have an existing dbt profile, specify the <code>profiles_dir</code> where <code>profiles.yml</code> is located.
+You can use it in code like this:</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span>
 <span class="kn">from</span> <span class="nn">prefect_dbt.cli.commands</span> <span class="kn">import</span> <span class="n">DbtCoreOperation</span>
 
@@ -13356,7 +13340,8 @@ If that's also not set, it will use the default directory <code>$HOME/.dbt/</cod
 </code></pre></div>
 <h4 id="writing-a-new-profile">Writing a new profile<a class="headerlink" href="#writing-a-new-profile" title="Permanent link">&para;</a></h4>
 <p>To setup a new profile, first <a href="#saving-credentials-to-block">save and load a DbtCliProfile block</a> and use it in <code>DbtCoreOperation</code>.</p>
-<p>Then, specify <code>profiles_dir</code> where <code>profiles.yml</code> will be written.</p>
+<p>Then, specify<code>profiles_dir</code> where <code>profiles.yml</code> will be written.
+Here's example code with placeholders:</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span>
 <span class="kn">from</span> <span class="nn">prefect_dbt.cli</span> <span class="kn">import</span> <span class="n">DbtCliProfile</span><span class="p">,</span> <span class="n">DbtCoreOperation</span>
 
@@ -13378,53 +13363,68 @@ If that's also not set, it will use the default directory <code>$HOME/.dbt/</cod
 <span class="n">trigger_dbt_flow</span><span class="p">()</span>
 </code></pre></div>
 <h2 id="resources">Resources<a class="headerlink" href="#resources" title="Permanent link">&para;</a></h2>
-<p>If you need help getting started with or using dbt, please consult the <a href="https://docs.getdbt.com/docs/building-a-dbt-project/documentation">dbt documentation</a>.</p>
+<p>If you need help using dbt, consult the <a href="https://docs.getdbt.com/docs/building-a-dbt-project/documentation">dbt documentation</a>.</p>
 <h3 id="installation">Installation<a class="headerlink" href="#installation" title="Permanent link">&para;</a></h3>
-<p>To use <code>prefect-dbt</code> with dbt Cloud:</p>
+<p>To install <code>prefect-dbt</code> for use with dbt Cloud:</p>
+<div class = "terminal">
 <div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>prefect-dbt
 </code></pre></div>
-<p>To use dbt Core (CLI):</p>
+</div>
+
+<p>To install with additional functionality for dbt Core (CLI):</p>
+<div class = "terminal">
 <div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;prefect-dbt[cli]&quot;</span>
 </code></pre></div>
-<p>To use dbt Core with Snowflake profiles:</p>
+</div>
+
+<p>To install with additional functionality for dbt Core and Snowflake profiles:</p>
+<div class = "terminal">
 <div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;prefect-dbt[snowflake]&quot;</span>
 </code></pre></div>
-<p>To use dbt Core with BigQuery profiles:</p>
+</div>
+
+<p>To install with additional functionality for dbt Core and BigQuery profiles:</p>
+<div class = "terminal">
 <div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;prefect-dbt[bigquery]&quot;</span>
 </code></pre></div>
-<p>To use dbt Core with Postgres profiles:</p>
+</div>
+
+<p>To install with additional functionality for dbt Core and Postgres profiles:</p>
+<div class = "terminal">
 <div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;prefect-dbt[postgres]&quot;</span>
 </code></pre></div>
+</div>
+
 <div class="admonition warning">
 <p class="admonition-title">Some dbt Core profiles require additional installation</p>
 <p>According to dbt's <a href="https://docs.getdbt.com/reference/warehouse-setups/databricks-setup">Databricks setup page</a>, users must first install the adapter:</p>
+<p><div class = "terminal">
 <div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>dbt-databricks
 </code></pre></div>
+</div></p>
 <p>Check out the <a href="https://docs.getdbt.com/reference/profiles.yml">desired profile setup page</a> on the sidebar for others.</p>
 </div>
-<p>Requires an installation of Python 3.8+.</p>
-<p>We recommend using a Python virtual environment manager such as pipenv, conda or virtualenv.</p>
-<p>These tasks are designed to work with Prefect 2. For more information about how to use Prefect, please refer to the <a href="https://docs.prefect.io/">Prefect documentation</a>.</p>
-<h3 id="saving-credentials-to-block">Saving credentials to block<a class="headerlink" href="#saving-credentials-to-block" title="Permanent link">&para;</a></h3>
-<p>Note, to use the <code>load</code> method on Blocks, you must already have a block document <a href="https://docs.prefect.io/concepts/blocks/#saving-blocks">saved through code</a> or <a href="https://docs.prefect.io/ui/blocks/">saved through the UI</a>.</p>
-<div class="admonition info">
-<p class="admonition-title">Registering blocks</p>
-<p>Register blocks in this module to
-<a href="https://docs.prefect.io/ui/blocks/">view and edit them</a>
-on Prefect Cloud:</p>
+<p>prefect-dbt requires Python 3.8 or newer.</p>
+<p>We recommend using a Python virtual environment manager such as conda, venv, or pipenv.</p>
+<h3 id="registering-block-types">Registering block types<a class="headerlink" href="#registering-block-types" title="Permanent link">&para;</a></h3>
+<p>Register the block types in the prefect-dbt module to make them available for use.</p>
+<div class = "terminal">
 <div class="highlight"><pre><span></span><code>prefect<span class="w"> </span>block<span class="w"> </span>register<span class="w"> </span>-m<span class="w"> </span>prefect_dbt
 </code></pre></div>
 </div>
+
+<h3 id="saving-credentials-to-a-block">Saving credentials to a block<a class="headerlink" href="#saving-credentials-to-a-block" title="Permanent link">&para;</a></h3>
+<p>Blocks can be <a href="/concepts/blocks/#saving-blocks">created through code</a> or through the UI.</p>
 <h4 id="dbt-cloud">dbt Cloud<a class="headerlink" href="#dbt-cloud" title="Permanent link">&para;</a></h4>
-<p>To create a dbt Cloud credentials block:</p>
+<p>To create a dbt Cloud Credentials block do the following:</p>
 <ol>
-<li>Head over to your <a href="https://cloud.getdbt.com/settings/profile">dbt Cloud profile</a>.</li>
-<li>Login to your dbt Cloud account.</li>
-<li>Scroll down to "API" or click "API Access" on the sidebar.</li>
+<li>Go to your <a href="https://cloud.getdbt.com/settings/profile">dbt Cloud profile</a>.</li>
+<li>Log in to your dbt Cloud account.</li>
+<li>Scroll to <strong>API</strong> or click <strong>API Access</strong> on the sidebar.</li>
 <li>Copy the API Key.</li>
-<li>Click Projects on the sidebar.</li>
+<li>Click <strong>Projects</strong> on the sidebar.</li>
 <li>Copy the account ID from the URL: <code>https://cloud.getdbt.com/settings/accounts/&lt;ACCOUNT_ID&gt;</code>.</li>
-<li>Create a short script, replacing the placeholders.</li>
+<li>Create and run the following script, replacing the placeholders.</li>
 </ol>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect_dbt.cloud</span> <span class="kn">import</span> <span class="n">DbtCloudCredentials</span>
 
@@ -13433,13 +13433,13 @@ on Prefect Cloud:</p>
     <span class="n">account_id</span><span class="o">=</span><span class="s2">&quot;ACCOUNT-ID-PLACEHOLDER&quot;</span>
 <span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">&quot;CREDENTIALS-BLOCK-NAME-PLACEHOLDER&quot;</span><span class="p">)</span>
 </code></pre></div>
-<p>Then, to create a dbt Cloud job block:</p>
+<p>Then, to create a dbt Cloud job block do the following:</p>
 <ol>
 <li>Head over to your <a href="https://cloud.getdbt.com/">dbt home page</a>.</li>
-<li>On the top nav bar, click on Deploy -&gt; Jobs.</li>
+<li>On the top nav bar, click on <strong>Deploy</strong> -&gt; <strong>Jobs</strong>.</li>
 <li>Select a job.</li>
 <li>Copy the job ID from the URL: <code>https://cloud.getdbt.com/deploy/&lt;ACCOUNT_ID&gt;/projects/&lt;PROJECT_ID&gt;/jobs/&lt;JOB_ID&gt;</code></li>
-<li>Create a short script, replacing the placeholders.</li>
+<li>Create and run the following script, replacing the placeholders.</li>
 </ol>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect_dbt.cloud</span> <span class="kn">import</span> <span class="n">DbtCloudCredentials</span><span class="p">,</span> <span class="n">DbtCloudJob</span>
 
@@ -13449,7 +13449,7 @@ on Prefect Cloud:</p>
     <span class="n">job_id</span><span class="o">=</span><span class="s2">&quot;JOB-ID-PLACEHOLDER&quot;</span>
 <span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">&quot;JOB-BLOCK-NAME-PLACEHOLDER&quot;</span><span class="p">)</span>
 </code></pre></div>
-<p>Congrats! You can now easily load the saved block, which holds your credentials:</p>
+<p>You can now load the saved block, which can access your credentials:</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect_dbt.cloud</span> <span class="kn">import</span> <span class="n">DbtCloudJob</span>
 
 <span class="n">DbtCloudJob</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;JOB-BLOCK-NAME-PLACEHOLDER&quot;</span><span class="p">)</span>
@@ -13457,11 +13457,8 @@ on Prefect Cloud:</p>
 <h4 id="dbt-core-cli">dbt Core CLI<a class="headerlink" href="#dbt-core-cli" title="Permanent link">&para;</a></h4>
 <div class="admonition info">
 <p class="admonition-title">Available <code>TargetConfigs</code> blocks</p>
-<p>The following may vary slightly depending on the service you want to incorporate.</p>
 <p>Visit the <a href="cli/configs/base">API Reference</a> to see other built-in <code>TargetConfigs</code> blocks.</p>
-<p>If the desired service profile is not available, check out the
-<a href="examples_catalog/#clicredentials-module">Examples Catalog</a> to see how you can
-build one from the generic <code>TargetConfigs</code> class.</p>
+<p>If the desired service profile is not available, check out the <a href="examples_catalog/#clicredentials-module">Examples Catalog</a> to see how you can  build one from the generic <code>TargetConfigs</code> class.</p>
 </div>
 <p>To create dbt Core target config and profile blocks for BigQuery:</p>
 <ol>
@@ -13506,25 +13503,6 @@ build one from the generic <code>TargetConfigs</code> class.</p>
 
 <span class="n">DbtCoreOperation</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;DBT-CORE-OPERATION-BLOCK-NAME-PLACEHOLDER&quot;</span><span class="p">)</span>
 </code></pre></div>
-<h3 id="feedback">Feedback<a class="headerlink" href="#feedback" title="Permanent link">&para;</a></h3>
-<p>If you encounter any bugs while using <code>prefect-dbt</code>, feel free to open an issue in the <a href="https://github.com/PrefectHQ/prefect">prefect</a> repository.</p>
-<p>If you have any questions or issues while using <code>prefect-dbt</code>, you can find help in the <a href="https://prefect.io/slack">Prefect Slack community</a>.</p>
-<h3 id="contributing">Contributing<a class="headerlink" href="#contributing" title="Permanent link">&para;</a></h3>
-<p>If you'd like to help contribute to fix an issue or add a feature to <code>prefect-dbt</code>, please <a href="https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork">propose changes through a pull request from a fork of the repository</a>.</p>
-<p>Here are the steps:</p>
-<ol>
-<li><a href="https://docs.github.com/en/get-started/quickstart/fork-a-repo#forking-a-repository">Fork the repository</a></li>
-<li><a href="https://docs.github.com/en/get-started/quickstart/fork-a-repo#cloning-your-forked-repository">Clone the forked repository</a></li>
-<li>Install the repository and its dependencies:
-<div class="highlight"><pre><span></span><code>pip install -e &quot;.[dev]&quot;
-</code></pre></div></li>
-<li>Make desired changes</li>
-<li>Add tests</li>
-<li>Install <code>pre-commit</code> to perform quality checks prior to commit:
-<div class="highlight"><pre><span></span><code>pre-commit install
-</code></pre></div></li>
-<li><code>git commit</code>, <code>git push</code>, and create a pull request</li>
-</ol>
 
 
 
