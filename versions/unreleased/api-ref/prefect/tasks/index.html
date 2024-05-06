@@ -13739,7 +13739,8 @@ to its retry policy.</p>
 
             <details class="quote">
               <summary>Source code in <code>prefect/tasks.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 123</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 122</span>
+<span class="normal"> 123</span>
 <span class="normal"> 124</span>
 <span class="normal"> 125</span>
 <span class="normal"> 126</span>
@@ -14780,37 +14781,7 @@ to its retry policy.</p>
 <span class="normal">1161</span>
 <span class="normal">1162</span>
 <span class="normal">1163</span>
-<span class="normal">1164</span>
-<span class="normal">1165</span>
-<span class="normal">1166</span>
-<span class="normal">1167</span>
-<span class="normal">1168</span>
-<span class="normal">1169</span>
-<span class="normal">1170</span>
-<span class="normal">1171</span>
-<span class="normal">1172</span>
-<span class="normal">1173</span>
-<span class="normal">1174</span>
-<span class="normal">1175</span>
-<span class="normal">1176</span>
-<span class="normal">1177</span>
-<span class="normal">1178</span>
-<span class="normal">1179</span>
-<span class="normal">1180</span>
-<span class="normal">1181</span>
-<span class="normal">1182</span>
-<span class="normal">1183</span>
-<span class="normal">1184</span>
-<span class="normal">1185</span>
-<span class="normal">1186</span>
-<span class="normal">1187</span>
-<span class="normal">1188</span>
-<span class="normal">1189</span>
-<span class="normal">1190</span>
-<span class="normal">1191</span>
-<span class="normal">1192</span>
-<span class="normal">1193</span>
-<span class="normal">1194</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@PrefectObjectRegistry</span><span class="o">.</span><span class="n">register_instances</span>
+<span class="normal">1164</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@PrefectObjectRegistry</span><span class="o">.</span><span class="n">register_instances</span>
 <span class="k">class</span> <span class="nc">Task</span><span class="p">(</span><span class="n">Generic</span><span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">R</span><span class="p">]):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A Prefect task definition.</span>
@@ -15022,33 +14993,7 @@ to its retry policy.</p>
         <span class="bp">self</span><span class="o">.</span><span class="n">result_serializer</span> <span class="o">=</span> <span class="n">result_serializer</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">result_storage_key</span> <span class="o">=</span> <span class="n">result_storage_key</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cache_result_in_memory</span> <span class="o">=</span> <span class="n">cache_result_in_memory</span>
-
         <span class="bp">self</span><span class="o">.</span><span class="n">timeout_seconds</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">timeout_seconds</span><span class="p">)</span> <span class="k">if</span> <span class="n">timeout_seconds</span> <span class="k">else</span> <span class="kc">None</span>
-        <span class="c1"># Warn if this task&#39;s `name` conflicts with another task while having a</span>
-        <span class="c1"># different function. This is to detect the case where two or more tasks</span>
-        <span class="c1"># share a name or are lambdas, which should result in a warning, and to</span>
-        <span class="c1"># differentiate it from the case where the task was &#39;copied&#39; via</span>
-        <span class="c1"># `with_options`, which should not result in a warning.</span>
-        <span class="n">registry</span> <span class="o">=</span> <span class="n">PrefectObjectRegistry</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
-
-        <span class="k">if</span> <span class="n">registry</span> <span class="ow">and</span> <span class="nb">any</span><span class="p">(</span>
-            <span class="n">other</span>
-            <span class="k">for</span> <span class="n">other</span> <span class="ow">in</span> <span class="n">registry</span><span class="o">.</span><span class="n">get_instances</span><span class="p">(</span><span class="n">Task</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">other</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="ow">and</span> <span class="nb">id</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">fn</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">id</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fn</span><span class="p">)</span>
-        <span class="p">):</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">file</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getsourcefile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fn</span><span class="p">)</span>
-                <span class="n">line_number</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getsourcelines</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fn</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
-            <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
-                <span class="n">file</span> <span class="o">=</span> <span class="s2">&quot;unknown&quot;</span>
-                <span class="n">line_number</span> <span class="o">=</span> <span class="s2">&quot;unknown&quot;</span>
-
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;A task named </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">!r}</span><span class="s2"> and defined at &#39;</span><span class="si">{</span><span class="n">file</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">line_number</span><span class="si">}</span><span class="s2">&#39; &quot;</span>
-                <span class="s2">&quot;conflicts with another task. Consider specifying a unique `name` &quot;</span>
-                <span class="s2">&quot;parameter in the task definition:</span><span class="se">\n\n</span><span class="s2"> &quot;</span>
-                <span class="s2">&quot;`@task(name=&#39;my_unique_name&#39;, ...)`&quot;</span>
-            <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">on_completion</span> <span class="o">=</span> <span class="n">on_completion</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">on_failure</span> <span class="o">=</span> <span class="n">on_failure</span>
 
@@ -15255,7 +15200,7 @@ to its retry policy.</p>
 
         <span class="n">flow_run_logger</span> <span class="o">=</span> <span class="n">get_run_logger</span><span class="p">(</span><span class="n">flow_run_context</span><span class="p">)</span>
 
-        <span class="n">task_run</span> <span class="o">=</span> <span class="k">await</span> <span class="n">flow_run_context</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">create_task_run</span><span class="p">(</span>
+        <span class="n">task_run</span> <span class="o">=</span> <span class="n">flow_run_context</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">create_task_run</span><span class="p">(</span>
             <span class="n">task</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
             <span class="n">name</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> - </span><span class="si">{</span><span class="n">dynamic_key</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
             <span class="n">flow_run_id</span><span class="o">=</span><span class="n">flow_run_context</span><span class="o">.</span><span class="n">flow_run</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
@@ -15264,6 +15209,9 @@ to its retry policy.</p>
             <span class="n">extra_tags</span><span class="o">=</span><span class="n">TagsContext</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="o">.</span><span class="n">current_tags</span><span class="p">,</span>
             <span class="n">task_inputs</span><span class="o">=</span><span class="n">task_inputs</span><span class="p">,</span>
         <span class="p">)</span>
+        <span class="c1"># the new engine uses sync clients but old engines use async clients</span>
+        <span class="k">if</span> <span class="n">inspect</span><span class="o">.</span><span class="n">isawaitable</span><span class="p">(</span><span class="n">task_run</span><span class="p">):</span>
+            <span class="n">task_run</span> <span class="o">=</span> <span class="k">await</span> <span class="n">task_run</span>
 
         <span class="k">if</span> <span class="n">flow_run_context</span><span class="o">.</span><span class="n">flow_run</span><span class="p">:</span>
             <span class="n">flow_run_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
@@ -15327,21 +15275,15 @@ to its retry policy.</p>
                 <span class="bp">self</span><span class="o">.</span><span class="n">isasync</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">parameters</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">viz_return_value</span>
             <span class="p">)</span>
 
-        <span class="c1"># new engine currently only compatible with async tasks</span>
         <span class="k">if</span> <span class="n">PREFECT_EXPERIMENTAL_ENABLE_NEW_ENGINE</span><span class="o">.</span><span class="n">value</span><span class="p">():</span>
-            <span class="kn">from</span> <span class="nn">prefect.new_task_engine</span> <span class="kn">import</span> <span class="n">run_task</span><span class="p">,</span> <span class="n">run_task_sync</span>
+            <span class="kn">from</span> <span class="nn">prefect.new_task_engine</span> <span class="kn">import</span> <span class="n">run_task</span>
 
-            <span class="n">run_kwargs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+            <span class="k">return</span> <span class="n">run_task</span><span class="p">(</span>
                 <span class="n">task</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
                 <span class="n">parameters</span><span class="o">=</span><span class="n">parameters</span><span class="p">,</span>
                 <span class="n">wait_for</span><span class="o">=</span><span class="n">wait_for</span><span class="p">,</span>
                 <span class="n">return_type</span><span class="o">=</span><span class="n">return_type</span><span class="p">,</span>
             <span class="p">)</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">isasync</span><span class="p">:</span>
-                <span class="c1"># this returns an awaitable coroutine</span>
-                <span class="k">return</span> <span class="n">run_task</span><span class="p">(</span><span class="o">**</span><span class="n">run_kwargs</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">run_task_sync</span><span class="p">(</span><span class="o">**</span><span class="n">run_kwargs</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="p">(</span>
             <span class="n">PREFECT_EXPERIMENTAL_ENABLE_TASK_SCHEDULING</span><span class="o">.</span><span class="n">value</span><span class="p">()</span>
@@ -15621,7 +15563,7 @@ to its retry policy.</p>
         <span class="n">wait_for</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Iterable</span><span class="p">[</span><span class="n">PrefectFuture</span><span class="p">]],</span>
         <span class="n">return_state</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
     <span class="p">):</span>
-        <span class="kn">from</span> <span class="nn">prefect.new_task_engine</span> <span class="kn">import</span> <span class="n">run_task</span>
+        <span class="kn">from</span> <span class="nn">prefect.new_task_engine</span> <span class="kn">import</span> <span class="n">run_task_async</span>
 
         <span class="n">task_runner</span> <span class="o">=</span> <span class="n">flow_run_context</span><span class="o">.</span><span class="n">task_runner</span>
 
@@ -15642,7 +15584,7 @@ to its retry policy.</p>
         <span class="k">await</span> <span class="n">task_runner</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span>
             <span class="n">key</span><span class="o">=</span><span class="n">future</span><span class="o">.</span><span class="n">key</span><span class="p">,</span>
             <span class="n">call</span><span class="o">=</span><span class="n">partial</span><span class="p">(</span>
-                <span class="n">run_task</span><span class="p">,</span>
+                <span class="n">run_task_async</span><span class="p">,</span>
                 <span class="n">task</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
                 <span class="n">task_run</span><span class="o">=</span><span class="n">task_run</span><span class="p">,</span>
                 <span class="n">parameters</span><span class="o">=</span><span class="n">parameters</span><span class="p">,</span>
@@ -16031,90 +15973,120 @@ task</p>
         </tr>
     </tbody>
   </table>
-      <div class="codehilite"><pre><span></span><code><span class="n">Define</span> <span class="n">a</span> <span class="n">task</span>
+      <div class="codehilite"><pre><span></span><code><span class="n">Define</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">task</span>
 
-<span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">task</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="nd">@task</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="k">def</span> <span class="nf">my_task</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-<span class="o">&gt;&gt;&gt;</span>     <span class="k">return</span> <span class="n">x</span> <span class="o">+</span> <span class="mi">1</span>
+<span class="o">&gt;&gt;&gt;</span><span class="w"> </span><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span><span class="w"> </span><span class="n">task</span>
+<span class="o">&gt;&gt;&gt;</span><span class="w"> </span><span class="nd">@task</span>
+<span class="o">&gt;&gt;&gt;</span><span class="w"> </span><span class="k">def</span><span class="w"> </span><span class="nf">my_task</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<span class="o">&gt;&gt;&gt;</span><span class="w">     </span><span class="k">return</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span>
 
-<span class="n">Create</span> <span class="n">mapped</span> <span class="n">tasks</span>
+<span class="n">Create</span><span class="w"> </span><span class="n">mapped</span><span class="w"> </span><span class="n">tasks</span>
 
-<span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="nd">@flow</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="k">def</span> <span class="nf">my_flow</span><span class="p">():</span>
-<span class="o">&gt;&gt;&gt;</span>     <span class="n">my_task</span><span class="o">.</span><span class="n">map</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+<span class="o">&gt;&gt;&gt;</span><span class="w"> </span><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span><span class="w"> </span><span class="n">flow</span>
+<span class="o">&gt;&gt;&gt;</span><span class="w"> </span><span class="nd">@flow</span>
+<span class="o">&gt;&gt;&gt;</span><span class="w"> </span><span class="k">def</span><span class="w"> </span><span class="nf">my_flow</span><span class="p">():</span>
+<span class="o">&gt;&gt;&gt;</span><span class="w">     </span><span class="n">my_task</span><span class="o">.</span><span class="n">map</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">])</span>
 
-<span class="n">Wait</span> <span class="k">for</span> <span class="nb">all</span> <span class="n">mapped</span> <span class="n">tasks</span> <span class="n">to</span> <span class="n">finish</span>
+<span class="n">Wait</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="nb">all</span><span class="w"> </span><span class="n">mapped</span><span class="w"> </span><span class="n">tasks</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">finish</span>
 
-<span class="o">&gt;&gt;&gt;</span> <span class="nd">@flow</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="k">def</span> <span class="nf">my_flow</span><span class="p">():</span>
-<span class="o">&gt;&gt;&gt;</span>     <span class="n">futures</span> <span class="o">=</span> <span class="n">my_task</span><span class="o">.</span><span class="n">map</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
-<span class="o">&gt;&gt;&gt;</span>     <span class="k">for</span> <span class="n">future</span> <span class="ow">in</span> <span class="n">futures</span><span class="p">:</span>
-<span class="o">&gt;&gt;&gt;</span>         <span class="n">future</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
-<span class="o">&gt;&gt;&gt;</span>     <span class="c1"># Now all of the mapped tasks have finished</span>
-<span class="o">&gt;&gt;&gt;</span>     <span class="n">my_task</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span><span class="w"> </span><span class="nd">@flow</span>
+<span class="o">&gt;&gt;&gt;</span><span class="w"> </span><span class="k">def</span><span class="w"> </span><span class="nf">my_flow</span><span class="p">():</span>
+<span class="o">&gt;&gt;&gt;</span><span class="w">     </span><span class="n">futures</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">my_task</span><span class="o">.</span><span class="n">map</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">])</span>
+<span class="o">&gt;&gt;&gt;</span><span class="w">     </span><span class="k">for</span><span class="w"> </span><span class="n">future</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">futures</span><span class="p">:</span>
+<span class="o">&gt;&gt;&gt;</span><span class="w">         </span><span class="n">future</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
+<span class="o">&gt;&gt;&gt;</span><span class="w">     </span><span class="c1"># Now all of the mapped tasks have finished</span>
+<span class="o">&gt;&gt;&gt;</span><span class="w">     </span><span class="n">my_task</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
 
-<span class="n">Use</span> <span class="n">the</span> <span class="n">result</span> <span class="kn">from</span> <span class="nn">mapped</span> <span class="n">tasks</span> <span class="ow">in</span> <span class="n">a</span> <span class="n">flow</span>
+<span class="n">Use</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="kn">from</span><span class="w"> </span><span class="nn">mapped</span><span class="w"> </span><span class="n">tasks</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">flow</span>
 
-<span class="o">&gt;&gt;&gt;</span> <span class="nd">@flow</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="k">def</span> <span class="nf">my_flow</span><span class="p">():</span>
-<span class="o">&gt;&gt;&gt;</span>     <span class="n">futures</span> <span class="o">=</span> <span class="n">my_task</span><span class="o">.</span><span class="n">map</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
-<span class="o">&gt;&gt;&gt;</span>     <span class="k">for</span> <span class="n">future</span> <span class="ow">in</span> <span class="n">futures</span><span class="p">:</span>
-<span class="o">&gt;&gt;&gt;</span>         <span class="nb">print</span><span class="p">(</span><span class="n">future</span><span class="o">.</span><span class="n">result</span><span class="p">())</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">my_flow</span><span class="p">()</span>
+<span class="o">&gt;&gt;&gt;</span><span class="w"> </span><span class="nd">@flow</span>
+<span class="o">&gt;&gt;&gt;</span><span class="w"> </span><span class="k">def</span><span class="w"> </span><span class="nf">my_flow</span><span class="p">():</span>
+<span class="o">&gt;&gt;&gt;</span><span class="w">     </span><span class="n">futures</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">my_task</span><span class="o">.</span><span class="n">map</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">])</span>
+<span class="o">&gt;&gt;&gt;</span><span class="w">     </span><span class="k">for</span><span class="w"> </span><span class="n">future</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">futures</span><span class="p">:</span>
+<span class="o">&gt;&gt;&gt;</span><span class="w">         </span><span class="nb">print</span><span class="p">(</span><span class="n">future</span><span class="o">.</span><span class="n">result</span><span class="p">())</span>
+<span class="o">&gt;&gt;&gt;</span><span class="w"> </span><span class="n">my_flow</span><span class="p">()</span>
 <span class="mi">2</span>
 <span class="mi">3</span>
 <span class="mi">4</span>
 
-<span class="n">Enforce</span> <span class="n">ordering</span> <span class="n">between</span> <span class="n">tasks</span> <span class="n">that</span> <span class="n">do</span> <span class="ow">not</span> <span class="n">exchange</span> <span class="n">data</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="nd">@task</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="k">def</span> <span class="nf">task_1</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-<span class="o">&gt;&gt;&gt;</span>     <span class="k">pass</span>
+<span class="n">Enforce</span><span class="w"> </span><span class="n">ordering</span><span class="w"> </span><span class="n">between</span><span class="w"> </span><span class="n">tasks</span><span class="w"> </span><span class="n">that</span><span class="w"> </span><span class="n">do</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="n">exchange</span><span class="w"> </span><span class="n">data</span>
+<span class="o">&gt;&gt;&gt;</span><span class="w"> </span><span class="nd">@task</span>
+<span class="o">&gt;&gt;&gt;</span><span class="w"> </span><span class="k">def</span><span class="w"> </span><span class="nf">task_1</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<span class="o">&gt;&gt;&gt;</span><span class="w">     </span><span class="k">pass</span>
 <span class="o">&gt;&gt;&gt;</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="nd">@task</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="k">def</span> <span class="nf">task_2</span><span class="p">(</span><span class="n">y</span><span class="p">):</span>
-<span class="o">&gt;&gt;&gt;</span>     <span class="k">pass</span>
+<span class="o">&gt;&gt;&gt;</span><span class="w"> </span><span class="nd">@task</span>
+<span class="o">&gt;&gt;&gt;</span><span class="w"> </span><span class="k">def</span><span class="w"> </span><span class="nf">task_2</span><span class="p">(</span><span class="n">y</span><span class="p">):</span>
+<span class="o">&gt;&gt;&gt;</span><span class="w">     </span><span class="k">pass</span>
 <span class="o">&gt;&gt;&gt;</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="nd">@flow</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="k">def</span> <span class="nf">my_flow</span><span class="p">():</span>
-<span class="o">&gt;&gt;&gt;</span>     <span class="n">x</span> <span class="o">=</span> <span class="n">task_1</span><span class="o">.</span><span class="n">submit</span><span class="p">()</span>
+<span class="o">&gt;&gt;&gt;</span><span class="w"> </span><span class="nd">@flow</span>
+<span class="o">&gt;&gt;&gt;</span><span class="w"> </span><span class="k">def</span><span class="w"> </span><span class="nf">my_flow</span><span class="p">():</span>
+<span class="o">&gt;&gt;&gt;</span><span class="w">     </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">task_1</span><span class="o">.</span><span class="n">submit</span><span class="p">()</span>
 <span class="o">&gt;&gt;&gt;</span>
-<span class="o">&gt;&gt;&gt;</span>     <span class="c1"># task 2 will wait for task_1 to complete</span>
-<span class="o">&gt;&gt;&gt;</span>     <span class="n">y</span> <span class="o">=</span> <span class="n">task_2</span><span class="o">.</span><span class="n">map</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="n">wait_for</span><span class="o">=</span><span class="p">[</span><span class="n">x</span><span class="p">])</span>
+<span class="o">&gt;&gt;&gt;</span><span class="w">     </span><span class="c1"># task 2 will wait for task_1 to complete</span>
+<span class="o">&gt;&gt;&gt;</span><span class="w">     </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">task_2</span><span class="o">.</span><span class="n">map</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">],</span><span class="w"> </span><span class="n">wait_for</span><span class="o">=</span><span class="p">[</span><span class="n">x</span><span class="p">])</span>
 
-<span class="n">Use</span> <span class="n">a</span> <span class="n">non</span><span class="o">-</span><span class="n">iterable</span> <span class="nb">input</span> <span class="k">as</span> <span class="n">a</span> <span class="n">constant</span> <span class="n">across</span> <span class="n">mapped</span> <span class="n">tasks</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="nd">@task</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="k">def</span> <span class="nf">display</span><span class="p">(</span><span class="n">prefix</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
-<span class="o">&gt;&gt;&gt;</span>    <span class="nb">print</span><span class="p">(</span><span class="n">prefix</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span>
+<span class="n">Use</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">non</span><span class="o">-</span><span class="n">iterable</span><span class="w"> </span><span class="nb">input</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">constant</span><span class="w"> </span><span class="n">across</span><span class="w"> </span><span class="n">mapped</span><span class="w"> </span><span class="n">tasks</span>
+<span class="o">&gt;&gt;&gt;</span><span class="w"> </span><span class="nd">@task</span>
+<span class="o">&gt;&gt;&gt;</span><span class="w"> </span><span class="k">def</span><span class="w"> </span><span class="nf">display</span><span class="p">(</span><span class="n">prefix</span><span class="p">,</span><span class="w"> </span><span class="n">item</span><span class="p">):</span>
+<span class="o">&gt;&gt;&gt;</span><span class="w">    </span><span class="nb">print</span><span class="p">(</span><span class="n">prefix</span><span class="p">,</span><span class="w"> </span><span class="n">item</span><span class="p">)</span>
 <span class="o">&gt;&gt;&gt;</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="nd">@flow</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="k">def</span> <span class="nf">my_flow</span><span class="p">():</span>
-<span class="o">&gt;&gt;&gt;</span>     <span class="n">display</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="s2">&quot;Check it out: &quot;</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+<span class="o">&gt;&gt;&gt;</span><span class="w"> </span><span class="nd">@flow</span>
+<span class="o">&gt;&gt;&gt;</span><span class="w"> </span><span class="k">def</span><span class="w"> </span><span class="nf">my_flow</span><span class="p">():</span>
+<span class="o">&gt;&gt;&gt;</span><span class="w">     </span><span class="n">display</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="s2">&quot;Check it out: &quot;</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">])</span>
 <span class="o">&gt;&gt;&gt;</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">my_flow</span><span class="p">()</span>
-<span class="n">Check</span> <span class="n">it</span> <span class="n">out</span><span class="p">:</span> <span class="mi">1</span>
-<span class="n">Check</span> <span class="n">it</span> <span class="n">out</span><span class="p">:</span> <span class="mi">2</span>
-<span class="n">Check</span> <span class="n">it</span> <span class="n">out</span><span class="p">:</span> <span class="mi">3</span>
+<span class="o">&gt;&gt;&gt;</span><span class="w"> </span><span class="n">my_flow</span><span class="p">()</span>
+<span class="n">Check</span><span class="w"> </span><span class="n">it</span><span class="w"> </span><span class="n">out</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span>
+<span class="n">Check</span><span class="w"> </span><span class="n">it</span><span class="w"> </span><span class="n">out</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span>
+<span class="n">Check</span><span class="w"> </span><span class="n">it</span><span class="w"> </span><span class="n">out</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span>
 
-<span class="n">Use</span> <span class="err">`</span><span class="n">unmapped</span><span class="err">`</span> <span class="n">to</span> <span class="n">treat</span> <span class="n">an</span> <span class="n">iterable</span> <span class="n">argument</span> <span class="k">as</span> <span class="n">a</span> <span class="n">constant</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">unmapped</span>
+<span class="n">Use</span><span class="w"> </span><span class="err">`</span><span class="n">unmapped</span><span class="err">`</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">treat</span><span class="w"> </span><span class="n">an</span><span class="w"> </span><span class="n">iterable</span><span class="w"> </span><span class="n">argument</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">constant</span>
+<span class="o">&gt;&gt;&gt;</span><span class="w"> </span><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span><span class="w"> </span><span class="n">unmapped</span>
 <span class="o">&gt;&gt;&gt;</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="nd">@task</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="k">def</span> <span class="nf">add_n_to_items</span><span class="p">(</span><span class="n">items</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
-<span class="o">&gt;&gt;&gt;</span>     <span class="k">return</span> <span class="p">[</span><span class="n">item</span> <span class="o">+</span> <span class="n">n</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">items</span><span class="p">]</span>
+<span class="o">&gt;&gt;&gt;</span><span class="w"> </span><span class="nd">@task</span>
+<span class="o">&gt;&gt;&gt;</span><span class="w"> </span><span class="k">def</span><span class="w"> </span><span class="nf">add_n_to_items</span><span class="p">(</span><span class="n">items</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">):</span>
+<span class="o">&gt;&gt;&gt;</span><span class="w">     </span><span class="k">return</span><span class="w"> </span><span class="p">[</span><span class="n">item</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">item</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">items</span><span class="p">]</span>
 <span class="o">&gt;&gt;&gt;</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="nd">@flow</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="k">def</span> <span class="nf">my_flow</span><span class="p">():</span>
-<span class="o">&gt;&gt;&gt;</span>     <span class="k">return</span> <span class="n">add_n_to_items</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">unmapped</span><span class="p">([</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">]),</span> <span class="n">n</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+<span class="o">&gt;&gt;&gt;</span><span class="w"> </span><span class="nd">@flow</span>
+<span class="o">&gt;&gt;&gt;</span><span class="w"> </span><span class="k">def</span><span class="w"> </span><span class="nf">my_flow</span><span class="p">():</span>
+<span class="o">&gt;&gt;&gt;</span><span class="w">     </span><span class="k">return</span><span class="w"> </span><span class="n">add_n_to_items</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">unmapped</span><span class="p">([</span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="mi">20</span><span class="p">]),</span><span class="w"> </span><span class="n">n</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">])</span>
 <span class="o">&gt;&gt;&gt;</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">my_flow</span><span class="p">()</span>
-<span class="p">[[</span><span class="mi">11</span><span class="p">,</span> <span class="mi">21</span><span class="p">],</span> <span class="p">[</span><span class="mi">12</span><span class="p">,</span> <span class="mi">22</span><span class="p">],</span> <span class="p">[</span><span class="mi">13</span><span class="p">,</span> <span class="mi">23</span><span class="p">]]</span>
+<span class="o">&gt;&gt;&gt;</span><span class="w"> </span><span class="n">my_flow</span><span class="p">()</span>
+<span class="p">[[</span><span class="mi">11</span><span class="p">,</span><span class="w"> </span><span class="mi">21</span><span class="p">],</span><span class="w"> </span><span class="p">[</span><span class="mi">12</span><span class="p">,</span><span class="w"> </span><span class="mi">22</span><span class="p">],</span><span class="w"> </span><span class="p">[</span><span class="mi">13</span><span class="p">,</span><span class="w"> </span><span class="mi">23</span><span class="p">]]</span>
 </code></pre></div>
 
           <details class="quote">
             <summary>Source code in <code>prefect/tasks.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1007</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 977</span>
+<span class="normal"> 978</span>
+<span class="normal"> 979</span>
+<span class="normal"> 980</span>
+<span class="normal"> 981</span>
+<span class="normal"> 982</span>
+<span class="normal"> 983</span>
+<span class="normal"> 984</span>
+<span class="normal"> 985</span>
+<span class="normal"> 986</span>
+<span class="normal"> 987</span>
+<span class="normal"> 988</span>
+<span class="normal"> 989</span>
+<span class="normal"> 990</span>
+<span class="normal"> 991</span>
+<span class="normal"> 992</span>
+<span class="normal"> 993</span>
+<span class="normal"> 994</span>
+<span class="normal"> 995</span>
+<span class="normal"> 996</span>
+<span class="normal"> 997</span>
+<span class="normal"> 998</span>
+<span class="normal"> 999</span>
+<span class="normal">1000</span>
+<span class="normal">1001</span>
+<span class="normal">1002</span>
+<span class="normal">1003</span>
+<span class="normal">1004</span>
+<span class="normal">1005</span>
+<span class="normal">1006</span>
+<span class="normal">1007</span>
 <span class="normal">1008</span>
 <span class="normal">1009</span>
 <span class="normal">1010</span>
@@ -16243,37 +16215,7 @@ task</p>
 <span class="normal">1133</span>
 <span class="normal">1134</span>
 <span class="normal">1135</span>
-<span class="normal">1136</span>
-<span class="normal">1137</span>
-<span class="normal">1138</span>
-<span class="normal">1139</span>
-<span class="normal">1140</span>
-<span class="normal">1141</span>
-<span class="normal">1142</span>
-<span class="normal">1143</span>
-<span class="normal">1144</span>
-<span class="normal">1145</span>
-<span class="normal">1146</span>
-<span class="normal">1147</span>
-<span class="normal">1148</span>
-<span class="normal">1149</span>
-<span class="normal">1150</span>
-<span class="normal">1151</span>
-<span class="normal">1152</span>
-<span class="normal">1153</span>
-<span class="normal">1154</span>
-<span class="normal">1155</span>
-<span class="normal">1156</span>
-<span class="normal">1157</span>
-<span class="normal">1158</span>
-<span class="normal">1159</span>
-<span class="normal">1160</span>
-<span class="normal">1161</span>
-<span class="normal">1162</span>
-<span class="normal">1163</span>
-<span class="normal">1164</span>
-<span class="normal">1165</span>
-<span class="normal">1166</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">map</span><span class="p">(</span>
+<span class="normal">1136</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">map</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
     <span class="n">return_state</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -16500,33 +16442,33 @@ the default ConcurrentTaskRunner will be used.</p>
 
           <details class="quote">
             <summary>Source code in <code>prefect/tasks.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1168</span>
-<span class="normal">1169</span>
-<span class="normal">1170</span>
-<span class="normal">1171</span>
-<span class="normal">1172</span>
-<span class="normal">1173</span>
-<span class="normal">1174</span>
-<span class="normal">1175</span>
-<span class="normal">1176</span>
-<span class="normal">1177</span>
-<span class="normal">1178</span>
-<span class="normal">1179</span>
-<span class="normal">1180</span>
-<span class="normal">1181</span>
-<span class="normal">1182</span>
-<span class="normal">1183</span>
-<span class="normal">1184</span>
-<span class="normal">1185</span>
-<span class="normal">1186</span>
-<span class="normal">1187</span>
-<span class="normal">1188</span>
-<span class="normal">1189</span>
-<span class="normal">1190</span>
-<span class="normal">1191</span>
-<span class="normal">1192</span>
-<span class="normal">1193</span>
-<span class="normal">1194</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">serve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task_runner</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">BaseTaskRunner</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Task&quot;</span><span class="p">:</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1138</span>
+<span class="normal">1139</span>
+<span class="normal">1140</span>
+<span class="normal">1141</span>
+<span class="normal">1142</span>
+<span class="normal">1143</span>
+<span class="normal">1144</span>
+<span class="normal">1145</span>
+<span class="normal">1146</span>
+<span class="normal">1147</span>
+<span class="normal">1148</span>
+<span class="normal">1149</span>
+<span class="normal">1150</span>
+<span class="normal">1151</span>
+<span class="normal">1152</span>
+<span class="normal">1153</span>
+<span class="normal">1154</span>
+<span class="normal">1155</span>
+<span class="normal">1156</span>
+<span class="normal">1157</span>
+<span class="normal">1158</span>
+<span class="normal">1159</span>
+<span class="normal">1160</span>
+<span class="normal">1161</span>
+<span class="normal">1162</span>
+<span class="normal">1163</span>
+<span class="normal">1164</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">serve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task_runner</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">BaseTaskRunner</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Task&quot;</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Serve the task using the provided task runner. This method is used to</span>
 <span class="sd">    establish a websocket connection with the Prefect server and listen for</span>
 <span class="sd">    submitted task runs to execute.</span>
@@ -16689,71 +16631,101 @@ the state of the task</p>
         </tr>
     </tbody>
   </table>
-      <div class="codehilite"><pre><span></span><code><span class="n">Define</span> <span class="n">a</span> <span class="n">task</span>
+      <div class="codehilite"><pre><span></span><code><span class="n">Define</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">task</span>
 
-<span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">task</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="nd">@task</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="k">def</span> <span class="nf">my_task</span><span class="p">():</span>
-<span class="o">&gt;&gt;&gt;</span>     <span class="k">return</span> <span class="s2">&quot;hello&quot;</span>
+<span class="o">&gt;&gt;&gt;</span><span class="w"> </span><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span><span class="w"> </span><span class="n">task</span>
+<span class="o">&gt;&gt;&gt;</span><span class="w"> </span><span class="nd">@task</span>
+<span class="o">&gt;&gt;&gt;</span><span class="w"> </span><span class="k">def</span><span class="w"> </span><span class="nf">my_task</span><span class="p">():</span>
+<span class="o">&gt;&gt;&gt;</span><span class="w">     </span><span class="k">return</span><span class="w"> </span><span class="s2">&quot;hello&quot;</span>
 
-<span class="n">Run</span> <span class="n">a</span> <span class="n">task</span> <span class="ow">in</span> <span class="n">a</span> <span class="n">flow</span>
+<span class="n">Run</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">task</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">flow</span>
 
-<span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="nd">@flow</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="k">def</span> <span class="nf">my_flow</span><span class="p">():</span>
-<span class="o">&gt;&gt;&gt;</span>     <span class="n">my_task</span><span class="o">.</span><span class="n">submit</span><span class="p">()</span>
+<span class="o">&gt;&gt;&gt;</span><span class="w"> </span><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span><span class="w"> </span><span class="n">flow</span>
+<span class="o">&gt;&gt;&gt;</span><span class="w"> </span><span class="nd">@flow</span>
+<span class="o">&gt;&gt;&gt;</span><span class="w"> </span><span class="k">def</span><span class="w"> </span><span class="nf">my_flow</span><span class="p">():</span>
+<span class="o">&gt;&gt;&gt;</span><span class="w">     </span><span class="n">my_task</span><span class="o">.</span><span class="n">submit</span><span class="p">()</span>
 
-<span class="n">Wait</span> <span class="k">for</span> <span class="n">a</span> <span class="n">task</span> <span class="n">to</span> <span class="n">finish</span>
+<span class="n">Wait</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">task</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">finish</span>
 
-<span class="o">&gt;&gt;&gt;</span> <span class="nd">@flow</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="k">def</span> <span class="nf">my_flow</span><span class="p">():</span>
-<span class="o">&gt;&gt;&gt;</span>     <span class="n">my_task</span><span class="o">.</span><span class="n">submit</span><span class="p">()</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
+<span class="o">&gt;&gt;&gt;</span><span class="w"> </span><span class="nd">@flow</span>
+<span class="o">&gt;&gt;&gt;</span><span class="w"> </span><span class="k">def</span><span class="w"> </span><span class="nf">my_flow</span><span class="p">():</span>
+<span class="o">&gt;&gt;&gt;</span><span class="w">     </span><span class="n">my_task</span><span class="o">.</span><span class="n">submit</span><span class="p">()</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
 
-<span class="n">Use</span> <span class="n">the</span> <span class="n">result</span> <span class="kn">from</span> <span class="nn">a</span> <span class="n">task</span> <span class="ow">in</span> <span class="n">a</span> <span class="n">flow</span>
+<span class="n">Use</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="kn">from</span><span class="w"> </span><span class="nn">a</span><span class="w"> </span><span class="n">task</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">flow</span>
 
-<span class="o">&gt;&gt;&gt;</span> <span class="nd">@flow</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="k">def</span> <span class="nf">my_flow</span><span class="p">():</span>
-<span class="o">&gt;&gt;&gt;</span>     <span class="nb">print</span><span class="p">(</span><span class="n">my_task</span><span class="o">.</span><span class="n">submit</span><span class="p">()</span><span class="o">.</span><span class="n">result</span><span class="p">())</span>
+<span class="o">&gt;&gt;&gt;</span><span class="w"> </span><span class="nd">@flow</span>
+<span class="o">&gt;&gt;&gt;</span><span class="w"> </span><span class="k">def</span><span class="w"> </span><span class="nf">my_flow</span><span class="p">():</span>
+<span class="o">&gt;&gt;&gt;</span><span class="w">     </span><span class="nb">print</span><span class="p">(</span><span class="n">my_task</span><span class="o">.</span><span class="n">submit</span><span class="p">()</span><span class="o">.</span><span class="n">result</span><span class="p">())</span>
 <span class="o">&gt;&gt;&gt;</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">my_flow</span><span class="p">()</span>
+<span class="o">&gt;&gt;&gt;</span><span class="w"> </span><span class="n">my_flow</span><span class="p">()</span>
 <span class="n">hello</span>
 
-<span class="n">Run</span> <span class="n">an</span> <span class="k">async</span> <span class="n">task</span> <span class="ow">in</span> <span class="n">an</span> <span class="k">async</span> <span class="n">flow</span>
+<span class="n">Run</span><span class="w"> </span><span class="n">an</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">task</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">an</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">flow</span>
 
-<span class="o">&gt;&gt;&gt;</span> <span class="nd">@task</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="k">async</span> <span class="k">def</span> <span class="nf">my_async_task</span><span class="p">():</span>
-<span class="o">&gt;&gt;&gt;</span>     <span class="k">pass</span>
+<span class="o">&gt;&gt;&gt;</span><span class="w"> </span><span class="nd">@task</span>
+<span class="o">&gt;&gt;&gt;</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="k">def</span><span class="w"> </span><span class="nf">my_async_task</span><span class="p">():</span>
+<span class="o">&gt;&gt;&gt;</span><span class="w">     </span><span class="k">pass</span>
 <span class="o">&gt;&gt;&gt;</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="nd">@flow</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="k">async</span> <span class="k">def</span> <span class="nf">my_flow</span><span class="p">():</span>
-<span class="o">&gt;&gt;&gt;</span>     <span class="k">await</span> <span class="n">my_async_task</span><span class="o">.</span><span class="n">submit</span><span class="p">()</span>
+<span class="o">&gt;&gt;&gt;</span><span class="w"> </span><span class="nd">@flow</span>
+<span class="o">&gt;&gt;&gt;</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="k">def</span><span class="w"> </span><span class="nf">my_flow</span><span class="p">():</span>
+<span class="o">&gt;&gt;&gt;</span><span class="w">     </span><span class="k">await</span><span class="w"> </span><span class="n">my_async_task</span><span class="o">.</span><span class="n">submit</span><span class="p">()</span>
 
-<span class="n">Run</span> <span class="n">a</span> <span class="n">sync</span> <span class="n">task</span> <span class="ow">in</span> <span class="n">an</span> <span class="k">async</span> <span class="n">flow</span>
+<span class="n">Run</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">sync</span><span class="w"> </span><span class="n">task</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">an</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">flow</span>
 
-<span class="o">&gt;&gt;&gt;</span> <span class="nd">@flow</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="k">async</span> <span class="k">def</span> <span class="nf">my_flow</span><span class="p">():</span>
-<span class="o">&gt;&gt;&gt;</span>     <span class="n">my_task</span><span class="o">.</span><span class="n">submit</span><span class="p">()</span>
+<span class="o">&gt;&gt;&gt;</span><span class="w"> </span><span class="nd">@flow</span>
+<span class="o">&gt;&gt;&gt;</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="k">def</span><span class="w"> </span><span class="nf">my_flow</span><span class="p">():</span>
+<span class="o">&gt;&gt;&gt;</span><span class="w">     </span><span class="n">my_task</span><span class="o">.</span><span class="n">submit</span><span class="p">()</span>
 
-<span class="n">Enforce</span> <span class="n">ordering</span> <span class="n">between</span> <span class="n">tasks</span> <span class="n">that</span> <span class="n">do</span> <span class="ow">not</span> <span class="n">exchange</span> <span class="n">data</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="nd">@task</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="k">def</span> <span class="nf">task_1</span><span class="p">():</span>
-<span class="o">&gt;&gt;&gt;</span>     <span class="k">pass</span>
+<span class="n">Enforce</span><span class="w"> </span><span class="n">ordering</span><span class="w"> </span><span class="n">between</span><span class="w"> </span><span class="n">tasks</span><span class="w"> </span><span class="n">that</span><span class="w"> </span><span class="n">do</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="n">exchange</span><span class="w"> </span><span class="n">data</span>
+<span class="o">&gt;&gt;&gt;</span><span class="w"> </span><span class="nd">@task</span>
+<span class="o">&gt;&gt;&gt;</span><span class="w"> </span><span class="k">def</span><span class="w"> </span><span class="nf">task_1</span><span class="p">():</span>
+<span class="o">&gt;&gt;&gt;</span><span class="w">     </span><span class="k">pass</span>
 <span class="o">&gt;&gt;&gt;</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="nd">@task</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="k">def</span> <span class="nf">task_2</span><span class="p">():</span>
-<span class="o">&gt;&gt;&gt;</span>     <span class="k">pass</span>
+<span class="o">&gt;&gt;&gt;</span><span class="w"> </span><span class="nd">@task</span>
+<span class="o">&gt;&gt;&gt;</span><span class="w"> </span><span class="k">def</span><span class="w"> </span><span class="nf">task_2</span><span class="p">():</span>
+<span class="o">&gt;&gt;&gt;</span><span class="w">     </span><span class="k">pass</span>
 <span class="o">&gt;&gt;&gt;</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="nd">@flow</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="k">def</span> <span class="nf">my_flow</span><span class="p">():</span>
-<span class="o">&gt;&gt;&gt;</span>     <span class="n">x</span> <span class="o">=</span> <span class="n">task_1</span><span class="o">.</span><span class="n">submit</span><span class="p">()</span>
+<span class="o">&gt;&gt;&gt;</span><span class="w"> </span><span class="nd">@flow</span>
+<span class="o">&gt;&gt;&gt;</span><span class="w"> </span><span class="k">def</span><span class="w"> </span><span class="nf">my_flow</span><span class="p">():</span>
+<span class="o">&gt;&gt;&gt;</span><span class="w">     </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">task_1</span><span class="o">.</span><span class="n">submit</span><span class="p">()</span>
 <span class="o">&gt;&gt;&gt;</span>
-<span class="o">&gt;&gt;&gt;</span>     <span class="c1"># task 2 will wait for task_1 to complete</span>
-<span class="o">&gt;&gt;&gt;</span>     <span class="n">y</span> <span class="o">=</span> <span class="n">task_2</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="n">wait_for</span><span class="o">=</span><span class="p">[</span><span class="n">x</span><span class="p">])</span>
+<span class="o">&gt;&gt;&gt;</span><span class="w">     </span><span class="c1"># task 2 will wait for task_1 to complete</span>
+<span class="o">&gt;&gt;&gt;</span><span class="w">     </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">task_2</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="n">wait_for</span><span class="o">=</span><span class="p">[</span><span class="n">x</span><span class="p">])</span>
 </code></pre></div>
 
           <details class="quote">
             <summary>Source code in <code>prefect/tasks.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">781</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">751</span>
+<span class="normal">752</span>
+<span class="normal">753</span>
+<span class="normal">754</span>
+<span class="normal">755</span>
+<span class="normal">756</span>
+<span class="normal">757</span>
+<span class="normal">758</span>
+<span class="normal">759</span>
+<span class="normal">760</span>
+<span class="normal">761</span>
+<span class="normal">762</span>
+<span class="normal">763</span>
+<span class="normal">764</span>
+<span class="normal">765</span>
+<span class="normal">766</span>
+<span class="normal">767</span>
+<span class="normal">768</span>
+<span class="normal">769</span>
+<span class="normal">770</span>
+<span class="normal">771</span>
+<span class="normal">772</span>
+<span class="normal">773</span>
+<span class="normal">774</span>
+<span class="normal">775</span>
+<span class="normal">776</span>
+<span class="normal">777</span>
+<span class="normal">778</span>
+<span class="normal">779</span>
+<span class="normal">780</span>
+<span class="normal">781</span>
 <span class="normal">782</span>
 <span class="normal">783</span>
 <span class="normal">784</span>
@@ -16867,37 +16839,7 @@ the state of the task</p>
 <span class="normal">892</span>
 <span class="normal">893</span>
 <span class="normal">894</span>
-<span class="normal">895</span>
-<span class="normal">896</span>
-<span class="normal">897</span>
-<span class="normal">898</span>
-<span class="normal">899</span>
-<span class="normal">900</span>
-<span class="normal">901</span>
-<span class="normal">902</span>
-<span class="normal">903</span>
-<span class="normal">904</span>
-<span class="normal">905</span>
-<span class="normal">906</span>
-<span class="normal">907</span>
-<span class="normal">908</span>
-<span class="normal">909</span>
-<span class="normal">910</span>
-<span class="normal">911</span>
-<span class="normal">912</span>
-<span class="normal">913</span>
-<span class="normal">914</span>
-<span class="normal">915</span>
-<span class="normal">916</span>
-<span class="normal">917</span>
-<span class="normal">918</span>
-<span class="normal">919</span>
-<span class="normal">920</span>
-<span class="normal">921</span>
-<span class="normal">922</span>
-<span class="normal">923</span>
-<span class="normal">924</span>
-<span class="normal">925</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">submit</span><span class="p">(</span>
+<span class="normal">895</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">submit</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
     <span class="n">return_state</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -17395,42 +17337,69 @@ always continue to its retry policy.</p>
         </tr>
     </tbody>
   </table>
-      <div class="codehilite"><pre><span></span><code><span class="n">Create</span> <span class="n">a</span> <span class="n">new</span> <span class="n">task</span> <span class="kn">from</span> <span class="nn">an</span> <span class="n">existing</span> <span class="n">task</span> <span class="ow">and</span> <span class="n">update</span> <span class="n">the</span> <span class="n">name</span>
+      <div class="codehilite"><pre><span></span><code><span class="n">Create</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">new</span><span class="w"> </span><span class="n">task</span><span class="w"> </span><span class="kn">from</span><span class="w"> </span><span class="nn">an</span><span class="w"> </span><span class="n">existing</span><span class="w"> </span><span class="n">task</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">update</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">name</span>
 
-<span class="o">&gt;&gt;&gt;</span> <span class="nd">@task</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;My task&quot;</span><span class="p">)</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="k">def</span> <span class="nf">my_task</span><span class="p">():</span>
-<span class="o">&gt;&gt;&gt;</span>     <span class="k">return</span> <span class="mi">1</span>
+<span class="o">&gt;&gt;&gt;</span><span class="w"> </span><span class="nd">@task</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;My task&quot;</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span><span class="w"> </span><span class="k">def</span><span class="w"> </span><span class="nf">my_task</span><span class="p">():</span>
+<span class="o">&gt;&gt;&gt;</span><span class="w">     </span><span class="k">return</span><span class="w"> </span><span class="mi">1</span>
 <span class="o">&gt;&gt;&gt;</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">new_task</span> <span class="o">=</span> <span class="n">my_task</span><span class="o">.</span><span class="n">with_options</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;My new task&quot;</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span><span class="w"> </span><span class="n">new_task</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">my_task</span><span class="o">.</span><span class="n">with_options</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;My new task&quot;</span><span class="p">)</span>
 
-<span class="n">Create</span> <span class="n">a</span> <span class="n">new</span> <span class="n">task</span> <span class="kn">from</span> <span class="nn">an</span> <span class="n">existing</span> <span class="n">task</span> <span class="ow">and</span> <span class="n">update</span> <span class="n">the</span> <span class="n">retry</span> <span class="n">settings</span>
+<span class="n">Create</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">new</span><span class="w"> </span><span class="n">task</span><span class="w"> </span><span class="kn">from</span><span class="w"> </span><span class="nn">an</span><span class="w"> </span><span class="n">existing</span><span class="w"> </span><span class="n">task</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">update</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">retry</span><span class="w"> </span><span class="n">settings</span>
 
-<span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">random</span> <span class="kn">import</span> <span class="n">randint</span>
+<span class="o">&gt;&gt;&gt;</span><span class="w"> </span><span class="kn">from</span><span class="w"> </span><span class="nn">random</span><span class="w"> </span><span class="kn">import</span><span class="w"> </span><span class="n">randint</span>
 <span class="o">&gt;&gt;&gt;</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="nd">@task</span><span class="p">(</span><span class="n">retries</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">retry_delay_seconds</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="k">def</span> <span class="nf">my_task</span><span class="p">():</span>
-<span class="o">&gt;&gt;&gt;</span>     <span class="n">x</span> <span class="o">=</span> <span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
-<span class="o">&gt;&gt;&gt;</span>     <span class="k">if</span> <span class="n">x</span> <span class="o">&gt;=</span> <span class="mi">3</span><span class="p">:</span>  <span class="c1"># Make a task that fails sometimes</span>
-<span class="o">&gt;&gt;&gt;</span>         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Retry me please!&quot;</span><span class="p">)</span>
-<span class="o">&gt;&gt;&gt;</span>     <span class="k">return</span> <span class="n">x</span>
+<span class="o">&gt;&gt;&gt;</span><span class="w"> </span><span class="nd">@task</span><span class="p">(</span><span class="n">retries</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">retry_delay_seconds</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span><span class="w"> </span><span class="k">def</span><span class="w"> </span><span class="nf">my_task</span><span class="p">():</span>
+<span class="o">&gt;&gt;&gt;</span><span class="w">     </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span><span class="w">     </span><span class="k">if</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">3</span><span class="p">:</span><span class="w">  </span><span class="c1"># Make a task that fails sometimes</span>
+<span class="o">&gt;&gt;&gt;</span><span class="w">         </span><span class="k">raise</span><span class="w"> </span><span class="n">ValueError</span><span class="p">(</span><span class="s2">&quot;Retry me please!&quot;</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span><span class="w">     </span><span class="k">return</span><span class="w"> </span><span class="n">x</span>
 <span class="o">&gt;&gt;&gt;</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">new_task</span> <span class="o">=</span> <span class="n">my_task</span><span class="o">.</span><span class="n">with_options</span><span class="p">(</span><span class="n">retries</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">retry_delay_seconds</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span><span class="w"> </span><span class="n">new_task</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">my_task</span><span class="o">.</span><span class="n">with_options</span><span class="p">(</span><span class="n">retries</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="n">retry_delay_seconds</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 
-<span class="n">Use</span> <span class="n">a</span> <span class="n">task</span> <span class="k">with</span> <span class="n">updated</span> <span class="n">options</span> <span class="n">within</span> <span class="n">a</span> <span class="n">flow</span>
+<span class="n">Use</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">task</span><span class="w"> </span><span class="k">with</span><span class="w"> </span><span class="n">updated</span><span class="w"> </span><span class="n">options</span><span class="w"> </span><span class="n">within</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">flow</span>
 
-<span class="o">&gt;&gt;&gt;</span> <span class="nd">@task</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;My task&quot;</span><span class="p">)</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="k">def</span> <span class="nf">my_task</span><span class="p">():</span>
-<span class="o">&gt;&gt;&gt;</span>     <span class="k">return</span> <span class="mi">1</span>
+<span class="o">&gt;&gt;&gt;</span><span class="w"> </span><span class="nd">@task</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;My task&quot;</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span><span class="w"> </span><span class="k">def</span><span class="w"> </span><span class="nf">my_task</span><span class="p">():</span>
+<span class="o">&gt;&gt;&gt;</span><span class="w">     </span><span class="k">return</span><span class="w"> </span><span class="mi">1</span>
 <span class="o">&gt;&gt;&gt;</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="nd">@flow</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">my_flow</span><span class="p">():</span>
-<span class="o">&gt;&gt;&gt;</span>     <span class="n">new_task</span> <span class="o">=</span> <span class="n">my_task</span><span class="o">.</span><span class="n">with_options</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;My new task&quot;</span><span class="p">)</span>
-<span class="o">&gt;&gt;&gt;</span>     <span class="n">new_task</span><span class="p">()</span>
+<span class="o">&gt;&gt;&gt;</span><span class="w"> </span><span class="nd">@flow</span>
+<span class="o">&gt;&gt;&gt;</span><span class="w"> </span><span class="n">my_flow</span><span class="p">():</span>
+<span class="o">&gt;&gt;&gt;</span><span class="w">     </span><span class="n">new_task</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">my_task</span><span class="o">.</span><span class="n">with_options</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;My new task&quot;</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span><span class="w">     </span><span class="n">new_task</span><span class="p">()</span>
 </code></pre></div>
 
           <details class="quote">
             <summary>Source code in <code>prefect/tasks.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">375</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">348</span>
+<span class="normal">349</span>
+<span class="normal">350</span>
+<span class="normal">351</span>
+<span class="normal">352</span>
+<span class="normal">353</span>
+<span class="normal">354</span>
+<span class="normal">355</span>
+<span class="normal">356</span>
+<span class="normal">357</span>
+<span class="normal">358</span>
+<span class="normal">359</span>
+<span class="normal">360</span>
+<span class="normal">361</span>
+<span class="normal">362</span>
+<span class="normal">363</span>
+<span class="normal">364</span>
+<span class="normal">365</span>
+<span class="normal">366</span>
+<span class="normal">367</span>
+<span class="normal">368</span>
+<span class="normal">369</span>
+<span class="normal">370</span>
+<span class="normal">371</span>
+<span class="normal">372</span>
+<span class="normal">373</span>
+<span class="normal">374</span>
+<span class="normal">375</span>
 <span class="normal">376</span>
 <span class="normal">377</span>
 <span class="normal">378</span>
@@ -17566,34 +17535,7 @@ always continue to its retry policy.</p>
 <span class="normal">508</span>
 <span class="normal">509</span>
 <span class="normal">510</span>
-<span class="normal">511</span>
-<span class="normal">512</span>
-<span class="normal">513</span>
-<span class="normal">514</span>
-<span class="normal">515</span>
-<span class="normal">516</span>
-<span class="normal">517</span>
-<span class="normal">518</span>
-<span class="normal">519</span>
-<span class="normal">520</span>
-<span class="normal">521</span>
-<span class="normal">522</span>
-<span class="normal">523</span>
-<span class="normal">524</span>
-<span class="normal">525</span>
-<span class="normal">526</span>
-<span class="normal">527</span>
-<span class="normal">528</span>
-<span class="normal">529</span>
-<span class="normal">530</span>
-<span class="normal">531</span>
-<span class="normal">532</span>
-<span class="normal">533</span>
-<span class="normal">534</span>
-<span class="normal">535</span>
-<span class="normal">536</span>
-<span class="normal">537</span>
-<span class="normal">538</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">with_options</span><span class="p">(</span>
+<span class="normal">511</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">with_options</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -17846,7 +17788,8 @@ increase the delay time by powers of 2.</p>
 
           <details class="quote">
             <summary>Source code in <code>prefect/tasks.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">101</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">100</span>
+<span class="normal">101</span>
 <span class="normal">102</span>
 <span class="normal">103</span>
 <span class="normal">104</span>
@@ -17864,8 +17807,7 @@ increase the delay time by powers of 2.</p>
 <span class="normal">116</span>
 <span class="normal">117</span>
 <span class="normal">118</span>
-<span class="normal">119</span>
-<span class="normal">120</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">exponential_backoff</span><span class="p">(</span><span class="n">backoff_factor</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">int</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]]:</span>
+<span class="normal">119</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">exponential_backoff</span><span class="p">(</span><span class="n">backoff_factor</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">int</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A task retry backoff utility that configures exponential backoff for task retries.</span>
 <span class="sd">    The exponential backoff design matches the urllib3 implementation.</span>
@@ -18316,7 +18258,37 @@ to its retry policy.</p>
 
           <details class="quote">
             <summary>Source code in <code>prefect/tasks.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1236</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1206</span>
+<span class="normal">1207</span>
+<span class="normal">1208</span>
+<span class="normal">1209</span>
+<span class="normal">1210</span>
+<span class="normal">1211</span>
+<span class="normal">1212</span>
+<span class="normal">1213</span>
+<span class="normal">1214</span>
+<span class="normal">1215</span>
+<span class="normal">1216</span>
+<span class="normal">1217</span>
+<span class="normal">1218</span>
+<span class="normal">1219</span>
+<span class="normal">1220</span>
+<span class="normal">1221</span>
+<span class="normal">1222</span>
+<span class="normal">1223</span>
+<span class="normal">1224</span>
+<span class="normal">1225</span>
+<span class="normal">1226</span>
+<span class="normal">1227</span>
+<span class="normal">1228</span>
+<span class="normal">1229</span>
+<span class="normal">1230</span>
+<span class="normal">1231</span>
+<span class="normal">1232</span>
+<span class="normal">1233</span>
+<span class="normal">1234</span>
+<span class="normal">1235</span>
+<span class="normal">1236</span>
 <span class="normal">1237</span>
 <span class="normal">1238</span>
 <span class="normal">1239</span>
@@ -18483,37 +18455,7 @@ to its retry policy.</p>
 <span class="normal">1400</span>
 <span class="normal">1401</span>
 <span class="normal">1402</span>
-<span class="normal">1403</span>
-<span class="normal">1404</span>
-<span class="normal">1405</span>
-<span class="normal">1406</span>
-<span class="normal">1407</span>
-<span class="normal">1408</span>
-<span class="normal">1409</span>
-<span class="normal">1410</span>
-<span class="normal">1411</span>
-<span class="normal">1412</span>
-<span class="normal">1413</span>
-<span class="normal">1414</span>
-<span class="normal">1415</span>
-<span class="normal">1416</span>
-<span class="normal">1417</span>
-<span class="normal">1418</span>
-<span class="normal">1419</span>
-<span class="normal">1420</span>
-<span class="normal">1421</span>
-<span class="normal">1422</span>
-<span class="normal">1423</span>
-<span class="normal">1424</span>
-<span class="normal">1425</span>
-<span class="normal">1426</span>
-<span class="normal">1427</span>
-<span class="normal">1428</span>
-<span class="normal">1429</span>
-<span class="normal">1430</span>
-<span class="normal">1431</span>
-<span class="normal">1432</span>
-<span class="normal">1433</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">task</span><span class="p">(</span>
+<span class="normal">1403</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">task</span><span class="p">(</span>
     <span class="n">__fn</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -18805,7 +18747,8 @@ indicating that a cache key could not be generated for the given inputs.</p>
 
           <details class="quote">
             <summary>Source code in <code>prefect/tasks.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">75</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">74</span>
+<span class="normal">75</span>
 <span class="normal">76</span>
 <span class="normal">77</span>
 <span class="normal">78</span>
@@ -18827,8 +18770,7 @@ indicating that a cache key could not be generated for the given inputs.</p>
 <span class="normal">94</span>
 <span class="normal">95</span>
 <span class="normal">96</span>
-<span class="normal">97</span>
-<span class="normal">98</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">task_input_hash</span><span class="p">(</span>
+<span class="normal">97</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">task_input_hash</span><span class="p">(</span>
     <span class="n">context</span><span class="p">:</span> <span class="s2">&quot;TaskRunContext&quot;</span><span class="p">,</span> <span class="n">arguments</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
