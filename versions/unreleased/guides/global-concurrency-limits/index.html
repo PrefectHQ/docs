@@ -1076,6 +1076,32 @@ if (amplitudeKey){
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#via-the-ui" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Via the UI
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#via-the-cli" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Via the CLI
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -13252,6 +13278,32 @@ if (amplitudeKey){
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#via-the-ui" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Via the UI
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#via-the-cli" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Via the CLI
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -13436,14 +13488,6 @@ if (amplitudeKey){
 <p>When selecting between Concurrency and Rate Limits, consider your primary goal. Choose Concurrency Limits for resource optimization and task management. Choose Rate Limits to maintain system stability and fair access to services.</p>
 <p>The core difference between a rate limit and a concurrency limit is the way in which slots are released. With a rate limit, slots are released at a controlled rate, controlled by <code>slot_decay_per_second</code> whereas with a concurrency limit, slots are released when the concurrency manager is exited.</p>
 <h2 id="managing-global-concurrency-limits-and-rate-limits">Managing Global concurrency limits and rate limits<a class="headerlink" href="#managing-global-concurrency-limits-and-rate-limits" title="Permanent link">&para;</a></h2>
-<p>You can create, read, edit, and delete concurrency limits via the Prefect UI.</p>
-<p>When creating a concurrency limit, you can specify the following parameters:</p>
-<ul>
-<li><strong>Name</strong>: The name of the concurrency limit. This name is also how you'll reference the concurrency limit in your code. Special characters, such as <code>/</code>, <code>%</code>, <code>&amp;</code>, <code>&gt;</code>, <code>&lt;</code>, are not allowed.</li>
-<li><strong>Concurrency Limit</strong>: The maximum number of slots that can be occupied on this concurrency limit.</li>
-<li><strong>Slot Decay Per Second</strong>: Controls the rate at which slots are released when the concurrency limit is used as a rate limit. This value must be configured when using the <code>rate_limit</code> function.</li>
-<li><strong>Active</strong>: Whether or not the concurrency limit is in an active state.</li>
-</ul>
 <h3 id="active-vs-inactive-limits">Active vs inactive limits<a class="headerlink" href="#active-vs-inactive-limits" title="Permanent link">&para;</a></h3>
 <p>Global concurrency limits can be in either an <code>active</code> or <code>inactive</code> state.</p>
 <ul>
@@ -13463,6 +13507,34 @@ if (amplitudeKey){
 </li>
 </ul>
 <p>Slot decay provides fine-grained control over the availability of slots, enabling you to optimize the rate of your workflow based on your specific requirements.</p>
+<h3 id="via-the-ui">Via the UI<a class="headerlink" href="#via-the-ui" title="Permanent link">&para;</a></h3>
+<p>You can create, read, edit, and delete concurrency limits via the Prefect UI.</p>
+<p>When creating a concurrency limit, you can specify the following parameters:</p>
+<ul>
+<li><strong>Name</strong>: The name of the concurrency limit. This name is also how you'll reference the concurrency limit in your code. Special characters, such as <code>/</code>, <code>%</code>, <code>&amp;</code>, <code>&gt;</code>, <code>&lt;</code>, are not allowed.</li>
+<li><strong>Concurrency Limit</strong>: The maximum number of slots that can be occupied on this concurrency limit.</li>
+<li><strong>Slot Decay Per Second</strong>: Controls the rate at which slots are released when the concurrency limit is used as a rate limit. This value must be configured when using the <code>rate_limit</code> function.</li>
+<li><strong>Active</strong>: Whether or not the concurrency limit is in an active state.</li>
+</ul>
+<h3 id="via-the-cli">Via the CLI<a class="headerlink" href="#via-the-cli" title="Permanent link">&para;</a></h3>
+<p>You can create, read, edit, and delete global concurrency limits via the Prefect CLI.</p>
+<p>To create a new concurrency limit, use the <code>prefect gcl create</code> command. You must specify a <code>--limit</code> argument, and can optionally specify a <code>--slot-decay-per-second</code> and <code>--disable</code> argument.</p>
+<div class="highlight"><pre><span></span><code>prefect<span class="w"> </span>gcl<span class="w"> </span>create<span class="w"> </span>my-concurrency-limit<span class="w"> </span>--limit<span class="w"> </span><span class="m">5</span><span class="w"> </span>--slot-decay-per-second<span class="w"> </span><span class="m">1</span>.0
+</code></pre></div>
+<p>You can inspect the details of a concurrency limit using the <code>prefect gcl inspect</code> command:</p>
+<div class="highlight"><pre><span></span><code>prefect<span class="w"> </span>gcl<span class="w"> </span>inspect<span class="w"> </span>my-concurrency-limit
+</code></pre></div>
+<p>To update a concurrency limit, use the <code>prefect gcl update</code> command. You can update the <code>--limit</code>, <code>--slot-decay-per-second</code>, <code>--enable</code>, and <code>--disable</code> arguments:</p>
+<div class="highlight"><pre><span></span><code>prefect<span class="w"> </span>gcl<span class="w"> </span>update<span class="w"> </span>my-concurrency-limit<span class="w"> </span>--limit<span class="w"> </span><span class="m">10</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>prefect<span class="w"> </span>gcl<span class="w"> </span>update<span class="w"> </span>my-concurrency-limit<span class="w"> </span>--disable
+</code></pre></div>
+<p>To delete a concurrency limit, use the <code>prefect gcl delete</code> command:</p>
+<div class="highlight"><pre><span></span><code>prefect<span class="w"> </span>gcl<span class="w"> </span>delete<span class="w"> </span>my-concurrency-limit
+Are<span class="w"> </span>you<span class="w"> </span>sure<span class="w"> </span>you<span class="w"> </span>want<span class="w"> </span>to<span class="w"> </span>delete<span class="w"> </span>global<span class="w"> </span>concurrency<span class="w"> </span>limit<span class="w"> </span><span class="s1">&#39;my-concurrency-limit&#39;</span>?<span class="w"> </span><span class="o">[</span>y/N<span class="o">]</span>:<span class="w"> </span>y
+Deleted<span class="w"> </span>global<span class="w"> </span>concurrency<span class="w"> </span>limit<span class="w"> </span>with<span class="w"> </span>name<span class="w"> </span><span class="s1">&#39;my-concurrency-limit&#39;</span>.
+</code></pre></div>
+<p>See all available commands and options by running <code>prefect gcl --help</code>.</p>
 <h2 id="using-the-concurrency-context-manager">Using the <code>concurrency</code> context manager<a class="headerlink" href="#using-the-concurrency-context-manager" title="Permanent link">&para;</a></h2>
 <p>The <code>concurrency</code>context manager allows control over the maximum number of concurrent operations. You can select either the synchronous (<code>sync</code>) or asynchronous (<code>async</code>) version, depending on your use case. Here's how to use it:</p>
 <div class="admonition tip">
