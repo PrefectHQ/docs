@@ -20623,7 +20623,7 @@ $ python -m asyncio
         <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">if</span> <span class="n">active</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;active&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">active</span>
-        <span class="k">elif</span> <span class="n">schedule</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">schedule</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;schedule&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">schedule</span>
 
         <span class="n">deployment_schedule_update</span> <span class="o">=</span> <span class="n">DeploymentScheduleUpdate</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -29662,7 +29662,7 @@ of the deployments</p>
     <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="k">if</span> <span class="n">active</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;active&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">active</span>
-    <span class="k">elif</span> <span class="n">schedule</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">schedule</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;schedule&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">schedule</span>
 
     <span class="n">deployment_schedule_update</span> <span class="o">=</span> <span class="n">DeploymentScheduleUpdate</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -35967,9 +35967,7 @@ Returns:
 <span class="normal">3971</span>
 <span class="normal">3972</span>
 <span class="normal">3973</span>
-<span class="normal">3974</span>
-<span class="normal">3975</span>
-<span class="normal">3976</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">SyncPrefectClient</span><span class="p">:</span>
+<span class="normal">3974</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">SyncPrefectClient</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A synchronous client for interacting with the [Prefect REST API](/api-ref/rest-api/).</span>
 
@@ -36096,10 +36094,8 @@ Returns:
         <span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">server_type</span> <span class="o">==</span> <span class="n">ServerType</span><span class="o">.</span><span class="n">EPHEMERAL</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_client</span> <span class="o">=</span> <span class="n">TestClient</span><span class="p">(</span>
-                <span class="n">api</span><span class="p">,</span>
-                <span class="n">base_url</span><span class="o">=</span><span class="s2">&quot;http://ephemeral-prefect/api&quot;</span><span class="p">,</span>
-                <span class="n">raise_server_exceptions</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_client</span> <span class="o">=</span> <span class="n">PrefectHttpxSyncEphemeralClient</span><span class="p">(</span>
+                <span class="n">api</span><span class="p">,</span> <span class="n">base_url</span><span class="o">=</span><span class="s2">&quot;http://ephemeral-prefect/api&quot;</span>
             <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_client</span> <span class="o">=</span> <span class="n">PrefectHttpxSyncClient</span><span class="p">(</span>
@@ -36634,7 +36630,9 @@ successful.</p>
 
           <details class="quote">
             <summary>Source code in <code>prefect/client/orchestration.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">3569</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">3567</span>
+<span class="normal">3568</span>
+<span class="normal">3569</span>
 <span class="normal">3570</span>
 <span class="normal">3571</span>
 <span class="normal">3572</span>
@@ -36643,9 +36641,7 @@ successful.</p>
 <span class="normal">3575</span>
 <span class="normal">3576</span>
 <span class="normal">3577</span>
-<span class="normal">3578</span>
-<span class="normal">3579</span>
-<span class="normal">3580</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">api_healthcheck</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="ne">Exception</span><span class="p">]:</span>
+<span class="normal">3578</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">api_healthcheck</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="ne">Exception</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Attempts to connect to the API and returns the encountered exception if not</span>
 <span class="sd">    successful.</span>
@@ -36680,11 +36676,11 @@ successful.</p>
 
           <details class="quote">
             <summary>Source code in <code>prefect/client/orchestration.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">3582</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">3580</span>
+<span class="normal">3581</span>
+<span class="normal">3582</span>
 <span class="normal">3583</span>
-<span class="normal">3584</span>
-<span class="normal">3585</span>
-<span class="normal">3586</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">hello</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Response</span><span class="p">:</span>
+<span class="normal">3584</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">hello</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Response</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Send a GET request to /hello for testing purposes.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -36790,7 +36786,9 @@ successful.</p>
 
           <details class="quote">
             <summary>Source code in <code>prefect/client/orchestration.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">3588</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">3586</span>
+<span class="normal">3587</span>
+<span class="normal">3588</span>
 <span class="normal">3589</span>
 <span class="normal">3590</span>
 <span class="normal">3591</span>
@@ -36801,9 +36799,7 @@ successful.</p>
 <span class="normal">3596</span>
 <span class="normal">3597</span>
 <span class="normal">3598</span>
-<span class="normal">3599</span>
-<span class="normal">3600</span>
-<span class="normal">3601</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">create_flow</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flow</span><span class="p">:</span> <span class="s2">&quot;FlowObject&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">UUID</span><span class="p">:</span>
+<span class="normal">3599</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">create_flow</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flow</span><span class="p">:</span> <span class="s2">&quot;FlowObject&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">UUID</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create a flow in the Prefect API.</span>
 
@@ -36918,7 +36914,9 @@ successful.</p>
 
           <details class="quote">
             <summary>Source code in <code>prefect/client/orchestration.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">3603</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">3601</span>
+<span class="normal">3602</span>
+<span class="normal">3603</span>
 <span class="normal">3604</span>
 <span class="normal">3605</span>
 <span class="normal">3606</span>
@@ -36939,9 +36937,7 @@ successful.</p>
 <span class="normal">3621</span>
 <span class="normal">3622</span>
 <span class="normal">3623</span>
-<span class="normal">3624</span>
-<span class="normal">3625</span>
-<span class="normal">3626</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">create_flow_from_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flow_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">UUID</span><span class="p">:</span>
+<span class="normal">3624</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">create_flow_from_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flow_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">UUID</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create a flow in the Prefect API.</span>
 
@@ -37152,7 +37148,9 @@ run identifier in the parent flow</p>
 
           <details class="quote">
             <summary>Source code in <code>prefect/client/orchestration.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">3628</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">3626</span>
+<span class="normal">3627</span>
+<span class="normal">3628</span>
 <span class="normal">3629</span>
 <span class="normal">3630</span>
 <span class="normal">3631</span>
@@ -37212,9 +37210,7 @@ run identifier in the parent flow</p>
 <span class="normal">3685</span>
 <span class="normal">3686</span>
 <span class="normal">3687</span>
-<span class="normal">3688</span>
-<span class="normal">3689</span>
-<span class="normal">3690</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">create_flow_run</span><span class="p">(</span>
+<span class="normal">3688</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">create_flow_run</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">flow</span><span class="p">:</span> <span class="s2">&quot;FlowObject&quot;</span><span class="p">,</span>
     <span class="n">name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -37354,7 +37350,9 @@ run identifier in the parent flow</p>
 
           <details class="quote">
             <summary>Source code in <code>prefect/client/orchestration.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">3692</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">3690</span>
+<span class="normal">3691</span>
+<span class="normal">3692</span>
 <span class="normal">3693</span>
 <span class="normal">3694</span>
 <span class="normal">3695</span>
@@ -37369,9 +37367,7 @@ run identifier in the parent flow</p>
 <span class="normal">3704</span>
 <span class="normal">3705</span>
 <span class="normal">3706</span>
-<span class="normal">3707</span>
-<span class="normal">3708</span>
-<span class="normal">3709</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">read_flow_run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flow_run_id</span><span class="p">:</span> <span class="n">UUID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FlowRun</span><span class="p">:</span>
+<span class="normal">3707</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">read_flow_run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flow_run_id</span><span class="p">:</span> <span class="n">UUID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FlowRun</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Query the Prefect API for a flow run by id.</span>
 
@@ -37580,7 +37576,9 @@ of the flow runs</p>
 
           <details class="quote">
             <summary>Source code in <code>prefect/client/orchestration.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">3711</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">3709</span>
+<span class="normal">3710</span>
+<span class="normal">3711</span>
 <span class="normal">3712</span>
 <span class="normal">3713</span>
 <span class="normal">3714</span>
@@ -37641,9 +37639,7 @@ of the flow runs</p>
 <span class="normal">3769</span>
 <span class="normal">3770</span>
 <span class="normal">3771</span>
-<span class="normal">3772</span>
-<span class="normal">3773</span>
-<span class="normal">3774</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">read_flow_runs</span><span class="p">(</span>
+<span class="normal">3772</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">read_flow_runs</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">flow_filter</span><span class="p">:</span> <span class="n">FlowFilter</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -37813,7 +37809,9 @@ forcing the Prefect API to accept the state</p>
 
           <details class="quote">
             <summary>Source code in <code>prefect/client/orchestration.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">3776</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">3774</span>
+<span class="normal">3775</span>
+<span class="normal">3776</span>
 <span class="normal">3777</span>
 <span class="normal">3778</span>
 <span class="normal">3779</span>
@@ -37843,9 +37841,7 @@ forcing the Prefect API to accept the state</p>
 <span class="normal">3803</span>
 <span class="normal">3804</span>
 <span class="normal">3805</span>
-<span class="normal">3806</span>
-<span class="normal">3807</span>
-<span class="normal">3808</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">set_flow_run_state</span><span class="p">(</span>
+<span class="normal">3806</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">set_flow_run_state</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">flow_run_id</span><span class="p">:</span> <span class="n">UUID</span><span class="p">,</span>
     <span class="n">state</span><span class="p">:</span> <span class="s2">&quot;prefect.states.State&quot;</span><span class="p">,</span>
@@ -38041,7 +38037,9 @@ addition to <code>task.tags</code></p>
 
           <details class="quote">
             <summary>Source code in <code>prefect/client/orchestration.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">3810</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">3808</span>
+<span class="normal">3809</span>
+<span class="normal">3810</span>
 <span class="normal">3811</span>
 <span class="normal">3812</span>
 <span class="normal">3813</span>
@@ -38101,9 +38099,7 @@ addition to <code>task.tags</code></p>
 <span class="normal">3867</span>
 <span class="normal">3868</span>
 <span class="normal">3869</span>
-<span class="normal">3870</span>
-<span class="normal">3871</span>
-<span class="normal">3872</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">create_task_run</span><span class="p">(</span>
+<span class="normal">3870</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">create_task_run</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">task</span><span class="p">:</span> <span class="s2">&quot;TaskObject[P, R]&quot;</span><span class="p">,</span>
     <span class="n">flow_run_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">UUID</span><span class="p">],</span>
@@ -38243,7 +38239,9 @@ addition to <code>task.tags</code></p>
 
           <details class="quote">
             <summary>Source code in <code>prefect/client/orchestration.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">3874</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">3872</span>
+<span class="normal">3873</span>
+<span class="normal">3874</span>
 <span class="normal">3875</span>
 <span class="normal">3876</span>
 <span class="normal">3877</span>
@@ -38252,9 +38250,7 @@ addition to <code>task.tags</code></p>
 <span class="normal">3880</span>
 <span class="normal">3881</span>
 <span class="normal">3882</span>
-<span class="normal">3883</span>
-<span class="normal">3884</span>
-<span class="normal">3885</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">read_task_run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task_run_id</span><span class="p">:</span> <span class="n">UUID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TaskRun</span><span class="p">:</span>
+<span class="normal">3883</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">read_task_run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task_run_id</span><span class="p">:</span> <span class="n">UUID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TaskRun</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Query the Prefect API for a task run by id.</span>
 
@@ -38429,7 +38425,9 @@ of the task runs</p>
 
           <details class="quote">
             <summary>Source code in <code>prefect/client/orchestration.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">3887</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">3885</span>
+<span class="normal">3886</span>
+<span class="normal">3887</span>
 <span class="normal">3888</span>
 <span class="normal">3889</span>
 <span class="normal">3890</span>
@@ -38475,9 +38473,7 @@ of the task runs</p>
 <span class="normal">3930</span>
 <span class="normal">3931</span>
 <span class="normal">3932</span>
-<span class="normal">3933</span>
-<span class="normal">3934</span>
-<span class="normal">3935</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">read_task_runs</span><span class="p">(</span>
+<span class="normal">3933</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">read_task_runs</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">flow_filter</span><span class="p">:</span> <span class="n">FlowFilter</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -38632,7 +38628,9 @@ forcing the Prefect API to accept the state</p>
 
           <details class="quote">
             <summary>Source code in <code>prefect/client/orchestration.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">3937</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">3935</span>
+<span class="normal">3936</span>
+<span class="normal">3937</span>
 <span class="normal">3938</span>
 <span class="normal">3939</span>
 <span class="normal">3940</span>
@@ -38654,9 +38652,7 @@ forcing the Prefect API to accept the state</p>
 <span class="normal">3956</span>
 <span class="normal">3957</span>
 <span class="normal">3958</span>
-<span class="normal">3959</span>
-<span class="normal">3960</span>
-<span class="normal">3961</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">set_task_run_state</span><span class="p">(</span>
+<span class="normal">3959</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">set_task_run_state</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">task_run_id</span><span class="p">:</span> <span class="n">UUID</span><span class="p">,</span>
     <span class="n">state</span><span class="p">:</span> <span class="n">prefect</span><span class="o">.</span><span class="n">states</span><span class="o">.</span><span class="n">State</span><span class="p">,</span>
@@ -38758,7 +38754,9 @@ forcing the Prefect API to accept the state</p>
 
           <details class="quote">
             <summary>Source code in <code>prefect/client/orchestration.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">3963</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">3961</span>
+<span class="normal">3962</span>
+<span class="normal">3963</span>
 <span class="normal">3964</span>
 <span class="normal">3965</span>
 <span class="normal">3966</span>
@@ -38769,9 +38767,7 @@ forcing the Prefect API to accept the state</p>
 <span class="normal">3971</span>
 <span class="normal">3972</span>
 <span class="normal">3973</span>
-<span class="normal">3974</span>
-<span class="normal">3975</span>
-<span class="normal">3976</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">read_task_run_states</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task_run_id</span><span class="p">:</span> <span class="n">UUID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">prefect</span><span class="o">.</span><span class="n">states</span><span class="o">.</span><span class="n">State</span><span class="p">]:</span>
+<span class="normal">3974</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">read_task_run_states</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task_run_id</span><span class="p">:</span> <span class="n">UUID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">prefect</span><span class="o">.</span><span class="n">states</span><span class="o">.</span><span class="n">State</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Query for the states of a task run</span>
 
