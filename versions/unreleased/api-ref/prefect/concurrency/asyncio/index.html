@@ -8972,6 +8972,17 @@ if (amplitudeKey){
 </li>
       
         <li class="md-nav__item">
+  <a href="#prefect.concurrency.asyncio.concurrency" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        concurrency
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#prefect.concurrency.asyncio.rate_limit" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -13106,6 +13117,17 @@ if (amplitudeKey){
 </li>
       
         <li class="md-nav__item">
+  <a href="#prefect.concurrency.asyncio.concurrency" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        concurrency
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#prefect.concurrency.asyncio.rate_limit" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -13248,8 +13270,8 @@ if (amplitudeKey){
 
             <details class="quote">
               <summary>Source code in <code>prefect/concurrency/asyncio.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">24</span>
-<span class="normal">25</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">ConcurrencySlotAcquisitionError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">25</span>
+<span class="normal">26</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">ConcurrencySlotAcquisitionError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised when an unhandlable occurs while acquiring concurrency slots.&quot;&quot;&quot;</span>
 </code></pre></div></td></tr></table></div>
             </details>
@@ -13259,6 +13281,216 @@ if (amplitudeKey){
 
 </div>
 
+
+
+<div class="doc doc-object doc-function">
+
+
+
+<h2 id="prefect.concurrency.asyncio.concurrency" class="doc doc-heading">
+          <code class="highlight language-python"><span class="n">concurrency</span></code>
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-async"><code>async</code></small>
+  </span>
+
+<a href="#prefect.concurrency.asyncio.concurrency" class="headerlink" title="Permanent link">&para;</a></h2>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>A context manager that acquires and releases concurrency slots from the
+given concurrency limits.</p>
+
+
+
+  <p><span class="doc-section-title">Parameters:</span></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr class="doc-section-item">
+          <td><code>names</code></td>
+          <td>
+                <code><span title="typing.Union">Union</span>[str, <span title="typing.List">List</span>[str]]</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>The names of the concurrency limits to acquire slots from.</p>
+            </div>
+          </td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+        <tr class="doc-section-item">
+          <td><code>occupy</code></td>
+          <td>
+                <code>int</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>The number of slots to acquire and hold from each limit.</p>
+            </div>
+          </td>
+          <td>
+                <code>1</code>
+          </td>
+        </tr>
+        <tr class="doc-section-item">
+          <td><code>timeout_seconds</code></td>
+          <td>
+                <code><span title="typing.Optional">Optional</span>[float]</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>The number of seconds to wait for the slots to be acquired before
+raising a <code>TimeoutError</code>. A timeout of <code>None</code> will wait indefinitely.</p>
+            </div>
+          </td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+
+  <p><span class="doc-section-title">Raises:</span></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr class="doc-section-item">
+          <td>
+                <code>TimeoutError</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>If the slots are not acquired within the given timeout.</p>
+            </div>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+      <p>A simple example of using the async <code>concurrency</code> context manager:
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect.concurrency.asyncio</span> <span class="kn">import</span> <span class="n">concurrency</span>
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">resource_heavy</span><span class="p">():</span>
+    <span class="k">async</span> <span class="k">with</span> <span class="n">concurrency</span><span class="p">(</span><span class="s2">&quot;test&quot;</span><span class="p">,</span> <span class="n">occupy</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Resource heavy task&quot;</span><span class="p">)</span>
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="k">await</span> <span class="n">resource_heavy</span><span class="p">()</span>
+</code></pre></div></p>
+
+          <details class="quote">
+            <summary>Source code in <code>prefect/concurrency/asyncio.py</code></summary>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span>
+<span class="normal">52</span>
+<span class="normal">53</span>
+<span class="normal">54</span>
+<span class="normal">55</span>
+<span class="normal">56</span>
+<span class="normal">57</span>
+<span class="normal">58</span>
+<span class="normal">59</span>
+<span class="normal">60</span>
+<span class="normal">61</span>
+<span class="normal">62</span>
+<span class="normal">63</span>
+<span class="normal">64</span>
+<span class="normal">65</span>
+<span class="normal">66</span>
+<span class="normal">67</span>
+<span class="normal">68</span>
+<span class="normal">69</span>
+<span class="normal">70</span>
+<span class="normal">71</span>
+<span class="normal">72</span>
+<span class="normal">73</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@asynccontextmanager</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">concurrency</span><span class="p">(</span>
+    <span class="n">names</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span>
+    <span class="n">occupy</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="n">timeout_seconds</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A context manager that acquires and releases concurrency slots from the</span>
+<span class="sd">    given concurrency limits.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        names: The names of the concurrency limits to acquire slots from.</span>
+<span class="sd">        occupy: The number of slots to acquire and hold from each limit.</span>
+<span class="sd">        timeout_seconds: The number of seconds to wait for the slots to be acquired before</span>
+<span class="sd">            raising a `TimeoutError`. A timeout of `None` will wait indefinitely.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        TimeoutError: If the slots are not acquired within the given timeout.</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">    A simple example of using the async `concurrency` context manager:</span>
+<span class="sd">    ```python</span>
+<span class="sd">    from prefect.concurrency.asyncio import concurrency</span>
+
+<span class="sd">    async def resource_heavy():</span>
+<span class="sd">        async with concurrency(&quot;test&quot;, occupy=1):</span>
+<span class="sd">            print(&quot;Resource heavy task&quot;)</span>
+
+<span class="sd">    async def main():</span>
+<span class="sd">        await resource_heavy()</span>
+<span class="sd">    ```</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">names</span> <span class="o">=</span> <span class="n">names</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">names</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="k">else</span> <span class="p">[</span><span class="n">names</span><span class="p">]</span>
+    <span class="k">with</span> <span class="n">timeout_async</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="n">timeout_seconds</span><span class="p">):</span>
+        <span class="n">limits</span> <span class="o">=</span> <span class="k">await</span> <span class="n">_acquire_concurrency_slots</span><span class="p">(</span><span class="n">names</span><span class="p">,</span> <span class="n">occupy</span><span class="p">)</span>
+    <span class="n">acquisition_time</span> <span class="o">=</span> <span class="n">pendulum</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="s2">&quot;UTC&quot;</span><span class="p">)</span>
+    <span class="n">emitted_events</span> <span class="o">=</span> <span class="n">_emit_concurrency_acquisition_events</span><span class="p">(</span><span class="n">limits</span><span class="p">,</span> <span class="n">occupy</span><span class="p">)</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">yield</span>
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="n">occupancy_period</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="n">Interval</span><span class="p">,</span> <span class="p">(</span><span class="n">pendulum</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="s2">&quot;UTC&quot;</span><span class="p">)</span> <span class="o">-</span> <span class="n">acquisition_time</span><span class="p">))</span>
+        <span class="k">await</span> <span class="n">_release_concurrency_slots</span><span class="p">(</span>
+            <span class="n">names</span><span class="p">,</span> <span class="n">occupy</span><span class="p">,</span> <span class="n">occupancy_period</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span>
+        <span class="p">)</span>
+        <span class="n">_emit_concurrency_release_events</span><span class="p">(</span><span class="n">limits</span><span class="p">,</span> <span class="n">occupy</span><span class="p">,</span> <span class="n">emitted_events</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+          </details>
+  </div>
+
+</div>
 
 
 <div class="doc doc-object doc-function">
@@ -13327,18 +13559,18 @@ limits have a slot decay.</p>
 
           <details class="quote">
             <summary>Source code in <code>prefect/concurrency/asyncio.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">46</span>
-<span class="normal">47</span>
-<span class="normal">48</span>
-<span class="normal">49</span>
-<span class="normal">50</span>
-<span class="normal">51</span>
-<span class="normal">52</span>
-<span class="normal">53</span>
-<span class="normal">54</span>
-<span class="normal">55</span>
-<span class="normal">56</span>
-<span class="normal">57</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">rate_limit</span><span class="p">(</span><span class="n">names</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">occupy</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">76</span>
+<span class="normal">77</span>
+<span class="normal">78</span>
+<span class="normal">79</span>
+<span class="normal">80</span>
+<span class="normal">81</span>
+<span class="normal">82</span>
+<span class="normal">83</span>
+<span class="normal">84</span>
+<span class="normal">85</span>
+<span class="normal">86</span>
+<span class="normal">87</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">rate_limit</span><span class="p">(</span><span class="n">names</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">occupy</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Block execution until an `occupy` number of slots of the concurrency</span>
 <span class="sd">    limits given in `names` are acquired. Requires that all given concurrency</span>
 <span class="sd">    limits have a slot decay.</span>

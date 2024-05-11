@@ -15248,7 +15248,11 @@ the flow run.</p>
 <span class="normal">1214</span>
 <span class="normal">1215</span>
 <span class="normal">1216</span>
-<span class="normal">1217</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@register_base_type</span>
+<span class="normal">1217</span>
+<span class="normal">1218</span>
+<span class="normal">1219</span>
+<span class="normal">1220</span>
+<span class="normal">1221</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@register_base_type</span>
 <span class="k">class</span> <span class="nc">BaseWorker</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
     <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">job_configuration</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">BaseJobConfiguration</span><span class="p">]</span> <span class="o">=</span> <span class="n">BaseJobConfiguration</span>
@@ -15750,14 +15754,18 @@ the flow run.</p>
 <span class="sd">        was created from a deployment with a storage block.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">flow_run</span><span class="o">.</span><span class="n">deployment_id</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_client</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">_started</span>
+            <span class="p">),</span> <span class="s2">&quot;Client must be started to check flow run deployment.&quot;</span>
             <span class="n">deployment</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">read_deployment</span><span class="p">(</span><span class="n">flow_run</span><span class="o">.</span><span class="n">deployment_id</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">deployment</span><span class="o">.</span><span class="n">storage_document_id</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                     <span class="sa">f</span><span class="s2">&quot;Flow run </span><span class="si">{</span><span class="n">flow_run</span><span class="o">.</span><span class="n">id</span><span class="si">!r}</span><span class="s2"> was created from deployment&quot;</span>
                     <span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="n">deployment</span><span class="o">.</span><span class="n">name</span><span class="si">!r}</span><span class="s2"> which is configured with a storage block.&quot;</span>
-                    <span class="s2">&quot; Please use an&quot;</span>
-                    <span class="s2">&quot; agent to execute this flow run.&quot;</span>
+                    <span class="s2">&quot; Please use an agent to execute this flow run.&quot;</span>
                 <span class="p">)</span>
+
+            <span class="c1">#</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">_submit_run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flow_run</span><span class="p">:</span> <span class="s2">&quot;FlowRun&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -15808,7 +15816,7 @@ the flow run.</p>
         <span class="bp">self</span><span class="o">.</span><span class="n">_submitting_flow_run_ids</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">flow_run</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">_submit_run_and_capture_errors</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">flow_run</span><span class="p">:</span> <span class="s2">&quot;FlowRun&quot;</span><span class="p">,</span> <span class="n">task_status</span><span class="p">:</span> <span class="n">anyio</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">TaskStatus</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">flow_run</span><span class="p">:</span> <span class="s2">&quot;FlowRun&quot;</span><span class="p">,</span> <span class="n">task_status</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">anyio</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">TaskStatus</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">BaseWorkerResult</span><span class="p">,</span> <span class="ne">Exception</span><span class="p">]:</span>
         <span class="n">run_logger</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_flow_run_logger</span><span class="p">(</span><span class="n">flow_run</span><span class="p">)</span>
 
@@ -16208,11 +16216,7 @@ pool, the work pool queues it is polling, and its local settings.</p>
 
           <details class="quote">
             <summary>Source code in <code>prefect/workers/base.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">954</span>
-<span class="normal">955</span>
-<span class="normal">956</span>
-<span class="normal">957</span>
-<span class="normal">958</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">958</span>
 <span class="normal">959</span>
 <span class="normal">960</span>
 <span class="normal">961</span>
@@ -16223,7 +16227,11 @@ pool, the work pool queues it is polling, and its local settings.</p>
 <span class="normal">966</span>
 <span class="normal">967</span>
 <span class="normal">968</span>
-<span class="normal">969</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_status</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="normal">969</span>
+<span class="normal">970</span>
+<span class="normal">971</span>
+<span class="normal">972</span>
+<span class="normal">973</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_status</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Retrieves the status of the current worker including its name, current worker</span>
 <span class="sd">    pool, the work pool queues it is polling, and its local settings.</span>
