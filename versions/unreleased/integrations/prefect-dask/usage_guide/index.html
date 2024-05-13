@@ -4311,11 +4311,11 @@ if (amplitudeKey){
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#running-tasks-on-dask" class="md-nav__link">
+  <a href="#run-tasks-on-dask" class="md-nav__link">
     <span class="md-ellipsis">
       
         <span class="md-typeset">
-          Running tasks on Dask
+          Run tasks on Dask
         </span>
       
     </span>
@@ -4337,11 +4337,11 @@ if (amplitudeKey){
 </li>
       
         <li class="md-nav__item">
-  <a href="#using-a-temporary-cluster" class="md-nav__link">
+  <a href="#use-a-temporary-cluster" class="md-nav__link">
     <span class="md-ellipsis">
       
         <span class="md-typeset">
-          Using a temporary cluster
+          Use a temporary cluster
         </span>
       
     </span>
@@ -4350,11 +4350,11 @@ if (amplitudeKey){
 </li>
       
         <li class="md-nav__item">
-  <a href="#connecting-to-an-existing-cluster" class="md-nav__link">
+  <a href="#connect-to-an-existing-cluster" class="md-nav__link">
     <span class="md-ellipsis">
       
         <span class="md-typeset">
-          Connecting to an existing cluster
+          Connect to an existing cluster
         </span>
       
     </span>
@@ -13149,11 +13149,11 @@ if (amplitudeKey){
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#running-tasks-on-dask" class="md-nav__link">
+  <a href="#run-tasks-on-dask" class="md-nav__link">
     <span class="md-ellipsis">
       
         <span class="md-typeset">
-          Running tasks on Dask
+          Run tasks on Dask
         </span>
       
     </span>
@@ -13175,11 +13175,11 @@ if (amplitudeKey){
 </li>
       
         <li class="md-nav__item">
-  <a href="#using-a-temporary-cluster" class="md-nav__link">
+  <a href="#use-a-temporary-cluster" class="md-nav__link">
     <span class="md-ellipsis">
       
         <span class="md-typeset">
-          Using a temporary cluster
+          Use a temporary cluster
         </span>
       
     </span>
@@ -13188,11 +13188,11 @@ if (amplitudeKey){
 </li>
       
         <li class="md-nav__item">
-  <a href="#connecting-to-an-existing-cluster" class="md-nav__link">
+  <a href="#connect-to-an-existing-cluster" class="md-nav__link">
     <span class="md-ellipsis">
       
         <span class="md-typeset">
-          Connecting to an existing cluster
+          Connect to an existing cluster
         </span>
       
     </span>
@@ -13323,9 +13323,9 @@ if (amplitudeKey){
 
 
 <h1 id="usage-guide">Usage Guide<a class="headerlink" href="#usage-guide" title="Permanent link">&para;</a></h1>
-<p>Below is a guide on how to use <code>prefect-dask</code> effectively.</p>
-<h2 id="running-tasks-on-dask">Running tasks on Dask<a class="headerlink" href="#running-tasks-on-dask" title="Permanent link">&para;</a></h2>
-<p>The <code>DaskTaskRunner</code> is a parallel task runner that submits tasks to the <a href="http://distributed.dask.org/"><code>dask.distributed</code></a> scheduler. </p>
+<p>Use <code>prefect-dask</code> to speed up code with parallelization.</p>
+<h2 id="run-tasks-on-dask">Run tasks on Dask<a class="headerlink" href="#run-tasks-on-dask" title="Permanent link">&para;</a></h2>
+<p>The <code>DaskTaskRunner</code> is a parallel task runner that submits tasks to the <a href="http://distributed.dask.org/"><code>dask.distributed</code></a> scheduler.</p>
 <p>By default, a temporary Dask cluster is created for the duration of the flow run.</p>
 <p>For example, this flow counts up to 10 in parallel (note that the output is not sequential).</p>
 <div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">time</span>
@@ -13407,7 +13407,7 @@ if (amplitudeKey){
 <div class="admonition warning">
 <p class="admonition-title">Multiprocessing safety</p>
 <p>Note that, because the <code>DaskTaskRunner</code> uses multiprocessing, calls to flows
-in scripts must be guarded with <code>if __name__ == "__main__":</code> or you will encounter 
+in scripts must be guarded with <code>if __name__ == "__main__":</code> or you will encounter
 warnings and errors.</p>
 </div>
 <p>If you don't provide the <code>address</code> of a Dask scheduler, Prefect creates a temporary local cluster automatically. The number of workers used is based on the number of cores available to your execution environment. The default provides a mix of processes and threads that should work well for most workloads. If you want to specify this explicitly, you can pass values for <code>n_workers</code> or <code>threads_per_worker</code> to <code>cluster_kwargs</code>.</p>
@@ -13482,10 +13482,10 @@ For more information, visit the docs on <a href="https://docs.dask.org/en/stable
 <div class="admonition warning">
 <p class="admonition-title">Resolving futures in async client</p>
 <p>With the async client, you do not need to set <code>sync=True</code> or call <code>result()</code>.</p>
-<p>However you must <code>await client.compute(dask_collection)</code> before exiting out of the context manager.</p>
+<p>However, you must <code>await client.compute(dask_collection)</code> before exiting the context manager.</p>
 <p>To invoke <code>compute</code> from the Dask collection, set <code>sync=False</code> and call <code>result()</code> before exiting out of the context manager: <code>await dask_collection.compute(sync=False)</code>.</p>
 </div>
-<h2 id="using-a-temporary-cluster">Using a temporary cluster<a class="headerlink" href="#using-a-temporary-cluster" title="Permanent link">&para;</a></h2>
+<h2 id="use-a-temporary-cluster">Use a temporary cluster<a class="headerlink" href="#use-a-temporary-cluster" title="Permanent link">&para;</a></h2>
 <p>The <code>DaskTaskRunner</code> is capable of creating a temporary cluster using any of <a href="https://docs.dask.org/en/latest/setup.html">Dask's cluster-manager options</a>. This can be useful when you want each flow run to have its own Dask cluster, allowing for per-flow adaptive scaling.</p>
 <p>To configure, you need to provide a <code>cluster_class</code>. This can be:</p>
 <ul>
@@ -13500,13 +13500,13 @@ For more information, visit the docs on <a href="https://docs.dask.org/en/stable
     <span class="n">cluster_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;n_workers&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s2">&quot;image&quot;</span><span class="p">:</span> <span class="s2">&quot;my-prefect-image&quot;</span><span class="p">},</span>
 <span class="p">)</span>
 </code></pre></div>
-<h2 id="connecting-to-an-existing-cluster">Connecting to an existing cluster<a class="headerlink" href="#connecting-to-an-existing-cluster" title="Permanent link">&para;</a></h2>
+<h2 id="connect-to-an-existing-cluster">Connect to an existing cluster<a class="headerlink" href="#connect-to-an-existing-cluster" title="Permanent link">&para;</a></h2>
 <p>Multiple Prefect flow runs can all use the same existing Dask cluster. You might manage a single long-running Dask cluster (maybe using the Dask <a href="https://docs.dask.org/en/latest/setup/kubernetes-helm.html">Helm Chart</a>) and configure flows to connect to it during execution. This has a few downsides when compared to using a temporary cluster (as described above):</p>
 <ul>
 <li>All workers in the cluster must have dependencies installed for all flows you intend to run.</li>
 <li>Multiple flow runs may compete for resources. Dask tries to do a good job sharing resources between tasks, but you may still run into issues.</li>
 </ul>
-<p>That said, you may prefer managing a single long-running cluster. </p>
+<p>That said, you may prefer managing a single long-running cluster.</p>
 <p>To configure a <code>DaskTaskRunner</code> to connect to an existing cluster, pass in the address of the scheduler to the <code>address</code> argument:</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># Connect to an existing cluster running at a specified address</span>
 <span class="n">DaskTaskRunner</span><span class="p">(</span><span class="n">address</span><span class="o">=</span><span class="s2">&quot;tcp://...&quot;</span><span class="p">)</span>
@@ -13573,7 +13573,6 @@ For more information, visit the docs on <a href="https://docs.dask.org/en/stable
         <span class="n">future</span> <span class="o">=</span> <span class="n">show</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
         <span class="n">future</span> <span class="o">=</span> <span class="n">show</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
 </code></pre></div>
-<p>For more tips on how to use tasks and flows in a Collection, check out <a href="https://docs.prefect.io/collections/usage/">Using Collections</a>!</p>
 
 
 

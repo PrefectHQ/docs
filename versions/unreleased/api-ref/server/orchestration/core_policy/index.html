@@ -16496,8 +16496,9 @@ if the flow run has no associated infrastructure process ID. Also Rejects transi
 Paused to Cancelling if the Paused state's details indicates the flow run has been suspended,
 exiting the flow and tearing down infra.</p>
 <p>The <code>Cancelling</code> state is used to clean up infrastructure. If there is not infrastructure
-to clean up, we can transition directly to <code>Cancelled</code>. Runs that are <code>AwaitingRetry</code> are
-a <code>Scheduled</code> state that may have associated infrastructure.</p>
+to clean up, we can transition directly to <code>Cancelled</code>. Runs that are <code>Resuming</code> are in a
+<code>Scheduled</code> state that were previously <code>Suspended</code> and do not yet have infrastructure.</p>
+<p>Runs that are <code>AwaitingRetry</code> are a <code>Scheduled</code> state that may have associated infrastructure.</p>
 
             <details class="quote">
               <summary>Source code in <code>prefect/server/orchestration/core_policy.py</code></summary>
@@ -16536,15 +16537,20 @@ a <code>Scheduled</code> state that may have associated infrastructure.</p>
 <span class="normal">1046</span>
 <span class="normal">1047</span>
 <span class="normal">1048</span>
-<span class="normal">1049</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">BypassCancellingFlowRunsWithNoInfra</span><span class="p">(</span><span class="n">BaseOrchestrationRule</span><span class="p">):</span>
+<span class="normal">1049</span>
+<span class="normal">1050</span>
+<span class="normal">1051</span>
+<span class="normal">1052</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">BypassCancellingFlowRunsWithNoInfra</span><span class="p">(</span><span class="n">BaseOrchestrationRule</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Rejects transitions from Scheduled to Cancelling, and instead sets the state to Cancelled,</span>
 <span class="sd">    if the flow run has no associated infrastructure process ID. Also Rejects transitions from</span>
 <span class="sd">    Paused to Cancelling if the Paused state&#39;s details indicates the flow run has been suspended,</span>
 <span class="sd">    exiting the flow and tearing down infra.</span>
 
 <span class="sd">    The `Cancelling` state is used to clean up infrastructure. If there is not infrastructure</span>
-<span class="sd">    to clean up, we can transition directly to `Cancelled`. Runs that are `AwaitingRetry` are</span>
-<span class="sd">    a `Scheduled` state that may have associated infrastructure.</span>
+<span class="sd">    to clean up, we can transition directly to `Cancelled`. Runs that are `Resuming` are in a</span>
+<span class="sd">    `Scheduled` state that were previously `Suspended` and do not yet have infrastructure.</span>
+
+<span class="sd">    Runs that are `AwaitingRetry` are a `Scheduled` state that may have associated infrastructure.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">FROM_STATES</span> <span class="o">=</span> <span class="p">{</span><span class="n">StateType</span><span class="o">.</span><span class="n">SCHEDULED</span><span class="p">,</span> <span class="n">StateType</span><span class="o">.</span><span class="n">PAUSED</span><span class="p">}</span>
@@ -16559,6 +16565,7 @@ a <code>Scheduled</code> state that may have associated infrastructure.</p>
         <span class="k">if</span> <span class="p">(</span>
             <span class="n">initial_state</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">states</span><span class="o">.</span><span class="n">StateType</span><span class="o">.</span><span class="n">SCHEDULED</span>
             <span class="ow">and</span> <span class="ow">not</span> <span class="n">context</span><span class="o">.</span><span class="n">run</span><span class="o">.</span><span class="n">infrastructure_pid</span>
+            <span class="ow">or</span> <span class="n">initial_state</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;Resuming&quot;</span>
         <span class="p">):</span>
             <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">reject_transition</span><span class="p">(</span>
                 <span class="n">state</span><span class="o">=</span><span class="n">states</span><span class="o">.</span><span class="n">Cancelled</span><span class="p">(),</span>
@@ -16624,10 +16631,7 @@ the following case:
 
             <details class="quote">
               <summary>Source code in <code>prefect/server/orchestration/core_policy.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1052</span>
-<span class="normal">1053</span>
-<span class="normal">1054</span>
-<span class="normal">1055</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1055</span>
 <span class="normal">1056</span>
 <span class="normal">1057</span>
 <span class="normal">1058</span>
@@ -16671,7 +16675,10 @@ the following case:
 <span class="normal">1096</span>
 <span class="normal">1097</span>
 <span class="normal">1098</span>
-<span class="normal">1099</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">PreventDuplicateTransitions</span><span class="p">(</span><span class="n">BaseOrchestrationRule</span><span class="p">):</span>
+<span class="normal">1099</span>
+<span class="normal">1100</span>
+<span class="normal">1101</span>
+<span class="normal">1102</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">PreventDuplicateTransitions</span><span class="p">(</span><span class="n">BaseOrchestrationRule</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Prevent duplicate transitions from being made right after one another.</span>
 
