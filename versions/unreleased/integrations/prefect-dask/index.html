@@ -13029,16 +13029,47 @@ if (amplitudeKey){
     <span class="md-ellipsis">
       
         <span class="md-typeset">
-          Getting Started
+          Getting started
         </span>
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Getting Started">
+    <nav class="md-nav" aria-label="Getting started">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Prerequisites
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#install-prefect-dask" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Install prefect-dask
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#integrate-with-prefect-flows" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -13049,14 +13080,15 @@ if (amplitudeKey){
     </span>
   </a>
   
-</li>
+    <nav class="md-nav" aria-label="Integrate with Prefect flows">
+      <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#integrate-with-dask-clientcluster-and-collections" class="md-nav__link">
+  <a href="#integrate-with-dask-clientcluster" class="md-nav__link">
     <span class="md-ellipsis">
       
         <span class="md-typeset">
-          Integrate with Dask client/cluster and collections
+          Integrate with Dask client/cluster
         </span>
       
     </span>
@@ -13079,51 +13111,6 @@ if (amplitudeKey){
       
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="Resources">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#installation" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        <span class="md-typeset">
-          Installation
-        </span>
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#feedback" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        <span class="md-typeset">
-          Feedback
-        </span>
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#contributing" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        <span class="md-typeset">
-          Contributing
-        </span>
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -13223,27 +13210,31 @@ if (amplitudeKey){
   
 
 
-<h1 id="prefect-dask"><code>prefect-dask</code><a class="headerlink" href="#prefect-dask" title="Permanent link">&para;</a></h1>
-<p align="center">
-    <a href="https://pypi.python.org/pypi/prefect-dask/" alt="PyPI version">
-        <img alt="PyPI" src="https://img.shields.io/pypi/v/prefect-dask?color=26272B&amp;labelColor=090422"></a>
-    <a href="https://pepy.tech/badge/prefect-dask/" alt="Downloads">
-        <img src="https://img.shields.io/pypi/dm/prefect-dask?color=26272B&amp;labelColor=090422"></a>
-</p>
+<h1 id="prefect-dask">prefect-dask<a class="headerlink" href="#prefect-dask" title="Permanent link">&para;</a></h1>
+<p>Dask helps you run your flow in parallel and distribute runs over multiple machines.
+The <code>prefect-dask</code> integration makes it easy speed up your flow runs by integrating Dask into your code.</p>
+<h2 id="getting-started">Getting started<a class="headerlink" href="#getting-started" title="Permanent link">&para;</a></h2>
+<h3 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">&para;</a></h3>
+<ul>
+<li><a href="https://docs.prefect.io/latest/getting-started/installation/">Prefect installed</a> in a virtual environment.</li>
+</ul>
+<h3 id="install-prefect-dask">Install prefect-dask<a class="headerlink" href="#install-prefect-dask" title="Permanent link">&para;</a></h3>
+<div class="terminal">
+<div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>-U<span class="w"> </span>prefect-dask
+</code></pre></div>
+</div>
 
-<p>The <code>prefect-dask</code> collection makes it easy to include distributed processing for your flows. Check out the examples below to get started!</p>
-<h2 id="getting-started">Getting Started<a class="headerlink" href="#getting-started" title="Permanent link">&para;</a></h2>
-<h3 id="integrate-with-prefect-flows">Integrate with Prefect flows<a class="headerlink" href="#integrate-with-prefect-flows" title="Permanent link">&para;</a></h3>
-<p>Perhaps you're already working with Prefect flows. Say your flow downloads many images to train your machine learning model. Unfortunately, it takes a long time to download your flows because your code is running sequentially.</p>
-<p>After installing <code>prefect-dask</code> you can parallelize your flow in three simple steps:</p>
+<h2 id="integrate-with-prefect-flows">Integrate with Prefect flows<a class="headerlink" href="#integrate-with-prefect-flows" title="Permanent link">&para;</a></h2>
+<p>Say your flow downloads many images to train a machine learning model.
+It can take longer than you'd like for the code to run because the code runs sequentially.</p>
+<p>Parallelize your flow code with <code>prefect-dask</code> in three steps:</p>
 <ol>
 <li>Add the import: <code>from prefect_dask import DaskTaskRunner</code></li>
 <li>Specify the task runner in the flow decorator: <code>@flow(task_runner=DaskTaskRunner)</code></li>
 <li>Submit tasks to the flow's task runner: <code>a_task.submit(*args, **kwargs)</code></li>
 </ol>
-<p>The parallelized code  runs in about 1/3 of the time in our test!  And that's without distributing the workload over multiple machines.
-Here's the before and after!</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Before</label><label for="__tabbed_1_2">After</label></div>
+<p>Below is code with and without the DaskTaskRunner:</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Sequential</label><label for="__tabbed_1_2">Parallel</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="hll"><span class="c1"># Completed in 15.2 seconds</span>
@@ -13332,28 +13323,27 @@ Here's the before and after!</p>
 </div>
 </div>
 </div>
-<p>The original flow completes in 15.2 seconds.</p>
-<p>However, with just a few minor tweaks, we were able to reduce the runtime by nearly <strong>three</strong> folds, down to just <strong>5.7</strong> seconds!</p>
-<h3 id="integrate-with-dask-clientcluster-and-collections">Integrate with Dask client/cluster and collections<a class="headerlink" href="#integrate-with-dask-clientcluster-and-collections" title="Permanent link">&para;</a></h3>
-<p>Suppose you have an existing Dask client/cluster and collection, like a <code>dask.dataframe.DataFrame</code>, and you want to add observability.</p>
-<p>With <code>prefect-dask</code>, there's no major overhaul necessary because Prefect was designed with incremental adoption in mind! It's as easy as:</p>
+<p>In our tests, the sequential flow run took 15.2 seconds.
+The version with <code>DaskTaskRunner</code> reduced the runtime to <strong>5.7</strong> seconds!</p>
+<p>For additional time savings with Dask, you could distribute large workloads over multiple machines.</p>
+<h3 id="integrate-with-dask-clientcluster">Integrate with Dask client/cluster<a class="headerlink" href="#integrate-with-dask-clientcluster" title="Permanent link">&para;</a></h3>
+<p>Suppose you have an existing Dask client/cluster such as a <code>dask.dataframe.DataFrame</code>, and you want to add observability.</p>
+<p>With <code>prefect-dask</code>, it takes just a few steps:</p>
 <ol>
-<li>Adding the imports</li>
-<li>Sprinkling a few <code>task</code> and <code>flow</code> decorators</li>
-<li>Using <code>get_dask_client</code> context manager on collections to distribute work across workers</li>
-<li>Specifying the task runner and client's address in the flow decorator</li>
-<li>Submitting the tasks to the flow's task runner</li>
+<li>Add imports</li>
+<li>Add <code>task</code> and <code>flow</code> decorators</li>
+<li>Use <code>get_dask_client</code> context manager to distribute work across Dask workers</li>
+<li>Specify the task runner and client's address in the flow decorator</li>
+<li>Submit the tasks to the flow's task runner</li>
 </ol>
-<div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Before</label><label for="__tabbed_2_2">After</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Sequential</label><label for="__tabbed_2_2">Parallel</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">dask.dataframe</span>
 <span class="kn">import</span> <span class="nn">dask.distributed</span>
 
 
-
 <span class="n">client</span> <span class="o">=</span> <span class="n">dask</span><span class="o">.</span><span class="n">distributed</span><span class="o">.</span><span class="n">Client</span><span class="p">()</span>
-
 
 <span class="k">def</span> <span class="nf">read_data</span><span class="p">(</span><span class="n">start</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">end</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">dask</span><span class="o">.</span><span class="n">dataframe</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
     <span class="n">df</span> <span class="o">=</span> <span class="n">dask</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">timeseries</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">partition_freq</span><span class="o">=</span><span class="s2">&quot;4w&quot;</span><span class="p">)</span>
@@ -13371,7 +13361,8 @@ Here's the before and after!</p>
     <span class="n">df_yearly_average</span> <span class="o">=</span> <span class="n">process_data</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">df_yearly_average</span>
 
-<span class="n">dask_pipeline</span><span class="p">()</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">dask_pipeline</span><span class="p">()</span>
 </code></pre></div>
 </div>
 <div class="tabbed-block">
@@ -13399,63 +13390,17 @@ Here's the before and after!</p>
 </span><span class="hll">    <span class="n">df_yearly_average</span> <span class="o">=</span> <span class="n">process_data</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
 </span>    <span class="k">return</span> <span class="n">df_yearly_average</span>
 
-<span class="n">dask_pipeline</span><span class="p">()</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">dask_pipeline</span><span class="p">()</span>
 </code></pre></div>
 </div>
 </div>
 </div>
-<p>Now, you can conveniently see when each task completed, both in the terminal and the UI!</p>
-<div class="highlight"><pre><span></span><code><span class="m">14</span>:10:09.845<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>prefect.engine<span class="w"> </span>-<span class="w"> </span>Created<span class="w"> </span>flow<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;chocolate-pony&#39;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>flow<span class="w"> </span><span class="s1">&#39;dask-flow&#39;</span>
-<span class="m">14</span>:10:09.847<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>prefect.task_runner.dask<span class="w"> </span>-<span class="w"> </span>Connecting<span class="w"> </span>to<span class="w"> </span>an<span class="w"> </span>existing<span class="w"> </span>Dask<span class="w"> </span>cluster<span class="w"> </span>at<span class="w"> </span>tcp://127.0.0.1:59255
-<span class="m">14</span>:10:09.857<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>distributed.scheduler<span class="w"> </span>-<span class="w"> </span>Receive<span class="w"> </span>client<span class="w"> </span>connection:<span class="w"> </span>Client-8c1e0f24-9133-11ed-800e-86f2469c4e7a
-<span class="m">14</span>:10:09.859<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>distributed.core<span class="w"> </span>-<span class="w"> </span>Starting<span class="w"> </span>established<span class="w"> </span>connection<span class="w"> </span>to<span class="w"> </span>tcp://127.0.0.1:59516
-<span class="m">14</span>:10:09.862<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>prefect.task_runner.dask<span class="w"> </span>-<span class="w"> </span>The<span class="w"> </span>Dask<span class="w"> </span>dashboard<span class="w"> </span>is<span class="w"> </span>available<span class="w"> </span>at<span class="w"> </span>http://127.0.0.1:8787/status
-<span class="m">14</span>:10:11.344<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>Flow<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;chocolate-pony&#39;</span><span class="w"> </span>-<span class="w"> </span>Created<span class="w"> </span>task<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;read_data-5bc97744-0&#39;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>task<span class="w"> </span><span class="s1">&#39;read_data&#39;</span>
-<span class="m">14</span>:10:11.626<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>Flow<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;chocolate-pony&#39;</span><span class="w"> </span>-<span class="w"> </span>Submitted<span class="w"> </span>task<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;read_data-5bc97744-0&#39;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>execution.
-<span class="m">14</span>:10:11.795<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>Flow<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;chocolate-pony&#39;</span><span class="w"> </span>-<span class="w"> </span>Created<span class="w"> </span>task<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;process_data-090555ba-0&#39;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>task<span class="w"> </span><span class="s1">&#39;process_data&#39;</span>
-<span class="m">14</span>:10:11.798<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>Flow<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;chocolate-pony&#39;</span><span class="w"> </span>-<span class="w"> </span>Submitted<span class="w"> </span>task<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;process_data-090555ba-0&#39;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>execution.
-<span class="m">14</span>:10:13.279<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>Task<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;read_data-5bc97744-0&#39;</span><span class="w"> </span>-<span class="w"> </span>Finished<span class="w"> </span><span class="k">in</span><span class="w"> </span>state<span class="w"> </span>Completed<span class="o">()</span>
-<span class="m">14</span>:11:43.539<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>Task<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;process_data-090555ba-0&#39;</span><span class="w"> </span>-<span class="w"> </span>Finished<span class="w"> </span><span class="k">in</span><span class="w"> </span>state<span class="w"> </span>Completed<span class="o">()</span>
-<span class="m">14</span>:11:43.883<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>Flow<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;chocolate-pony&#39;</span><span class="w"> </span>-<span class="w"> </span>Finished<span class="w"> </span><span class="k">in</span><span class="w"> </span>state<span class="w"> </span>Completed<span class="o">(</span><span class="s1">&#39;All states completed.&#39;</span><span class="o">)</span>
-</code></pre></div>
+<p>Run the code and check how long it takes each task to complete.</p>
 <h2 id="resources">Resources<a class="headerlink" href="#resources" title="Permanent link">&para;</a></h2>
-<p>For additional examples, check out the <a href="usage_guide">Usage Guide</a>!</p>
-<h3 id="installation">Installation<a class="headerlink" href="#installation" title="Permanent link">&para;</a></h3>
-<p>Get started by installing <code>prefect-dask</code>!</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="3:2"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">pip</label><label for="__tabbed_3_2">conda</label></div>
-<div class="tabbed-content">
-<div class="tabbed-block">
-<div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>-U<span class="w"> </span>prefect-dask
-</code></pre></div>
-</div>
-<div class="tabbed-block">
-<div class="highlight"><pre><span></span><code>conda<span class="w"> </span>install<span class="w"> </span>-c<span class="w"> </span>conda-forge<span class="w"> </span>prefect-dask
-</code></pre></div>
-</div>
-</div>
-</div>
-<p>Requires an installation of Python 3.7+.</p>
-<p>We recommend using a Python virtual environment manager such as pipenv, conda, or virtualenv.</p>
-<p>These tasks are designed to work with Prefect 2. For more information about how to use Prefect, please refer to the <a href="https://docs.prefect.io/">Prefect documentation</a>.</p>
-<h3 id="feedback">Feedback<a class="headerlink" href="#feedback" title="Permanent link">&para;</a></h3>
-<p>If you encounter any bugs while using <code>prefect-dask</code>, feel free to open an issue in the <a href="https://github.com/PrefectHQ/prefect">prefect</a> repository.</p>
-<p>If you have any questions or issues while using <code>prefect-dask</code>, you can find help in either the <a href="https://discourse.prefect.io/">Prefect Discourse forum</a> or the <a href="https://prefect.io/slack">Prefect Slack community</a>.</p>
-<h3 id="contributing">Contributing<a class="headerlink" href="#contributing" title="Permanent link">&para;</a></h3>
-<p>If you'd like to help contribute to fix an issue or add a feature to <code>prefect-dask</code>, please <a href="https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork">propose changes through a pull request from a fork of the repository</a>.</p>
-<p>Here are the steps:</p>
-<ol>
-<li><a href="https://docs.github.com/en/get-started/quickstart/fork-a-repo#forking-a-repository">Fork the repository</a></li>
-<li><a href="https://docs.github.com/en/get-started/quickstart/fork-a-repo#cloning-your-forked-repository">Clone the forked repository</a></li>
-<li>Install the repository and its dependencies:
-<div class="highlight"><pre><span></span><code>pip install -e &quot;.[dev]&quot;
-</code></pre></div></li>
-<li>Make desired changes</li>
-<li>Add tests</li>
-<li>Install <code>pre-commit</code> to perform quality checks prior to commit:
-<div class="highlight"><pre><span></span><code>pre-commit install
-</code></pre></div></li>
-<li><code>git commit</code>, <code>git push</code>, and create a pull request</li>
-</ol>
+<p>For additional examples, check out the <a href="/usage_guide/">Usage Guide</a>.
+Refer to the prefect-dask API documentation linked in the sidebar to explore all the capabilities of the prefect-dask library.</p>
+<p>For assistance using Dask, consult the <a href="https://docs.dask.org/en/stable/">Dask documentation</a></p>
 
 
 

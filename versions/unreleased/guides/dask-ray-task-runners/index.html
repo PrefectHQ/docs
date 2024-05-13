@@ -1488,11 +1488,11 @@ if (amplitudeKey){
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#configuring-a-task-runner" class="md-nav__link">
+  <a href="#configure-a-task-runner" class="md-nav__link">
     <span class="md-ellipsis">
       
         <span class="md-typeset">
-          Configuring a task runner
+          Configure a task runner
         </span>
       
     </span>
@@ -1501,11 +1501,11 @@ if (amplitudeKey){
 </li>
       
         <li class="md-nav__item">
-  <a href="#running-parallel-tasks-with-dask" class="md-nav__link">
+  <a href="#run-tasks-in-parallel-with-dask" class="md-nav__link">
     <span class="md-ellipsis">
       
         <span class="md-typeset">
-          Running parallel tasks with Dask
+          Run tasks in parallel with Dask
         </span>
       
     </span>
@@ -1514,11 +1514,11 @@ if (amplitudeKey){
 </li>
       
         <li class="md-nav__item">
-  <a href="#running-parallel-tasks-with-ray" class="md-nav__link">
+  <a href="#run-tasks-in-parallel-with-ray" class="md-nav__link">
     <span class="md-ellipsis">
       
         <span class="md-typeset">
-          Running parallel tasks with Ray
+          Run tasks in parallel with Ray
         </span>
       
     </span>
@@ -13123,11 +13123,11 @@ if (amplitudeKey){
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#configuring-a-task-runner" class="md-nav__link">
+  <a href="#configure-a-task-runner" class="md-nav__link">
     <span class="md-ellipsis">
       
         <span class="md-typeset">
-          Configuring a task runner
+          Configure a task runner
         </span>
       
     </span>
@@ -13136,11 +13136,11 @@ if (amplitudeKey){
 </li>
       
         <li class="md-nav__item">
-  <a href="#running-parallel-tasks-with-dask" class="md-nav__link">
+  <a href="#run-tasks-in-parallel-with-dask" class="md-nav__link">
     <span class="md-ellipsis">
       
         <span class="md-typeset">
-          Running parallel tasks with Dask
+          Run tasks in parallel with Dask
         </span>
       
     </span>
@@ -13149,11 +13149,11 @@ if (amplitudeKey){
 </li>
       
         <li class="md-nav__item">
-  <a href="#running-parallel-tasks-with-ray" class="md-nav__link">
+  <a href="#run-tasks-in-parallel-with-ray" class="md-nav__link">
     <span class="md-ellipsis">
       
         <span class="md-typeset">
-          Running parallel tasks with Ray
+          Run tasks in parallel with Ray
         </span>
       
     </span>
@@ -13265,155 +13265,103 @@ if (amplitudeKey){
 <p class="admonition-title">Remote storage</p>
 <p>We recommend configuring <a href="/concepts/storage/">remote file storage</a> for task execution with <code>DaskTaskRunner</code> or <code>RayTaskRunner</code>. This ensures tasks executing in Dask or Ray have access to task result storage, particularly when accessing a Dask or Ray instance outside of your execution environment.</p>
 </div>
-<h2 id="configuring-a-task-runner">Configuring a task runner<a class="headerlink" href="#configuring-a-task-runner" title="Permanent link">&para;</a></h2>
+<h2 id="configure-a-task-runner">Configure a task runner<a class="headerlink" href="#configure-a-task-runner" title="Permanent link">&para;</a></h2>
 <p>You may have seen this briefly in a previous tutorial, but let's look a bit more closely at how you can configure a specific task runner for a flow.</p>
 <p>Let's start with the <a href="/api-ref/prefect/task-runners/#prefect.task_runners.SequentialTaskRunner"><code>SequentialTaskRunner</code></a>. This task runner runs all tasks synchronously and may be useful when used as a debugging tool in conjunction with async code.</p>
 <p>Let's start with this simple flow. We import the <code>SequentialTaskRunner</code>, specify a <code>task_runner</code> on the flow, and call the tasks with <code>.submit()</code>.</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
 <span class="hll"><span class="kn">from</span> <span class="nn">prefect.task_runners</span> <span class="kn">import</span> <span class="n">SequentialTaskRunner</span>
 </span>
+
 <span class="nd">@task</span>
 <span class="k">def</span> <span class="nf">say_hello</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;hello </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
+
 <span class="nd">@task</span>
 <span class="k">def</span> <span class="nf">say_goodbye</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;goodbye </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="hll">    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;goodbye </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span>
 
 <span class="hll"><span class="nd">@flow</span><span class="p">(</span><span class="n">task_runner</span><span class="o">=</span><span class="n">SequentialTaskRunner</span><span class="p">())</span>
-</span><span class="k">def</span> <span class="nf">greetings</span><span class="p">(</span><span class="n">names</span><span class="p">):</span>
-    <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">names</span><span class="p">:</span>
-<span class="hll">        <span class="n">say_hello</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
-</span><span class="hll">        <span class="n">say_goodbye</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
-</span>
-<span class="n">greetings</span><span class="p">([</span><span class="s2">&quot;arthur&quot;</span><span class="p">,</span> <span class="s2">&quot;trillian&quot;</span><span class="p">,</span> <span class="s2">&quot;ford&quot;</span><span class="p">,</span> <span class="s2">&quot;marvin&quot;</span><span class="p">])</span>
-</code></pre></div>
-<p>Save this as <code>sequential_flow.py</code> and run it in a terminal. You'll see output similar to the following:</p>
-<div class="terminal">
-<div class="highlight"><pre><span></span><code>$<span class="w"> </span>python<span class="w"> </span>sequential_flow.py
-<span class="m">16</span>:51:17.967<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>prefect.engine<span class="w"> </span>-<span class="w"> </span>Created<span class="w"> </span>flow<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;humongous-mink&#39;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>flow<span class="w"> </span><span class="s1">&#39;greetings&#39;</span>
-<span class="m">16</span>:51:17.967<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>Flow<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;humongous-mink&#39;</span><span class="w"> </span>-<span class="w"> </span>Starting<span class="w"> </span><span class="s1">&#39;SequentialTaskRunner&#39;</span><span class="p">;</span><span class="w"> </span>submitted<span class="w"> </span>tasks<span class="w"> </span>will<span class="w"> </span>be<span class="w"> </span>run<span class="w"> </span>sequentially...
-<span class="m">16</span>:51:18.038<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>Flow<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;humongous-mink&#39;</span><span class="w"> </span>-<span class="w"> </span>Created<span class="w"> </span>task<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;say_hello-811087cd-0&#39;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>task<span class="w"> </span><span class="s1">&#39;say_hello&#39;</span>
-<span class="m">16</span>:51:18.038<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>Flow<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;humongous-mink&#39;</span><span class="w"> </span>-<span class="w"> </span>Executing<span class="w"> </span><span class="s1">&#39;say_hello-811087cd-0&#39;</span><span class="w"> </span>immediately...
-hello<span class="w"> </span>arthur
-<span class="m">16</span>:51:18.060<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>Task<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;say_hello-811087cd-0&#39;</span><span class="w"> </span>-<span class="w"> </span>Finished<span class="w"> </span><span class="k">in</span><span class="w"> </span>state<span class="w"> </span>Completed<span class="o">()</span>
-<span class="m">16</span>:51:18.107<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>Flow<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;humongous-mink&#39;</span><span class="w"> </span>-<span class="w"> </span>Created<span class="w"> </span>task<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;say_goodbye-261e56a8-0&#39;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>task<span class="w"> </span><span class="s1">&#39;say_goodbye&#39;</span>
-<span class="m">16</span>:51:18.107<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>Flow<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;humongous-mink&#39;</span><span class="w"> </span>-<span class="w"> </span>Executing<span class="w"> </span><span class="s1">&#39;say_goodbye-261e56a8-0&#39;</span><span class="w"> </span>immediately...
-goodbye<span class="w"> </span>arthur
-<span class="m">16</span>:51:18.123<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>Task<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;say_goodbye-261e56a8-0&#39;</span><span class="w"> </span>-<span class="w"> </span>Finished<span class="w"> </span><span class="k">in</span><span class="w"> </span>state<span class="w"> </span>Completed<span class="o">()</span>
-<span class="m">16</span>:51:18.134<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>Flow<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;humongous-mink&#39;</span><span class="w"> </span>-<span class="w"> </span>Created<span class="w"> </span>task<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;say_hello-811087cd-1&#39;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>task<span class="w"> </span><span class="s1">&#39;say_hello&#39;</span>
-<span class="m">16</span>:51:18.134<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>Flow<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;humongous-mink&#39;</span><span class="w"> </span>-<span class="w"> </span>Executing<span class="w"> </span><span class="s1">&#39;say_hello-811087cd-1&#39;</span><span class="w"> </span>immediately...
-hello<span class="w"> </span>trillian
-<span class="m">16</span>:51:18.150<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>Task<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;say_hello-811087cd-1&#39;</span><span class="w"> </span>-<span class="w"> </span>Finished<span class="w"> </span><span class="k">in</span><span class="w"> </span>state<span class="w"> </span>Completed<span class="o">()</span>
-<span class="m">16</span>:51:18.159<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>Flow<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;humongous-mink&#39;</span><span class="w"> </span>-<span class="w"> </span>Created<span class="w"> </span>task<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;say_goodbye-261e56a8-1&#39;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>task<span class="w"> </span><span class="s1">&#39;say_goodbye&#39;</span>
-<span class="m">16</span>:51:18.159<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>Flow<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;humongous-mink&#39;</span><span class="w"> </span>-<span class="w"> </span>Executing<span class="w"> </span><span class="s1">&#39;say_goodbye-261e56a8-1&#39;</span><span class="w"> </span>immediately...
-goodbye<span class="w"> </span>trillian
-<span class="m">16</span>:51:18.181<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>Task<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;say_goodbye-261e56a8-1&#39;</span><span class="w"> </span>-<span class="w"> </span>Finished<span class="w"> </span><span class="k">in</span><span class="w"> </span>state<span class="w"> </span>Completed<span class="o">()</span>
-<span class="m">16</span>:51:18.190<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>Flow<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;humongous-mink&#39;</span><span class="w"> </span>-<span class="w"> </span>Created<span class="w"> </span>task<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;say_hello-811087cd-2&#39;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>task<span class="w"> </span><span class="s1">&#39;say_hello&#39;</span>
-<span class="m">16</span>:51:18.190<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>Flow<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;humongous-mink&#39;</span><span class="w"> </span>-<span class="w"> </span>Executing<span class="w"> </span><span class="s1">&#39;say_hello-811087cd-2&#39;</span><span class="w"> </span>immediately...
-hello<span class="w"> </span>ford
-<span class="m">16</span>:51:18.210<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>Task<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;say_hello-811087cd-2&#39;</span><span class="w"> </span>-<span class="w"> </span>Finished<span class="w"> </span><span class="k">in</span><span class="w"> </span>state<span class="w"> </span>Completed<span class="o">()</span>
-<span class="m">16</span>:51:18.219<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>Flow<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;humongous-mink&#39;</span><span class="w"> </span>-<span class="w"> </span>Created<span class="w"> </span>task<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;say_goodbye-261e56a8-2&#39;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>task<span class="w"> </span><span class="s1">&#39;say_goodbye&#39;</span>
-<span class="m">16</span>:51:18.219<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>Flow<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;humongous-mink&#39;</span><span class="w"> </span>-<span class="w"> </span>Executing<span class="w"> </span><span class="s1">&#39;say_goodbye-261e56a8-2&#39;</span><span class="w"> </span>immediately...
-goodbye<span class="w"> </span>ford
-<span class="m">16</span>:51:18.237<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>Task<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;say_goodbye-261e56a8-2&#39;</span><span class="w"> </span>-<span class="w"> </span>Finished<span class="w"> </span><span class="k">in</span><span class="w"> </span>state<span class="w"> </span>Completed<span class="o">()</span>
-<span class="m">16</span>:51:18.246<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>Flow<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;humongous-mink&#39;</span><span class="w"> </span>-<span class="w"> </span>Created<span class="w"> </span>task<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;say_hello-811087cd-3&#39;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>task<span class="w"> </span><span class="s1">&#39;say_hello&#39;</span>
-<span class="m">16</span>:51:18.246<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>Flow<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;humongous-mink&#39;</span><span class="w"> </span>-<span class="w"> </span>Executing<span class="w"> </span><span class="s1">&#39;say_hello-811087cd-3&#39;</span><span class="w"> </span>immediately...
-hello<span class="w"> </span>marvin
-<span class="m">16</span>:51:18.264<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>Task<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;say_hello-811087cd-3&#39;</span><span class="w"> </span>-<span class="w"> </span>Finished<span class="w"> </span><span class="k">in</span><span class="w"> </span>state<span class="w"> </span>Completed<span class="o">()</span>
-<span class="m">16</span>:51:18.273<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>Flow<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;humongous-mink&#39;</span><span class="w"> </span>-<span class="w"> </span>Created<span class="w"> </span>task<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;say_goodbye-261e56a8-3&#39;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>task<span class="w"> </span><span class="s1">&#39;say_goodbye&#39;</span>
-<span class="m">16</span>:51:18.273<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>Flow<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;humongous-mink&#39;</span><span class="w"> </span>-<span class="w"> </span>Executing<span class="w"> </span><span class="s1">&#39;say_goodbye-261e56a8-3&#39;</span><span class="w"> </span>immediately...
-goodbye<span class="w"> </span>marvin
-<span class="m">16</span>:51:18.290<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>Task<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;say_goodbye-261e56a8-3&#39;</span><span class="w"> </span>-<span class="w"> </span>Finished<span class="w"> </span><span class="k">in</span><span class="w"> </span>state<span class="w"> </span>Completed<span class="o">()</span>
-<span class="m">16</span>:51:18.321<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>Flow<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;humongous-mink&#39;</span><span class="w"> </span>-<span class="w"> </span>Finished<span class="w"> </span><span class="k">in</span><span class="w"> </span>state<span class="w"> </span>Completed<span class="o">(</span><span class="s1">&#39;All states completed.&#39;</span><span class="o">)</span>
-</code></pre></div>
-</div>
-
-<p>If we take out the log messages and just look at the printed output of the tasks, you see they're executed in sequential order:</p>
-<div class="terminal">
-<div class="highlight"><pre><span></span><code>$<span class="w"> </span>python<span class="w"> </span>sequential_flow.py
-hello<span class="w"> </span>arthur
-goodbye<span class="w"> </span>arthur
-hello<span class="w"> </span>trillian
-goodbye<span class="w"> </span>trillian
-hello<span class="w"> </span>ford
-goodbye<span class="w"> </span>ford
-hello<span class="w"> </span>marvin
-goodbye<span class="w"> </span>marvin
-</code></pre></div>
-</div>
-
-<h2 id="running-parallel-tasks-with-dask">Running parallel tasks with Dask<a class="headerlink" href="#running-parallel-tasks-with-dask" title="Permanent link">&para;</a></h2>
-<p>You could argue that this simple flow gains nothing from parallel execution, but let's roll with it so you can see just how simple it is to take advantage of the <a href="https://prefecthq.github.io/prefect-dask/"><code>DaskTaskRunner</code></a>.</p>
-<p>To configure your flow to use the <code>DaskTaskRunner</code>:</p>
-<ol>
-<li>Make sure the <code>prefect-dask</code> collection is installed by running <code>pip install prefect-dask</code>.</li>
-<li>In your flow code, import <code>DaskTaskRunner</code> from <code>prefect_dask.task_runners</code>.</li>
-<li>Assign it as the task runner when the flow is defined using the <code>task_runner=DaskTaskRunner</code> argument.</li>
-<li>Use the <code>.submit</code> method when calling functions.</li>
-</ol>
-<p>This is the same flow as above, with a few minor changes to use <code>DaskTaskRunner</code> where we previously configured <code>SequentialTaskRunner</code>. Install <code>prefect-dask</code>, made these changes, then save the updated code as <code>dask_flow.py</code>.</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
-<span class="hll"><span class="kn">from</span> <span class="nn">prefect_dask.task_runners</span> <span class="kn">import</span> <span class="n">DaskTaskRunner</span>
-</span>
-<span class="nd">@task</span>
-<span class="k">def</span> <span class="nf">say_hello</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;hello </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
-<span class="nd">@task</span>
-<span class="k">def</span> <span class="nf">say_goodbye</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;goodbye </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
-<span class="hll"><span class="nd">@flow</span><span class="p">(</span><span class="n">task_runner</span><span class="o">=</span><span class="n">DaskTaskRunner</span><span class="p">())</span>
-</span><span class="k">def</span> <span class="nf">greetings</span><span class="p">(</span><span class="n">names</span><span class="p">):</span>
-    <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">names</span><span class="p">:</span>
+</span><span class="hll"><span class="k">def</span> <span class="nf">greetings</span><span class="p">(</span><span class="n">names</span><span class="p">):</span>
+</span>    <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">names</span><span class="p">:</span>
         <span class="n">say_hello</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
         <span class="n">say_goodbye</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
 
-<span class="hll"><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-</span>    <span class="n">greetings</span><span class="p">([</span><span class="s2">&quot;arthur&quot;</span><span class="p">,</span> <span class="s2">&quot;trillian&quot;</span><span class="p">,</span> <span class="s2">&quot;ford&quot;</span><span class="p">,</span> <span class="s2">&quot;marvin&quot;</span><span class="p">])</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">greetings</span><span class="p">([</span><span class="s2">&quot;arthur&quot;</span><span class="p">,</span> <span class="s2">&quot;trillian&quot;</span><span class="p">,</span> <span class="s2">&quot;ford&quot;</span><span class="p">,</span> <span class="s2">&quot;marvin&quot;</span><span class="p">])</span>
 </code></pre></div>
-<p>Note that, because you're using <code>DaskTaskRunner</code> in a script, you must use <code>if __name__ == "__main__":</code> or you'll see warnings and errors.</p>
-<p>Now run <code>dask_flow.py</code>. If you get a warning about accepting incoming network connections, that's okay - everything is local in this example.</p>
+<p>Save this code as <code>sequential_flow.py</code> and run it.</p>
 <div class="terminal">
-<div class="highlight"><pre><span></span><code>$<span class="w"> </span>python<span class="w"> </span>dask_flow.py
-<span class="m">19</span>:29:03.798<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>prefect.engine<span class="w"> </span>-<span class="w"> </span>Created<span class="w"> </span>flow<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;fine-bison&#39;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>flow<span class="w"> </span><span class="s1">&#39;greetings&#39;</span>
-
-<span class="m">19</span>:29:03.798<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>Flow<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;fine-bison&#39;</span><span class="w"> </span>-<span class="w"> </span>Using<span class="w"> </span>task<span class="w"> </span>runner<span class="w"> </span><span class="s1">&#39;DaskTaskRunner&#39;</span>
-
-<span class="m">19</span>:29:04.080<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>prefect.task_runner.dask<span class="w"> </span>-<span class="w"> </span>Creating<span class="w"> </span>a<span class="w"> </span>new<span class="w"> </span>Dask<span class="w"> </span>cluster<span class="w"> </span>with<span class="w"> </span><span class="sb">`</span>distributed.deploy.local.LocalCluster<span class="sb">`</span>
-<span class="m">16</span>:54:18.465<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>prefect.engine<span class="w"> </span>-<span class="w"> </span>Created<span class="w"> </span>flow<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;radical-finch&#39;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>flow<span class="w"> </span><span class="s1">&#39;greetings&#39;</span>
-<span class="m">16</span>:54:18.465<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>Flow<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;radical-finch&#39;</span><span class="w"> </span>-<span class="w"> </span>Starting<span class="w"> </span><span class="s1">&#39;DaskTaskRunner&#39;</span><span class="p">;</span><span class="w"> </span>submitted<span class="w"> </span>tasks<span class="w"> </span>will<span class="w"> </span>be<span class="w"> </span>run<span class="w"> </span>concurrently...
-<span class="m">16</span>:54:18.465<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>prefect.task_runner.dask<span class="w"> </span>-<span class="w"> </span>Creating<span class="w"> </span>a<span class="w"> </span>new<span class="w"> </span>Dask<span class="w"> </span>cluster<span class="w"> </span>with<span class="w"> </span><span class="sb">`</span>distributed.deploy.local.LocalCluster<span class="sb">`</span>
-<span class="m">16</span>:54:19.811<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>prefect.task_runner.dask<span class="w"> </span>-<span class="w"> </span>The<span class="w"> </span>Dask<span class="w"> </span>dashboard<span class="w"> </span>is<span class="w"> </span>available<span class="w"> </span>at<span class="w"> </span>&lt;http://127.0.0.1:8787/status&gt;
-<span class="m">16</span>:54:19.881<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>Flow<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;radical-finch&#39;</span><span class="w"> </span>-<span class="w"> </span>Created<span class="w"> </span>task<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;say_hello-811087cd-0&#39;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>task<span class="w"> </span><span class="s1">&#39;say_hello&#39;</span>
-<span class="m">16</span>:54:20.364<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>Flow<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;radical-finch&#39;</span><span class="w"> </span>-<span class="w"> </span>Submitted<span class="w"> </span>task<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;say_hello-811087cd-0&#39;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>execution.
-<span class="m">16</span>:54:20.379<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>Flow<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;radical-finch&#39;</span><span class="w"> </span>-<span class="w"> </span>Created<span class="w"> </span>task<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;say_goodbye-261e56a8-0&#39;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>task<span class="w"> </span><span class="s1">&#39;say_goodbye&#39;</span>
-<span class="m">16</span>:54:20.386<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>Flow<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;radical-finch&#39;</span><span class="w"> </span>-<span class="w"> </span>Submitted<span class="w"> </span>task<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;say_goodbye-261e56a8-0&#39;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>execution.
-<span class="m">16</span>:54:20.397<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>Flow<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;radical-finch&#39;</span><span class="w"> </span>-<span class="w"> </span>Created<span class="w"> </span>task<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;say_hello-811087cd-1&#39;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>task<span class="w"> </span><span class="s1">&#39;say_hello&#39;</span>
-<span class="m">16</span>:54:20.401<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>Flow<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;radical-finch&#39;</span><span class="w"> </span>-<span class="w"> </span>Submitted<span class="w"> </span>task<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;say_hello-811087cd-1&#39;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>execution.
-<span class="m">16</span>:54:20.417<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>Flow<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;radical-finch&#39;</span><span class="w"> </span>-<span class="w"> </span>Created<span class="w"> </span>task<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;say_goodbye-261e56a8-1&#39;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>task<span class="w"> </span><span class="s1">&#39;say_goodbye&#39;</span>
-<span class="m">16</span>:54:20.423<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>Flow<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;radical-finch&#39;</span><span class="w"> </span>-<span class="w"> </span>Submitted<span class="w"> </span>task<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;say_goodbye-261e56a8-1&#39;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>execution.
-<span class="m">16</span>:54:20.443<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>Flow<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;radical-finch&#39;</span><span class="w"> </span>-<span class="w"> </span>Created<span class="w"> </span>task<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;say_hello-811087cd-2&#39;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>task<span class="w"> </span><span class="s1">&#39;say_hello&#39;</span>
-<span class="m">16</span>:54:20.449<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>Flow<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;radical-finch&#39;</span><span class="w"> </span>-<span class="w"> </span>Submitted<span class="w"> </span>task<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;say_hello-811087cd-2&#39;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>execution.
-<span class="m">16</span>:54:20.462<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>Flow<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;radical-finch&#39;</span><span class="w"> </span>-<span class="w"> </span>Created<span class="w"> </span>task<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;say_goodbye-261e56a8-2&#39;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>task<span class="w"> </span><span class="s1">&#39;say_goodbye&#39;</span>
-<span class="m">16</span>:54:20.474<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>Flow<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;radical-finch&#39;</span><span class="w"> </span>-<span class="w"> </span>Submitted<span class="w"> </span>task<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;say_goodbye-261e56a8-2&#39;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>execution.
-<span class="m">16</span>:54:20.500<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>Flow<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;radical-finch&#39;</span><span class="w"> </span>-<span class="w"> </span>Created<span class="w"> </span>task<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;say_hello-811087cd-3&#39;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>task<span class="w"> </span><span class="s1">&#39;say_hello&#39;</span>
-<span class="m">16</span>:54:20.511<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>Flow<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;radical-finch&#39;</span><span class="w"> </span>-<span class="w"> </span>Submitted<span class="w"> </span>task<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;say_hello-811087cd-3&#39;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>execution.
-<span class="m">16</span>:54:20.544<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>Flow<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;radical-finch&#39;</span><span class="w"> </span>-<span class="w"> </span>Created<span class="w"> </span>task<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;say_goodbye-261e56a8-3&#39;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>task<span class="w"> </span><span class="s1">&#39;say_goodbye&#39;</span>
-<span class="m">16</span>:54:20.555<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>Flow<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;radical-finch&#39;</span><span class="w"> </span>-<span class="w"> </span>Submitted<span class="w"> </span>task<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;say_goodbye-261e56a8-3&#39;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>execution.
-hello<span class="w"> </span>arthur
-goodbye<span class="w"> </span>ford
-goodbye<span class="w"> </span>arthur
-hello<span class="w"> </span>ford
-goodbye<span class="w"> </span>marvin
-goodbye<span class="w"> </span>trillian
-hello<span class="w"> </span>trillian
-hello<span class="w"> </span>marvin
+<div class="highlight"><pre><span></span><code>python<span class="w"> </span>sequential_flow.py
 </code></pre></div>
 </div>
 
-<p><code>DaskTaskRunner</code> automatically creates a local Dask cluster, then starts executing all of the tasks in parallel. The results do not return in the same order as the sequential code above.</p>
+<p>If you remove the log messages from the output and just look at the printed output from the task runs, you see they're executed sequentially:</p>
+<div class="terminal">
+<div class="highlight"><pre><span></span><code>hello<span class="w"> </span>arthur
+goodbye<span class="w"> </span>arthur
+hello<span class="w"> </span>trillian
+goodbye<span class="w"> </span>trillian
+hello<span class="w"> </span>ford
+goodbye<span class="w"> </span>ford
+hello<span class="w"> </span>marvin
+goodbye<span class="w"> </span>marvin
+</code></pre></div>
+</div>
+
+<h2 id="run-tasks-in-parallel-with-dask">Run tasks in parallel with Dask<a class="headerlink" href="#run-tasks-in-parallel-with-dask" title="Permanent link">&para;</a></h2>
+<p>This basic flow won't benefit from parallel execution, but let's proceed so you can see just how simple it is to use the <a href="https://prefecthq.github.io/prefect-dask/"><code>DaskTaskRunner</code></a> for more complex flows.</p>
+<p>Configure your flow to use the <code>DaskTaskRunner</code>:</p>
+<ol>
+<li>Make sure the <code>prefect-dask</code> collection is installed by running <code>pip install -U prefect-dask</code>.</li>
+<li>In your flow code, import <code>DaskTaskRunner</code> from <code>prefect_dask.task_runners</code>.</li>
+<li>Assign it as the task runner when the flow is defined using the <code>task_runner=DaskTaskRunner</code> argument.</li>
+<li>Use the <code>.submit</code> method when calling task-decorated functions.</li>
+</ol>
+<p>Example code:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
+<span class="hll"><span class="kn">from</span> <span class="nn">prefect_dask.task_runners</span> <span class="kn">import</span> <span class="n">DaskTaskRunner</span>
+</span>
+
+<span class="nd">@task</span>
+<span class="k">def</span> <span class="nf">say_hello</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;hello </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+
+<span class="nd">@task</span>
+<span class="k">def</span> <span class="nf">say_goodbye</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+<span class="hll">    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;goodbye </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span>
+
+<span class="nd">@flow</span><span class="p">(</span><span class="n">task_runner</span><span class="o">=</span><span class="n">DaskTaskRunner</span><span class="p">())</span>
+<span class="k">def</span> <span class="nf">greetings</span><span class="p">(</span><span class="n">names</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">names</span><span class="p">:</span>
+<span class="hll">        <span class="n">say_hello</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+</span>        <span class="n">say_goodbye</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">greetings</span><span class="p">([</span><span class="s2">&quot;arthur&quot;</span><span class="p">,</span> <span class="s2">&quot;trillian&quot;</span><span class="p">,</span> <span class="s2">&quot;ford&quot;</span><span class="p">,</span> <span class="s2">&quot;marvin&quot;</span><span class="p">])</span>
+</code></pre></div>
+<p>Note that, because you're using <code>DaskTaskRunner</code> in a script, you must use <code>if __name__ == "__main__":</code> or you'll see warnings and errors.</p>
+<p>Run <code>dask_flow.py</code>. If you get a warning about accepting incoming network connections, that's okay - everything is local in this example.</p>
+<div class="terminal">
+<div class="highlight"><pre><span></span><code>python<span class="w"> </span>dask_flow.py
+</code></pre></div>
+</div>
+
+<p><code>DaskTaskRunner</code> automatically creates a local Dask cluster, then starts executing all of the task runs in parallel. The results do not return in the same order as the sequential code above.</p>
+<p>Abbreviated output:</p>
+<div class="terminal">
+<div class="highlight"><pre><span></span><code>goodbye<span class="w"> </span>marvin
+hello<span class="w"> </span>arthur
+goodbye<span class="w"> </span>ford
+hello<span class="w"> </span>trillian
+</code></pre></div>
+</div>
+
 <p>Notice what happens if you do not use the <code>submit</code> method when calling tasks:</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
 <span class="kn">from</span> <span class="nn">prefect_dask.task_runners</span> <span class="kn">import</span> <span class="n">DaskTaskRunner</span>
@@ -13439,61 +13387,38 @@ hello<span class="w"> </span>marvin
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
     <span class="n">greetings</span><span class="p">([</span><span class="s2">&quot;arthur&quot;</span><span class="p">,</span> <span class="s2">&quot;trillian&quot;</span><span class="p">,</span> <span class="s2">&quot;ford&quot;</span><span class="p">,</span> <span class="s2">&quot;marvin&quot;</span><span class="p">])</span>
 </code></pre></div>
+<p>Run the script:</p>
 <div class="terminal">
-<div class="highlight"><pre><span></span><code>$<span class="w"> </span>python<span class="w"> </span>dask_flow.py
-
-<span class="m">16</span>:57:34.534<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>prefect.engine<span class="w"> </span>-<span class="w"> </span>Created<span class="w"> </span>flow<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;papaya-honeybee&#39;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>flow<span class="w"> </span><span class="s1">&#39;greetings&#39;</span>
-<span class="m">16</span>:57:34.534<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>Flow<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;papaya-honeybee&#39;</span><span class="w"> </span>-<span class="w"> </span>Starting<span class="w"> </span><span class="s1">&#39;DaskTaskRunner&#39;</span><span class="p">;</span><span class="w"> </span>submitted<span class="w"> </span>tasks<span class="w"> </span>will<span class="w"> </span>be<span class="w"> </span>run<span class="w"> </span>concurrently...
-<span class="m">16</span>:57:34.535<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>prefect.task_runner.dask<span class="w"> </span>-<span class="w"> </span>Creating<span class="w"> </span>a<span class="w"> </span>new<span class="w"> </span>Dask<span class="w"> </span>cluster<span class="w"> </span>with<span class="w"> </span><span class="sb">`</span>distributed.deploy.local.LocalCluster<span class="sb">`</span>
-<span class="m">16</span>:57:35.715<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>prefect.task_runner.dask<span class="w"> </span>-<span class="w"> </span>The<span class="w"> </span>Dask<span class="w"> </span>dashboard<span class="w"> </span>is<span class="w"> </span>available<span class="w"> </span>at<span class="w"> </span>&lt;http://127.0.0.1:8787/status&gt;
-<span class="m">16</span>:57:35.787<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>Flow<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;papaya-honeybee&#39;</span><span class="w"> </span>-<span class="w"> </span>Created<span class="w"> </span>task<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;say_hello-811087cd-0&#39;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>task<span class="w"> </span><span class="s1">&#39;say_hello&#39;</span>
-<span class="m">16</span>:57:35.788<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>Flow<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;papaya-honeybee&#39;</span><span class="w"> </span>-<span class="w"> </span>Executing<span class="w"> </span><span class="s1">&#39;say_hello-811087cd-0&#39;</span><span class="w"> </span>immediately...
-hello<span class="w"> </span>arthur
-<span class="m">16</span>:57:35.810<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>Task<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;say_hello-811087cd-0&#39;</span><span class="w"> </span>-<span class="w"> </span>Finished<span class="w"> </span><span class="k">in</span><span class="w"> </span>state<span class="w"> </span>Completed<span class="o">()</span>
-<span class="m">16</span>:57:35.820<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>Flow<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;papaya-honeybee&#39;</span><span class="w"> </span>-<span class="w"> </span>Created<span class="w"> </span>task<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;say_goodbye-261e56a8-0&#39;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>task<span class="w"> </span><span class="s1">&#39;say_goodbye&#39;</span>
-<span class="m">16</span>:57:35.820<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>Flow<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;papaya-honeybee&#39;</span><span class="w"> </span>-<span class="w"> </span>Executing<span class="w"> </span><span class="s1">&#39;say_goodbye-261e56a8-0&#39;</span><span class="w"> </span>immediately...
-goodbye<span class="w"> </span>arthur
-<span class="m">16</span>:57:35.840<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>Task<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;say_goodbye-261e56a8-0&#39;</span><span class="w"> </span>-<span class="w"> </span>Finished<span class="w"> </span><span class="k">in</span><span class="w"> </span>state<span class="w"> </span>Completed<span class="o">()</span>
-<span class="m">16</span>:57:35.849<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>Flow<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;papaya-honeybee&#39;</span><span class="w"> </span>-<span class="w"> </span>Created<span class="w"> </span>task<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;say_hello-811087cd-1&#39;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>task<span class="w"> </span><span class="s1">&#39;say_hello&#39;</span>
-<span class="m">16</span>:57:35.849<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>Flow<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;papaya-honeybee&#39;</span><span class="w"> </span>-<span class="w"> </span>Executing<span class="w"> </span><span class="s1">&#39;say_hello-811087cd-1&#39;</span><span class="w"> </span>immediately...
-hello<span class="w"> </span>trillian
-<span class="m">16</span>:57:35.869<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>Task<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;say_hello-811087cd-1&#39;</span><span class="w"> </span>-<span class="w"> </span>Finished<span class="w"> </span><span class="k">in</span><span class="w"> </span>state<span class="w"> </span>Completed<span class="o">()</span>
-<span class="m">16</span>:57:35.878<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>Flow<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;papaya-honeybee&#39;</span><span class="w"> </span>-<span class="w"> </span>Created<span class="w"> </span>task<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;say_goodbye-261e56a8-1&#39;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>task<span class="w"> </span><span class="s1">&#39;say_goodbye&#39;</span>
-<span class="m">16</span>:57:35.878<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>Flow<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;papaya-honeybee&#39;</span><span class="w"> </span>-<span class="w"> </span>Executing<span class="w"> </span><span class="s1">&#39;say_goodbye-261e56a8-1&#39;</span><span class="w"> </span>immediately...
-goodbye<span class="w"> </span>trillian
-<span class="m">16</span>:57:35.894<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>Task<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;say_goodbye-261e56a8-1&#39;</span><span class="w"> </span>-<span class="w"> </span>Finished<span class="w"> </span><span class="k">in</span><span class="w"> </span>state<span class="w"> </span>Completed<span class="o">()</span>
-<span class="m">16</span>:57:35.907<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>Flow<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;papaya-honeybee&#39;</span><span class="w"> </span>-<span class="w"> </span>Created<span class="w"> </span>task<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;say_hello-811087cd-2&#39;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>task<span class="w"> </span><span class="s1">&#39;say_hello&#39;</span>
-<span class="m">16</span>:57:35.907<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>Flow<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;papaya-honeybee&#39;</span><span class="w"> </span>-<span class="w"> </span>Executing<span class="w"> </span><span class="s1">&#39;say_hello-811087cd-2&#39;</span><span class="w"> </span>immediately...
-hello<span class="w"> </span>ford
-<span class="m">16</span>:57:35.924<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>Task<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;say_hello-811087cd-2&#39;</span><span class="w"> </span>-<span class="w"> </span>Finished<span class="w"> </span><span class="k">in</span><span class="w"> </span>state<span class="w"> </span>Completed<span class="o">()</span>
-<span class="m">16</span>:57:35.933<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>Flow<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;papaya-honeybee&#39;</span><span class="w"> </span>-<span class="w"> </span>Created<span class="w"> </span>task<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;say_goodbye-261e56a8-2&#39;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>task<span class="w"> </span><span class="s1">&#39;say_goodbye&#39;</span>
-<span class="m">16</span>:57:35.933<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>Flow<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;papaya-honeybee&#39;</span><span class="w"> </span>-<span class="w"> </span>Executing<span class="w"> </span><span class="s1">&#39;say_goodbye-261e56a8-2&#39;</span><span class="w"> </span>immediately...
-goodbye<span class="w"> </span>ford
-<span class="m">16</span>:57:35.951<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>Task<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;say_goodbye-261e56a8-2&#39;</span><span class="w"> </span>-<span class="w"> </span>Finished<span class="w"> </span><span class="k">in</span><span class="w"> </span>state<span class="w"> </span>Completed<span class="o">()</span>
-<span class="m">16</span>:57:35.959<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>Flow<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;papaya-honeybee&#39;</span><span class="w"> </span>-<span class="w"> </span>Created<span class="w"> </span>task<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;say_hello-811087cd-3&#39;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>task<span class="w"> </span><span class="s1">&#39;say_hello&#39;</span>
-<span class="m">16</span>:57:35.959<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>Flow<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;papaya-honeybee&#39;</span><span class="w"> </span>-<span class="w"> </span>Executing<span class="w"> </span><span class="s1">&#39;say_hello-811087cd-3&#39;</span><span class="w"> </span>immediately...
-hello<span class="w"> </span>marvin
-<span class="m">16</span>:57:35.976<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>Task<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;say_hello-811087cd-3&#39;</span><span class="w"> </span>-<span class="w"> </span>Finished<span class="w"> </span><span class="k">in</span><span class="w"> </span>state<span class="w"> </span>Completed<span class="o">()</span>
-<span class="m">16</span>:57:35.985<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>Flow<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;papaya-honeybee&#39;</span><span class="w"> </span>-<span class="w"> </span>Created<span class="w"> </span>task<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;say_goodbye-261e56a8-3&#39;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>task<span class="w"> </span><span class="s1">&#39;say_goodbye&#39;</span>
-<span class="m">16</span>:57:35.985<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>Flow<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;papaya-honeybee&#39;</span><span class="w"> </span>-<span class="w"> </span>Executing<span class="w"> </span><span class="s1">&#39;say_goodbye-261e56a8-3&#39;</span><span class="w"> </span>immediately...
-goodbye<span class="w"> </span>marvin
-<span class="m">16</span>:57:36.004<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>Task<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;say_goodbye-261e56a8-3&#39;</span><span class="w"> </span>-<span class="w"> </span>Finished<span class="w"> </span><span class="k">in</span><span class="w"> </span>state<span class="w"> </span>Completed<span class="o">()</span>
-<span class="m">16</span>:57:36.289<span class="w"> </span><span class="p">|</span><span class="w"> </span>INFO<span class="w">    </span><span class="p">|</span><span class="w"> </span>Flow<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;papaya-honeybee&#39;</span><span class="w"> </span>-<span class="w"> </span>Finished<span class="w"> </span><span class="k">in</span><span class="w"> </span>state<span class="w"> </span>Completed<span class="o">(</span><span class="s1">&#39;All states completed.&#39;</span><span class="o">)</span>
+<div class="highlight"><pre><span></span><code>python<span class="w"> </span>dask_flow.py
 </code></pre></div>
 </div>
 
-<p>The tasks are not submitted to the <code>DaskTaskRunner</code> and are run sequentially.</p>
-<h2 id="running-parallel-tasks-with-ray">Running parallel tasks with Ray<a class="headerlink" href="#running-parallel-tasks-with-ray" title="Permanent link">&para;</a></h2>
-<p>To demonstrate the ability to flexibly apply the task runner appropriate for your workflow, use the same flow as above, with a few minor changes to use the <a href="https://prefecthq.github.io/prefect-ray/"><code>RayTaskRunner</code></a> where we previously configured <code>DaskTaskRunner</code>. </p>
+<p>Once again, the tasks run sequentially. Here's the output with logs removed.</p>
+<div class="terminal">
+<div class="highlight"><pre><span></span><code>hello<span class="w"> </span>arthur
+goodbye<span class="w"> </span>arthur
+hello<span class="w"> </span>trillian
+goodbye<span class="w"> </span>trillian
+hello<span class="w"> </span>ford
+goodbye<span class="w"> </span>ford
+hello<span class="w"> </span>marvin
+goodbye<span class="w"> </span>marvin
+</code></pre></div>
+</div>
+
+<p>The task runs are not submitted to the <code>DaskTaskRunner</code>; instead, they run sequentially.</p>
+<h2 id="run-tasks-in-parallel-with-ray">Run tasks in parallel with Ray<a class="headerlink" href="#run-tasks-in-parallel-with-ray" title="Permanent link">&para;</a></h2>
+<p>You can easily switch to Ray as another parallel task runner option.
+Use the <a href="https://prefecthq.github.io/prefect-ray/"><code>RayTaskRunner</code></a> instead of <code>DaskTaskRunner</code>.</p>
 <p>To configure your flow to use the <code>RayTaskRunner</code>:</p>
 <ol>
-<li>Make sure the <code>prefect-ray</code> collection is installed by running <code>pip install prefect-ray</code>.</li>
+<li>Install <code>prefect-ray</code> into your environment with <code>pip install -U prefect-ray</code>.</li>
 <li>In your flow code, import <code>RayTaskRunner</code> from <code>prefect_ray.task_runners</code>.</li>
-<li>Assign it as the task runner when the flow is defined using the <code>task_runner=RayTaskRunner</code> argument.</li>
+<li>Specify the task runner when the flow is defined using the <code>task_runner=RayTaskRunner</code> argument.</li>
 </ol>
 <div class="admonition warning">
 <p class="admonition-title">Ray environment limitations</p>
-<p>While we're excited about parallel task execution via Ray to Prefect, there are some inherent limitations with Ray you should be aware of:</p>
+<p>While we're excited about parallel task execution via Ray, there are a few limitations with Ray you should be aware of:</p>
 <ul>
 <li>Support for Python 3.11 is <a href="https://docs.ray.io/en/latest/ray-overview/installation.html#install-nightlies">experimental</a>.</li>
 <li>Ray support for non-x86/64 architectures such as ARM/M1 processors with installation from <code>pip</code> alone and will be skipped during installation of Prefect. It is possible to manually install the blocking component with <code>conda</code>. See the <a href="https://docs.ray.io/en/latest/ray-overview/installation.html#m1-mac-apple-silicon-support">Ray documentation</a> for instructions.</li>
