@@ -5341,7 +5341,7 @@ if (amplitudeKey){
   
   
     <li class="md-nav__item">
-      <a href="../../../../integrations/prefect-docker/deployments/steps.md" class="md-nav__link">
+      <a href="../../../../integrations/prefect-docker/deployments/steps/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -13440,7 +13440,9 @@ either <code>flow.serve</code> or the <code>serve</code> utility.</p>
 
               <details class="quote">
                 <summary>Source code in <code>prefect/runner/runner.py</code></summary>
-                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 108</span>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 106</span>
+<span class="normal"> 107</span>
+<span class="normal"> 108</span>
 <span class="normal"> 109</span>
 <span class="normal"> 110</span>
 <span class="normal"> 111</span>
@@ -14512,7 +14514,11 @@ either <code>flow.serve</code> or the <code>serve</code> utility.</p>
 <span class="normal">1177</span>
 <span class="normal">1178</span>
 <span class="normal">1179</span>
-<span class="normal">1180</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">Runner</span><span class="p">:</span>
+<span class="normal">1180</span>
+<span class="normal">1181</span>
+<span class="normal">1182</span>
+<span class="normal">1183</span>
+<span class="normal">1184</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">Runner</span><span class="p">:</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -15537,12 +15543,18 @@ either <code>flow.serve</code> or the <code>serve</code> utility.</p>
 <span class="sd">        Run the hooks for a flow.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">state</span><span class="o">.</span><span class="n">is_cancelling</span><span class="p">():</span>
-            <span class="n">flow</span> <span class="o">=</span> <span class="k">await</span> <span class="n">load_flow_from_flow_run</span><span class="p">(</span>
-                <span class="n">flow_run</span><span class="p">,</span> <span class="n">client</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="p">,</span> <span class="n">storage_base_path</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tmp_dir</span><span class="p">)</span>
-            <span class="p">)</span>
-            <span class="n">hooks</span> <span class="o">=</span> <span class="n">flow</span><span class="o">.</span><span class="n">on_cancellation</span> <span class="ow">or</span> <span class="p">[]</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">flow</span> <span class="o">=</span> <span class="k">await</span> <span class="n">load_flow_from_flow_run</span><span class="p">(</span>
+                    <span class="n">flow_run</span><span class="p">,</span> <span class="n">client</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="p">,</span> <span class="n">storage_base_path</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tmp_dir</span><span class="p">)</span>
+                <span class="p">)</span>
+                <span class="n">hooks</span> <span class="o">=</span> <span class="n">flow</span><span class="o">.</span><span class="n">on_cancellation</span> <span class="ow">or</span> <span class="p">[]</span>
 
-            <span class="k">await</span> <span class="n">_run_hooks</span><span class="p">(</span><span class="n">hooks</span><span class="p">,</span> <span class="n">flow_run</span><span class="p">,</span> <span class="n">flow</span><span class="p">,</span> <span class="n">state</span><span class="p">)</span>
+                <span class="k">await</span> <span class="n">_run_hooks</span><span class="p">(</span><span class="n">hooks</span><span class="p">,</span> <span class="n">flow_run</span><span class="p">,</span> <span class="n">flow</span><span class="p">,</span> <span class="n">state</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">ObjectNotFound</span><span class="p">:</span>
+                <span class="n">run_logger</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_flow_run_logger</span><span class="p">(</span><span class="n">flow_run</span><span class="p">)</span>
+                <span class="n">run_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Runner cannot retrieve flow to execute cancellation hooks for flow run </span><span class="si">{</span><span class="n">flow_run</span><span class="o">.</span><span class="n">id</span><span class="si">!r}</span><span class="s2">.&quot;</span>
+                <span class="p">)</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">_run_on_crashed_hooks</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -15649,7 +15661,9 @@ the runner is started.</p>
 
             <details class="quote">
               <summary>Source code in <code>prefect/runner/runner.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">191</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">189</span>
+<span class="normal">190</span>
+<span class="normal">191</span>
 <span class="normal">192</span>
 <span class="normal">193</span>
 <span class="normal">194</span>
@@ -15666,9 +15680,7 @@ the runner is started.</p>
 <span class="normal">205</span>
 <span class="normal">206</span>
 <span class="normal">207</span>
-<span class="normal">208</span>
-<span class="normal">209</span>
-<span class="normal">210</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@sync_compatible</span>
+<span class="normal">208</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@sync_compatible</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">add_deployment</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">deployment</span><span class="p">:</span> <span class="n">RunnerDeployment</span><span class="p">,</span>
@@ -15920,7 +15932,9 @@ entrypoint, ensure that the module will be importable in the execution environme
 
             <details class="quote">
               <summary>Source code in <code>prefect/runner/runner.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">212</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">210</span>
+<span class="normal">211</span>
+<span class="normal">212</span>
 <span class="normal">213</span>
 <span class="normal">214</span>
 <span class="normal">215</span>
@@ -15999,9 +16013,7 @@ entrypoint, ensure that the module will be importable in the execution environme
 <span class="normal">288</span>
 <span class="normal">289</span>
 <span class="normal">290</span>
-<span class="normal">291</span>
-<span class="normal">292</span>
-<span class="normal">293</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@sync_compatible</span>
+<span class="normal">291</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@sync_compatible</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">add_flow</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">flow</span><span class="p">:</span> <span class="n">Flow</span><span class="p">,</span>
@@ -16110,7 +16122,9 @@ the flow run process has exited.</p>
 
             <details class="quote">
               <summary>Source code in <code>prefect/runner/runner.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">462</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">460</span>
+<span class="normal">461</span>
+<span class="normal">462</span>
 <span class="normal">463</span>
 <span class="normal">464</span>
 <span class="normal">465</span>
@@ -16157,9 +16171,7 @@ the flow run process has exited.</p>
 <span class="normal">506</span>
 <span class="normal">507</span>
 <span class="normal">508</span>
-<span class="normal">509</span>
-<span class="normal">510</span>
-<span class="normal">511</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">execute_flow_run</span><span class="p">(</span>
+<span class="normal">509</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">execute_flow_run</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span> <span class="n">flow_run_id</span><span class="p">:</span> <span class="n">UUID</span><span class="p">,</span> <span class="n">entrypoint</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -16230,12 +16242,12 @@ the flow run process has exited.</p>
 
             <details class="quote">
               <summary>Source code in <code>prefect/runner/runner.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">420</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">418</span>
+<span class="normal">419</span>
+<span class="normal">420</span>
 <span class="normal">421</span>
 <span class="normal">422</span>
-<span class="normal">423</span>
-<span class="normal">424</span>
-<span class="normal">425</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">execute_in_background</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="normal">423</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">execute_in_background</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Executes a function in the background.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -16262,14 +16274,14 @@ the flow run process has exited.</p>
 
             <details class="quote">
               <summary>Source code in <code>prefect/runner/runner.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">320</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">318</span>
+<span class="normal">319</span>
+<span class="normal">320</span>
 <span class="normal">321</span>
 <span class="normal">322</span>
 <span class="normal">323</span>
 <span class="normal">324</span>
-<span class="normal">325</span>
-<span class="normal">326</span>
-<span class="normal">327</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">handle_sigterm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">signum</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
+<span class="normal">325</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">handle_sigterm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">signum</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Gracefully shuts down the runner when a SIGTERM is received.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -16323,14 +16335,14 @@ the flow run process has exited.</p>
 
             <details class="quote">
               <summary>Source code in <code>prefect/runner/runner.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">843</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">841</span>
+<span class="normal">842</span>
+<span class="normal">843</span>
 <span class="normal">844</span>
 <span class="normal">845</span>
 <span class="normal">846</span>
 <span class="normal">847</span>
-<span class="normal">848</span>
-<span class="normal">849</span>
-<span class="normal">850</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">has_slots_available</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="normal">848</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">has_slots_available</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Determine if the flow run limit has been reached.</span>
 
@@ -16433,7 +16445,9 @@ overrides the default on the runner</p>
 
             <details class="quote">
               <summary>Source code in <code>prefect/runner/runner.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">329</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">327</span>
+<span class="normal">328</span>
+<span class="normal">329</span>
 <span class="normal">330</span>
 <span class="normal">331</span>
 <span class="normal">332</span>
@@ -16520,9 +16534,7 @@ overrides the default on the runner</p>
 <span class="normal">413</span>
 <span class="normal">414</span>
 <span class="normal">415</span>
-<span class="normal">416</span>
-<span class="normal">417</span>
-<span class="normal">418</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@sync_compatible</span>
+<span class="normal">416</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@sync_compatible</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">start</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span> <span class="n">run_once</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">webserver</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -16637,7 +16649,9 @@ overrides the default on the runner</p>
 
             <details class="quote">
               <summary>Source code in <code>prefect/runner/runner.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">443</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">441</span>
+<span class="normal">442</span>
+<span class="normal">443</span>
 <span class="normal">444</span>
 <span class="normal">445</span>
 <span class="normal">446</span>
@@ -16652,9 +16666,7 @@ overrides the default on the runner</p>
 <span class="normal">455</span>
 <span class="normal">456</span>
 <span class="normal">457</span>
-<span class="normal">458</span>
-<span class="normal">459</span>
-<span class="normal">460</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@sync_compatible</span>
+<span class="normal">458</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@sync_compatible</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Stops the runner&#39;s polling cycle.&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">started</span><span class="p">:</span>
