@@ -13694,27 +13694,26 @@ if (amplitudeKey){
 <span class="kn">from</span> <span class="nn">prefect.server.events.actions</span> <span class="kn">import</span> <span class="n">CancelFlowRun</span>
 
 <span class="c1"># creating an automation</span>
-<span class="n">automation</span> <span class="o">=</span>
-  <span class="n">Automation</span><span class="p">(</span>
+<span class="n">automation</span> <span class="o">=</span> <span class="n">Automation</span><span class="p">(</span>
     <span class="n">name</span><span class="o">=</span><span class="s2">&quot;woodchonk&quot;</span><span class="p">,</span>
     <span class="n">trigger</span><span class="o">=</span><span class="n">EventTrigger</span><span class="p">(</span>
-      <span class="n">expect</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;animal.walked&quot;</span><span class="p">},</span>
-      <span class="n">match</span><span class="o">=</span><span class="p">{</span>
-        <span class="s2">&quot;genus&quot;</span><span class="p">:</span> <span class="s2">&quot;Marmota&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;species&quot;</span><span class="p">:</span> <span class="s2">&quot;monax&quot;</span><span class="p">,</span>
+        <span class="n">expect</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;animal.walked&quot;</span><span class="p">},</span>
+        <span class="n">match</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;genus&quot;</span><span class="p">:</span> <span class="s2">&quot;Marmota&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;species&quot;</span><span class="p">:</span> <span class="s2">&quot;monax&quot;</span><span class="p">,</span>
         <span class="p">},</span>
         <span class="n">posture</span><span class="o">=</span><span class="s2">&quot;Reactive&quot;</span><span class="p">,</span>
         <span class="n">threshold</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
-        <span class="p">),</span>
-      <span class="n">actions</span><span class="o">=</span><span class="p">[</span><span class="n">CancelFlowRun</span><span class="p">()]</span>
-        <span class="p">)</span><span class="o">.</span><span class="n">create</span><span class="p">()</span>
+    <span class="p">),</span>
+    <span class="n">actions</span><span class="o">=</span><span class="p">[</span><span class="n">CancelFlowRun</span><span class="p">()]</span>
+<span class="p">)</span><span class="o">.</span><span class="n">create</span><span class="p">()</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">automation</span><span class="p">)</span>
 <span class="c1"># name=&#39;woodchonk&#39; description=&#39;&#39; enabled=True trigger=EventTrigger(type=&#39;event&#39;, match=ResourceSpecification(__root__={&#39;genus&#39;: &#39;Marmota&#39;, &#39;species&#39;: &#39;monax&#39;}), match_related=ResourceSpecification(__root__={}), after=set(), expect={&#39;animal.walked&#39;}, for_each=set(), posture=Posture.Reactive, threshold=3, within=datetime.timedelta(seconds=10)) actions=[CancelFlowRun(type=&#39;cancel-flow-run&#39;)] actions_on_trigger=[] actions_on_resolve=[] owner_resource=None id=UUID(&#39;d641c552-775c-4dc6-a31e-541cb11137a6&#39;)</span>
 
 <span class="c1"># reading the automation</span>
 
 <span class="n">automation</span> <span class="o">=</span> <span class="n">Automation</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="nb">id</span> <span class="o">=</span><span class="s2">&quot;d641c552-775c-4dc6-a31e-541cb11137a6&quot;</span><span class="p">)</span>
-<span class="ow">or</span>
+<span class="c1"># or</span>
 <span class="n">automation</span> <span class="o">=</span> <span class="n">Automation</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="s2">&quot;woodchonk&quot;</span><span class="p">)</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="n">automation</span><span class="p">)</span>
@@ -13867,20 +13866,20 @@ if (amplitudeKey){
 
 <span class="nd">@flow</span>
 <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="n">table_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-  <span class="n">table</span> <span class="o">=</span> <span class="n">Table</span><span class="p">(</span><span class="n">table_name</span><span class="p">)</span>
+    <span class="n">table</span> <span class="o">=</span> <span class="n">Table</span><span class="p">(</span><span class="n">table_name</span><span class="p">)</span>
 
-  <span class="k">if</span> <span class="ow">not</span> <span class="n">table</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
-    <span class="n">emit_event</span><span class="p">(</span>
-        <span class="n">event</span><span class="o">=</span><span class="s2">&quot;table-missing&quot;</span><span class="p">,</span>
-        <span class="n">resource</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;prefect.resource.id&quot;</span><span class="p">:</span> <span class="s2">&quot;etl-events.transform&quot;</span><span class="p">}</span>
-    <span class="p">)</span>
-  <span class="k">elif</span> <span class="n">table</span><span class="o">.</span><span class="n">is_empty</span><span class="p">():</span>
-    <span class="n">emit_event</span><span class="p">(</span>
-        <span class="n">event</span><span class="o">=</span><span class="s2">&quot;table-empty&quot;</span><span class="p">,</span>
-        <span class="n">resource</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;prefect.resource.id&quot;</span><span class="p">:</span> <span class="s2">&quot;etl-events.transform&quot;</span><span class="p">}</span>
-    <span class="p">)</span>
-  <span class="k">else</span><span class="p">:</span>
-    <span class="c1"># transform data</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">table</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+        <span class="n">emit_event</span><span class="p">(</span>
+            <span class="n">event</span><span class="o">=</span><span class="s2">&quot;table-missing&quot;</span><span class="p">,</span>
+            <span class="n">resource</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;prefect.resource.id&quot;</span><span class="p">:</span> <span class="s2">&quot;etl-events.transform&quot;</span><span class="p">}</span>
+        <span class="p">)</span>
+    <span class="k">elif</span> <span class="n">table</span><span class="o">.</span><span class="n">is_empty</span><span class="p">():</span>
+        <span class="n">emit_event</span><span class="p">(</span>
+            <span class="n">event</span><span class="o">=</span><span class="s2">&quot;table-empty&quot;</span><span class="p">,</span>
+            <span class="n">resource</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;prefect.resource.id&quot;</span><span class="p">:</span> <span class="s2">&quot;etl-events.transform&quot;</span><span class="p">}</span>
+        <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># transform data</span>
 </code></pre></div>
 <p>The following configuration uses <code>after</code> to prevent this automation from firing unless either a <code>table-missing</code> or a <code>table-empty</code> event has occurred before a flow run of this deployment completes.</p>
 <div class="admonition tip">
