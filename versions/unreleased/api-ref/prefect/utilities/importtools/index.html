@@ -199,6 +199,28 @@ if (amplitudeKey){
     </div>
     <div data-md-component="announce">
       
+        <aside class="md-banner">
+          <div class="md-banner__inner md-grid md-typeset">
+            
+              <button class="md-banner__button md-icon" aria-label="Don't show this again">
+                
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+              </button>
+            
+            
+<div style="text-align:center">
+    <strong>
+        Prefect 3 is live! See the docs at <a href="https://docs-3.prefect.io" target="_blank" rel="noopener"> docs-3.prefect.io </a>
+    </strong>
+</div>
+
+
+          </div>
+          
+            <script>var content,el=document.querySelector("[data-md-component=announce]");el&&(content=el.querySelector(".md-typeset"),__md_hash(content.innerHTML)===__md_get("__announce")&&(el.hidden=!0))</script>
+          
+        </aside>
+      
     </div>
     
       <div data-md-color-scheme="default" data-md-component="outdated" hidden>
@@ -5913,7 +5935,7 @@ if (amplitudeKey){
   
   
     <li class="md-nav__item">
-      <a href="../../../../cintegrations/prefect-gcp/loud_run_worker_v2.md" class="md-nav__link">
+      <a href="../../../../integrations/prefect-gcp/cloud_run_worker_v2/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -14717,7 +14739,16 @@ will also attempt to compile and evaluate class and function definitions locally
 <span class="normal">426</span>
 <span class="normal">427</span>
 <span class="normal">428</span>
-<span class="normal">429</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">safe_load_namespace</span><span class="p">(</span><span class="n">source_code</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="normal">429</span>
+<span class="normal">430</span>
+<span class="normal">431</span>
+<span class="normal">432</span>
+<span class="normal">433</span>
+<span class="normal">434</span>
+<span class="normal">435</span>
+<span class="normal">436</span>
+<span class="normal">437</span>
+<span class="normal">438</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">safe_load_namespace</span><span class="p">(</span><span class="n">source_code</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Safely load a namespace from source code.</span>
 
@@ -14735,6 +14766,15 @@ will also attempt to compile and evaluate class and function definitions locally
     <span class="n">parsed_code</span> <span class="o">=</span> <span class="n">ast</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">source_code</span><span class="p">)</span>
 
     <span class="n">namespace</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;__name__&quot;</span><span class="p">:</span> <span class="s2">&quot;prefect_safe_namespace_loader&quot;</span><span class="p">}</span>
+
+    <span class="c1"># Remove the body of the if __name__ == &quot;__main__&quot;: block from the AST to prevent</span>
+    <span class="c1"># execution of guarded code</span>
+    <span class="n">new_body</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">parsed_code</span><span class="o">.</span><span class="n">body</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">_is_main_block</span><span class="p">(</span><span class="n">node</span><span class="p">):</span>
+            <span class="k">continue</span>
+        <span class="n">new_body</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+    <span class="n">parsed_code</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="n">new_body</span>
 
     <span class="c1"># Walk through the AST and find all import statements</span>
     <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">ast</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="n">parsed_code</span><span class="p">):</span>

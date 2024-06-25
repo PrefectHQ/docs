@@ -199,6 +199,28 @@ if (amplitudeKey){
     </div>
     <div data-md-component="announce">
       
+        <aside class="md-banner">
+          <div class="md-banner__inner md-grid md-typeset">
+            
+              <button class="md-banner__button md-icon" aria-label="Don't show this again">
+                
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+              </button>
+            
+            
+<div style="text-align:center">
+    <strong>
+        Prefect 3 is live! See the docs at <a href="https://docs-3.prefect.io" target="_blank" rel="noopener"> docs-3.prefect.io </a>
+    </strong>
+</div>
+
+
+          </div>
+          
+            <script>var content,el=document.querySelector("[data-md-component=announce]");el&&(content=el.querySelector(".md-typeset"),__md_hash(content.innerHTML)===__md_get("__announce")&&(el.hidden=!0))</script>
+          
+        </aside>
+      
     </div>
     
       <div data-md-color-scheme="default" data-md-component="outdated" hidden>
@@ -5913,7 +5935,7 @@ if (amplitudeKey){
   
   
     <li class="md-nav__item">
-      <a href="../../../../cintegrations/prefect-gcp/loud_run_worker_v2.md" class="md-nav__link">
+      <a href="../../../../integrations/prefect-gcp/cloud_run_worker_v2/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -13336,7 +13358,8 @@ raising a <code>TimeoutError</code>. A timeout of <code>None</code> will wait in
 
             <details class="quote">
               <summary>Source code in <code>prefect/concurrency/sync.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">27</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">26</span>
+<span class="normal">27</span>
 <span class="normal">28</span>
 <span class="normal">29</span>
 <span class="normal">30</span>
@@ -13384,9 +13407,7 @@ raising a <code>TimeoutError</code>. A timeout of <code>None</code> will wait in
 <span class="normal">72</span>
 <span class="normal">73</span>
 <span class="normal">74</span>
-<span class="normal">75</span>
-<span class="normal">76</span>
-<span class="normal">77</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@contextmanager</span>
+<span class="normal">75</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@contextmanager</span>
 <span class="k">def</span> <span class="nf">concurrency</span><span class="p">(</span>
     <span class="n">names</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span>
     <span class="n">occupy</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
@@ -13419,10 +13440,9 @@ raising a <code>TimeoutError</code>. A timeout of <code>None</code> will wait in
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">names</span> <span class="o">=</span> <span class="n">names</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">names</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="k">else</span> <span class="p">[</span><span class="n">names</span><span class="p">]</span>
 
-    <span class="k">with</span> <span class="n">timeout</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="n">timeout_seconds</span><span class="p">):</span>
-        <span class="n">limits</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">MinimalConcurrencyLimitResponse</span><span class="p">]</span> <span class="o">=</span> <span class="n">_call_async_function_from_sync</span><span class="p">(</span>
-            <span class="n">_acquire_concurrency_slots</span><span class="p">,</span> <span class="n">names</span><span class="p">,</span> <span class="n">occupy</span>
-        <span class="p">)</span>
+    <span class="n">limits</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">MinimalConcurrencyLimitResponse</span><span class="p">]</span> <span class="o">=</span> <span class="n">_call_async_function_from_sync</span><span class="p">(</span>
+        <span class="n">_acquire_concurrency_slots</span><span class="p">,</span> <span class="n">names</span><span class="p">,</span> <span class="n">occupy</span><span class="p">,</span> <span class="n">timeout_seconds</span><span class="o">=</span><span class="n">timeout_seconds</span>
+    <span class="p">)</span>
     <span class="n">acquisition_time</span> <span class="o">=</span> <span class="n">pendulum</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="s2">&quot;UTC&quot;</span><span class="p">)</span>
     <span class="n">emitted_events</span> <span class="o">=</span> <span class="n">_emit_concurrency_acquisition_events</span><span class="p">(</span><span class="n">limits</span><span class="p">,</span> <span class="n">occupy</span><span class="p">)</span>
 
@@ -13503,7 +13523,9 @@ limits have a slot decay.</p>
 
             <details class="quote">
               <summary>Source code in <code>prefect/concurrency/sync.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">80</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">78</span>
+<span class="normal">79</span>
+<span class="normal">80</span>
 <span class="normal">81</span>
 <span class="normal">82</span>
 <span class="normal">83</span>
@@ -13514,9 +13536,7 @@ limits have a slot decay.</p>
 <span class="normal">88</span>
 <span class="normal">89</span>
 <span class="normal">90</span>
-<span class="normal">91</span>
-<span class="normal">92</span>
-<span class="normal">93</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">rate_limit</span><span class="p">(</span><span class="n">names</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">occupy</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
+<span class="normal">91</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">rate_limit</span><span class="p">(</span><span class="n">names</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">occupy</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Block execution until an `occupy` number of slots of the concurrency</span>
 <span class="sd">    limits given in `names` are acquired. Requires that all given concurrency</span>
 <span class="sd">    limits have a slot decay.</span>
