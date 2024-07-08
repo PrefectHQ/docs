@@ -13373,7 +13373,7 @@ if (amplitudeKey){
 
 
   
-    <a href="https://github.com/PrefectHQ/prefect/edit/main/docs/api-ref/server/api/server.md" title="Edit this page" class="md-content__button md-icon">
+    <a href="https://github.com/PrefectHQ/prefect/edit/2.x/docs/api-ref/server/api/server.md" title="Edit this page" class="md-content__button md-icon">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25Z"/></svg>
     </a>
@@ -14148,7 +14148,17 @@ and services will be disabled.</p>
 <span class="normal">725</span>
 <span class="normal">726</span>
 <span class="normal">727</span>
-<span class="normal">728</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">create_app</span><span class="p">(</span>
+<span class="normal">728</span>
+<span class="normal">729</span>
+<span class="normal">730</span>
+<span class="normal">731</span>
+<span class="normal">732</span>
+<span class="normal">733</span>
+<span class="normal">734</span>
+<span class="normal">735</span>
+<span class="normal">736</span>
+<span class="normal">737</span>
+<span class="normal">738</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">create_app</span><span class="p">(</span>
     <span class="n">settings</span><span class="p">:</span> <span class="n">prefect</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">Settings</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">ephemeral</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">ignore_cache</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -14205,33 +14215,43 @@ and services will be disabled.</p>
         <span class="n">service_instances</span> <span class="o">=</span> <span class="p">[]</span>
 
         <span class="k">if</span> <span class="n">prefect</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">PREFECT_API_SERVICES_SCHEDULER_ENABLED</span><span class="o">.</span><span class="n">value</span><span class="p">():</span>
-            <span class="n">service_instances</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">services</span><span class="o">.</span><span class="n">scheduler</span><span class="o">.</span><span class="n">Scheduler</span><span class="p">())</span>
-            <span class="n">service_instances</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">services</span><span class="o">.</span><span class="n">scheduler</span><span class="o">.</span><span class="n">RecentDeploymentsScheduler</span><span class="p">())</span>
+            <span class="n">service_instances</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">services</span><span class="o">.</span><span class="n">scheduler</span><span class="o">.</span><span class="n">Scheduler</span><span class="p">(</span><span class="n">handle_signals</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+            <span class="n">service_instances</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">services</span><span class="o">.</span><span class="n">scheduler</span><span class="o">.</span><span class="n">RecentDeploymentsScheduler</span><span class="p">(</span><span class="n">handle_signals</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="p">)</span>
 
         <span class="k">if</span> <span class="n">prefect</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">PREFECT_API_SERVICES_LATE_RUNS_ENABLED</span><span class="o">.</span><span class="n">value</span><span class="p">():</span>
-            <span class="n">service_instances</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">services</span><span class="o">.</span><span class="n">late_runs</span><span class="o">.</span><span class="n">MarkLateRuns</span><span class="p">())</span>
+            <span class="n">service_instances</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">services</span><span class="o">.</span><span class="n">late_runs</span><span class="o">.</span><span class="n">MarkLateRuns</span><span class="p">(</span><span class="n">handle_signals</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="p">)</span>
 
         <span class="k">if</span> <span class="n">prefect</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">PREFECT_API_SERVICES_PAUSE_EXPIRATIONS_ENABLED</span><span class="o">.</span><span class="n">value</span><span class="p">():</span>
-            <span class="n">service_instances</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">services</span><span class="o">.</span><span class="n">pause_expirations</span><span class="o">.</span><span class="n">FailExpiredPauses</span><span class="p">())</span>
+            <span class="n">service_instances</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">services</span><span class="o">.</span><span class="n">pause_expirations</span><span class="o">.</span><span class="n">FailExpiredPauses</span><span class="p">(</span><span class="n">handle_signals</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="p">)</span>
 
         <span class="k">if</span> <span class="n">prefect</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">PREFECT_API_SERVICES_CANCELLATION_CLEANUP_ENABLED</span><span class="o">.</span><span class="n">value</span><span class="p">():</span>
             <span class="n">service_instances</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                <span class="n">services</span><span class="o">.</span><span class="n">cancellation_cleanup</span><span class="o">.</span><span class="n">CancellationCleanup</span><span class="p">()</span>
+                <span class="n">services</span><span class="o">.</span><span class="n">cancellation_cleanup</span><span class="o">.</span><span class="n">CancellationCleanup</span><span class="p">(</span><span class="n">handle_signals</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
             <span class="p">)</span>
 
         <span class="k">if</span> <span class="n">prefect</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">PREFECT_SERVER_ANALYTICS_ENABLED</span><span class="o">.</span><span class="n">value</span><span class="p">():</span>
-            <span class="n">service_instances</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">services</span><span class="o">.</span><span class="n">telemetry</span><span class="o">.</span><span class="n">Telemetry</span><span class="p">())</span>
+            <span class="n">service_instances</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">services</span><span class="o">.</span><span class="n">telemetry</span><span class="o">.</span><span class="n">Telemetry</span><span class="p">(</span><span class="n">handle_signals</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
 
         <span class="k">if</span> <span class="n">prefect</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">PREFECT_API_SERVICES_FLOW_RUN_NOTIFICATIONS_ENABLED</span><span class="o">.</span><span class="n">value</span><span class="p">():</span>
             <span class="n">service_instances</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                <span class="n">services</span><span class="o">.</span><span class="n">flow_run_notifications</span><span class="o">.</span><span class="n">FlowRunNotifications</span><span class="p">()</span>
+                <span class="n">services</span><span class="o">.</span><span class="n">flow_run_notifications</span><span class="o">.</span><span class="n">FlowRunNotifications</span><span class="p">(</span>
+                    <span class="n">handle_signals</span><span class="o">=</span><span class="kc">False</span>
+                <span class="p">)</span>
             <span class="p">)</span>
 
         <span class="k">if</span> <span class="n">prefect</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">PREFECT_API_SERVICES_FOREMAN_ENABLED</span><span class="o">.</span><span class="n">value</span><span class="p">():</span>
-            <span class="n">service_instances</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">services</span><span class="o">.</span><span class="n">foreman</span><span class="o">.</span><span class="n">Foreman</span><span class="p">())</span>
+            <span class="n">service_instances</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">services</span><span class="o">.</span><span class="n">foreman</span><span class="o">.</span><span class="n">Foreman</span><span class="p">(</span><span class="n">handle_signals</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
 
         <span class="k">if</span> <span class="n">prefect</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">PREFECT_EXPERIMENTAL_ENABLE_TASK_SCHEDULING</span><span class="o">.</span><span class="n">value</span><span class="p">():</span>
-            <span class="n">service_instances</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">services</span><span class="o">.</span><span class="n">task_scheduling</span><span class="o">.</span><span class="n">TaskSchedulingTimeouts</span><span class="p">())</span>
+            <span class="n">service_instances</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">services</span><span class="o">.</span><span class="n">task_scheduling</span><span class="o">.</span><span class="n">TaskSchedulingTimeouts</span><span class="p">(</span><span class="n">handle_signals</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="p">)</span>
 
         <span class="k">if</span> <span class="p">(</span>
             <span class="n">prefect</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">PREFECT_EXPERIMENTAL_EVENTS</span><span class="o">.</span><span class="n">value</span><span class="p">()</span>
@@ -14244,7 +14264,7 @@ and services will be disabled.</p>
             <span class="ow">and</span> <span class="n">prefect</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">PREFECT_API_SERVICES_TRIGGERS_ENABLED</span><span class="o">.</span><span class="n">value</span><span class="p">()</span>
         <span class="p">):</span>
             <span class="n">service_instances</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ReactiveTriggers</span><span class="p">())</span>
-            <span class="n">service_instances</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ProactiveTriggers</span><span class="p">())</span>
+            <span class="n">service_instances</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ProactiveTriggers</span><span class="p">(</span><span class="n">handle_signals</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
             <span class="n">service_instances</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Actions</span><span class="p">())</span>
 
         <span class="k">if</span> <span class="p">(</span>
