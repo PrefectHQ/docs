@@ -15266,7 +15266,12 @@ the flow run.</p>
 <span class="normal">1218</span>
 <span class="normal">1219</span>
 <span class="normal">1220</span>
-<span class="normal">1221</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@register_base_type</span>
+<span class="normal">1221</span>
+<span class="normal">1222</span>
+<span class="normal">1223</span>
+<span class="normal">1224</span>
+<span class="normal">1225</span>
+<span class="normal">1226</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@register_base_type</span>
 <span class="k">class</span> <span class="nc">BaseWorker</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
     <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">job_configuration</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">BaseJobConfiguration</span><span class="p">]</span> <span class="o">=</span> <span class="n">BaseJobConfiguration</span>
@@ -15913,7 +15918,12 @@ the flow run.</p>
 
         <span class="n">deployment_vars</span> <span class="o">=</span> <span class="n">deployment</span><span class="o">.</span><span class="n">job_variables</span> <span class="ow">or</span> <span class="p">{}</span>
         <span class="n">flow_run_vars</span> <span class="o">=</span> <span class="n">flow_run</span><span class="o">.</span><span class="n">job_variables</span> <span class="ow">or</span> <span class="p">{}</span>
-        <span class="n">job_variables</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="n">deployment_vars</span><span class="p">,</span> <span class="o">**</span><span class="n">flow_run_vars</span><span class="p">}</span>
+        <span class="n">job_variables</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="n">deployment_vars</span><span class="p">}</span>
+
+        <span class="c1"># merge environment variables carefully, otherwise full override</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">job_variables</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;env&quot;</span><span class="p">),</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="n">job_variables</span><span class="p">[</span><span class="s2">&quot;env&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">flow_run_vars</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;env&quot;</span><span class="p">,</span> <span class="p">{}))</span>
+        <span class="n">job_variables</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">flow_run_vars</span><span class="p">)</span>
 
         <span class="n">configuration</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">job_configuration</span><span class="o">.</span><span class="n">from_template_and_values</span><span class="p">(</span>
             <span class="n">base_job_template</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_work_pool</span><span class="o">.</span><span class="n">base_job_template</span><span class="p">,</span>
