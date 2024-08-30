@@ -13279,6 +13279,20 @@ if (amplitudeKey){
                 <em>required</em>
             </td>
           </tr>
+          <tr class="doc-section-item">
+            <td><code>print_func</code></td>
+            <td>
+                  <code><span title="typing.Optional">Optional</span>[<span title="typing.Callable">Callable</span>]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>A function to print the logs from the job pods.</p>
+              </div>
+            </td>
+            <td>
+                  <code>None</code>
+            </td>
+          </tr>
       </tbody>
     </table>
 
@@ -13298,7 +13312,7 @@ if (amplitudeKey){
             </td>
             <td>
               <div class="doc-md-description">
-                <p>The a dict of logs from each pod in the job, e.g. {'pod_name': 'pod_log_str'}.</p>
+                <p>A dict of logs from each pod in the job, e.g. {'pod_name': 'pod_log_str'}.</p>
               </div>
             </td>
           </tr>
@@ -13375,17 +13389,21 @@ if (amplitudeKey){
 <span class="normal">39</span>
 <span class="normal">40</span>
 <span class="normal">41</span>
-<span class="normal">42</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@flow</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@flow</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">run_namespaced_job</span><span class="p">(</span>
-    <span class="n">kubernetes_job</span><span class="p">:</span> <span class="n">KubernetesJob</span><span class="p">,</span>
+    <span class="n">kubernetes_job</span><span class="p">:</span> <span class="n">KubernetesJob</span><span class="p">,</span> <span class="n">print_func</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Flow for running a namespaced Kubernetes job.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        kubernetes_job: The `KubernetesJob` block that specifies the job to run.</span>
+<span class="sd">        print_func: A function to print the logs from the job pods.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        The a dict of logs from each pod in the job, e.g. {&#39;pod_name&#39;: &#39;pod_log_str&#39;}.</span>
+<span class="sd">        A dict of logs from each pod in the job, e.g. {&#39;pod_name&#39;: &#39;pod_log_str&#39;}.</span>
 
 <span class="sd">    Raises:</span>
 <span class="sd">        RuntimeError: If the created Kubernetes job attains a failed status.</span>
@@ -13404,11 +13422,13 @@ if (amplitudeKey){
 <span class="sd">        )</span>
 <span class="sd">        ```</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">kubernetes_job_run</span> <span class="o">=</span> <span class="k">await</span> <span class="n">task</span><span class="p">(</span><span class="n">kubernetes_job</span><span class="o">.</span><span class="n">trigger</span><span class="o">.</span><span class="n">aio</span><span class="p">)(</span><span class="n">kubernetes_job</span><span class="p">)</span>
+    <span class="n">kubernetes_job_run</span> <span class="o">=</span> <span class="n">task</span><span class="p">(</span><span class="n">kubernetes_job</span><span class="o">.</span><span class="n">trigger</span><span class="p">)()</span>
 
-    <span class="k">await</span> <span class="n">task</span><span class="p">(</span><span class="n">kubernetes_job_run</span><span class="o">.</span><span class="n">wait_for_completion</span><span class="o">.</span><span class="n">aio</span><span class="p">)(</span><span class="n">kubernetes_job_run</span><span class="p">)</span>
+    <span class="k">await</span> <span class="n">task</span><span class="p">(</span><span class="n">kubernetes_job_run</span><span class="o">.</span><span class="n">wait_for_completion</span><span class="o">.</span><span class="n">aio</span><span class="p">)(</span>
+        <span class="n">kubernetes_job_run</span><span class="p">,</span> <span class="n">print_func</span>
+    <span class="p">)</span>
 
-    <span class="k">return</span> <span class="k">await</span> <span class="n">task</span><span class="p">(</span><span class="n">kubernetes_job_run</span><span class="o">.</span><span class="n">fetch_result</span><span class="o">.</span><span class="n">aio</span><span class="p">)(</span><span class="n">kubernetes_job_run</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">task</span><span class="p">(</span><span class="n">kubernetes_job_run</span><span class="o">.</span><span class="n">fetch_result</span><span class="p">)()</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>

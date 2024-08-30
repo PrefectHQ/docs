@@ -13383,8 +13383,7 @@ between <code>interval * (1 - range) &lt; rv &lt; interval * (1 + range)</code><
 
             <details class="quote">
               <summary>Source code in <code>prefect/utilities/services.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 17</span>
-<span class="normal"> 18</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 18</span>
 <span class="normal"> 19</span>
 <span class="normal"> 20</span>
 <span class="normal"> 21</span>
@@ -13518,7 +13517,13 @@ between <code>interval * (1 - range) &lt; rv &lt; interval * (1 + range)</code><
 <span class="normal">149</span>
 <span class="normal">150</span>
 <span class="normal">151</span>
-<span class="normal">152</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">critical_service_loop</span><span class="p">(</span>
+<span class="normal">152</span>
+<span class="normal">153</span>
+<span class="normal">154</span>
+<span class="normal">155</span>
+<span class="normal">156</span>
+<span class="normal">157</span>
+<span class="normal">158</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">critical_service_loop</span><span class="p">(</span>
     <span class="n">workload</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Coroutine</span><span class="p">],</span>
     <span class="n">interval</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
     <span class="n">memory</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
@@ -13571,6 +13576,11 @@ between <code>interval * (1 - range) &lt; rv &lt; interval * (1 + range)</code><
                 <span class="n">backoff_count</span> <span class="o">=</span> <span class="mi">0</span>
 
             <span class="n">track_record</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">CancelledError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+            <span class="c1"># Exit immediately because the task was cancelled, possibly due</span>
+            <span class="c1"># to a signal or timeout.</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Run of </span><span class="si">{</span><span class="n">workload</span><span class="si">!r}</span><span class="s2"> cancelled&quot;</span><span class="p">,</span> <span class="n">exc_info</span><span class="o">=</span><span class="n">exc</span><span class="p">)</span>
+            <span class="k">return</span>
         <span class="k">except</span> <span class="n">httpx</span><span class="o">.</span><span class="n">TransportError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
             <span class="c1"># httpx.TransportError is the base class for any kind of communications</span>
             <span class="c1"># error, like timeouts, connection failures, etc.  This does _not_ cover</span>
@@ -13642,7 +13652,7 @@ between <code>interval * (1 - range) &lt; rv &lt; interval * (1 + range)</code><
             <span class="n">failures</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
             <span class="n">printer</span><span class="p">(</span>
                 <span class="s2">&quot;Backing off due to consecutive errors, using increased interval of &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="n">interval</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">2</span><span class="o">**</span><span class="n">backoff_count</span><span class="si">}</span><span class="s2">s.&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="n">interval</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="o">**</span><span class="w"> </span><span class="n">backoff_count</span><span class="si">}</span><span class="s2">s.&quot;</span>
             <span class="p">)</span>
 
         <span class="k">if</span> <span class="n">run_once</span><span class="p">:</span>

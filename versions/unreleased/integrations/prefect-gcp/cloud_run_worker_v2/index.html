@@ -13711,8 +13711,8 @@ default base job template.</p>
         <span class="n">gt</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
         <span class="n">le</span><span class="o">=</span><span class="mi">86400</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="p">(</span>
-            <span class="s2">&quot;The length of time that Prefect will wait for a Cloud Run Job to &quot;</span>
-            <span class="s2">&quot;complete before raising an exception.&quot;</span>
+            <span class="s2">&quot;Max allowed duration the job may be active before Cloud Run will &quot;</span>
+            <span class="s2">&quot;actively try to mark it failed and kill associated containers (maximum of 86400 seconds, 1 day).&quot;</span>
         <span class="p">),</span>
     <span class="p">)</span>
     <span class="n">_job_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">PrivateAttr</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
@@ -14601,28 +14601,7 @@ preparation.</p>
 <span class="normal">856</span>
 <span class="normal">857</span>
 <span class="normal">858</span>
-<span class="normal">859</span>
-<span class="normal">860</span>
-<span class="normal">861</span>
-<span class="normal">862</span>
-<span class="normal">863</span>
-<span class="normal">864</span>
-<span class="normal">865</span>
-<span class="normal">866</span>
-<span class="normal">867</span>
-<span class="normal">868</span>
-<span class="normal">869</span>
-<span class="normal">870</span>
-<span class="normal">871</span>
-<span class="normal">872</span>
-<span class="normal">873</span>
-<span class="normal">874</span>
-<span class="normal">875</span>
-<span class="normal">876</span>
-<span class="normal">877</span>
-<span class="normal">878</span>
-<span class="normal">879</span>
-<span class="normal">880</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">CloudRunWorkerV2</span><span class="p">(</span><span class="n">BaseWorker</span><span class="p">):</span>
+<span class="normal">859</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">CloudRunWorkerV2</span><span class="p">(</span><span class="n">BaseWorker</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The Cloud Run worker V2.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -14640,7 +14619,7 @@ preparation.</p>
         <span class="n">flow_run</span><span class="p">:</span> <span class="s2">&quot;FlowRun&quot;</span><span class="p">,</span>
         <span class="n">configuration</span><span class="p">:</span> <span class="n">CloudRunWorkerJobV2Configuration</span><span class="p">,</span>
         <span class="n">task_status</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">TaskStatus</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CloudRunJobV2Result</span><span class="p">:</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CloudRunWorkerV2Result</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Runs the flow run on Cloud Run and waits for it to complete.</span>
 
@@ -14819,8 +14798,6 @@ preparation.</p>
             <span class="n">job_name</span><span class="o">=</span><span class="n">configuration</span><span class="o">.</span><span class="n">job_name</span><span class="p">,</span>
         <span class="p">)</span>
 
-        <span class="n">t0</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
-
         <span class="k">while</span> <span class="ow">not</span> <span class="n">job</span><span class="o">.</span><span class="n">is_ready</span><span class="p">():</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">ready_condition</span> <span class="o">:=</span> <span class="n">job</span><span class="o">.</span><span class="n">get_ready_condition</span><span class="p">()):</span>
                 <span class="n">ready_condition</span> <span class="o">=</span> <span class="s2">&quot;waiting for condition update&quot;</span>
@@ -14833,15 +14810,6 @@ preparation.</p>
                 <span class="n">location</span><span class="o">=</span><span class="n">configuration</span><span class="o">.</span><span class="n">region</span><span class="p">,</span>
                 <span class="n">job_name</span><span class="o">=</span><span class="n">configuration</span><span class="o">.</span><span class="n">job_name</span><span class="p">,</span>
             <span class="p">)</span>
-
-            <span class="n">elapsed_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">t0</span>
-
-            <span class="k">if</span> <span class="n">elapsed_time</span> <span class="o">&gt;</span> <span class="n">configuration</span><span class="o">.</span><span class="n">timeout</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;Timeout of </span><span class="si">{</span><span class="n">configuration</span><span class="o">.</span><span class="n">timeout</span><span class="si">}</span><span class="s2"> seconds reached while &quot;</span>
-                    <span class="sa">f</span><span class="s2">&quot;waiting for Cloud Run Job V2 </span><span class="si">{</span><span class="n">configuration</span><span class="o">.</span><span class="n">job_name</span><span class="si">}</span><span class="s2"> to be &quot;</span>
-                    <span class="s2">&quot;created.&quot;</span>
-                <span class="p">)</span>
 
             <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">poll_interval</span><span class="p">)</span>
 
@@ -14925,7 +14893,7 @@ preparation.</p>
         <span class="n">execution</span><span class="p">:</span> <span class="n">ExecutionV2</span><span class="p">,</span>
         <span class="n">logger</span><span class="p">:</span> <span class="n">PrefectLogAdapter</span><span class="p">,</span>
         <span class="n">poll_interval</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CloudRunJobV2Result</span><span class="p">:</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CloudRunWorkerV2Result</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Watch the job execution and get the result.</span>
 
@@ -14987,7 +14955,7 @@ preparation.</p>
                     <span class="sa">f</span><span class="s2">&quot;- </span><span class="si">{</span><span class="n">configuration</span><span class="o">.</span><span class="n">job_name</span><span class="si">}</span><span class="s2"> - </span><span class="si">{</span><span class="n">exc</span><span class="si">}</span><span class="s2">&quot;</span>
                 <span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">CloudRunJobV2Result</span><span class="p">(</span>
+        <span class="k">return</span> <span class="n">CloudRunWorkerV2Result</span><span class="p">(</span>
             <span class="n">identifier</span><span class="o">=</span><span class="n">configuration</span><span class="o">.</span><span class="n">job_name</span><span class="p">,</span>
             <span class="n">status_code</span><span class="o">=</span><span class="n">status_code</span><span class="p">,</span>
         <span class="p">)</span>
@@ -15001,7 +14969,7 @@ preparation.</p>
         <span class="n">poll_interval</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ExecutionV2</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Update execution status until it is no longer running or timeout is reached.</span>
+<span class="sd">        Update execution status until it is no longer running.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            cr_client (Resource): The base client needed for interacting with GCP</span>
@@ -15014,22 +14982,12 @@ preparation.</p>
 <span class="sd">        Returns:</span>
 <span class="sd">            The execution.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">t0</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
 
         <span class="k">while</span> <span class="n">execution</span><span class="o">.</span><span class="n">is_running</span><span class="p">():</span>
             <span class="n">execution</span> <span class="o">=</span> <span class="n">ExecutionV2</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
                 <span class="n">cr_client</span><span class="o">=</span><span class="n">cr_client</span><span class="p">,</span>
                 <span class="n">execution_id</span><span class="o">=</span><span class="n">execution</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
             <span class="p">)</span>
-
-            <span class="n">elapsed_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">t0</span>
-
-            <span class="k">if</span> <span class="n">elapsed_time</span> <span class="o">&gt;</span> <span class="n">configuration</span><span class="o">.</span><span class="n">timeout</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;Timeout of </span><span class="si">{</span><span class="n">configuration</span><span class="o">.</span><span class="n">timeout</span><span class="si">}</span><span class="s2"> seconds reached while &quot;</span>
-                    <span class="sa">f</span><span class="s2">&quot;waiting for Cloud Run Job V2 </span><span class="si">{</span><span class="n">configuration</span><span class="o">.</span><span class="n">job_name</span><span class="si">}</span><span class="s2"> to &quot;</span>
-                    <span class="s2">&quot;complete.&quot;</span>
-                <span class="p">)</span>
 
             <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">poll_interval</span><span class="p">)</span>
 
@@ -15331,7 +15289,7 @@ preparation.</p>
       <tbody>
           <tr class="doc-section-item">
             <td>
-                  <code><span title="prefect_gcp.models.cloud_run_v2.CloudRunJobV2Result">CloudRunJobV2Result</span></code>
+                  <code><a class="autorefs autorefs-internal" title="prefect_gcp.workers.cloud_run_v2.CloudRunWorkerV2Result" href="#prefect_gcp.workers.cloud_run_v2.CloudRunWorkerV2Result">CloudRunWorkerV2Result</a></code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -15394,7 +15352,7 @@ preparation.</p>
     <span class="n">flow_run</span><span class="p">:</span> <span class="s2">&quot;FlowRun&quot;</span><span class="p">,</span>
     <span class="n">configuration</span><span class="p">:</span> <span class="n">CloudRunWorkerJobV2Configuration</span><span class="p">,</span>
     <span class="n">task_status</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">TaskStatus</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CloudRunJobV2Result</span><span class="p">:</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CloudRunWorkerV2Result</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Runs the flow run on Cloud Run and waits for it to complete.</span>
 
@@ -15478,6 +15436,22 @@ preparation.</p>
 <span class="sd">    &quot;&quot;&quot;</span>
 </code></pre></div></td></tr></table></div>
               </details>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+  </div>
 
     </div>
 
@@ -15689,8 +15663,8 @@ default base job template.</p>
         <span class="n">le</span><span class="o">=</span><span class="mi">86400</span><span class="p">,</span>
         <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Job Timeout&quot;</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="p">(</span>
-            <span class="s2">&quot;The length of time that Prefect will wait for a Cloud Run Job to &quot;</span>
-            <span class="s2">&quot;complete before raising an exception (maximum of 86400 seconds, 1 day).&quot;</span>
+            <span class="s2">&quot;Max allowed duration the job may be active before Cloud Run will &quot;</span>
+            <span class="s2">&quot;actively try to mark it failed and kill associated containers (maximum of 86400 seconds, 1 day).&quot;</span>
         <span class="p">),</span>
     <span class="p">)</span>
     <span class="n">vpc_connector_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>

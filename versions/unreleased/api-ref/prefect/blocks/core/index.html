@@ -14485,7 +14485,14 @@ initialization.</p>
 <span class="normal">1086</span>
 <span class="normal">1087</span>
 <span class="normal">1088</span>
-<span class="normal">1089</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@register_base_type</span>
+<span class="normal">1089</span>
+<span class="normal">1090</span>
+<span class="normal">1091</span>
+<span class="normal">1092</span>
+<span class="normal">1093</span>
+<span class="normal">1094</span>
+<span class="normal">1095</span>
+<span class="normal">1096</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@register_base_type</span>
 <span class="nd">@instrument_method_calls_on_class_instances</span>
 <span class="k">class</span> <span class="nc">Block</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">,</span> <span class="n">ABC</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -14535,25 +14542,29 @@ initialization.</p>
 
             <span class="c1"># create block schema references</span>
             <span class="n">refs</span> <span class="o">=</span> <span class="n">schema</span><span class="p">[</span><span class="s2">&quot;block_schema_references&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+
+            <span class="k">def</span> <span class="nf">collect_block_schema_references</span><span class="p">(</span>
+                <span class="n">field_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">annotation</span><span class="p">:</span> <span class="nb">type</span>
+            <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">                </span><span class="sd">&quot;&quot;&quot;Walk through the annotation and collect block schemas for any nested blocks.&quot;&quot;&quot;</span>
+                <span class="k">if</span> <span class="n">Block</span><span class="o">.</span><span class="n">is_block_class</span><span class="p">(</span><span class="n">annotation</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">refs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">field_name</span><span class="p">),</span> <span class="nb">list</span><span class="p">):</span>
+                        <span class="n">refs</span><span class="p">[</span><span class="n">field_name</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                            <span class="n">annotation</span><span class="o">.</span><span class="n">_to_block_schema_reference_dict</span><span class="p">()</span>
+                        <span class="p">)</span>
+                    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">refs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">field_name</span><span class="p">),</span> <span class="nb">dict</span><span class="p">):</span>
+                        <span class="n">refs</span><span class="p">[</span><span class="n">field_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+                            <span class="n">refs</span><span class="p">[</span><span class="n">field_name</span><span class="p">],</span>
+                            <span class="n">annotation</span><span class="o">.</span><span class="n">_to_block_schema_reference_dict</span><span class="p">(),</span>
+                        <span class="p">]</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">refs</span><span class="p">[</span><span class="n">field_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">annotation</span><span class="o">.</span><span class="n">_to_block_schema_reference_dict</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">get_origin</span><span class="p">(</span><span class="n">annotation</span><span class="p">)</span> <span class="ow">in</span> <span class="p">(</span><span class="n">Union</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+                    <span class="k">for</span> <span class="n">type_</span> <span class="ow">in</span> <span class="n">get_args</span><span class="p">(</span><span class="n">annotation</span><span class="p">):</span>
+                        <span class="n">collect_block_schema_references</span><span class="p">(</span><span class="n">field_name</span><span class="p">,</span> <span class="n">type_</span><span class="p">)</span>
+
             <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">__fields__</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
-                <span class="k">if</span> <span class="n">Block</span><span class="o">.</span><span class="n">is_block_class</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">type_</span><span class="p">):</span>
-                    <span class="n">refs</span><span class="p">[</span><span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">type_</span><span class="o">.</span><span class="n">_to_block_schema_reference_dict</span><span class="p">()</span>
-                <span class="k">if</span> <span class="n">get_origin</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">type_</span><span class="p">)</span> <span class="ow">is</span> <span class="n">Union</span><span class="p">:</span>
-                    <span class="k">for</span> <span class="n">type_</span> <span class="ow">in</span> <span class="n">get_args</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">type_</span><span class="p">):</span>
-                        <span class="k">if</span> <span class="n">Block</span><span class="o">.</span><span class="n">is_block_class</span><span class="p">(</span><span class="n">type_</span><span class="p">):</span>
-                            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">refs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">),</span> <span class="nb">list</span><span class="p">):</span>
-                                <span class="n">refs</span><span class="p">[</span><span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                                    <span class="n">type_</span><span class="o">.</span><span class="n">_to_block_schema_reference_dict</span><span class="p">()</span>
-                                <span class="p">)</span>
-                            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">refs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">),</span> <span class="nb">dict</span><span class="p">):</span>
-                                <span class="n">refs</span><span class="p">[</span><span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
-                                    <span class="n">refs</span><span class="p">[</span><span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">],</span>
-                                    <span class="n">type_</span><span class="o">.</span><span class="n">_to_block_schema_reference_dict</span><span class="p">(),</span>
-                                <span class="p">]</span>
-                            <span class="k">else</span><span class="p">:</span>
-                                <span class="n">refs</span><span class="p">[</span>
-                                    <span class="n">field</span><span class="o">.</span><span class="n">name</span>
-                                <span class="p">]</span> <span class="o">=</span> <span class="n">type_</span><span class="o">.</span><span class="n">_to_block_schema_reference_dict</span><span class="p">()</span>
+                <span class="n">collect_block_schema_references</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">field</span><span class="o">.</span><span class="n">type_</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -15182,13 +15193,16 @@ initialization.</p>
                 <span class="s2">&quot;subclass and not on a Block interface class directly.&quot;</span>
             <span class="p">)</span>
 
+        <span class="k">async</span> <span class="k">def</span> <span class="nf">register_blocks_in_annotation</span><span class="p">(</span><span class="n">annotation</span><span class="p">:</span> <span class="nb">type</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;Walk through the annotation and register any nested blocks.&quot;&quot;&quot;</span>
+            <span class="k">if</span> <span class="n">Block</span><span class="o">.</span><span class="n">is_block_class</span><span class="p">(</span><span class="n">annotation</span><span class="p">):</span>
+                <span class="k">await</span> <span class="n">annotation</span><span class="o">.</span><span class="n">register_type_and_schema</span><span class="p">(</span><span class="n">client</span><span class="o">=</span><span class="n">client</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">get_origin</span><span class="p">(</span><span class="n">annotation</span><span class="p">)</span> <span class="ow">in</span> <span class="p">(</span><span class="n">Union</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">inner_annotation</span> <span class="ow">in</span> <span class="n">get_args</span><span class="p">(</span><span class="n">annotation</span><span class="p">):</span>
+                    <span class="k">await</span> <span class="n">register_blocks_in_annotation</span><span class="p">(</span><span class="n">inner_annotation</span><span class="p">)</span>
+
         <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">__fields__</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
-            <span class="k">if</span> <span class="n">Block</span><span class="o">.</span><span class="n">is_block_class</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">type_</span><span class="p">):</span>
-                <span class="k">await</span> <span class="n">field</span><span class="o">.</span><span class="n">type_</span><span class="o">.</span><span class="n">register_type_and_schema</span><span class="p">(</span><span class="n">client</span><span class="o">=</span><span class="n">client</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">get_origin</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">type_</span><span class="p">)</span> <span class="ow">is</span> <span class="n">Union</span><span class="p">:</span>
-                <span class="k">for</span> <span class="n">type_</span> <span class="ow">in</span> <span class="n">get_args</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">type_</span><span class="p">):</span>
-                    <span class="k">if</span> <span class="n">Block</span><span class="o">.</span><span class="n">is_block_class</span><span class="p">(</span><span class="n">type_</span><span class="p">):</span>
-                        <span class="k">await</span> <span class="n">type_</span><span class="o">.</span><span class="n">register_type_and_schema</span><span class="p">(</span><span class="n">client</span><span class="o">=</span><span class="n">client</span><span class="p">)</span>
+            <span class="k">await</span> <span class="n">register_blocks_in_annotation</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">annotation</span><span class="p">)</span>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="n">block_type</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">read_block_type_by_slug</span><span class="p">(</span>
@@ -15460,7 +15474,11 @@ initialization.</p>
 <span class="normal">259</span>
 <span class="normal">260</span>
 <span class="normal">261</span>
-<span class="normal">262</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
+<span class="normal">262</span>
+<span class="normal">263</span>
+<span class="normal">264</span>
+<span class="normal">265</span>
+<span class="normal">266</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
     <span class="n">extra</span> <span class="o">=</span> <span class="s2">&quot;allow&quot;</span>
 
     <span class="n">json_encoders</span> <span class="o">=</span> <span class="p">{</span><span class="n">SecretDict</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="n">v</span><span class="o">.</span><span class="n">dict</span><span class="p">()}</span>
@@ -15491,25 +15509,29 @@ initialization.</p>
 
         <span class="c1"># create block schema references</span>
         <span class="n">refs</span> <span class="o">=</span> <span class="n">schema</span><span class="p">[</span><span class="s2">&quot;block_schema_references&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">def</span> <span class="nf">collect_block_schema_references</span><span class="p">(</span>
+            <span class="n">field_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">annotation</span><span class="p">:</span> <span class="nb">type</span>
+        <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;Walk through the annotation and collect block schemas for any nested blocks.&quot;&quot;&quot;</span>
+            <span class="k">if</span> <span class="n">Block</span><span class="o">.</span><span class="n">is_block_class</span><span class="p">(</span><span class="n">annotation</span><span class="p">):</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">refs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">field_name</span><span class="p">),</span> <span class="nb">list</span><span class="p">):</span>
+                    <span class="n">refs</span><span class="p">[</span><span class="n">field_name</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                        <span class="n">annotation</span><span class="o">.</span><span class="n">_to_block_schema_reference_dict</span><span class="p">()</span>
+                    <span class="p">)</span>
+                <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">refs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">field_name</span><span class="p">),</span> <span class="nb">dict</span><span class="p">):</span>
+                    <span class="n">refs</span><span class="p">[</span><span class="n">field_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+                        <span class="n">refs</span><span class="p">[</span><span class="n">field_name</span><span class="p">],</span>
+                        <span class="n">annotation</span><span class="o">.</span><span class="n">_to_block_schema_reference_dict</span><span class="p">(),</span>
+                    <span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">refs</span><span class="p">[</span><span class="n">field_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">annotation</span><span class="o">.</span><span class="n">_to_block_schema_reference_dict</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">get_origin</span><span class="p">(</span><span class="n">annotation</span><span class="p">)</span> <span class="ow">in</span> <span class="p">(</span><span class="n">Union</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">type_</span> <span class="ow">in</span> <span class="n">get_args</span><span class="p">(</span><span class="n">annotation</span><span class="p">):</span>
+                    <span class="n">collect_block_schema_references</span><span class="p">(</span><span class="n">field_name</span><span class="p">,</span> <span class="n">type_</span><span class="p">)</span>
+
         <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">__fields__</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
-            <span class="k">if</span> <span class="n">Block</span><span class="o">.</span><span class="n">is_block_class</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">type_</span><span class="p">):</span>
-                <span class="n">refs</span><span class="p">[</span><span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">type_</span><span class="o">.</span><span class="n">_to_block_schema_reference_dict</span><span class="p">()</span>
-            <span class="k">if</span> <span class="n">get_origin</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">type_</span><span class="p">)</span> <span class="ow">is</span> <span class="n">Union</span><span class="p">:</span>
-                <span class="k">for</span> <span class="n">type_</span> <span class="ow">in</span> <span class="n">get_args</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">type_</span><span class="p">):</span>
-                    <span class="k">if</span> <span class="n">Block</span><span class="o">.</span><span class="n">is_block_class</span><span class="p">(</span><span class="n">type_</span><span class="p">):</span>
-                        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">refs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">),</span> <span class="nb">list</span><span class="p">):</span>
-                            <span class="n">refs</span><span class="p">[</span><span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                                <span class="n">type_</span><span class="o">.</span><span class="n">_to_block_schema_reference_dict</span><span class="p">()</span>
-                            <span class="p">)</span>
-                        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">refs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">),</span> <span class="nb">dict</span><span class="p">):</span>
-                            <span class="n">refs</span><span class="p">[</span><span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
-                                <span class="n">refs</span><span class="p">[</span><span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">],</span>
-                                <span class="n">type_</span><span class="o">.</span><span class="n">_to_block_schema_reference_dict</span><span class="p">(),</span>
-                            <span class="p">]</span>
-                        <span class="k">else</span><span class="p">:</span>
-                            <span class="n">refs</span><span class="p">[</span>
-                                <span class="n">field</span><span class="o">.</span><span class="n">name</span>
-                            <span class="p">]</span> <span class="o">=</span> <span class="n">type_</span><span class="o">.</span><span class="n">_to_block_schema_reference_dict</span><span class="p">()</span>
+            <span class="n">collect_block_schema_references</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">field</span><span class="o">.</span><span class="n">type_</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
               </details>
 
@@ -15588,7 +15610,11 @@ initialization.</p>
 <span class="normal">259</span>
 <span class="normal">260</span>
 <span class="normal">261</span>
-<span class="normal">262</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@staticmethod</span>
+<span class="normal">262</span>
+<span class="normal">263</span>
+<span class="normal">264</span>
+<span class="normal">265</span>
+<span class="normal">266</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@staticmethod</span>
 <span class="k">def</span> <span class="nf">schema_extra</span><span class="p">(</span><span class="n">schema</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">model</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="s2">&quot;Block&quot;</span><span class="p">]):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Customizes Pydantic&#39;s schema generation feature to add blocks related information.</span>
@@ -15614,25 +15640,29 @@ initialization.</p>
 
     <span class="c1"># create block schema references</span>
     <span class="n">refs</span> <span class="o">=</span> <span class="n">schema</span><span class="p">[</span><span class="s2">&quot;block_schema_references&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">def</span> <span class="nf">collect_block_schema_references</span><span class="p">(</span>
+        <span class="n">field_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">annotation</span><span class="p">:</span> <span class="nb">type</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Walk through the annotation and collect block schemas for any nested blocks.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">Block</span><span class="o">.</span><span class="n">is_block_class</span><span class="p">(</span><span class="n">annotation</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">refs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">field_name</span><span class="p">),</span> <span class="nb">list</span><span class="p">):</span>
+                <span class="n">refs</span><span class="p">[</span><span class="n">field_name</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="n">annotation</span><span class="o">.</span><span class="n">_to_block_schema_reference_dict</span><span class="p">()</span>
+                <span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">refs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">field_name</span><span class="p">),</span> <span class="nb">dict</span><span class="p">):</span>
+                <span class="n">refs</span><span class="p">[</span><span class="n">field_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+                    <span class="n">refs</span><span class="p">[</span><span class="n">field_name</span><span class="p">],</span>
+                    <span class="n">annotation</span><span class="o">.</span><span class="n">_to_block_schema_reference_dict</span><span class="p">(),</span>
+                <span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">refs</span><span class="p">[</span><span class="n">field_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">annotation</span><span class="o">.</span><span class="n">_to_block_schema_reference_dict</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">get_origin</span><span class="p">(</span><span class="n">annotation</span><span class="p">)</span> <span class="ow">in</span> <span class="p">(</span><span class="n">Union</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">type_</span> <span class="ow">in</span> <span class="n">get_args</span><span class="p">(</span><span class="n">annotation</span><span class="p">):</span>
+                <span class="n">collect_block_schema_references</span><span class="p">(</span><span class="n">field_name</span><span class="p">,</span> <span class="n">type_</span><span class="p">)</span>
+
     <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">__fields__</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
-        <span class="k">if</span> <span class="n">Block</span><span class="o">.</span><span class="n">is_block_class</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">type_</span><span class="p">):</span>
-            <span class="n">refs</span><span class="p">[</span><span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">type_</span><span class="o">.</span><span class="n">_to_block_schema_reference_dict</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">get_origin</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">type_</span><span class="p">)</span> <span class="ow">is</span> <span class="n">Union</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">type_</span> <span class="ow">in</span> <span class="n">get_args</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">type_</span><span class="p">):</span>
-                <span class="k">if</span> <span class="n">Block</span><span class="o">.</span><span class="n">is_block_class</span><span class="p">(</span><span class="n">type_</span><span class="p">):</span>
-                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">refs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">),</span> <span class="nb">list</span><span class="p">):</span>
-                        <span class="n">refs</span><span class="p">[</span><span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                            <span class="n">type_</span><span class="o">.</span><span class="n">_to_block_schema_reference_dict</span><span class="p">()</span>
-                        <span class="p">)</span>
-                    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">refs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">),</span> <span class="nb">dict</span><span class="p">):</span>
-                        <span class="n">refs</span><span class="p">[</span><span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
-                            <span class="n">refs</span><span class="p">[</span><span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">],</span>
-                            <span class="n">type_</span><span class="o">.</span><span class="n">_to_block_schema_reference_dict</span><span class="p">(),</span>
-                        <span class="p">]</span>
-                    <span class="k">else</span><span class="p">:</span>
-                        <span class="n">refs</span><span class="p">[</span>
-                            <span class="n">field</span><span class="o">.</span><span class="n">name</span>
-                        <span class="p">]</span> <span class="o">=</span> <span class="n">type_</span><span class="o">.</span><span class="n">_to_block_schema_reference_dict</span><span class="p">()</span>
+        <span class="n">collect_block_schema_references</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">field</span><span class="o">.</span><span class="n">type_</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -15668,11 +15698,7 @@ capabilities of all parent classes into a single frozenset.</p>
 
             <details class="quote">
               <summary>Source code in <code>prefect/blocks/core.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">325</span>
-<span class="normal">326</span>
-<span class="normal">327</span>
-<span class="normal">328</span>
-<span class="normal">329</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">329</span>
 <span class="normal">330</span>
 <span class="normal">331</span>
 <span class="normal">332</span>
@@ -15680,7 +15706,11 @@ capabilities of all parent classes into a single frozenset.</p>
 <span class="normal">334</span>
 <span class="normal">335</span>
 <span class="normal">336</span>
-<span class="normal">337</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@classmethod</span>
+<span class="normal">337</span>
+<span class="normal">338</span>
+<span class="normal">339</span>
+<span class="normal">340</span>
+<span class="normal">341</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@classmethod</span>
 <span class="k">def</span> <span class="nf">get_block_capabilities</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FrozenSet</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns the block capabilities for this Block. Recursively collects all block</span>
@@ -15718,16 +15748,16 @@ capabilities of all parent classes into a single frozenset.</p>
 
             <details class="quote">
               <summary>Source code in <code>prefect/blocks/core.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">690</span>
-<span class="normal">691</span>
-<span class="normal">692</span>
-<span class="normal">693</span>
-<span class="normal">694</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">694</span>
 <span class="normal">695</span>
 <span class="normal">696</span>
 <span class="normal">697</span>
 <span class="normal">698</span>
-<span class="normal">699</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@classmethod</span>
+<span class="normal">699</span>
+<span class="normal">700</span>
+<span class="normal">701</span>
+<span class="normal">702</span>
+<span class="normal">703</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@classmethod</span>
 <span class="k">def</span> <span class="nf">get_block_class_from_key</span><span class="p">(</span><span class="bp">cls</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">Self</span><span class="p">],</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Type</span><span class="p">[</span><span class="n">Self</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Retrieve the block class implementation given a key.</span>
@@ -15762,12 +15792,12 @@ capabilities of all parent classes into a single frozenset.</p>
 
             <details class="quote">
               <summary>Source code in <code>prefect/blocks/core.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">683</span>
-<span class="normal">684</span>
-<span class="normal">685</span>
-<span class="normal">686</span>
-<span class="normal">687</span>
-<span class="normal">688</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@classmethod</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">687</span>
+<span class="normal">688</span>
+<span class="normal">689</span>
+<span class="normal">690</span>
+<span class="normal">691</span>
+<span class="normal">692</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@classmethod</span>
 <span class="k">def</span> <span class="nf">get_block_class_from_schema</span><span class="p">(</span><span class="bp">cls</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">Self</span><span class="p">],</span> <span class="n">schema</span><span class="p">:</span> <span class="n">BlockSchema</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Type</span><span class="p">[</span><span class="n">Self</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Retrieve the block class implementation given a schema.</span>
@@ -15843,14 +15873,7 @@ templating.</p>
 
             <details class="quote">
               <summary>Source code in <code>prefect/blocks/core.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1069</span>
-<span class="normal">1070</span>
-<span class="normal">1071</span>
-<span class="normal">1072</span>
-<span class="normal">1073</span>
-<span class="normal">1074</span>
-<span class="normal">1075</span>
-<span class="normal">1076</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1076</span>
 <span class="normal">1077</span>
 <span class="normal">1078</span>
 <span class="normal">1079</span>
@@ -15863,7 +15886,14 @@ templating.</p>
 <span class="normal">1086</span>
 <span class="normal">1087</span>
 <span class="normal">1088</span>
-<span class="normal">1089</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_block_placeholder</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="normal">1089</span>
+<span class="normal">1090</span>
+<span class="normal">1091</span>
+<span class="normal">1092</span>
+<span class="normal">1093</span>
+<span class="normal">1094</span>
+<span class="normal">1095</span>
+<span class="normal">1096</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_block_placeholder</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns the block placeholder for the current block which can be used for</span>
 <span class="sd">    templating.</span>
@@ -15910,11 +15940,7 @@ code example from the class docstring if an override is not provided.</p>
 
             <details class="quote">
               <summary>Source code in <code>prefect/blocks/core.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">535</span>
-<span class="normal">536</span>
-<span class="normal">537</span>
-<span class="normal">538</span>
-<span class="normal">539</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">539</span>
 <span class="normal">540</span>
 <span class="normal">541</span>
 <span class="normal">542</span>
@@ -15946,7 +15972,11 @@ code example from the class docstring if an override is not provided.</p>
 <span class="normal">568</span>
 <span class="normal">569</span>
 <span class="normal">570</span>
-<span class="normal">571</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@classmethod</span>
+<span class="normal">571</span>
+<span class="normal">572</span>
+<span class="normal">573</span>
+<span class="normal">574</span>
+<span class="normal">575</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@classmethod</span>
 <span class="k">def</span> <span class="nf">get_code_example</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns the code example for the given block. Attempts to parse</span>
@@ -16009,11 +16039,7 @@ description from class docstring if an override is not defined.</p>
 
             <details class="quote">
               <summary>Source code in <code>prefect/blocks/core.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">512</span>
-<span class="normal">513</span>
-<span class="normal">514</span>
-<span class="normal">515</span>
-<span class="normal">516</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">516</span>
 <span class="normal">517</span>
 <span class="normal">518</span>
 <span class="normal">519</span>
@@ -16030,7 +16056,11 @@ description from class docstring if an override is not defined.</p>
 <span class="normal">530</span>
 <span class="normal">531</span>
 <span class="normal">532</span>
-<span class="normal">533</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@classmethod</span>
+<span class="normal">533</span>
+<span class="normal">534</span>
+<span class="normal">535</span>
+<span class="normal">536</span>
+<span class="normal">537</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@classmethod</span>
 <span class="k">def</span> <span class="nf">get_description</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns the description for the current block. Attempts to parse</span>
@@ -16242,11 +16272,7 @@ default client will be injected.</p>
 
             <details class="quote">
               <summary>Source code in <code>prefect/blocks/core.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">754</span>
-<span class="normal">755</span>
-<span class="normal">756</span>
-<span class="normal">757</span>
-<span class="normal">758</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">758</span>
 <span class="normal">759</span>
 <span class="normal">760</span>
 <span class="normal">761</span>
@@ -16349,7 +16375,11 @@ default client will be injected.</p>
 <span class="normal">858</span>
 <span class="normal">859</span>
 <span class="normal">860</span>
-<span class="normal">861</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@classmethod</span>
+<span class="normal">861</span>
+<span class="normal">862</span>
+<span class="normal">863</span>
+<span class="normal">864</span>
+<span class="normal">865</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@classmethod</span>
 <span class="nd">@sync_compatible</span>
 <span class="nd">@inject_client</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">load</span><span class="p">(</span>
@@ -16515,11 +16545,7 @@ provided.</p>
 
             <details class="quote">
               <summary>Source code in <code>prefect/blocks/core.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">867</span>
-<span class="normal">868</span>
-<span class="normal">869</span>
-<span class="normal">870</span>
-<span class="normal">871</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">871</span>
 <span class="normal">872</span>
 <span class="normal">873</span>
 <span class="normal">874</span>
@@ -16573,7 +16599,14 @@ provided.</p>
 <span class="normal">922</span>
 <span class="normal">923</span>
 <span class="normal">924</span>
-<span class="normal">925</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@classmethod</span>
+<span class="normal">925</span>
+<span class="normal">926</span>
+<span class="normal">927</span>
+<span class="normal">928</span>
+<span class="normal">929</span>
+<span class="normal">930</span>
+<span class="normal">931</span>
+<span class="normal">932</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@classmethod</span>
 <span class="nd">@sync_compatible</span>
 <span class="nd">@inject_client</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">register_type_and_schema</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">client</span><span class="p">:</span> <span class="s2">&quot;PrefectClient&quot;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
@@ -16597,13 +16630,16 @@ provided.</p>
             <span class="s2">&quot;subclass and not on a Block interface class directly.&quot;</span>
         <span class="p">)</span>
 
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">register_blocks_in_annotation</span><span class="p">(</span><span class="n">annotation</span><span class="p">:</span> <span class="nb">type</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Walk through the annotation and register any nested blocks.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">Block</span><span class="o">.</span><span class="n">is_block_class</span><span class="p">(</span><span class="n">annotation</span><span class="p">):</span>
+            <span class="k">await</span> <span class="n">annotation</span><span class="o">.</span><span class="n">register_type_and_schema</span><span class="p">(</span><span class="n">client</span><span class="o">=</span><span class="n">client</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">get_origin</span><span class="p">(</span><span class="n">annotation</span><span class="p">)</span> <span class="ow">in</span> <span class="p">(</span><span class="n">Union</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">inner_annotation</span> <span class="ow">in</span> <span class="n">get_args</span><span class="p">(</span><span class="n">annotation</span><span class="p">):</span>
+                <span class="k">await</span> <span class="n">register_blocks_in_annotation</span><span class="p">(</span><span class="n">inner_annotation</span><span class="p">)</span>
+
     <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">__fields__</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
-        <span class="k">if</span> <span class="n">Block</span><span class="o">.</span><span class="n">is_block_class</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">type_</span><span class="p">):</span>
-            <span class="k">await</span> <span class="n">field</span><span class="o">.</span><span class="n">type_</span><span class="o">.</span><span class="n">register_type_and_schema</span><span class="p">(</span><span class="n">client</span><span class="o">=</span><span class="n">client</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">get_origin</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">type_</span><span class="p">)</span> <span class="ow">is</span> <span class="n">Union</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">type_</span> <span class="ow">in</span> <span class="n">get_args</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">type_</span><span class="p">):</span>
-                <span class="k">if</span> <span class="n">Block</span><span class="o">.</span><span class="n">is_block_class</span><span class="p">(</span><span class="n">type_</span><span class="p">):</span>
-                    <span class="k">await</span> <span class="n">type_</span><span class="o">.</span><span class="n">register_type_and_schema</span><span class="p">(</span><span class="n">client</span><span class="o">=</span><span class="n">client</span><span class="p">)</span>
+        <span class="k">await</span> <span class="n">register_blocks_in_annotation</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">annotation</span><span class="p">)</span>
 
     <span class="k">try</span><span class="p">:</span>
         <span class="n">block_type</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">read_block_type_by_slug</span><span class="p">(</span>
@@ -16702,14 +16738,7 @@ the specified name already exists.</p>
 
             <details class="quote">
               <summary>Source code in <code>prefect/blocks/core.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 998</span>
-<span class="normal"> 999</span>
-<span class="normal">1000</span>
-<span class="normal">1001</span>
-<span class="normal">1002</span>
-<span class="normal">1003</span>
-<span class="normal">1004</span>
-<span class="normal">1005</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1005</span>
 <span class="normal">1006</span>
 <span class="normal">1007</span>
 <span class="normal">1008</span>
@@ -16722,7 +16751,14 @@ the specified name already exists.</p>
 <span class="normal">1015</span>
 <span class="normal">1016</span>
 <span class="normal">1017</span>
-<span class="normal">1018</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@sync_compatible</span>
+<span class="normal">1018</span>
+<span class="normal">1019</span>
+<span class="normal">1020</span>
+<span class="normal">1021</span>
+<span class="normal">1022</span>
+<span class="normal">1023</span>
+<span class="normal">1024</span>
+<span class="normal">1025</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@sync_compatible</span>
 <span class="nd">@instrument_instance_method_call</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">save</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
@@ -16819,11 +16855,11 @@ class or a Block interface class</p>
 
               <details class="quote">
                 <summary>Source code in <code>prefect/blocks/core.py</code></summary>
-                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">74</span>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">72</span>
+<span class="normal">73</span>
+<span class="normal">74</span>
 <span class="normal">75</span>
-<span class="normal">76</span>
-<span class="normal">77</span>
-<span class="normal">78</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">InvalidBlockRegistration</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+<span class="normal">76</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">InvalidBlockRegistration</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Raised on attempted registration of the base Block</span>
 <span class="sd">    class or a Block interface class</span>
@@ -16851,11 +16887,11 @@ class or a Block interface class</p>
 
             <details class="quote">
               <summary>Source code in <code>prefect/blocks/core.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">67</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">65</span>
+<span class="normal">66</span>
+<span class="normal">67</span>
 <span class="normal">68</span>
-<span class="normal">69</span>
-<span class="normal">70</span>
-<span class="normal">71</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">block_schema_to_key</span><span class="p">(</span><span class="n">schema</span><span class="p">:</span> <span class="n">BlockSchema</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="normal">69</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">block_schema_to_key</span><span class="p">(</span><span class="n">schema</span><span class="p">:</span> <span class="n">BlockSchema</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Defines the unique key used to lookup the Block class for a given schema.</span>
 <span class="sd">    &quot;&quot;&quot;</span>

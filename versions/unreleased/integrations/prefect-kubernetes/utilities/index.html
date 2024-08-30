@@ -6850,17 +6850,6 @@ if (amplitudeKey){
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#prefect_kubernetes.utilities.convert_manifest_to_model" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        convert_manifest_to_model
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#prefect_kubernetes.utilities.enable_socket_keep_alive" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -13115,17 +13104,6 @@ if (amplitudeKey){
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#prefect_kubernetes.utilities.convert_manifest_to_model" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        convert_manifest_to_model
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#prefect_kubernetes.utilities.enable_socket_keep_alive" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -13261,253 +13239,6 @@ if (amplitudeKey){
 <div class="doc doc-object doc-function">
 
 
-<h2 id="prefect_kubernetes.utilities.convert_manifest_to_model" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">convert_manifest_to_model</span></code>
-
-<a href="#prefect_kubernetes.utilities.convert_manifest_to_model" class="headerlink" title="Permanent link">&para;</a></h2>
-
-
-    <div class="doc doc-contents ">
-
-      <p>Recursively converts a <code>dict</code> representation of a Kubernetes resource to the
-corresponding Python model containing the Python models that compose it,
-according to the <code>openapi_types</code> on the class retrieved with <code>v1_model_name</code>.</p>
-<p>If <code>manifest</code> is a path-like object with a <code>.yaml</code> or <code>.yml</code> extension, it will be
-treated as a path to a Kubernetes resource manifest and loaded into a <code>dict</code>.</p>
-
-
-<p><span class="doc-section-title">Parameters:</span></p>
-    <table>
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Type</th>
-          <th>Description</th>
-          <th>Default</th>
-        </tr>
-      </thead>
-      <tbody>
-          <tr class="doc-section-item">
-            <td><code>manifest</code></td>
-            <td>
-                  <code><span title="typing.Union">Union</span>[<span title="pathlib.Path">Path</span>, str, <span title="prefect.infrastructure.kubernetes.KubernetesManifest">KubernetesManifest</span>]</code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>A path to a Kubernetes resource manifest or its <code>dict</code> representation.</p>
-              </div>
-            </td>
-            <td>
-                <em>required</em>
-            </td>
-          </tr>
-          <tr class="doc-section-item">
-            <td><code>v1_model_name</code></td>
-            <td>
-                  <code>str</code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>The name of a Kubernetes client model to convert the manifest to.</p>
-              </div>
-            </td>
-            <td>
-                <em>required</em>
-            </td>
-          </tr>
-      </tbody>
-    </table>
-
-
-    <p><span class="doc-section-title">Returns:</span></p>
-    <table>
-      <thead>
-        <tr>
-          <th>Type</th>
-          <th>Description</th>
-        </tr>
-      </thead>
-      <tbody>
-          <tr class="doc-section-item">
-            <td>
-                  <code><span title="prefect_kubernetes.utilities.V1KubernetesModel">V1KubernetesModel</span></code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>A populated instance of a Kubernetes client model with type <code>v1_model_name</code>.</p>
-              </div>
-            </td>
-          </tr>
-      </tbody>
-    </table>
-
-
-<p><span class="doc-section-title">Raises:</span></p>
-    <table>
-      <thead>
-        <tr>
-          <th>Type</th>
-          <th>Description</th>
-        </tr>
-      </thead>
-      <tbody>
-          <tr class="doc-section-item">
-            <td>
-                  <code>ValueError</code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>If <code>v1_model_name</code> is not a valid Kubernetes client model name.</p>
-              </div>
-            </td>
-          </tr>
-          <tr class="doc-section-item">
-            <td>
-                  <code>ValueError</code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>If <code>manifest</code> is path-like and is not a valid yaml filename.</p>
-              </div>
-            </td>
-          </tr>
-      </tbody>
-    </table>
-
-            <details class="quote">
-              <summary>Source code in <code>prefect_kubernetes/utilities.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 51</span>
-<span class="normal"> 52</span>
-<span class="normal"> 53</span>
-<span class="normal"> 54</span>
-<span class="normal"> 55</span>
-<span class="normal"> 56</span>
-<span class="normal"> 57</span>
-<span class="normal"> 58</span>
-<span class="normal"> 59</span>
-<span class="normal"> 60</span>
-<span class="normal"> 61</span>
-<span class="normal"> 62</span>
-<span class="normal"> 63</span>
-<span class="normal"> 64</span>
-<span class="normal"> 65</span>
-<span class="normal"> 66</span>
-<span class="normal"> 67</span>
-<span class="normal"> 68</span>
-<span class="normal"> 69</span>
-<span class="normal"> 70</span>
-<span class="normal"> 71</span>
-<span class="normal"> 72</span>
-<span class="normal"> 73</span>
-<span class="normal"> 74</span>
-<span class="normal"> 75</span>
-<span class="normal"> 76</span>
-<span class="normal"> 77</span>
-<span class="normal"> 78</span>
-<span class="normal"> 79</span>
-<span class="normal"> 80</span>
-<span class="normal"> 81</span>
-<span class="normal"> 82</span>
-<span class="normal"> 83</span>
-<span class="normal"> 84</span>
-<span class="normal"> 85</span>
-<span class="normal"> 86</span>
-<span class="normal"> 87</span>
-<span class="normal"> 88</span>
-<span class="normal"> 89</span>
-<span class="normal"> 90</span>
-<span class="normal"> 91</span>
-<span class="normal"> 92</span>
-<span class="normal"> 93</span>
-<span class="normal"> 94</span>
-<span class="normal"> 95</span>
-<span class="normal"> 96</span>
-<span class="normal"> 97</span>
-<span class="normal"> 98</span>
-<span class="normal"> 99</span>
-<span class="normal">100</span>
-<span class="normal">101</span>
-<span class="normal">102</span>
-<span class="normal">103</span>
-<span class="normal">104</span>
-<span class="normal">105</span>
-<span class="normal">106</span>
-<span class="normal">107</span>
-<span class="normal">108</span>
-<span class="normal">109</span>
-<span class="normal">110</span>
-<span class="normal">111</span>
-<span class="normal">112</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">convert_manifest_to_model</span><span class="p">(</span>
-    <span class="n">manifest</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">KubernetesManifest</span><span class="p">],</span> <span class="n">v1_model_name</span><span class="p">:</span> <span class="nb">str</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">V1KubernetesModel</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Recursively converts a `dict` representation of a Kubernetes resource to the</span>
-<span class="sd">    corresponding Python model containing the Python models that compose it,</span>
-<span class="sd">    according to the `openapi_types` on the class retrieved with `v1_model_name`.</span>
-
-<span class="sd">    If `manifest` is a path-like object with a `.yaml` or `.yml` extension, it will be</span>
-<span class="sd">    treated as a path to a Kubernetes resource manifest and loaded into a `dict`.</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        manifest: A path to a Kubernetes resource manifest or its `dict` representation.</span>
-<span class="sd">        v1_model_name: The name of a Kubernetes client model to convert the manifest to.</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        A populated instance of a Kubernetes client model with type `v1_model_name`.</span>
-
-<span class="sd">    Raises:</span>
-<span class="sd">        ValueError: If `v1_model_name` is not a valid Kubernetes client model name.</span>
-<span class="sd">        ValueError: If `manifest` is path-like and is not a valid yaml filename.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">manifest</span><span class="p">:</span>
-        <span class="k">return</span> <span class="kc">None</span>
-
-    <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">v1_model_name</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="n">v1_model_name</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="nb">dir</span><span class="p">(</span><span class="n">k8s_models</span><span class="p">))):</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="s2">&quot;`v1_model` must be the name of a valid Kubernetes client model, received &quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;: </span><span class="si">{</span><span class="n">v1_model_name</span><span class="si">!r}</span><span class="s2">&quot;</span>
-        <span class="p">)</span>
-
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">manifest</span><span class="p">,</span> <span class="p">(</span><span class="n">Path</span><span class="p">,</span> <span class="nb">str</span><span class="p">)):</span>
-        <span class="n">str_path</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">manifest</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">str_path</span><span class="o">.</span><span class="n">endswith</span><span class="p">((</span><span class="s2">&quot;.yaml&quot;</span><span class="p">,</span> <span class="s2">&quot;.yml&quot;</span><span class="p">)):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Manifest must be a valid dict or path to a .yaml file.&quot;</span><span class="p">)</span>
-        <span class="n">manifest</span> <span class="o">=</span> <span class="n">KubernetesJob</span><span class="o">.</span><span class="n">job_from_file</span><span class="p">(</span><span class="n">manifest</span><span class="p">)</span>
-
-    <span class="n">converted_manifest</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="n">v1_model</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">k8s_models</span><span class="p">,</span> <span class="n">v1_model_name</span><span class="p">)</span>
-    <span class="n">valid_supplied_fields</span> <span class="o">=</span> <span class="p">(</span>  <span class="c1"># valid and specified fields for current `v1_model_name`</span>
-        <span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">v1_model</span><span class="o">.</span><span class="n">openapi_types</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">v1_model</span><span class="o">.</span><span class="n">attribute_map</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="ow">in</span> <span class="n">manifest</span>  <span class="c1"># map goes 🐍 -&gt; 🐫, user supplies 🐫</span>
-    <span class="p">)</span>
-
-    <span class="k">for</span> <span class="n">field</span><span class="p">,</span> <span class="n">value_type</span> <span class="ow">in</span> <span class="n">valid_supplied_fields</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">value_type</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;V1&quot;</span><span class="p">):</span>  <span class="c1"># field value is another model</span>
-            <span class="n">converted_manifest</span><span class="p">[</span><span class="n">field</span><span class="p">]</span> <span class="o">=</span> <span class="n">convert_manifest_to_model</span><span class="p">(</span>
-                <span class="n">manifest</span><span class="p">[</span><span class="n">v1_model</span><span class="o">.</span><span class="n">attribute_map</span><span class="p">[</span><span class="n">field</span><span class="p">]],</span> <span class="n">value_type</span>
-            <span class="p">)</span>
-        <span class="k">elif</span> <span class="n">value_type</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;list[V1&quot;</span><span class="p">):</span>  <span class="c1"># field value is a list of models</span>
-            <span class="n">field_item_type</span> <span class="o">=</span> <span class="n">value_type</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;list[&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;]&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">converted_manifest</span><span class="p">[</span><span class="n">field</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
-                    <span class="n">convert_manifest_to_model</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">field_item_type</span><span class="p">)</span>
-                    <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">manifest</span><span class="p">[</span><span class="n">v1_model</span><span class="o">.</span><span class="n">attribute_map</span><span class="p">[</span><span class="n">field</span><span class="p">]]</span>
-                <span class="p">]</span>
-            <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
-                <span class="n">converted_manifest</span><span class="p">[</span><span class="n">field</span><span class="p">]</span> <span class="o">=</span> <span class="n">manifest</span><span class="p">[</span><span class="n">v1_model</span><span class="o">.</span><span class="n">attribute_map</span><span class="p">[</span><span class="n">field</span><span class="p">]]</span>
-        <span class="k">elif</span> <span class="n">value_type</span> <span class="ow">in</span> <span class="n">base_types</span><span class="p">:</span>  <span class="c1"># field value is a primitive Python type</span>
-            <span class="n">converted_manifest</span><span class="p">[</span><span class="n">field</span><span class="p">]</span> <span class="o">=</span> <span class="n">manifest</span><span class="p">[</span><span class="n">v1_model</span><span class="o">.</span><span class="n">attribute_map</span><span class="p">[</span><span class="n">field</span><span class="p">]]</span>
-
-    <span class="k">return</span> <span class="n">v1_model</span><span class="p">(</span><span class="o">**</span><span class="n">converted_manifest</span><span class="p">)</span>
-</code></pre></div></td></tr></table></div>
-            </details>
-    </div>
-
-</div>
-
-<div class="doc doc-object doc-function">
-
-
 <h2 id="prefect_kubernetes.utilities.enable_socket_keep_alive" class="doc doc-heading">
             <code class="highlight language-python"><span class="n">enable_socket_keep_alive</span></code>
 
@@ -13523,7 +13254,11 @@ messages. Thus the flags are added to be used on the underlying sockets.</p>
 
             <details class="quote">
               <summary>Source code in <code>prefect_kubernetes/utilities.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">21</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
 <span class="normal">22</span>
 <span class="normal">23</span>
 <span class="normal">24</span>
@@ -13546,11 +13281,7 @@ messages. Thus the flags are added to be used on the underlying sockets.</p>
 <span class="normal">41</span>
 <span class="normal">42</span>
 <span class="normal">43</span>
-<span class="normal">44</span>
-<span class="normal">45</span>
-<span class="normal">46</span>
-<span class="normal">47</span>
-<span class="normal">48</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">enable_socket_keep_alive</span><span class="p">(</span><span class="n">client</span><span class="p">:</span> <span class="n">ApiClient</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="normal">44</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">enable_socket_keep_alive</span><span class="p">(</span><span class="n">client</span><span class="p">:</span> <span class="n">ApiClient</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Setting the keep-alive flags on the kubernetes client object.</span>
 <span class="sd">    Unfortunately neither the kubernetes library nor the urllib3 library which</span>

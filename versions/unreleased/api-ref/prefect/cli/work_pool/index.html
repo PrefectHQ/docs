@@ -13517,16 +13517,7 @@ Examples:
 
             <details class="quote">
               <summary>Source code in <code>prefect/cli/work_pool.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">539</span>
-<span class="normal">540</span>
-<span class="normal">541</span>
-<span class="normal">542</span>
-<span class="normal">543</span>
-<span class="normal">544</span>
-<span class="normal">545</span>
-<span class="normal">546</span>
-<span class="normal">547</span>
-<span class="normal">548</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">548</span>
 <span class="normal">549</span>
 <span class="normal">550</span>
 <span class="normal">551</span>
@@ -13540,7 +13531,16 @@ Examples:
 <span class="normal">559</span>
 <span class="normal">560</span>
 <span class="normal">561</span>
-<span class="normal">562</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@work_pool_app</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="normal">562</span>
+<span class="normal">563</span>
+<span class="normal">564</span>
+<span class="normal">565</span>
+<span class="normal">566</span>
+<span class="normal">567</span>
+<span class="normal">568</span>
+<span class="normal">569</span>
+<span class="normal">570</span>
+<span class="normal">571</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@work_pool_app</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">clear_concurrency_limit</span><span class="p">(</span>
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Argument</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;The name of the work pool to update.&quot;</span><span class="p">),</span>
 <span class="p">):</span>
@@ -13585,7 +13585,7 @@ Examples:
 
     <div class="doc doc-contents ">
 
-      <p>Create a new work pool.</p>
+      <p>Create a new work pool or update an existing one.</p>
 <p>
 Examples:
     
@@ -13595,12 +13595,15 @@ Examples:
     
     Create a Docker work pool with a custom base job template:
         
-        $ prefect work-pool create "my-pool" --type docker --base-job-template ./base-job-template.json</p>
+        $ prefect work-pool create "my-pool" --type docker --base-job-template ./base-job-template.json
+    
+    Update an existing work pool:
+        
+        $ prefect work-pool create "existing-pool" --base-job-template ./base-job-template.json --overwrite</p>
 
             <details class="quote">
               <summary>Source code in <code>prefect/cli/work_pool.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 66</span>
-<span class="normal"> 67</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 67</span>
 <span class="normal"> 68</span>
 <span class="normal"> 69</span>
 <span class="normal"> 70</span>
@@ -13778,7 +13781,16 @@ Examples:
 <span class="normal">242</span>
 <span class="normal">243</span>
 <span class="normal">244</span>
-<span class="normal">245</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@work_pool_app</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="normal">245</span>
+<span class="normal">246</span>
+<span class="normal">247</span>
+<span class="normal">248</span>
+<span class="normal">249</span>
+<span class="normal">250</span>
+<span class="normal">251</span>
+<span class="normal">252</span>
+<span class="normal">253</span>
+<span class="normal">254</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@work_pool_app</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">create</span><span class="p">(</span>
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Argument</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;The name of the work pool.&quot;</span><span class="p">),</span>
     <span class="n">base_job_template</span><span class="p">:</span> <span class="n">typer</span><span class="o">.</span><span class="n">FileText</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
@@ -13815,9 +13827,14 @@ Examples:
             <span class="s2">&quot; for the given work pool type.&quot;</span>
         <span class="p">),</span>
     <span class="p">),</span>
+    <span class="n">overwrite</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
+        <span class="kc">False</span><span class="p">,</span>
+        <span class="s2">&quot;--overwrite&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;Whether or not to overwrite an existing work pool with the same name.&quot;</span><span class="p">),</span>
+    <span class="p">),</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Create a new work pool.</span>
+<span class="sd">    Create a new work pool or update an existing one.</span>
 
 <span class="sd">    \b</span>
 <span class="sd">    Examples:</span>
@@ -13829,22 +13846,25 @@ Examples:
 <span class="sd">        Create a Docker work pool with a custom base job template:</span>
 <span class="sd">            \b</span>
 <span class="sd">            $ prefect work-pool create &quot;my-pool&quot; --type docker --base-job-template ./base-job-template.json</span>
+<span class="sd">        \b</span>
+<span class="sd">        Update an existing work pool:</span>
+<span class="sd">            \b</span>
+<span class="sd">            $ prefect work-pool create &quot;existing-pool&quot; --base-job-template ./base-job-template.json --overwrite</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">&quot;&#39;</span><span class="se">\&quot;</span><span class="s2"> &quot;</span><span class="p">):</span>
         <span class="n">exit_with_error</span><span class="p">(</span><span class="s2">&quot;Work pool name cannot be empty.&quot;</span><span class="p">)</span>
     <span class="k">async</span> <span class="k">with</span> <span class="n">get_client</span><span class="p">()</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">read_work_pool</span><span class="p">(</span><span class="n">work_pool_name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
+            <span class="n">existing_pool</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">read_work_pool</span><span class="p">(</span><span class="n">work_pool_name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">overwrite</span><span class="p">:</span>
+                <span class="n">exit_with_error</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Work pool named </span><span class="si">{</span><span class="n">name</span><span class="si">!r}</span><span class="s2"> already exists. Use --overwrite to update it.&quot;</span>
+                <span class="p">)</span>
         <span class="k">except</span> <span class="n">ObjectNotFound</span><span class="p">:</span>
-            <span class="k">pass</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">exit_with_error</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;Work pool named </span><span class="si">{</span><span class="n">name</span><span class="si">!r}</span><span class="s2"> already exists. Please try creating your&quot;</span>
-                <span class="s2">&quot; work pool again with a different name.&quot;</span>
-            <span class="p">)</span>
+            <span class="n">existing_pool</span> <span class="o">=</span> <span class="kc">None</span>
 
-        <span class="k">if</span> <span class="nb">type</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">type</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">existing_pool</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">async</span> <span class="k">with</span> <span class="n">get_collections_metadata_client</span><span class="p">()</span> <span class="k">as</span> <span class="n">collections_client</span><span class="p">:</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">is_interactive</span><span class="p">():</span>
                     <span class="n">exit_with_error</span><span class="p">(</span>
@@ -13873,6 +13893,8 @@ Examples:
                     <span class="n">table_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;show_lines&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">},</span>
                 <span class="p">)</span>
                 <span class="nb">type</span> <span class="o">=</span> <span class="n">worker</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">existing_pool</span><span class="p">:</span>
+            <span class="nb">type</span> <span class="o">=</span> <span class="n">existing_pool</span><span class="o">.</span><span class="n">type</span>
 
         <span class="n">available_work_pool_types</span> <span class="o">=</span> <span class="k">await</span> <span class="n">get_available_work_pool_types</span><span class="p">()</span>
         <span class="k">if</span> <span class="nb">type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">available_work_pool_types</span><span class="p">:</span>
@@ -13915,8 +13937,11 @@ Examples:
                 <span class="n">base_job_template</span><span class="o">=</span><span class="n">template_contents</span><span class="p">,</span>
                 <span class="n">is_paused</span><span class="o">=</span><span class="n">paused</span><span class="p">,</span>
             <span class="p">)</span>
-            <span class="n">work_pool</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">create_work_pool</span><span class="p">(</span><span class="n">work_pool</span><span class="o">=</span><span class="n">wp</span><span class="p">)</span>
-            <span class="n">app</span><span class="o">.</span><span class="n">console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Created work pool </span><span class="si">{</span><span class="n">work_pool</span><span class="o">.</span><span class="n">name</span><span class="si">!r}</span><span class="s2">!</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s2">&quot;green&quot;</span><span class="p">)</span>
+            <span class="n">work_pool</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">create_work_pool</span><span class="p">(</span><span class="n">work_pool</span><span class="o">=</span><span class="n">wp</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="n">overwrite</span><span class="p">)</span>
+            <span class="n">action</span> <span class="o">=</span> <span class="s2">&quot;Updated&quot;</span> <span class="k">if</span> <span class="n">overwrite</span> <span class="ow">and</span> <span class="n">existing_pool</span> <span class="k">else</span> <span class="s2">&quot;Created&quot;</span>
+            <span class="n">app</span><span class="o">.</span><span class="n">console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">action</span><span class="si">}</span><span class="s2"> work pool </span><span class="si">{</span><span class="n">work_pool</span><span class="o">.</span><span class="n">name</span><span class="si">!r}</span><span class="s2">!</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s2">&quot;green&quot;</span>
+            <span class="p">)</span>
             <span class="k">if</span> <span class="p">(</span>
                 <span class="ow">not</span> <span class="n">work_pool</span><span class="o">.</span><span class="n">is_paused</span>
                 <span class="ow">and</span> <span class="ow">not</span> <span class="n">work_pool</span><span class="o">.</span><span class="n">is_managed_pool</span>
@@ -13928,17 +13953,13 @@ Examples:
                 <span class="p">)</span>
             <span class="k">if</span> <span class="n">set_as_default</span><span class="p">:</span>
                 <span class="n">set_work_pool_as_default</span><span class="p">(</span><span class="n">work_pool</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">PREFECT_UI_URL</span><span class="p">:</span>
-                <span class="n">pool_url</span> <span class="o">=</span> <span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">PREFECT_UI_URL</span><span class="o">.</span><span class="n">value</span><span class="p">()</span><span class="si">}</span><span class="s2">/work-pools/work-pool/</span><span class="si">{</span><span class="n">work_pool</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span>
-                <span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">pool_url</span> <span class="o">=</span> <span class="s2">&quot;&lt;no dashboard available&gt;&quot;</span>
 
-            <span class="c1"># Agent work pools have no status</span>
-            <span class="n">wp_status_display_name</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="n">work_pool</span><span class="o">.</span><span class="n">status</span><span class="o">.</span><span class="n">display_name</span> <span class="k">if</span> <span class="n">work_pool</span><span class="o">.</span><span class="n">status</span> <span class="k">else</span> <span class="s2">&quot;N/A&quot;</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">PREFECT_UI_URL</span><span class="o">.</span><span class="n">value</span><span class="p">()</span><span class="si">}</span><span class="s2">/work-pools/work-pool/</span><span class="si">{</span><span class="n">work_pool</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="k">if</span> <span class="n">PREFECT_UI_URL</span>
+                <span class="k">else</span> <span class="kc">None</span>
             <span class="p">)</span>
+            <span class="n">pool_url</span> <span class="o">=</span> <span class="n">url</span> <span class="k">if</span> <span class="n">url</span> <span class="k">else</span> <span class="s2">&quot;&lt;no dashboard available&gt;&quot;</span>
 
             <span class="n">app</span><span class="o">.</span><span class="n">console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span>
                 <span class="n">textwrap</span><span class="o">.</span><span class="n">dedent</span><span class="p">(</span>
@@ -13946,7 +13967,7 @@ Examples:
 <span class="s2">                └── UUID: </span><span class="si">{</span><span class="n">work_pool</span><span class="o">.</span><span class="n">id</span><span class="si">}</span>
 <span class="s2">                └── Type: </span><span class="si">{</span><span class="n">work_pool</span><span class="o">.</span><span class="n">type</span><span class="si">}</span>
 <span class="s2">                └── Description: </span><span class="si">{</span><span class="n">work_pool</span><span class="o">.</span><span class="n">description</span><span class="si">}</span>
-<span class="s2">                └── Status: </span><span class="si">{</span><span class="n">wp_status_display_name</span><span class="si">}</span>
+<span class="s2">                </span><span class="si">{</span><span class="s2">&quot;└── Status: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">work_pool</span><span class="o">.</span><span class="n">status</span><span class="o">.</span><span class="n">display_name</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">work_pool</span><span class="o">.</span><span class="n">status</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="si">}</span>
 <span class="s2">                └── URL: </span><span class="si">{</span><span class="n">pool_url</span><span class="si">}</span>
 <span class="s2">                &quot;&quot;&quot;</span>
                 <span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span>
@@ -13955,8 +13976,7 @@ Examples:
             <span class="n">exit_with_success</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
         <span class="k">except</span> <span class="n">ObjectAlreadyExists</span><span class="p">:</span>
             <span class="n">exit_with_error</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;Work pool named </span><span class="si">{</span><span class="n">name</span><span class="si">!r}</span><span class="s2"> already exists. Please try creating your&quot;</span>
-                <span class="s2">&quot; work pool again with a different name.&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;Work pool named </span><span class="si">{</span><span class="n">name</span><span class="si">!r}</span><span class="s2"> already exists. Please use --overwrite to update it.&quot;</span>
             <span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
@@ -13986,16 +14006,7 @@ Examples:
 
             <details class="quote">
               <summary>Source code in <code>prefect/cli/work_pool.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">487</span>
-<span class="normal">488</span>
-<span class="normal">489</span>
-<span class="normal">490</span>
-<span class="normal">491</span>
-<span class="normal">492</span>
-<span class="normal">493</span>
-<span class="normal">494</span>
-<span class="normal">495</span>
-<span class="normal">496</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">496</span>
 <span class="normal">497</span>
 <span class="normal">498</span>
 <span class="normal">499</span>
@@ -14004,7 +14015,16 @@ Examples:
 <span class="normal">502</span>
 <span class="normal">503</span>
 <span class="normal">504</span>
-<span class="normal">505</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@work_pool_app</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="normal">505</span>
+<span class="normal">506</span>
+<span class="normal">507</span>
+<span class="normal">508</span>
+<span class="normal">509</span>
+<span class="normal">510</span>
+<span class="normal">511</span>
+<span class="normal">512</span>
+<span class="normal">513</span>
+<span class="normal">514</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@work_pool_app</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span>
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Argument</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;The name of the work pool to delete.&quot;</span><span class="p">),</span>
 <span class="p">):</span>
@@ -14051,16 +14071,7 @@ Examples:
 
             <details class="quote">
               <summary>Source code in <code>prefect/cli/work_pool.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">565</span>
-<span class="normal">566</span>
-<span class="normal">567</span>
-<span class="normal">568</span>
-<span class="normal">569</span>
-<span class="normal">570</span>
-<span class="normal">571</span>
-<span class="normal">572</span>
-<span class="normal">573</span>
-<span class="normal">574</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">574</span>
 <span class="normal">575</span>
 <span class="normal">576</span>
 <span class="normal">577</span>
@@ -14084,7 +14095,16 @@ Examples:
 <span class="normal">595</span>
 <span class="normal">596</span>
 <span class="normal">597</span>
-<span class="normal">598</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@work_pool_app</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="normal">598</span>
+<span class="normal">599</span>
+<span class="normal">600</span>
+<span class="normal">601</span>
+<span class="normal">602</span>
+<span class="normal">603</span>
+<span class="normal">604</span>
+<span class="normal">605</span>
+<span class="normal">606</span>
+<span class="normal">607</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@work_pool_app</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">get_default_base_job_template</span><span class="p">(</span>
     <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
         <span class="kc">None</span><span class="p">,</span>
@@ -14191,8 +14211,7 @@ Examples:
 
             <details class="quote">
               <summary>Source code in <code>prefect/cli/work_pool.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">53</span>
-<span class="normal">54</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">54</span>
 <span class="normal">55</span>
 <span class="normal">56</span>
 <span class="normal">57</span>
@@ -14201,7 +14220,8 @@ Examples:
 <span class="normal">60</span>
 <span class="normal">61</span>
 <span class="normal">62</span>
-<span class="normal">63</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">has_provisioner_for_type</span><span class="p">(</span><span class="n">work_pool_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="normal">63</span>
+<span class="normal">64</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">has_provisioner_for_type</span><span class="p">(</span><span class="n">work_pool_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Check if there is a provisioner for the given work pool type.</span>
 
@@ -14240,16 +14260,7 @@ Examples:
 
             <details class="quote">
               <summary>Source code in <code>prefect/cli/work_pool.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">298</span>
-<span class="normal">299</span>
-<span class="normal">300</span>
-<span class="normal">301</span>
-<span class="normal">302</span>
-<span class="normal">303</span>
-<span class="normal">304</span>
-<span class="normal">305</span>
-<span class="normal">306</span>
-<span class="normal">307</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">307</span>
 <span class="normal">308</span>
 <span class="normal">309</span>
 <span class="normal">310</span>
@@ -14257,7 +14268,16 @@ Examples:
 <span class="normal">312</span>
 <span class="normal">313</span>
 <span class="normal">314</span>
-<span class="normal">315</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@work_pool_app</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="normal">315</span>
+<span class="normal">316</span>
+<span class="normal">317</span>
+<span class="normal">318</span>
+<span class="normal">319</span>
+<span class="normal">320</span>
+<span class="normal">321</span>
+<span class="normal">322</span>
+<span class="normal">323</span>
+<span class="normal">324</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@work_pool_app</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">inspect</span><span class="p">(</span>
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Argument</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;The name of the work pool to inspect.&quot;</span><span class="p">),</span>
 <span class="p">):</span>
@@ -14303,16 +14323,7 @@ Examples:
 
             <details class="quote">
               <summary>Source code in <code>prefect/cli/work_pool.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">248</span>
-<span class="normal">249</span>
-<span class="normal">250</span>
-<span class="normal">251</span>
-<span class="normal">252</span>
-<span class="normal">253</span>
-<span class="normal">254</span>
-<span class="normal">255</span>
-<span class="normal">256</span>
-<span class="normal">257</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">257</span>
 <span class="normal">258</span>
 <span class="normal">259</span>
 <span class="normal">260</span>
@@ -14350,7 +14361,16 @@ Examples:
 <span class="normal">292</span>
 <span class="normal">293</span>
 <span class="normal">294</span>
-<span class="normal">295</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@work_pool_app</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="normal">295</span>
+<span class="normal">296</span>
+<span class="normal">297</span>
+<span class="normal">298</span>
+<span class="normal">299</span>
+<span class="normal">300</span>
+<span class="normal">301</span>
+<span class="normal">302</span>
+<span class="normal">303</span>
+<span class="normal">304</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@work_pool_app</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">ls</span><span class="p">(</span>
     <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
         <span class="kc">False</span><span class="p">,</span>
@@ -14426,16 +14446,7 @@ Examples:
 
             <details class="quote">
               <summary>Source code in <code>prefect/cli/work_pool.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">318</span>
-<span class="normal">319</span>
-<span class="normal">320</span>
-<span class="normal">321</span>
-<span class="normal">322</span>
-<span class="normal">323</span>
-<span class="normal">324</span>
-<span class="normal">325</span>
-<span class="normal">326</span>
-<span class="normal">327</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">327</span>
 <span class="normal">328</span>
 <span class="normal">329</span>
 <span class="normal">330</span>
@@ -14449,7 +14460,16 @@ Examples:
 <span class="normal">338</span>
 <span class="normal">339</span>
 <span class="normal">340</span>
-<span class="normal">341</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@work_pool_app</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="normal">341</span>
+<span class="normal">342</span>
+<span class="normal">343</span>
+<span class="normal">344</span>
+<span class="normal">345</span>
+<span class="normal">346</span>
+<span class="normal">347</span>
+<span class="normal">348</span>
+<span class="normal">349</span>
+<span class="normal">350</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@work_pool_app</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">pause</span><span class="p">(</span>
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Argument</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;The name of the work pool to pause.&quot;</span><span class="p">),</span>
 <span class="p">):</span>
@@ -14501,16 +14521,7 @@ Examples:
 
             <details class="quote">
               <summary>Source code in <code>prefect/cli/work_pool.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">601</span>
-<span class="normal">602</span>
-<span class="normal">603</span>
-<span class="normal">604</span>
-<span class="normal">605</span>
-<span class="normal">606</span>
-<span class="normal">607</span>
-<span class="normal">608</span>
-<span class="normal">609</span>
-<span class="normal">610</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">610</span>
 <span class="normal">611</span>
 <span class="normal">612</span>
 <span class="normal">613</span>
@@ -14568,7 +14579,16 @@ Examples:
 <span class="normal">665</span>
 <span class="normal">666</span>
 <span class="normal">667</span>
-<span class="normal">668</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@work_pool_app</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="normal">668</span>
+<span class="normal">669</span>
+<span class="normal">670</span>
+<span class="normal">671</span>
+<span class="normal">672</span>
+<span class="normal">673</span>
+<span class="normal">674</span>
+<span class="normal">675</span>
+<span class="normal">676</span>
+<span class="normal">677</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@work_pool_app</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">preview</span><span class="p">(</span>
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Argument</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;The name or ID of the work pool to preview&quot;</span><span class="p">),</span>
     <span class="n">hours</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
@@ -14666,16 +14686,7 @@ Examples:
 
             <details class="quote">
               <summary>Source code in <code>prefect/cli/work_pool.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">427</span>
-<span class="normal">428</span>
-<span class="normal">429</span>
-<span class="normal">430</span>
-<span class="normal">431</span>
-<span class="normal">432</span>
-<span class="normal">433</span>
-<span class="normal">434</span>
-<span class="normal">435</span>
-<span class="normal">436</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">436</span>
 <span class="normal">437</span>
 <span class="normal">438</span>
 <span class="normal">439</span>
@@ -14723,7 +14734,16 @@ Examples:
 <span class="normal">481</span>
 <span class="normal">482</span>
 <span class="normal">483</span>
-<span class="normal">484</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@work_pool_app</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="n">aliases</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;provision-infra&quot;</span><span class="p">])</span>
+<span class="normal">484</span>
+<span class="normal">485</span>
+<span class="normal">486</span>
+<span class="normal">487</span>
+<span class="normal">488</span>
+<span class="normal">489</span>
+<span class="normal">490</span>
+<span class="normal">491</span>
+<span class="normal">492</span>
+<span class="normal">493</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@work_pool_app</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="n">aliases</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;provision-infra&quot;</span><span class="p">])</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">provision_infrastructure</span><span class="p">(</span>
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Argument</span><span class="p">(</span>
         <span class="o">...</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;The name of the work pool to provision infrastructure for.&quot;</span>
@@ -14809,16 +14829,7 @@ Examples:
 
             <details class="quote">
               <summary>Source code in <code>prefect/cli/work_pool.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">344</span>
-<span class="normal">345</span>
-<span class="normal">346</span>
-<span class="normal">347</span>
-<span class="normal">348</span>
-<span class="normal">349</span>
-<span class="normal">350</span>
-<span class="normal">351</span>
-<span class="normal">352</span>
-<span class="normal">353</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">353</span>
 <span class="normal">354</span>
 <span class="normal">355</span>
 <span class="normal">356</span>
@@ -14832,7 +14843,16 @@ Examples:
 <span class="normal">364</span>
 <span class="normal">365</span>
 <span class="normal">366</span>
-<span class="normal">367</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@work_pool_app</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="normal">367</span>
+<span class="normal">368</span>
+<span class="normal">369</span>
+<span class="normal">370</span>
+<span class="normal">371</span>
+<span class="normal">372</span>
+<span class="normal">373</span>
+<span class="normal">374</span>
+<span class="normal">375</span>
+<span class="normal">376</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@work_pool_app</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">resume</span><span class="p">(</span>
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Argument</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;The name of the work pool to resume.&quot;</span><span class="p">),</span>
 <span class="p">):</span>
@@ -14884,16 +14904,7 @@ Examples:
 
             <details class="quote">
               <summary>Source code in <code>prefect/cli/work_pool.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">508</span>
-<span class="normal">509</span>
-<span class="normal">510</span>
-<span class="normal">511</span>
-<span class="normal">512</span>
-<span class="normal">513</span>
-<span class="normal">514</span>
-<span class="normal">515</span>
-<span class="normal">516</span>
-<span class="normal">517</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">517</span>
 <span class="normal">518</span>
 <span class="normal">519</span>
 <span class="normal">520</span>
@@ -14912,7 +14923,16 @@ Examples:
 <span class="normal">533</span>
 <span class="normal">534</span>
 <span class="normal">535</span>
-<span class="normal">536</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@work_pool_app</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="normal">536</span>
+<span class="normal">537</span>
+<span class="normal">538</span>
+<span class="normal">539</span>
+<span class="normal">540</span>
+<span class="normal">541</span>
+<span class="normal">542</span>
+<span class="normal">543</span>
+<span class="normal">544</span>
+<span class="normal">545</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@work_pool_app</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">set_concurrency_limit</span><span class="p">(</span>
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Argument</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;The name of the work pool to update.&quot;</span><span class="p">),</span>
     <span class="n">concurrency_limit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Argument</span><span class="p">(</span>
@@ -14969,16 +14989,7 @@ Examples:
 
             <details class="quote">
               <summary>Source code in <code>prefect/cli/work_pool.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">370</span>
-<span class="normal">371</span>
-<span class="normal">372</span>
-<span class="normal">373</span>
-<span class="normal">374</span>
-<span class="normal">375</span>
-<span class="normal">376</span>
-<span class="normal">377</span>
-<span class="normal">378</span>
-<span class="normal">379</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">379</span>
 <span class="normal">380</span>
 <span class="normal">381</span>
 <span class="normal">382</span>
@@ -15023,7 +15034,16 @@ Examples:
 <span class="normal">421</span>
 <span class="normal">422</span>
 <span class="normal">423</span>
-<span class="normal">424</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@work_pool_app</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="normal">424</span>
+<span class="normal">425</span>
+<span class="normal">426</span>
+<span class="normal">427</span>
+<span class="normal">428</span>
+<span class="normal">429</span>
+<span class="normal">430</span>
+<span class="normal">431</span>
+<span class="normal">432</span>
+<span class="normal">433</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@work_pool_app</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">update</span><span class="p">(</span>
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Argument</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;The name of the work pool to update.&quot;</span><span class="p">),</span>
     <span class="n">base_job_template</span><span class="p">:</span> <span class="n">typer</span><span class="o">.</span><span class="n">FileText</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>

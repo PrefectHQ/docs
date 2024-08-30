@@ -13248,11 +13248,7 @@ if (amplitudeKey){
 
             <details class="quote">
               <summary>Source code in <code>prefect/cli/worker.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 48</span>
-<span class="normal"> 49</span>
-<span class="normal"> 50</span>
-<span class="normal"> 51</span>
-<span class="normal"> 52</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 52</span>
 <span class="normal"> 53</span>
 <span class="normal"> 54</span>
 <span class="normal"> 55</span>
@@ -13431,7 +13427,14 @@ if (amplitudeKey){
 <span class="normal">228</span>
 <span class="normal">229</span>
 <span class="normal">230</span>
-<span class="normal">231</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@worker_app</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="normal">231</span>
+<span class="normal">232</span>
+<span class="normal">233</span>
+<span class="normal">234</span>
+<span class="normal">235</span>
+<span class="normal">236</span>
+<span class="normal">237</span>
+<span class="normal">238</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@worker_app</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">start</span><span class="p">(</span>
     <span class="n">worker_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
         <span class="kc">None</span><span class="p">,</span>
@@ -13557,61 +13560,64 @@ if (amplitudeKey){
         <span class="n">base_job_template</span><span class="o">=</span><span class="n">template_contents</span><span class="p">,</span>
     <span class="p">)</span> <span class="k">as</span> <span class="n">worker</span><span class="p">:</span>
         <span class="n">app</span><span class="o">.</span><span class="n">console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Worker </span><span class="si">{</span><span class="n">worker</span><span class="o">.</span><span class="n">name</span><span class="si">!r}</span><span class="s2"> started!&quot;</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s2">&quot;green&quot;</span><span class="p">)</span>
-        <span class="k">async</span> <span class="k">with</span> <span class="n">anyio</span><span class="o">.</span><span class="n">create_task_group</span><span class="p">()</span> <span class="k">as</span> <span class="n">tg</span><span class="p">:</span>
-            <span class="c1"># wait for an initial heartbeat to configure the worker</span>
-            <span class="k">await</span> <span class="n">worker</span><span class="o">.</span><span class="n">sync_with_backend</span><span class="p">()</span>
-            <span class="c1"># schedule the scheduled flow run polling loop</span>
-            <span class="n">tg</span><span class="o">.</span><span class="n">start_soon</span><span class="p">(</span>
-                <span class="n">partial</span><span class="p">(</span>
-                    <span class="n">critical_service_loop</span><span class="p">,</span>
-                    <span class="n">workload</span><span class="o">=</span><span class="n">worker</span><span class="o">.</span><span class="n">get_and_submit_flow_runs</span><span class="p">,</span>
-                    <span class="n">interval</span><span class="o">=</span><span class="n">PREFECT_WORKER_QUERY_SECONDS</span><span class="o">.</span><span class="n">value</span><span class="p">(),</span>
-                    <span class="n">run_once</span><span class="o">=</span><span class="n">run_once</span><span class="p">,</span>
-                    <span class="n">printer</span><span class="o">=</span><span class="n">app</span><span class="o">.</span><span class="n">console</span><span class="o">.</span><span class="n">print</span><span class="p">,</span>
-                    <span class="n">jitter_range</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span>
-                    <span class="n">backoff</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>  <span class="c1"># Up to ~1 minute interval during backoff</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">async</span> <span class="k">with</span> <span class="n">anyio</span><span class="o">.</span><span class="n">create_task_group</span><span class="p">()</span> <span class="k">as</span> <span class="n">tg</span><span class="p">:</span>
+                <span class="c1"># wait for an initial heartbeat to configure the worker</span>
+                <span class="k">await</span> <span class="n">worker</span><span class="o">.</span><span class="n">sync_with_backend</span><span class="p">()</span>
+                <span class="c1"># schedule the scheduled flow run polling loop</span>
+                <span class="n">tg</span><span class="o">.</span><span class="n">start_soon</span><span class="p">(</span>
+                    <span class="n">partial</span><span class="p">(</span>
+                        <span class="n">critical_service_loop</span><span class="p">,</span>
+                        <span class="n">workload</span><span class="o">=</span><span class="n">worker</span><span class="o">.</span><span class="n">get_and_submit_flow_runs</span><span class="p">,</span>
+                        <span class="n">interval</span><span class="o">=</span><span class="n">PREFECT_WORKER_QUERY_SECONDS</span><span class="o">.</span><span class="n">value</span><span class="p">(),</span>
+                        <span class="n">run_once</span><span class="o">=</span><span class="n">run_once</span><span class="p">,</span>
+                        <span class="n">printer</span><span class="o">=</span><span class="n">app</span><span class="o">.</span><span class="n">console</span><span class="o">.</span><span class="n">print</span><span class="p">,</span>
+                        <span class="n">jitter_range</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span>
+                        <span class="n">backoff</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>  <span class="c1"># Up to ~1 minute interval during backoff</span>
+                    <span class="p">)</span>
                 <span class="p">)</span>
-            <span class="p">)</span>
-            <span class="c1"># schedule the sync loop</span>
-            <span class="n">tg</span><span class="o">.</span><span class="n">start_soon</span><span class="p">(</span>
-                <span class="n">partial</span><span class="p">(</span>
-                    <span class="n">critical_service_loop</span><span class="p">,</span>
-                    <span class="n">workload</span><span class="o">=</span><span class="n">worker</span><span class="o">.</span><span class="n">sync_with_backend</span><span class="p">,</span>
-                    <span class="n">interval</span><span class="o">=</span><span class="n">worker</span><span class="o">.</span><span class="n">heartbeat_interval_seconds</span><span class="p">,</span>
-                    <span class="n">run_once</span><span class="o">=</span><span class="n">run_once</span><span class="p">,</span>
-                    <span class="n">printer</span><span class="o">=</span><span class="n">app</span><span class="o">.</span><span class="n">console</span><span class="o">.</span><span class="n">print</span><span class="p">,</span>
-                    <span class="n">jitter_range</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span>
-                    <span class="n">backoff</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+                <span class="c1"># schedule the sync loop</span>
+                <span class="n">tg</span><span class="o">.</span><span class="n">start_soon</span><span class="p">(</span>
+                    <span class="n">partial</span><span class="p">(</span>
+                        <span class="n">critical_service_loop</span><span class="p">,</span>
+                        <span class="n">workload</span><span class="o">=</span><span class="n">worker</span><span class="o">.</span><span class="n">sync_with_backend</span><span class="p">,</span>
+                        <span class="n">interval</span><span class="o">=</span><span class="n">worker</span><span class="o">.</span><span class="n">heartbeat_interval_seconds</span><span class="p">,</span>
+                        <span class="n">run_once</span><span class="o">=</span><span class="n">run_once</span><span class="p">,</span>
+                        <span class="n">printer</span><span class="o">=</span><span class="n">app</span><span class="o">.</span><span class="n">console</span><span class="o">.</span><span class="n">print</span><span class="p">,</span>
+                        <span class="n">jitter_range</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span>
+                        <span class="n">backoff</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+                    <span class="p">)</span>
                 <span class="p">)</span>
-            <span class="p">)</span>
-            <span class="n">tg</span><span class="o">.</span><span class="n">start_soon</span><span class="p">(</span>
-                <span class="n">partial</span><span class="p">(</span>
-                    <span class="n">critical_service_loop</span><span class="p">,</span>
-                    <span class="n">workload</span><span class="o">=</span><span class="n">worker</span><span class="o">.</span><span class="n">check_for_cancelled_flow_runs</span><span class="p">,</span>
-                    <span class="n">interval</span><span class="o">=</span><span class="n">PREFECT_WORKER_QUERY_SECONDS</span><span class="o">.</span><span class="n">value</span><span class="p">()</span> <span class="o">*</span> <span class="mi">2</span><span class="p">,</span>
-                    <span class="n">run_once</span><span class="o">=</span><span class="n">run_once</span><span class="p">,</span>
-                    <span class="n">printer</span><span class="o">=</span><span class="n">app</span><span class="o">.</span><span class="n">console</span><span class="o">.</span><span class="n">print</span><span class="p">,</span>
-                    <span class="n">jitter_range</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span>
-                    <span class="n">backoff</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+                <span class="n">tg</span><span class="o">.</span><span class="n">start_soon</span><span class="p">(</span>
+                    <span class="n">partial</span><span class="p">(</span>
+                        <span class="n">critical_service_loop</span><span class="p">,</span>
+                        <span class="n">workload</span><span class="o">=</span><span class="n">worker</span><span class="o">.</span><span class="n">check_for_cancelled_flow_runs</span><span class="p">,</span>
+                        <span class="n">interval</span><span class="o">=</span><span class="n">PREFECT_WORKER_QUERY_SECONDS</span><span class="o">.</span><span class="n">value</span><span class="p">()</span> <span class="o">*</span> <span class="mi">2</span><span class="p">,</span>
+                        <span class="n">run_once</span><span class="o">=</span><span class="n">run_once</span><span class="p">,</span>
+                        <span class="n">printer</span><span class="o">=</span><span class="n">app</span><span class="o">.</span><span class="n">console</span><span class="o">.</span><span class="n">print</span><span class="p">,</span>
+                        <span class="n">jitter_range</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span>
+                        <span class="n">backoff</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+                    <span class="p">)</span>
                 <span class="p">)</span>
-            <span class="p">)</span>
 
-            <span class="n">started_event</span> <span class="o">=</span> <span class="k">await</span> <span class="n">worker</span><span class="o">.</span><span class="n">_emit_worker_started_event</span><span class="p">()</span>
+                <span class="n">started_event</span> <span class="o">=</span> <span class="k">await</span> <span class="n">worker</span><span class="o">.</span><span class="n">_emit_worker_started_event</span><span class="p">()</span>
 
-            <span class="c1"># if --with-healthcheck was passed, start the healthcheck server</span>
-            <span class="k">if</span> <span class="n">with_healthcheck</span><span class="p">:</span>
-                <span class="c1"># we&#39;ll start the ASGI server in a separate thread so that</span>
-                <span class="c1"># uvicorn does not block the main thread</span>
-                <span class="n">server_thread</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span>
-                    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;healthcheck-server-thread&quot;</span><span class="p">,</span>
-                    <span class="n">target</span><span class="o">=</span><span class="n">partial</span><span class="p">(</span>
-                        <span class="n">start_healthcheck_server</span><span class="p">,</span>
-                        <span class="n">worker</span><span class="o">=</span><span class="n">worker</span><span class="p">,</span>
-                        <span class="n">query_interval_seconds</span><span class="o">=</span><span class="n">PREFECT_WORKER_QUERY_SECONDS</span><span class="o">.</span><span class="n">value</span><span class="p">(),</span>
-                    <span class="p">),</span>
-                    <span class="n">daemon</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                <span class="p">)</span>
-                <span class="n">server_thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+                <span class="c1"># if --with-healthcheck was passed, start the healthcheck server</span>
+                <span class="k">if</span> <span class="n">with_healthcheck</span><span class="p">:</span>
+                    <span class="c1"># we&#39;ll start the ASGI server in a separate thread so that</span>
+                    <span class="c1"># uvicorn does not block the main thread</span>
+                    <span class="n">server_thread</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span>
+                        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;healthcheck-server-thread&quot;</span><span class="p">,</span>
+                        <span class="n">target</span><span class="o">=</span><span class="n">partial</span><span class="p">(</span>
+                            <span class="n">start_healthcheck_server</span><span class="p">,</span>
+                            <span class="n">worker</span><span class="o">=</span><span class="n">worker</span><span class="p">,</span>
+                            <span class="n">query_interval_seconds</span><span class="o">=</span><span class="n">PREFECT_WORKER_QUERY_SECONDS</span><span class="o">.</span><span class="n">value</span><span class="p">(),</span>
+                        <span class="p">),</span>
+                        <span class="n">daemon</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                    <span class="p">)</span>
+                    <span class="n">server_thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+        <span class="k">except</span> <span class="n">CancelledError</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Worker task group cancelled&quot;</span><span class="p">)</span>
 
     <span class="k">await</span> <span class="n">worker</span><span class="o">.</span><span class="n">_emit_worker_stopped_event</span><span class="p">(</span><span class="n">started_event</span><span class="p">)</span>
     <span class="n">app</span><span class="o">.</span><span class="n">console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Worker </span><span class="si">{</span><span class="n">worker</span><span class="o">.</span><span class="n">name</span><span class="si">!r}</span><span class="s2"> stopped!&quot;</span><span class="p">)</span>

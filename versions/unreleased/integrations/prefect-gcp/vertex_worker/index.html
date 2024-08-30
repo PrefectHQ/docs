@@ -13780,7 +13780,11 @@ if (amplitudeKey){
 <span class="normal">657</span>
 <span class="normal">658</span>
 <span class="normal">659</span>
-<span class="normal">660</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">VertexAIWorker</span><span class="p">(</span><span class="n">BaseWorker</span><span class="p">):</span>
+<span class="normal">660</span>
+<span class="normal">661</span>
+<span class="normal">662</span>
+<span class="normal">663</span>
+<span class="normal">664</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">VertexAIWorker</span><span class="p">(</span><span class="n">BaseWorker</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Prefect worker that executes flow runs within Vertex AI Jobs.&quot;&quot;&quot;</span>
 
     <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;vertex-ai&quot;</span>
@@ -13896,6 +13900,10 @@ if (amplitudeKey){
             <span class="p">)</span>
         <span class="p">)</span>
         <span class="n">scheduling</span> <span class="o">=</span> <span class="n">Scheduling</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="s2">&quot;service_account_name&quot;</span> <span class="ow">in</span> <span class="n">configuration</span><span class="o">.</span><span class="n">job_spec</span><span class="p">:</span>
+            <span class="n">service_account_name</span> <span class="o">=</span> <span class="n">configuration</span><span class="o">.</span><span class="n">job_spec</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;service_account_name&quot;</span><span class="p">)</span>
+            <span class="n">configuration</span><span class="o">.</span><span class="n">job_spec</span><span class="p">[</span><span class="s2">&quot;service_account&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">service_account_name</span>
 
         <span class="c1"># construct the final job spec that we will provide to Vertex AI</span>
         <span class="n">job_spec</span> <span class="o">=</span> <span class="n">CustomJobSpec</span><span class="p">(</span>
@@ -14107,11 +14115,7 @@ based on the provided infrastructure PID + run configuration.</p>
 
             <details class="quote">
               <summary>Source code in <code>prefect_gcp/workers/vertex.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">615</span>
-<span class="normal">616</span>
-<span class="normal">617</span>
-<span class="normal">618</span>
-<span class="normal">619</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">619</span>
 <span class="normal">620</span>
 <span class="normal">621</span>
 <span class="normal">622</span>
@@ -14135,7 +14139,11 @@ based on the provided infrastructure PID + run configuration.</p>
 <span class="normal">640</span>
 <span class="normal">641</span>
 <span class="normal">642</span>
-<span class="normal">643</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">kill_infrastructure</span><span class="p">(</span>
+<span class="normal">643</span>
+<span class="normal">644</span>
+<span class="normal">645</span>
+<span class="normal">646</span>
+<span class="normal">647</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">kill_infrastructure</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">infrastructure_pid</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">configuration</span><span class="p">:</span> <span class="n">VertexAIWorkerJobConfiguration</span><span class="p">,</span>
@@ -14914,6 +14922,22 @@ https://cloud.google.com/python/docs/reference/aiplatform/latest/google.cloud.ai
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Contains information about the final state of a completed process&quot;&quot;&quot;</span>
 </code></pre></div></td></tr></table></div>
               </details>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+  </div>
 
     </div>
 

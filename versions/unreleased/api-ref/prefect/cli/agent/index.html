@@ -13250,11 +13250,7 @@ if (amplitudeKey){
 
             <details class="quote">
               <summary>Source code in <code>prefect/cli/agent.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 49</span>
-<span class="normal"> 50</span>
-<span class="normal"> 51</span>
-<span class="normal"> 52</span>
-<span class="normal"> 53</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 53</span>
 <span class="normal"> 54</span>
 <span class="normal"> 55</span>
 <span class="normal"> 56</span>
@@ -13448,7 +13444,14 @@ if (amplitudeKey){
 <span class="normal">244</span>
 <span class="normal">245</span>
 <span class="normal">246</span>
-<span class="normal">247</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@agent_app</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="normal">247</span>
+<span class="normal">248</span>
+<span class="normal">249</span>
+<span class="normal">250</span>
+<span class="normal">251</span>
+<span class="normal">252</span>
+<span class="normal">253</span>
+<span class="normal">254</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@agent_app</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">start</span><span class="p">(</span>
     <span class="c1"># deprecated main argument</span>
     <span class="n">work_queue</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Argument</span><span class="p">(</span>
@@ -13621,30 +13624,33 @@ if (amplitudeKey){
                     <span class="sa">f</span><span class="s2">&quot;queue(s): </span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">work_queues</span><span class="p">)</span><span class="si">}</span><span class="s2">...&quot;</span>
                 <span class="p">)</span>
 
-        <span class="k">async</span> <span class="k">with</span> <span class="n">anyio</span><span class="o">.</span><span class="n">create_task_group</span><span class="p">()</span> <span class="k">as</span> <span class="n">tg</span><span class="p">:</span>
-            <span class="n">tg</span><span class="o">.</span><span class="n">start_soon</span><span class="p">(</span>
-                <span class="n">partial</span><span class="p">(</span>
-                    <span class="n">critical_service_loop</span><span class="p">,</span>
-                    <span class="n">agent</span><span class="o">.</span><span class="n">get_and_submit_flow_runs</span><span class="p">,</span>
-                    <span class="n">PREFECT_AGENT_QUERY_INTERVAL</span><span class="o">.</span><span class="n">value</span><span class="p">(),</span>
-                    <span class="n">printer</span><span class="o">=</span><span class="n">app</span><span class="o">.</span><span class="n">console</span><span class="o">.</span><span class="n">print</span><span class="p">,</span>
-                    <span class="n">run_once</span><span class="o">=</span><span class="n">run_once</span><span class="p">,</span>
-                    <span class="n">jitter_range</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span>
-                    <span class="n">backoff</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>  <span class="c1"># Up to ~1 minute interval during backoff</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">async</span> <span class="k">with</span> <span class="n">anyio</span><span class="o">.</span><span class="n">create_task_group</span><span class="p">()</span> <span class="k">as</span> <span class="n">tg</span><span class="p">:</span>
+                <span class="n">tg</span><span class="o">.</span><span class="n">start_soon</span><span class="p">(</span>
+                    <span class="n">partial</span><span class="p">(</span>
+                        <span class="n">critical_service_loop</span><span class="p">,</span>
+                        <span class="n">agent</span><span class="o">.</span><span class="n">get_and_submit_flow_runs</span><span class="p">,</span>
+                        <span class="n">PREFECT_AGENT_QUERY_INTERVAL</span><span class="o">.</span><span class="n">value</span><span class="p">(),</span>
+                        <span class="n">printer</span><span class="o">=</span><span class="n">app</span><span class="o">.</span><span class="n">console</span><span class="o">.</span><span class="n">print</span><span class="p">,</span>
+                        <span class="n">run_once</span><span class="o">=</span><span class="n">run_once</span><span class="p">,</span>
+                        <span class="n">jitter_range</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span>
+                        <span class="n">backoff</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>  <span class="c1"># Up to ~1 minute interval during backoff</span>
+                    <span class="p">)</span>
                 <span class="p">)</span>
-            <span class="p">)</span>
 
-            <span class="n">tg</span><span class="o">.</span><span class="n">start_soon</span><span class="p">(</span>
-                <span class="n">partial</span><span class="p">(</span>
-                    <span class="n">critical_service_loop</span><span class="p">,</span>
-                    <span class="n">agent</span><span class="o">.</span><span class="n">check_for_cancelled_flow_runs</span><span class="p">,</span>
-                    <span class="n">PREFECT_AGENT_QUERY_INTERVAL</span><span class="o">.</span><span class="n">value</span><span class="p">()</span> <span class="o">*</span> <span class="mi">2</span><span class="p">,</span>
-                    <span class="n">printer</span><span class="o">=</span><span class="n">app</span><span class="o">.</span><span class="n">console</span><span class="o">.</span><span class="n">print</span><span class="p">,</span>
-                    <span class="n">run_once</span><span class="o">=</span><span class="n">run_once</span><span class="p">,</span>
-                    <span class="n">jitter_range</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span>
-                    <span class="n">backoff</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+                <span class="n">tg</span><span class="o">.</span><span class="n">start_soon</span><span class="p">(</span>
+                    <span class="n">partial</span><span class="p">(</span>
+                        <span class="n">critical_service_loop</span><span class="p">,</span>
+                        <span class="n">agent</span><span class="o">.</span><span class="n">check_for_cancelled_flow_runs</span><span class="p">,</span>
+                        <span class="n">PREFECT_AGENT_QUERY_INTERVAL</span><span class="o">.</span><span class="n">value</span><span class="p">()</span> <span class="o">*</span> <span class="mi">2</span><span class="p">,</span>
+                        <span class="n">printer</span><span class="o">=</span><span class="n">app</span><span class="o">.</span><span class="n">console</span><span class="o">.</span><span class="n">print</span><span class="p">,</span>
+                        <span class="n">run_once</span><span class="o">=</span><span class="n">run_once</span><span class="p">,</span>
+                        <span class="n">jitter_range</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span>
+                        <span class="n">backoff</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+                    <span class="p">)</span>
                 <span class="p">)</span>
-            <span class="p">)</span>
+        <span class="k">except</span> <span class="n">CancelledError</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Agent task group cancelled&quot;</span><span class="p">)</span>
 
     <span class="n">app</span><span class="o">.</span><span class="n">console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="s2">&quot;Agent stopped!&quot;</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
