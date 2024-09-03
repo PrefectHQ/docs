@@ -210,7 +210,8 @@ if (amplitudeKey){
             
 <div style="text-align:center">
     <strong>
-        Prefect 3 is live! See the docs at <a href="https://docs-3.prefect.io" target="_blank" rel="noopener"> docs-3.prefect.io </a>
+        Prefect 3 is Generally Available! See the docs at <a href="https://docs.prefect.io" target="_blank" rel="noopener">
+            docs.prefect.io </a>
     </strong>
 </div>
 
@@ -13303,7 +13304,7 @@ if (amplitudeKey){
               Bases: <code><a class="autorefs autorefs-internal" title="prefect.client.schemas.actions.VariableCreate" href="../client/schemas/#prefect.client.schemas.actions.VariableCreate">VariableCreate</a></code></p>
 
 
-      <p>Variables are named, mutable string values, much like environment variables. Variables are scoped to a Prefect server instance or a single workspace in Prefect Cloud.
+        <p>Variables are named, mutable string values, much like environment variables. Variables are scoped to a Prefect server instance or a single workspace in Prefect Cloud.
 https://docs.prefect.io/latest/concepts/variables/</p>
 
 
@@ -13441,7 +13442,13 @@ https://docs.prefect.io/latest/concepts/variables/</p>
 <span class="normal">86</span>
 <span class="normal">87</span>
 <span class="normal">88</span>
-<span class="normal">89</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">Variable</span><span class="p">(</span><span class="n">VariableRequest</span><span class="p">):</span>
+<span class="normal">89</span>
+<span class="normal">90</span>
+<span class="normal">91</span>
+<span class="normal">92</span>
+<span class="normal">93</span>
+<span class="normal">94</span>
+<span class="normal">95</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">Variable</span><span class="p">(</span><span class="n">VariableRequest</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Variables are named, mutable string values, much like environment variables. Variables are scoped to a Prefect server instance or a single workspace in Prefect Cloud.</span>
 <span class="sd">    https://docs.prefect.io/latest/concepts/variables/</span>
@@ -13460,7 +13467,7 @@ https://docs.prefect.io/latest/concepts/variables/</p>
         <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">tags</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">overwrite</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="s2">&quot;Variable&quot;</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Sets a new variable. If one exists with the same name, user must pass `overwrite=True`</span>
 <span class="sd">        ```</span>
@@ -13481,8 +13488,7 @@ https://docs.prefect.io/latest/concepts/variables/</p>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">client</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">get_or_create_client</span><span class="p">()</span>
         <span class="n">variable</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">read_variable_by_name</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
-        <span class="n">var_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="n">value</span><span class="p">}</span>
-        <span class="n">var_dict</span><span class="p">[</span><span class="s2">&quot;tags&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">tags</span> <span class="ow">or</span> <span class="p">[]</span>
+        <span class="n">var_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="n">value</span><span class="p">,</span> <span class="s2">&quot;tags&quot;</span><span class="p">:</span> <span class="n">tags</span> <span class="ow">or</span> <span class="p">[]}</span>
         <span class="k">if</span> <span class="n">variable</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">overwrite</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
@@ -13499,7 +13505,9 @@ https://docs.prefect.io/latest/concepts/variables/</p>
 
     <span class="nd">@classmethod</span>
     <span class="nd">@sync_compatible</span>
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">get</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="s2">&quot;Variable&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get a variable by name. If doesn&#39;t exist return the default.</span>
 <span class="sd">        ```</span>
@@ -13520,7 +13528,12 @@ https://docs.prefect.io/latest/concepts/variables/</p>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">client</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">get_or_create_client</span><span class="p">()</span>
         <span class="n">variable</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">read_variable_by_name</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">variable</span> <span class="k">if</span> <span class="n">variable</span> <span class="k">else</span> <span class="n">default</span>
+
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="n">Variable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">variable</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">variable</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="n">variable</span><span class="o">.</span><span class="n">tags</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">variable</span>
+            <span class="k">else</span> <span class="n">default</span>
+        <span class="p">)</span>
 </code></pre></div></td></tr></table></div>
               </details>
 
@@ -13552,7 +13565,7 @@ https://docs.prefect.io/latest/concepts/variables/</p>
 
     <div class="doc doc-contents ">
 
-      <p>Get a variable by name. If doesn't exist return the default.
+        <p>Get a variable by name. If doesn't exist return the default.
 <div class="highlight"><pre><span></span><code>    from prefect.variables import Variable
 
     @flow
@@ -13569,7 +13582,8 @@ or
 
             <details class="quote">
               <summary>Source code in <code>prefect/variables.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">66</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">65</span>
+<span class="normal">66</span>
 <span class="normal">67</span>
 <span class="normal">68</span>
 <span class="normal">69</span>
@@ -13592,9 +13606,17 @@ or
 <span class="normal">86</span>
 <span class="normal">87</span>
 <span class="normal">88</span>
-<span class="normal">89</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@classmethod</span>
+<span class="normal">89</span>
+<span class="normal">90</span>
+<span class="normal">91</span>
+<span class="normal">92</span>
+<span class="normal">93</span>
+<span class="normal">94</span>
+<span class="normal">95</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@classmethod</span>
 <span class="nd">@sync_compatible</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">get</span><span class="p">(</span>
+    <span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="s2">&quot;Variable&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get a variable by name. If doesn&#39;t exist return the default.</span>
 <span class="sd">    ```</span>
@@ -13615,7 +13637,12 @@ or
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">client</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">get_or_create_client</span><span class="p">()</span>
     <span class="n">variable</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">read_variable_by_name</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">variable</span> <span class="k">if</span> <span class="n">variable</span> <span class="k">else</span> <span class="n">default</span>
+
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="n">Variable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">variable</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">variable</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="n">variable</span><span class="o">.</span><span class="n">tags</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">variable</span>
+        <span class="k">else</span> <span class="n">default</span>
+    <span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -13638,7 +13665,7 @@ or
 
     <div class="doc doc-contents ">
 
-      <p>Sets a new variable. If one exists with the same name, user must pass <code>overwrite=True</code>
+        <p>Sets a new variable. If one exists with the same name, user must pass <code>overwrite=True</code>
 <div class="highlight"><pre><span></span><code>    from prefect.variables import Variable
 
     @flow
@@ -13697,8 +13724,7 @@ or
 <span class="normal">60</span>
 <span class="normal">61</span>
 <span class="normal">62</span>
-<span class="normal">63</span>
-<span class="normal">64</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@classmethod</span>
+<span class="normal">63</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@classmethod</span>
 <span class="nd">@sync_compatible</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">set</span><span class="p">(</span>
     <span class="bp">cls</span><span class="p">,</span>
@@ -13706,7 +13732,7 @@ or
     <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">tags</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">overwrite</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="s2">&quot;Variable&quot;</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Sets a new variable. If one exists with the same name, user must pass `overwrite=True`</span>
 <span class="sd">    ```</span>
@@ -13727,8 +13753,7 @@ or
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">client</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">get_or_create_client</span><span class="p">()</span>
     <span class="n">variable</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">read_variable_by_name</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
-    <span class="n">var_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="n">value</span><span class="p">}</span>
-    <span class="n">var_dict</span><span class="p">[</span><span class="s2">&quot;tags&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">tags</span> <span class="ow">or</span> <span class="p">[]</span>
+    <span class="n">var_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="n">value</span><span class="p">,</span> <span class="s2">&quot;tags&quot;</span><span class="p">:</span> <span class="n">tags</span> <span class="ow">or</span> <span class="p">[]}</span>
     <span class="k">if</span> <span class="n">variable</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">overwrite</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
@@ -13772,7 +13797,7 @@ or
 
     <div class="doc doc-contents ">
 
-      <p>Get a variable by name. If doesn't exist return the default.
+        <p>Get a variable by name. If doesn't exist return the default.
 <div class="highlight"><pre><span></span><code>    from prefect import variables
 
     @flow
@@ -13789,13 +13814,7 @@ or
 
             <details class="quote">
               <summary>Source code in <code>prefect/variables.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 92</span>
-<span class="normal"> 93</span>
-<span class="normal"> 94</span>
-<span class="normal"> 95</span>
-<span class="normal"> 96</span>
-<span class="normal"> 97</span>
-<span class="normal"> 98</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 98</span>
 <span class="normal"> 99</span>
 <span class="normal">100</span>
 <span class="normal">101</span>
@@ -13811,7 +13830,15 @@ or
 <span class="normal">111</span>
 <span class="normal">112</span>
 <span class="normal">113</span>
-<span class="normal">114</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@deprecated_callable</span><span class="p">(</span><span class="n">start_date</span><span class="o">=</span><span class="s2">&quot;Apr 2024&quot;</span><span class="p">)</span>
+<span class="normal">114</span>
+<span class="normal">115</span>
+<span class="normal">116</span>
+<span class="normal">117</span>
+<span class="normal">118</span>
+<span class="normal">119</span>
+<span class="normal">120</span>
+<span class="normal">121</span>
+<span class="normal">122</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@deprecated_callable</span><span class="p">(</span><span class="n">start_date</span><span class="o">=</span><span class="s2">&quot;Apr 2024&quot;</span><span class="p">)</span>
 <span class="nd">@sync_compatible</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -13832,8 +13859,10 @@ or
 <span class="sd">            var = await variables.get(&quot;my_var&quot;)</span>
 <span class="sd">    ```</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">variable</span> <span class="o">=</span> <span class="k">await</span> <span class="n">Variable</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">variable</span><span class="o">.</span><span class="n">value</span> <span class="k">if</span> <span class="n">variable</span> <span class="k">else</span> <span class="n">default</span>
+    <span class="n">variable</span> <span class="o">=</span> <span class="k">await</span> <span class="n">Variable</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">default</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">variable</span><span class="p">,</span> <span class="n">Variable</span><span class="p">):</span>
+        <span class="n">variable</span> <span class="o">=</span> <span class="n">variable</span><span class="o">.</span><span class="n">value</span>
+    <span class="k">return</span> <span class="n">variable</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
