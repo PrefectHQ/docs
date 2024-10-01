@@ -13578,11 +13578,7 @@ for more information.</p>
 
               <details class="quote">
                 <summary>Source code in <code>prefect/deployments/runner.py</code></summary>
-                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">784</span>
-<span class="normal">785</span>
-<span class="normal">786</span>
-<span class="normal">787</span>
-<span class="normal">788</span>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">788</span>
 <span class="normal">789</span>
 <span class="normal">790</span>
 <span class="normal">791</span>
@@ -13638,7 +13634,11 @@ for more information.</p>
 <span class="normal">841</span>
 <span class="normal">842</span>
 <span class="normal">843</span>
-<span class="normal">844</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">DeploymentImage</span><span class="p">:</span>
+<span class="normal">844</span>
+<span class="normal">845</span>
+<span class="normal">846</span>
+<span class="normal">847</span>
+<span class="normal">848</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">DeploymentImage</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Configuration used to build and push a Docker image for a deployment.</span>
 
@@ -14649,7 +14649,11 @@ available settings.</p>
 <span class="normal">778</span>
 <span class="normal">779</span>
 <span class="normal">780</span>
-<span class="normal">781</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">RunnerDeployment</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="normal">781</span>
+<span class="normal">782</span>
+<span class="normal">783</span>
+<span class="normal">784</span>
+<span class="normal">785</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">RunnerDeployment</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A Prefect RunnerDeployment definition, used for specifying and building deployments.</span>
 
@@ -15116,6 +15120,7 @@ available settings.</p>
         <span class="bp">cls</span><span class="p">,</span>
         <span class="n">entrypoint</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">flow_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">interval</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span>
             <span class="n">Union</span><span class="p">[</span><span class="n">Iterable</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">timedelta</span><span class="p">]],</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">timedelta</span><span class="p">]</span>
         <span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -15142,6 +15147,7 @@ available settings.</p>
 <span class="sd">            entrypoint:  The path to a file containing a flow and the name of the flow function in</span>
 <span class="sd">                the format `./path/to/file.py:flow_func_name`.</span>
 <span class="sd">            name: A name for the deployment</span>
+<span class="sd">            flow_name: The name of the flow to deploy</span>
 <span class="sd">            interval: An interval on which to execute the current flow. Accepts either a number</span>
 <span class="sd">                or a timedelta object. If a number is given, it will be interpreted as seconds.</span>
 <span class="sd">            cron: A cron schedule of when to execute runs of this flow.</span>
@@ -15185,7 +15191,7 @@ available settings.</p>
 
         <span class="n">deployment</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span>
             <span class="n">name</span><span class="o">=</span><span class="n">Path</span><span class="p">(</span><span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">stem</span><span class="p">,</span>
-            <span class="n">flow_name</span><span class="o">=</span><span class="n">flow</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">flow_name</span><span class="o">=</span><span class="n">flow_name</span> <span class="ow">or</span> <span class="n">flow</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
             <span class="n">schedule</span><span class="o">=</span><span class="n">schedule</span><span class="p">,</span>
             <span class="n">schedules</span><span class="o">=</span><span class="n">constructed_schedules</span><span class="p">,</span>
             <span class="n">paused</span><span class="o">=</span><span class="n">paused</span><span class="p">,</span>
@@ -15214,6 +15220,7 @@ available settings.</p>
         <span class="n">storage</span><span class="p">:</span> <span class="n">RunnerStorage</span><span class="p">,</span>
         <span class="n">entrypoint</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">flow_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">interval</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span>
             <span class="n">Union</span><span class="p">[</span><span class="n">Iterable</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">timedelta</span><span class="p">]],</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">timedelta</span><span class="p">]</span>
         <span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -15241,6 +15248,7 @@ available settings.</p>
 <span class="sd">            entrypoint:  The path to a file containing a flow and the name of the flow function in</span>
 <span class="sd">                the format `./path/to/file.py:flow_func_name`.</span>
 <span class="sd">            name: A name for the deployment</span>
+<span class="sd">            flow_name: The name of the flow to deploy</span>
 <span class="sd">            storage: A storage object to use for retrieving flow code. If not provided, a</span>
 <span class="sd">                URL must be provided.</span>
 <span class="sd">            interval: An interval on which to execute the current flow. Accepts either a number</span>
@@ -15291,7 +15299,7 @@ available settings.</p>
 
         <span class="n">deployment</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span>
             <span class="n">name</span><span class="o">=</span><span class="n">Path</span><span class="p">(</span><span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">stem</span><span class="p">,</span>
-            <span class="n">flow_name</span><span class="o">=</span><span class="n">flow</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">flow_name</span><span class="o">=</span><span class="n">flow_name</span> <span class="ow">or</span> <span class="n">flow</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
             <span class="n">schedule</span><span class="o">=</span><span class="n">schedule</span><span class="p">,</span>
             <span class="n">schedules</span><span class="o">=</span><span class="n">constructed_schedules</span><span class="p">,</span>
             <span class="n">paused</span><span class="o">=</span><span class="n">paused</span><span class="p">,</span>
@@ -15686,6 +15694,20 @@ the format <code>./path/to/file.py:flow_func_name</code>.</p>
             </td>
           </tr>
           <tr class="doc-section-item">
+            <td><code>flow_name</code></td>
+            <td>
+                  <code><span title="typing.Optional">Optional</span>[str]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The name of the flow to deploy</p>
+              </div>
+            </td>
+            <td>
+                  <code>None</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
             <td><code>interval</code></td>
             <td>
                   <code><span title="typing.Optional">Optional</span>[<span title="typing.Union">Union</span>[<span title="typing.Iterable">Iterable</span>[<span title="typing.Union">Union</span>[int, float, <span title="datetime.timedelta">timedelta</span>]], int, float, <span title="datetime.timedelta">timedelta</span>]]</code>
@@ -16019,11 +16041,14 @@ available settings.</p>
 <span class="normal">669</span>
 <span class="normal">670</span>
 <span class="normal">671</span>
-<span class="normal">672</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@classmethod</span>
+<span class="normal">672</span>
+<span class="normal">673</span>
+<span class="normal">674</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@classmethod</span>
 <span class="k">def</span> <span class="nf">from_entrypoint</span><span class="p">(</span>
     <span class="bp">cls</span><span class="p">,</span>
     <span class="n">entrypoint</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">flow_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">interval</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span>
         <span class="n">Union</span><span class="p">[</span><span class="n">Iterable</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">timedelta</span><span class="p">]],</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">timedelta</span><span class="p">]</span>
     <span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -16050,6 +16075,7 @@ available settings.</p>
 <span class="sd">        entrypoint:  The path to a file containing a flow and the name of the flow function in</span>
 <span class="sd">            the format `./path/to/file.py:flow_func_name`.</span>
 <span class="sd">        name: A name for the deployment</span>
+<span class="sd">        flow_name: The name of the flow to deploy</span>
 <span class="sd">        interval: An interval on which to execute the current flow. Accepts either a number</span>
 <span class="sd">            or a timedelta object. If a number is given, it will be interpreted as seconds.</span>
 <span class="sd">        cron: A cron schedule of when to execute runs of this flow.</span>
@@ -16093,7 +16119,7 @@ available settings.</p>
 
     <span class="n">deployment</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span>
         <span class="n">name</span><span class="o">=</span><span class="n">Path</span><span class="p">(</span><span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">stem</span><span class="p">,</span>
-        <span class="n">flow_name</span><span class="o">=</span><span class="n">flow</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+        <span class="n">flow_name</span><span class="o">=</span><span class="n">flow_name</span> <span class="ow">or</span> <span class="n">flow</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
         <span class="n">schedule</span><span class="o">=</span><span class="n">schedule</span><span class="p">,</span>
         <span class="n">schedules</span><span class="o">=</span><span class="n">constructed_schedules</span><span class="p">,</span>
         <span class="n">paused</span><span class="o">=</span><span class="n">paused</span><span class="p">,</span>
@@ -16753,6 +16779,20 @@ the format <code>./path/to/file.py:flow_func_name</code>.</p>
             </td>
           </tr>
           <tr class="doc-section-item">
+            <td><code>flow_name</code></td>
+            <td>
+                  <code><span title="typing.Optional">Optional</span>[str]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The name of the flow to deploy</p>
+              </div>
+            </td>
+            <td>
+                  <code>None</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
             <td><code>storage</code></td>
             <td>
                   <code><a class="autorefs autorefs-internal" title="prefect.runner.storage.RunnerStorage" href="../../runner/storage/#prefect.runner.storage.RunnerStorage">RunnerStorage</a></code>
@@ -16978,9 +17018,7 @@ available settings.</p>
 
             <details class="quote">
               <summary>Source code in <code>prefect/deployments/runner.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">674</span>
-<span class="normal">675</span>
-<span class="normal">676</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">676</span>
 <span class="normal">677</span>
 <span class="normal">678</span>
 <span class="normal">679</span>
@@ -17085,13 +17123,18 @@ available settings.</p>
 <span class="normal">778</span>
 <span class="normal">779</span>
 <span class="normal">780</span>
-<span class="normal">781</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@classmethod</span>
+<span class="normal">781</span>
+<span class="normal">782</span>
+<span class="normal">783</span>
+<span class="normal">784</span>
+<span class="normal">785</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@classmethod</span>
 <span class="nd">@sync_compatible</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">from_storage</span><span class="p">(</span>
     <span class="bp">cls</span><span class="p">,</span>
     <span class="n">storage</span><span class="p">:</span> <span class="n">RunnerStorage</span><span class="p">,</span>
     <span class="n">entrypoint</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">flow_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">interval</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span>
         <span class="n">Union</span><span class="p">[</span><span class="n">Iterable</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">timedelta</span><span class="p">]],</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">timedelta</span><span class="p">]</span>
     <span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -17119,6 +17162,7 @@ available settings.</p>
 <span class="sd">        entrypoint:  The path to a file containing a flow and the name of the flow function in</span>
 <span class="sd">            the format `./path/to/file.py:flow_func_name`.</span>
 <span class="sd">        name: A name for the deployment</span>
+<span class="sd">        flow_name: The name of the flow to deploy</span>
 <span class="sd">        storage: A storage object to use for retrieving flow code. If not provided, a</span>
 <span class="sd">            URL must be provided.</span>
 <span class="sd">        interval: An interval on which to execute the current flow. Accepts either a number</span>
@@ -17169,7 +17213,7 @@ available settings.</p>
 
     <span class="n">deployment</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span>
         <span class="n">name</span><span class="o">=</span><span class="n">Path</span><span class="p">(</span><span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">stem</span><span class="p">,</span>
-        <span class="n">flow_name</span><span class="o">=</span><span class="n">flow</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+        <span class="n">flow_name</span><span class="o">=</span><span class="n">flow_name</span> <span class="ow">or</span> <span class="n">flow</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
         <span class="n">schedule</span><span class="o">=</span><span class="n">schedule</span><span class="p">,</span>
         <span class="n">schedules</span><span class="o">=</span><span class="n">constructed_schedules</span><span class="p">,</span>
         <span class="n">paused</span><span class="o">=</span><span class="n">paused</span><span class="p">,</span>
@@ -17411,11 +17455,7 @@ after deploying the deployments.</p>
 
             <details class="quote">
               <summary>Source code in <code>prefect/deployments/runner.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 847</span>
-<span class="normal"> 848</span>
-<span class="normal"> 849</span>
-<span class="normal"> 850</span>
-<span class="normal"> 851</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 851</span>
 <span class="normal"> 852</span>
 <span class="normal"> 853</span>
 <span class="normal"> 854</span>
@@ -17642,7 +17682,11 @@ after deploying the deployments.</p>
 <span class="normal">1075</span>
 <span class="normal">1076</span>
 <span class="normal">1077</span>
-<span class="normal">1078</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@sync_compatible</span>
+<span class="normal">1078</span>
+<span class="normal">1079</span>
+<span class="normal">1080</span>
+<span class="normal">1081</span>
+<span class="normal">1082</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@sync_compatible</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">deploy</span><span class="p">(</span>
     <span class="o">*</span><span class="n">deployments</span><span class="p">:</span> <span class="n">RunnerDeployment</span><span class="p">,</span>
     <span class="n">work_pool_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
