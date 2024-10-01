@@ -13229,8 +13229,8 @@ if (amplitudeKey){
 <p>Learn how to migrate your workflows from Prefect 1.0 to Prefect 3.0. Check out the <a href="https://docs.prefect.io/latest/get-started/quickstart">quickstart</a> for a high level overview.</p>
 <div class="admonition note">
 <p class="admonition-title">What about Prefect 2.x?</p>
-</div>
 <p><a href="https://docs.prefect.io/latest/manage/cloud/index">Prefect Cloud</a> is compatible with all 2.x and 3.x package versions. We recommend adopting Prefect 3.0 as it is significantly more performant than Prefect 2.x and includes new features.</p>
+</div>
 <h2 id="what-stayed-the-same">What stayed the same<a class="headerlink" href="#what-stayed-the-same" title="Permanent link">&para;</a></h2>
 <p>Prefect 3.0 still:</p>
 <ul>
@@ -13254,7 +13254,7 @@ if (amplitudeKey){
 <li><code>Resource manager</code>: since you can use any context manager directly in your flow, a <code>resource_manager</code> was no longer necessary. As long as you point to your flow script in your deployment, you can share database connections and any other resources between tasks in your flow.</li>
 </ul>
 <h3 id="conceptual-and-syntax-changes">Conceptual and syntax changes<a class="headerlink" href="#conceptual-and-syntax-changes" title="Permanent link">&para;</a></h3>
-<p>The changes listed below require you to modify your flow code. The following table shows how Prefect .0 concepts have been implemented in Prefect 3.0. The last column contains references to additional resources that provide more details and examples.</p>
+<p>The changes listed below require you to modify your flow code. The following table shows how Prefect 1.0 concepts have been implemented in Prefect 3.0. The last column contains references to additional resources that provide more details and examples.</p>
 <table>
 <thead>
 <tr>
@@ -13311,12 +13311,12 @@ if (amplitudeKey){
 <td>Task library.</td>
 <td>Included in the <a href="https://docs-v1.prefect.io/core/task_library/overview.html">main Prefect Core repository</a>.</td>
 <td>Separated into <a href="https://docs.prefect.io/integrations/integrations">individually installable packages</a> per system, cloud provider, or technology.</td>
-<td><a href="https://docs.prefect.io/integrations/use-integrations">Use integrations</a>.</td>
+<td><a href="https://docs.prefect.io/integrations/use-integrations">Use integrations</a></td>
 </tr>
 </tbody>
 </table>
 <h3 id="what-changed-in-orchestration">What changed in orchestration?<a class="headerlink" href="#what-changed-in-orchestration" title="Permanent link">&para;</a></h3>
-<p>Let’s look at the differences in how Prefect 3.0 transitions your flow and task runs between various execution states.</p>
+<p>Let’s look at the differences in how Prefect 3.0 transitions your flow and task runs between various execution states:</p>
 <ul>
 <li>In Prefect 3.0, the final state of a flow run that finished without errors is <code>Completed</code>, while in Prefect 1.0, this flow run had a <code>Success</code> state. You can find more about that topic <a href="https://docs.prefect.io/latest/develop/manage-states#final-state-determination">here</a>.</li>
 <li>The decision about whether a flow run should be considered successful or not is no longer based on special reference tasks. Instead, your flow’s return value determines the final state of a flow run.</li>
@@ -13342,19 +13342,19 @@ if (amplitudeKey){
 <li>Out-of-the-box <code>pydantic</code> validation.</li>
 <li><a href="https://docs.prefect.io/latest/develop/blocks">Blocks</a> allow you to securely store UI-editable, type-checked configuration to external systems. All those components are configurable in one place and provided as part of the open-source Prefect 3.0 product. In contrast, the concept of <a href="https://docs-v1.prefect.io/orchestration/concepts/secrets.html">Secrets</a> in Prefect 1.0 was more narrowly scoped and only available in Prefect Cloud.</li>
 <li><a href="https://docs.prefect.io/latest/automate/events/automations-triggers">Automations</a> provide an expressive API to define triggers (based on events) and actions. Automations power notifications and much more.</li>
-<li>Every flow state change, task state change, and more produces a corresponding event which can be the basis of an automation trigger.</li>
-<li>First-class support for <code>subflows</code> which enables a natural and intuitive way of organizing your flows into modular sub-components. In contrast, Prefect 1.0 only allowed the <a href="https://docs-v1.prefect.io/core/idioms/flow-to-flow.html">flow-of-flows orchestrator pattern</a>.</li>
+<li>Every action within Prefect, including flow state changes and task state changes, produces a corresponding event that can trigger an automatic action. Potential actions include running flows, sending notifications, and pausing or restarting schedules.</li>
+<li>First-class support for nested flows which enables a natural and intuitive way of organizing your flows into modular sub-components. In contrast, Prefect 1.0 only allowed the <a href="https://docs-v1.prefect.io/core/idioms/flow-to-flow.html">flow-of-flows orchestrator pattern</a>.</li>
 </ul>
 <h3 id="orchestration-behind-the-api">Orchestration behind the API<a class="headerlink" href="#orchestration-behind-the-api" title="Permanent link">&para;</a></h3>
 <p>Apart from new features, Prefect 3.0 simplifies many usage patterns and provides a much more seamless onboarding experience.</p>
 <p>Every time you run a flow, whether it is tracked by the API server or ad-hoc through a Python script, it is on the same UI page for easier debugging and observability. </p>
 <h3 id="code-as-workflows">Code as workflows<a class="headerlink" href="#code-as-workflows" title="Permanent link">&para;</a></h3>
-<p>With Prefect 3.0, your functions <em>are</em> your flows and tasks. Prefect 3.0 automatically detects your flows and tasks without the need to define a rigid DAG structure. While use of tasks is encouraged to provide you the maximum visibility into your workflows, they are no longer required. You can add a single <code>@flow</code> decorator to your main function to transform any Python script into a Prefect workflow.</p>
+<p>With Prefect 3.0, your decorated functions <em>are</em> your flows and tasks. Prefect 3.0 automatically detects your flows and tasks without the need to define a rigid DAG structure. While use of tasks is encouraged to provide you the maximum visibility into your workflows, they are no longer required. You can add a single <code>@flow</code> decorator to your main function to transform any Python script into a Prefect workflow.</p>
 <h3 id="fewer-ambiguities">Fewer ambiguities<a class="headerlink" href="#fewer-ambiguities" title="Permanent link">&para;</a></h3>
-<p>Prefect 3.0 eliminates ambiguities in many ways. For example. there is no more confusion between Prefect Core and Prefect Server &mdash; Prefect 3.0 unified those into a single open source product. This product is also much easier to deploy with no requirement for Docker or docker-compose.</p>
+<p>Prefect 3.0 eliminates ambiguities in many ways. For example, there is no more confusion between Prefect Core and Prefect Server &mdash; Prefect 3.0 unified those into a single open source product. This product is also much easier to deploy with no requirement for Docker or docker-compose.</p>
 <p>If you want to switch your backend to use Prefect Cloud for an easier production-level managed experience, Prefect profiles let you quickly connect to your workspace.</p>
-<p>In Prefect 1.0, there were several confusing ways you could implement <code>caching</code>. Prefect 3.0 resolves those ambiguities by providing a single <code>cache_policy</code> function paired with <code>cache_expiration</code>, allowing you to define arbitrary <a href="https://docs.prefect.io/latest/develop/task-caching">caching mechanisms</a> &mdash; no more confusion about whether you needed to use <code>cache_for</code>, <code>cache_validator</code>, or file-based caching using <code>targets</code>.</p>
-<p>A similarly confusing concept in Prefect 1.0 was distinguishing between the functional and imperative APIs. This distinction caused ambiguities with respect to how to define state dependencies between tasks. Prefect 1.0 users were often unsure whether they should use the functional <code>upstream_tasks</code> keyword argument or the imperative methods such as <code>task.set_upstream()</code>, <code>task.set_downstream()</code>, or <code>flow.set_dependencies()</code>. In Prefect 3.0, there is only the functional API.</p>
+<p>In Prefect 1.0, there were several confusing ways to implement <code>caching</code>. Prefect 3.0 resolves those ambiguities by providing a single <code>cache_policy</code> function paired with <code>cache_expiration</code>, allowing you to define arbitrary <a href="https://docs.prefect.io/latest/develop/task-caching">caching mechanisms</a> &mdash; no more confusion about whether you needed to use <code>cache_for</code>, <code>cache_validator</code>, or file-based caching using <code>targets</code>.</p>
+<p>A similarly confusing concept in Prefect 1.0 was distinguishing between the functional and imperative APIs. This distinction caused ambiguities when defining state dependencies between tasks. Prefect 1.0 users were often unsure whether they should use the functional <code>upstream_tasks</code> keyword argument or the imperative methods such as <code>task.set_upstream()</code>, <code>task.set_downstream()</code>, or <code>flow.set_dependencies()</code>. In Prefect 3.0, there is only the functional API.</p>
 <h2 id="next-steps">Next steps<a class="headerlink" href="#next-steps" title="Permanent link">&para;</a></h2>
 <p>We know migrations can be tough. We encourage you to take it step-by-step and experiment with the new features.</p>
 <p>To make the migration process easier for you:</p>
