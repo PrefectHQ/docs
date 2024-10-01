@@ -6851,10 +6851,10 @@ if (amplitudeKey){
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#prefect_kubernetes.utilities.enable_socket_keep_alive" class="md-nav__link">
+  <a href="#prefect_kubernetes.utilities.KeepAliveClientRequest" class="md-nav__link">
     <span class="md-ellipsis">
       
-        enable_socket_keep_alive
+        KeepAliveClientRequest
       
     </span>
   </a>
@@ -13105,10 +13105,10 @@ if (amplitudeKey){
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#prefect_kubernetes.utilities.enable_socket_keep_alive" class="md-nav__link">
+  <a href="#prefect_kubernetes.utilities.KeepAliveClientRequest" class="md-nav__link">
     <span class="md-ellipsis">
       
-        enable_socket_keep_alive
+        KeepAliveClientRequest
       
     </span>
   </a>
@@ -13236,28 +13236,30 @@ if (amplitudeKey){
 
 
 
+<div class="doc doc-object doc-class">
 
-<div class="doc doc-object doc-function">
 
 
-<h2 id="prefect_kubernetes.utilities.enable_socket_keep_alive" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">enable_socket_keep_alive</span></code>
+<h2 id="prefect_kubernetes.utilities.KeepAliveClientRequest" class="doc doc-heading">
+            <code>KeepAliveClientRequest</code>
 
-<a href="#prefect_kubernetes.utilities.enable_socket_keep_alive" class="headerlink" title="Permanent link">&para;</a></h2>
+
+<a href="#prefect_kubernetes.utilities.KeepAliveClientRequest" class="headerlink" title="Permanent link">&para;</a></h2>
 
 
     <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="aiohttp.client_reqrep.ClientRequest">ClientRequest</span></code></p>
 
-        <p>Setting the keep-alive flags on the kubernetes client object.
-Unfortunately neither the kubernetes library nor the urllib3 library which
-kubernetes is using internally offer the functionality to enable keep-alive
-messages. Thus the flags are added to be used on the underlying sockets.</p>
 
-            <details class="quote">
-              <summary>Source code in <code>prefect_kubernetes/utilities.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">17</span>
-<span class="normal">18</span>
-<span class="normal">19</span>
+        <p>aiohttp only directly implements socket keepalive for incoming connections
+in its RequestHandler. For client connections, we need to set the keepalive
+ourselves.
+Refer to https://github.com/aio-libs/aiohttp/issues/3904#issuecomment-759205696</p>
+
+              <details class="quote">
+                <summary>Source code in <code>prefect_kubernetes/utilities.py</code></summary>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">19</span>
 <span class="normal">20</span>
 <span class="normal">21</span>
 <span class="normal">22</span>
@@ -13282,39 +13284,59 @@ messages. Thus the flags are added to be used on the underlying sockets.</p>
 <span class="normal">41</span>
 <span class="normal">42</span>
 <span class="normal">43</span>
-<span class="normal">44</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">enable_socket_keep_alive</span><span class="p">(</span><span class="n">client</span><span class="p">:</span> <span class="n">ApiClient</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">KeepAliveClientRequest</span><span class="p">(</span><span class="n">ClientRequest</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Setting the keep-alive flags on the kubernetes client object.</span>
-<span class="sd">    Unfortunately neither the kubernetes library nor the urllib3 library which</span>
-<span class="sd">    kubernetes is using internally offer the functionality to enable keep-alive</span>
-<span class="sd">    messages. Thus the flags are added to be used on the underlying sockets.</span>
+<span class="sd">    aiohttp only directly implements socket keepalive for incoming connections</span>
+<span class="sd">    in its RequestHandler. For client connections, we need to set the keepalive</span>
+<span class="sd">    ourselves.</span>
+<span class="sd">    Refer to https://github.com/aio-libs/aiohttp/issues/3904#issuecomment-759205696</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">socket_options</span> <span class="o">=</span> <span class="p">[(</span><span class="n">socket</span><span class="o">.</span><span class="n">SOL_SOCKET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SO_KEEPALIVE</span><span class="p">,</span> <span class="mi">1</span><span class="p">)]</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">send</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">conn</span><span class="p">:</span> <span class="n">Connection</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ClientResponse</span><span class="p">:</span>
+        <span class="n">sock</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">protocol</span><span class="o">.</span><span class="n">transport</span><span class="o">.</span><span class="n">get_extra_info</span><span class="p">(</span><span class="s2">&quot;socket&quot;</span><span class="p">)</span>
+        <span class="n">sock</span><span class="o">.</span><span class="n">setsockopt</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">SOL_SOCKET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SO_KEEPALIVE</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">socket</span><span class="p">,</span> <span class="s2">&quot;TCP_KEEPINTVL&quot;</span><span class="p">):</span>
-        <span class="n">socket_options</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">socket</span><span class="o">.</span><span class="n">IPPROTO_TCP</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">TCP_KEEPINTVL</span><span class="p">,</span> <span class="mi">30</span><span class="p">))</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">socket</span><span class="p">,</span> <span class="s2">&quot;TCP_KEEPIDLE&quot;</span><span class="p">):</span>
+            <span class="n">sock</span><span class="o">.</span><span class="n">setsockopt</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">IPPROTO_TCP</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">TCP_KEEPIDLE</span><span class="p">,</span> <span class="mi">30</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">socket</span><span class="p">,</span> <span class="s2">&quot;TCP_KEEPCNT&quot;</span><span class="p">):</span>
-        <span class="n">socket_options</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">socket</span><span class="o">.</span><span class="n">IPPROTO_TCP</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">TCP_KEEPCNT</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">socket</span><span class="p">,</span> <span class="s2">&quot;TCP_KEEPINTVL&quot;</span><span class="p">):</span>
+            <span class="n">sock</span><span class="o">.</span><span class="n">setsockopt</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">IPPROTO_TCP</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">TCP_KEEPINTVL</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">socket</span><span class="p">,</span> <span class="s2">&quot;TCP_KEEPIDLE&quot;</span><span class="p">):</span>
-        <span class="n">socket_options</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">socket</span><span class="o">.</span><span class="n">IPPROTO_TCP</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">TCP_KEEPIDLE</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">socket</span><span class="p">,</span> <span class="s2">&quot;TCP_KEEPCNT&quot;</span><span class="p">):</span>
+            <span class="n">sock</span><span class="o">.</span><span class="n">setsockopt</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">IPPROTO_TCP</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">TCP_KEEPCNT</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s2">&quot;darwin&quot;</span><span class="p">:</span>
-        <span class="c1"># TCP_KEEP_ALIVE not available on socket module in macOS, but defined in</span>
-        <span class="c1"># https://github.com/apple/darwin-xnu/blob/2ff845c2e033bd0ff64b5b6aa6063a1f8f65aa32/bsd/netinet/tcp.h#L215</span>
-        <span class="n">TCP_KEEP_ALIVE</span> <span class="o">=</span> <span class="mh">0x10</span>
-        <span class="n">socket_options</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">socket</span><span class="o">.</span><span class="n">IPPROTO_TCP</span><span class="p">,</span> <span class="n">TCP_KEEP_ALIVE</span><span class="p">,</span> <span class="mi">30</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s2">&quot;darwin&quot;</span><span class="p">:</span>
+            <span class="c1"># TCP_KEEP_ALIVE not available on socket module in macOS, but defined in</span>
+            <span class="c1"># https://github.com/apple/darwin-xnu/blob/2ff845c2e033bd0ff64b5b6aa6063a1f8f65aa32/bsd/netinet/tcp.h#L215</span>
+            <span class="n">TCP_KEEP_ALIVE</span> <span class="o">=</span> <span class="mh">0x10</span>
+            <span class="n">sock</span><span class="o">.</span><span class="n">setsockopt</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">IPPROTO_TCP</span><span class="p">,</span> <span class="n">TCP_KEEP_ALIVE</span><span class="p">,</span> <span class="mi">30</span><span class="p">)</span>
 
-    <span class="n">client</span><span class="o">.</span><span class="n">rest_client</span><span class="o">.</span><span class="n">pool_manager</span><span class="o">.</span><span class="n">connection_pool_kw</span><span class="p">[</span>
-        <span class="s2">&quot;socket_options&quot;</span>
-    <span class="p">]</span> <span class="o">=</span> <span class="n">socket_options</span>
+        <span class="k">return</span> <span class="k">await</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">conn</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
-            </details>
+              </details>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
     </div>
 
 </div>
+
 
 
 
