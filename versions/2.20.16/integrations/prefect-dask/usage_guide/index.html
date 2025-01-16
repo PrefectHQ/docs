@@ -171,6 +171,9 @@ if (amplitudeKey){
     
 
     
+  <meta name="robots" content="noindex, nofollow">
+  
+
   </head>
   
   
@@ -227,7 +230,7 @@ if (amplitudeKey){
           <aside class="md-banner md-banner--warning">
             <div class="md-banner__inner md-grid md-typeset">
               
-  You're viewing the docs for Prefect 2.20.16.
+  You're viewing the docs for Prefect unreleased.
   <a href="../../../.."> 
     <strong>Click here to view the latest docs.</strong>
   </a>
@@ -13351,18 +13354,18 @@ if (amplitudeKey){
 <p>The <code>DaskTaskRunner</code> is a parallel task runner that submits tasks to the <a href="http://distributed.dask.org/"><code>dask.distributed</code></a> scheduler.</p>
 <p>By default, a temporary Dask cluster is created for the duration of the flow run.</p>
 <p>For example, this flow counts up to 10 in parallel (note that the output is not sequential).</p>
-<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">time</span>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
 
-<span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
-<span class="kn">from</span> <span class="nn">prefect_dask</span> <span class="kn">import</span> <span class="n">DaskTaskRunner</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect_dask</span><span class="w"> </span><span class="kn">import</span> <span class="n">DaskTaskRunner</span>
 
 <span class="nd">@task</span>
-<span class="k">def</span> <span class="nf">shout</span><span class="p">(</span><span class="n">number</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">shout</span><span class="p">(</span><span class="n">number</span><span class="p">):</span>
     <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;#</span><span class="si">{</span><span class="n">number</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
 <span class="nd">@flow</span><span class="p">(</span><span class="n">task_runner</span><span class="o">=</span><span class="n">DaskTaskRunner</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">count_to</span><span class="p">(</span><span class="n">highest_number</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">count_to</span><span class="p">(</span><span class="n">highest_number</span><span class="p">):</span>
     <span class="k">for</span> <span class="n">number</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">highest_number</span><span class="p">):</span>
         <span class="n">shout</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="n">number</span><span class="p">)</span>
 
@@ -13389,11 +13392,11 @@ if (amplitudeKey){
 <li>Assign it as the task runner when the flow is defined using the <code>task_runner=DaskTaskRunner</code> argument.</li>
 </ol>
 <p>For example, this flow uses the <code>DaskTaskRunner</code> configured to access an existing Dask cluster at <code>http://my-dask-cluster</code>.</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span>
-<span class="kn">from</span> <span class="nn">prefect_dask.task_runners</span> <span class="kn">import</span> <span class="n">DaskTaskRunner</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect_dask.task_runners</span><span class="w"> </span><span class="kn">import</span> <span class="n">DaskTaskRunner</span>
 
 <span class="nd">@flow</span><span class="p">(</span><span class="n">task_runner</span><span class="o">=</span><span class="n">DaskTaskRunner</span><span class="p">(</span><span class="n">address</span><span class="o">=</span><span class="s2">&quot;http://my-dask-cluster&quot;</span><span class="p">))</span>
-<span class="k">def</span> <span class="nf">my_flow</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_flow</span><span class="p">():</span>
     <span class="o">...</span>
 </code></pre></div>
 <p><code>DaskTaskRunner</code> accepts the following optional parameters:</p>
@@ -13441,19 +13444,19 @@ warnings and errors.</p>
 </code></pre></div>
 <h2 id="distributing-dask-collections-across-workers">Distributing Dask collections across workers<a class="headerlink" href="#distributing-dask-collections-across-workers" title="Permanent link">&para;</a></h2>
 <p>If you use a Dask collection, such as a <code>dask.DataFrame</code> or <code>dask.Bag</code>, to distribute the work across workers and achieve parallel computations, use one of the context managers <code>get_dask_client</code> or <code>get_async_dask_client</code>:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">dask</span>
-<span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
-<span class="kn">from</span> <span class="nn">prefect_dask</span> <span class="kn">import</span> <span class="n">DaskTaskRunner</span><span class="p">,</span> <span class="n">get_dask_client</span>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">dask</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect_dask</span><span class="w"> </span><span class="kn">import</span> <span class="n">DaskTaskRunner</span><span class="p">,</span> <span class="n">get_dask_client</span>
 
 <span class="nd">@task</span>
-<span class="k">def</span> <span class="nf">compute_task</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">compute_task</span><span class="p">():</span>
     <span class="k">with</span> <span class="n">get_dask_client</span><span class="p">()</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
         <span class="n">df</span> <span class="o">=</span> <span class="n">dask</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">timeseries</span><span class="p">(</span><span class="s2">&quot;2000&quot;</span><span class="p">,</span> <span class="s2">&quot;2001&quot;</span><span class="p">,</span> <span class="n">partition_freq</span><span class="o">=</span><span class="s2">&quot;4w&quot;</span><span class="p">)</span>
         <span class="n">summary_df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span><span class="o">.</span><span class="n">compute</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">summary_df</span>
 
 <span class="nd">@flow</span><span class="p">(</span><span class="n">task_runner</span><span class="o">=</span><span class="n">DaskTaskRunner</span><span class="p">())</span>
-<span class="k">def</span> <span class="nf">dask_flow</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">dask_flow</span><span class="p">():</span>
     <span class="n">prefect_future</span> <span class="o">=</span> <span class="n">compute_task</span><span class="o">.</span><span class="n">submit</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">prefect_future</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
 
@@ -13482,21 +13485,21 @@ For more information, visit the docs on <a href="https://docs.dask.org/en/stable
 </ol>
 </div>
 <p>There is also an equivalent context manager for asynchronous tasks and flows: <code>get_async_dask_client</code>.</p>
-<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">asyncio</span>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
 
-<span class="kn">import</span> <span class="nn">dask</span>
-<span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
-<span class="kn">from</span> <span class="nn">prefect_dask</span> <span class="kn">import</span> <span class="n">DaskTaskRunner</span><span class="p">,</span> <span class="n">get_async_dask_client</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">dask</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect_dask</span><span class="w"> </span><span class="kn">import</span> <span class="n">DaskTaskRunner</span><span class="p">,</span> <span class="n">get_async_dask_client</span>
 
 <span class="nd">@task</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">compute_task</span><span class="p">():</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">compute_task</span><span class="p">():</span>
     <span class="k">async</span> <span class="k">with</span> <span class="n">get_async_dask_client</span><span class="p">()</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
         <span class="n">df</span> <span class="o">=</span> <span class="n">dask</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">timeseries</span><span class="p">(</span><span class="s2">&quot;2000&quot;</span><span class="p">,</span> <span class="s2">&quot;2001&quot;</span><span class="p">,</span> <span class="n">partition_freq</span><span class="o">=</span><span class="s2">&quot;4w&quot;</span><span class="p">)</span>
         <span class="n">summary_df</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">describe</span><span class="p">())</span>
     <span class="k">return</span> <span class="n">summary_df</span>
 
 <span class="nd">@flow</span><span class="p">(</span><span class="n">task_runner</span><span class="o">=</span><span class="n">DaskTaskRunner</span><span class="p">())</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">dask_flow</span><span class="p">():</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">dask_flow</span><span class="p">():</span>
     <span class="n">prefect_future</span> <span class="o">=</span> <span class="k">await</span> <span class="n">compute_task</span><span class="o">.</span><span class="n">submit</span><span class="p">()</span>
     <span class="k">return</span> <span class="k">await</span> <span class="n">prefect_future</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
 
@@ -13550,17 +13553,17 @@ For more information, visit the docs on <a href="https://docs.dask.org/en/stable
 <h2 id="dask-annotations">Dask annotations<a class="headerlink" href="#dask-annotations" title="Permanent link">&para;</a></h2>
 <p>Dask annotations can be used to further control the behavior of tasks.</p>
 <p>For example, we can set the <a href="http://distributed.dask.org/en/stable/priority.html">priority</a> of tasks in the Dask scheduler:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">dask</span>
-<span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
-<span class="kn">from</span> <span class="nn">prefect_dask.task_runners</span> <span class="kn">import</span> <span class="n">DaskTaskRunner</span>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">dask</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect_dask.task_runners</span><span class="w"> </span><span class="kn">import</span> <span class="n">DaskTaskRunner</span>
 
 <span class="nd">@task</span>
-<span class="k">def</span> <span class="nf">show</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">show</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 
 
 <span class="nd">@flow</span><span class="p">(</span><span class="n">task_runner</span><span class="o">=</span><span class="n">DaskTaskRunner</span><span class="p">())</span>
-<span class="k">def</span> <span class="nf">my_flow</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_flow</span><span class="p">():</span>
     <span class="k">with</span> <span class="n">dask</span><span class="o">.</span><span class="n">annotate</span><span class="p">(</span><span class="n">priority</span><span class="o">=-</span><span class="mi">10</span><span class="p">):</span>
         <span class="n">future</span> <span class="o">=</span> <span class="n">show</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># low priority task</span>
 
@@ -13568,12 +13571,12 @@ For more information, visit the docs on <a href="https://docs.dask.org/en/stable
         <span class="n">future</span> <span class="o">=</span> <span class="n">show</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>  <span class="c1"># high priority task</span>
 </code></pre></div>
 <p>Another common use case is <a href="http://distributed.dask.org/en/stable/resources.html">resource</a> annotations:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">dask</span>
-<span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
-<span class="kn">from</span> <span class="nn">prefect_dask.task_runners</span> <span class="kn">import</span> <span class="n">DaskTaskRunner</span>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">dask</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect_dask.task_runners</span><span class="w"> </span><span class="kn">import</span> <span class="n">DaskTaskRunner</span>
 
 <span class="nd">@task</span>
-<span class="k">def</span> <span class="nf">show</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">show</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 
 <span class="c1"># Create a `LocalCluster` with some resource annotations</span>
@@ -13584,7 +13587,7 @@ For more information, visit the docs on <a href="https://docs.dask.org/en/stable
         <span class="n">cluster_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;n_workers&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;resources&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;GPU&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;process&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}}</span>
     <span class="p">)</span>
 <span class="p">)</span>
-<span class="k">def</span> <span class="nf">my_flow</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_flow</span><span class="p">():</span>
     <span class="k">with</span> <span class="n">dask</span><span class="o">.</span><span class="n">annotate</span><span class="p">(</span><span class="n">resources</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;GPU&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}):</span>
         <span class="n">future</span> <span class="o">=</span> <span class="n">show</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>  <span class="c1"># this task requires 1 GPU resource on a worker</span>
 

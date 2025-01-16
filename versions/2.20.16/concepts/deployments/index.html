@@ -173,6 +173,9 @@ if (amplitudeKey){
     
 
     
+  <meta name="robots" content="noindex, nofollow">
+  
+
   </head>
   
   
@@ -229,7 +232,7 @@ if (amplitudeKey){
           <aside class="md-banner md-banner--warning">
             <div class="md-banner__inner md-grid md-typeset">
               
-  You're viewing the docs for Prefect 2.20.16.
+  You're viewing the docs for Prefect unreleased.
   <a href="../../.."> 
     <strong>Click here to view the latest docs.</strong>
   </a>
@@ -13414,7 +13417,7 @@ Different ways of creating a deployment populate these fields differently.</p>
 <p>Every Prefect deployment references one and only one "entrypoint" flow (though that flow may itself call any number of subflows). 
 Different deployments may reference the same underlying flow, a useful pattern when developing or promoting workflow changes through staged environments.</p>
 <p>The complete schema that defines a deployment is as follows:</p>
-<div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Deployment</span><span class="p">:</span>
+<div class="highlight"><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">Deployment</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Structure of the schema defining a deployment</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -13496,9 +13499,9 @@ Note that pausing a schedule, updating your deployment, and other actions reset 
 </div>
 <h4 id="running-a-deployed-flow-from-within-python-flow-code">Running a deployed flow from within Python flow code<a class="headerlink" href="#running-a-deployed-flow-from-within-python-flow-code" title="Permanent link">&para;</a></h4>
 <p>Prefect provides a <a href="/api-ref/prefect/deployments/deployments/#prefect.deployments.deployments.run_deployment"><code>run_deployment</code> function</a> that can be used to schedule the run of an existing deployment when your Python code executes.</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect.deployments</span> <span class="kn">import</span> <span class="n">run_deployment</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect.deployments</span><span class="w"> </span><span class="kn">import</span> <span class="n">run_deployment</span>
 
-<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
     <span class="n">run_deployment</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;my_flow_name/my_deployment_name&quot;</span><span class="p">)</span>
 </code></pre></div>
 <div class="admonition tip">
@@ -13513,22 +13516,22 @@ as a subflow run by default.</p>
 subflow run can't be suspended independently of its parent flow. If you'd
 rather not link the scheduled flow run to the calling flow or task run, you
 can disable this behavior by passing <code>as_subflow=False</code>:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span>
-<span class="kn">from</span> <span class="nn">prefect.deployments</span> <span class="kn">import</span> <span class="n">run_deployment</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect.deployments</span><span class="w"> </span><span class="kn">import</span> <span class="n">run_deployment</span>
 
 
 <span class="nd">@flow</span>
-<span class="k">def</span> <span class="nf">my_flow</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_flow</span><span class="p">():</span>
     <span class="c1"># The scheduled flow run will not be linked to this flow as a subflow.</span>
     <span class="n">run_deployment</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;my_other_flow/my_deployment_name&quot;</span><span class="p">,</span> <span class="n">as_subflow</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </code></pre></div>
 <p>The return value of <code>run_deployment</code> is a <a href="/api-ref/prefect/client/schemas/#prefect.client.schemas.objects.FlowRun">FlowRun</a> object containing metadata about the scheduled run. You
 can use this object to retrieve information about the run after calling
 <code>run_deployment</code>:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">get_client</span>
-<span class="kn">from</span> <span class="nn">prefect.deployments</span> <span class="kn">import</span> <span class="n">run_deployment</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_client</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect.deployments</span><span class="w"> </span><span class="kn">import</span> <span class="n">run_deployment</span>
 
-<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
     <span class="n">flow_run</span> <span class="o">=</span> <span class="n">run_deployment</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;my_flow_name/my_deployment_name&quot;</span><span class="p">)</span>
     <span class="n">flow_run_id</span> <span class="o">=</span> <span class="n">flow_run</span><span class="o">.</span><span class="n">id</span>
 

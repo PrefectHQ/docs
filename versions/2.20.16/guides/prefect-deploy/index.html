@@ -173,6 +173,9 @@ if (amplitudeKey){
     
 
     
+  <meta name="robots" content="noindex, nofollow">
+  
+
   </head>
   
   
@@ -229,7 +232,7 @@ if (amplitudeKey){
           <aside class="md-banner md-banner--warning">
             <div class="md-banner__inner md-grid md-typeset">
               
-  You're viewing the docs for Prefect 2.20.16.
+  You're viewing the docs for Prefect unreleased.
   <a href="../../.."> 
     <strong>Click here to view the latest docs.</strong>
   </a>
@@ -13889,11 +13892,11 @@ If you'd prefer to learn about using a YAML-based alternative for managing deplo
 <h2 id="creating-work-pool-based-deployments-with-deploy">Creating work pool-based deployments with <code>.deploy</code><a class="headerlink" href="#creating-work-pool-based-deployments-with-deploy" title="Permanent link">&para;</a></h2>
 <h3 id="automatically-bake-your-code-into-a-docker-image">Automatically bake your code into a Docker image<a class="headerlink" href="#automatically-bake-your-code-into-a-docker-image" title="Permanent link">&para;</a></h3>
 <p>You can create a deployment from Python code by calling the <code>.deploy</code> method on a flow.</p>
-<div class="highlight"><span class="filename">buy.py</span><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span>
+<div class="highlight"><span class="filename">buy.py</span><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span>
 
 
 <span class="nd">@flow</span><span class="p">(</span><span class="n">log_prints</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">buy</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">buy</span><span class="p">():</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Buying securities&quot;</span><span class="p">)</span>
 
 
@@ -13946,12 +13949,12 @@ Your deployment will be visible on the <code>Deployments</code> page in the UI.<
 <p>Prefect generates a Dockerfile for you that will build an image based off of one of Prefect's published images. The generated Dockerfile will copy the current directory into the Docker image and install any dependencies listed in a <code>requirements.txt</code> file.</p>
 <h3 id="automatically-build-a-custom-docker-image-with-a-local-dockerfile">Automatically build a custom Docker image with a local Dockerfile<a class="headerlink" href="#automatically-build-a-custom-docker-image-with-a-local-dockerfile" title="Permanent link">&para;</a></h3>
 <p>If you want to use a custom Dockerfile, you can specify the path to the Dockerfile with the <code>DeploymentImage</code> class:</p>
-<div class="highlight"><span class="filename">custom_dockerfile.py</span><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span>
-<span class="kn">from</span> <span class="nn">prefect.deployments</span> <span class="kn">import</span> <span class="n">DeploymentImage</span>
+<div class="highlight"><span class="filename">custom_dockerfile.py</span><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect.deployments</span><span class="w"> </span><span class="kn">import</span> <span class="n">DeploymentImage</span>
 
 
 <span class="nd">@flow</span><span class="p">(</span><span class="n">log_prints</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">buy</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">buy</span><span class="p">():</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Selling securities&quot;</span><span class="p">)</span>
 
 
@@ -13978,14 +13981,14 @@ COPY ./requirements.txt /requirements.txt
 RUN pip install --extra-index-url ${AUTHED_ARTIFACT_REG_URL} -r /requirements.txt
 </code></pre></div>
 <p>Create our deployment by leveraging the DeploymentImage class.</p>
-<div class="highlight"><span class="filename">private-package.py</span><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span>
-<span class="hll"><span class="kn">from</span> <span class="nn">prefect.deployments.runner</span> <span class="kn">import</span> <span class="n">DeploymentImage</span>
-</span><span class="kn">from</span> <span class="nn">prefect.blocks.system</span> <span class="kn">import</span> <span class="n">Secret</span>
-<span class="kn">from</span> <span class="nn">my_private_package</span> <span class="kn">import</span> <span class="n">do_something_cool</span>
+<div class="highlight"><span class="filename">private-package.py</span><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span>
+<span class="hll"><span class="kn">from</span><span class="w"> </span><span class="nn">prefect.deployments.runner</span><span class="w"> </span><span class="kn">import</span> <span class="n">DeploymentImage</span>
+</span><span class="kn">from</span><span class="w"> </span><span class="nn">prefect.blocks.system</span><span class="w"> </span><span class="kn">import</span> <span class="n">Secret</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">my_private_package</span><span class="w"> </span><span class="kn">import</span> <span class="n">do_something_cool</span>
 
 
 <span class="nd">@flow</span><span class="p">(</span><span class="n">log_prints</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">my_flow</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_flow</span><span class="p">():</span>
     <span class="n">do_something_cool</span><span class="p">()</span>
 
 
@@ -14027,7 +14030,7 @@ RUN pip install --extra-index-url ${AUTHED_ARTIFACT_REG_URL} -r /requirements.tx
 <h3 id="store-your-code-in-git-based-cloud-storage">Store your code in git-based cloud storage<a class="headerlink" href="#store-your-code-in-git-based-cloud-storage" title="Permanent link">&para;</a></h3>
 <p>If you don't specify an <code>image</code> argument for <code>.deploy</code>, then you need to specify where to pull the flow code from at runtime with the <code>from_source</code> method.</p>
 <p>Here's how we can pull our flow code from a GitHub repository.</p>
-<div class="highlight"><span class="filename">git_storage.py</span><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span>
+<div class="highlight"><span class="filename">git_storage.py</span><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span>
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
 <span class="hll">    <span class="n">flow</span><span class="o">.</span><span class="n">from_source</span><span class="p">(</span>
@@ -14050,9 +14053,9 @@ Generally, you can just push your code to GitHub, without rebuilding your deploy
 The exception is if something that the server needs to know about changes, such as the flow entrypoint parameters.
 Rerunning the Python script with <code>.deploy</code> will update your deployment on the server with the new flow code.</p>
 <p>If you need to provide additional configuration, such as specifying a private repository, you can provide a <a href="/api-ref/prefect/flows/#prefect.runner.storage.GitRepository"><code>GitRepository</code></a> object instead of a URL:</p>
-<div class="highlight"><span class="filename">private_git_storage.py</span><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span>
-<span class="hll"><span class="kn">from</span> <span class="nn">prefect.runner.storage</span> <span class="kn">import</span> <span class="n">GitRepository</span>
-</span><span class="hll"><span class="kn">from</span> <span class="nn">prefect.blocks.system</span> <span class="kn">import</span> <span class="n">Secret</span>
+<div class="highlight"><span class="filename">private_git_storage.py</span><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span>
+<span class="hll"><span class="kn">from</span><span class="w"> </span><span class="nn">prefect.runner.storage</span><span class="w"> </span><span class="kn">import</span> <span class="n">GitRepository</span>
+</span><span class="hll"><span class="kn">from</span><span class="w"> </span><span class="nn">prefect.blocks.system</span><span class="w"> </span><span class="kn">import</span> <span class="n">Secret</span>
 </span>
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
     <span class="n">flow</span><span class="o">.</span><span class="n">from_source</span><span class="p">(</span>
@@ -14075,7 +14078,7 @@ Alternatively, you could provide a username and password to the <code>username</
 <h3 id="store-your-code-in-cloud-provider-storage">Store your code in cloud provider storage<a class="headerlink" href="#store-your-code-in-cloud-provider-storage" title="Permanent link">&para;</a></h3>
 <p>Another option for flow code storage is any <a href="https://filesystem-spec.readthedocs.io/en/latest/">fsspec</a>-supported storage location, such as AWS S3, GCP GCS, or Azure Blob Storage.</p>
 <p>For example, you can pass the S3 bucket path to <code>source</code>.</p>
-<div class="highlight"><span class="filename">s3_storage.py</span><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span>
+<div class="highlight"><span class="filename">s3_storage.py</span><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span>
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
 <span class="hll">    <span class="n">flow</span><span class="o">.</span><span class="n">from_source</span><span class="p">(</span>
@@ -14090,8 +14093,8 @@ Alternatively, you could provide a username and password to the <code>username</
 <p>If you need additional configuration for your cloud-based storage - for example, with a private S3 Bucket -  we recommend using a <a href="/concepts/blocks/">storage block</a>.
 A storage block also ensures your credentials will be available in both your deployment creation environment and your execution environment.</p>
 <p>Here's an example that uses an <code>S3Bucket</code> block from the <a href="https://prefecthq.github.io/prefect-aws/">prefect-aws library</a>.</p>
-<div class="highlight"><span class="filename">s3_storage_auth.py</span><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span>
-<span class="hll"><span class="kn">from</span> <span class="nn">prefect_aws.s3</span> <span class="kn">import</span> <span class="n">S3Bucket</span>
+<div class="highlight"><span class="filename">s3_storage_auth.py</span><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span>
+<span class="hll"><span class="kn">from</span><span class="w"> </span><span class="nn">prefect_aws.s3</span><span class="w"> </span><span class="kn">import</span> <span class="n">S3Bucket</span>
 </span>
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
 <span class="hll">    <span class="n">flow</span><span class="o">.</span><span class="n">from_source</span><span class="p">(</span>
@@ -14104,10 +14107,10 @@ A storage block also ensures your credentials will be available in both your dep
 <p>Our examples thus far have explored options for where to store flow code.
 Let's turn our attention to other deployment configuration options.</p>
 <p>To pass parameters to your flow, you can use the <code>parameters</code> argument in the <code>.deploy</code> method. Just pass in a dictionary of key-value pairs.</p>
-<div class="highlight"><span class="filename">pass_params.py</span><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span>
+<div class="highlight"><span class="filename">pass_params.py</span><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span>
 
 <span class="nd">@flow</span>
-<span class="k">def</span> <span class="nf">hello_world</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">hello_world</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Hello, </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">!&quot;</span><span class="p">)</span>
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
@@ -14147,10 +14150,10 @@ This approach is an alternative to building an image with a custom <code>require
 <p>You can create multiple deployments from one or more Python files that use <code>.deploy</code>.
 These deployments can be managed independently of one another, allowing you to deploy the same flow with different configurations in the same codebase.</p>
 <p>To create multiple work pool-based deployments at once you can use the <code>deploy</code> function, which is analogous to the <code>serve</code> function.</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">deploy</span><span class="p">,</span> <span class="n">flow</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">deploy</span><span class="p">,</span> <span class="n">flow</span>
 
 <span class="nd">@flow</span><span class="p">(</span><span class="n">log_prints</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">buy</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">buy</span><span class="p">():</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Buying securities&quot;</span><span class="p">)</span>
 
 
@@ -14164,14 +14167,14 @@ These deployments can be managed independently of one another, allowing you to d
 </code></pre></div>
 <p>Note that in the example above we created two deployments from the same flow, but with different work pools.
 Alternatively, we could have created two deployments from different flows.</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">deploy</span><span class="p">,</span> <span class="n">flow</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">deploy</span><span class="p">,</span> <span class="n">flow</span>
 
 <span class="nd">@flow</span><span class="p">(</span><span class="n">log_prints</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">buy</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">buy</span><span class="p">():</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Buying securities.&quot;</span><span class="p">)</span>
 
 <span class="nd">@flow</span><span class="p">(</span><span class="n">log_prints</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">sell</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">sell</span><span class="p">():</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Selling securities.&quot;</span><span class="p">)</span>
 
 
@@ -14187,11 +14190,11 @@ Alternatively, we could have created two deployments from different flows.</p>
 <p>In the example above the code for both flows gets baked into the same image.</p>
 <p>We can specify that one or more flows should be pulled from a remote location at runtime by using the <code>from_source</code> method.
 Here's an example of deploying two flows, one defined locally and one defined in a remote repository:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">deploy</span><span class="p">,</span> <span class="n">flow</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">deploy</span><span class="p">,</span> <span class="n">flow</span>
 
 
 <span class="nd">@flow</span><span class="p">(</span><span class="n">log_prints</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">local_flow</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">local_flow</span><span class="p">():</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;I&#39;m a flow!&quot;</span><span class="p">)</span>
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>

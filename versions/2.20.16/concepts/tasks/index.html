@@ -173,6 +173,9 @@ if (amplitudeKey){
     
 
     
+  <meta name="robots" content="noindex, nofollow">
+  
+
   </head>
   
   
@@ -229,7 +232,7 @@ if (amplitudeKey){
           <aside class="md-banner md-banner--warning">
             <div class="md-banner__inner md-grid md-typeset">
               
-  You're viewing the docs for Prefect 2.20.16.
+  You're viewing the docs for Prefect unreleased.
   <a href="../../.."> 
     <strong>Click here to view the latest docs.</strong>
   </a>
@@ -13711,26 +13714,26 @@ if (amplitudeKey){
 <p>You can define your tasks within the same file as your flow definition, or you can define tasks within modules and import them for use in your flow definitions. Tasks may be called from within a flow, from within a subflow, or (as of <code>prefect 2.18.x</code>) from within another task.</p>
 <p><strong>Calling a task from a flow</strong></p>
 <p>Use the <code>@task</code> decorator to designate a function as a task. Calling the task creates a new task run:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
 
 <span class="hll"><span class="nd">@task</span>
-</span><span class="hll"><span class="k">def</span> <span class="nf">my_task</span><span class="p">():</span>
+</span><span class="hll"><span class="k">def</span><span class="w"> </span><span class="nf">my_task</span><span class="p">():</span>
 </span><span class="hll">    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Hello, I&#39;m a task&quot;</span><span class="p">)</span>
 </span>
 <span class="nd">@flow</span>
-<span class="k">def</span> <span class="nf">my_flow</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_flow</span><span class="p">():</span>
     <span class="n">my_task</span><span class="p">()</span>
 </code></pre></div>
 <p><strong>Calling a task from another task</strong></p>
 <p>As of <code>prefect 2.18.x</code>, you can call a task from within another task:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">task</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">task</span>
 
 <span class="nd">@task</span>
-<span class="k">def</span> <span class="nf">my_task</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_task</span><span class="p">():</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Hello, I&#39;m a task&quot;</span><span class="p">)</span>
 
 <span class="nd">@task</span><span class="p">(</span><span class="n">log_prints</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">my_parent_task</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_parent_task</span><span class="p">():</span>
     <span class="n">my_task</span><span class="p">()</span>
 </code></pre></div>
 <p>Tasks are uniquely identified by a task key, which is a hash composed of the task name, the fully-qualified name of the function, and any tags. If the task does not have a name specified, the name is derived from the task function.</p>
@@ -13791,48 +13794,48 @@ if (amplitudeKey){
 <p>For example, you can provide a <code>name</code> value for the task. Here we've used the optional <code>description</code> argument as well.</p>
 <div class="highlight"><pre><span></span><code><span class="hll"><span class="nd">@task</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;hello-task&quot;</span><span class="p">,</span> 
 </span>      <span class="n">description</span><span class="o">=</span><span class="s2">&quot;This task says hello.&quot;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">my_task</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_task</span><span class="p">():</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Hello, I&#39;m a task&quot;</span><span class="p">)</span>
 </code></pre></div>
 <p>You can distinguish runs of this task by providing a <code>task_run_name</code>; this setting accepts a string that can optionally contain templated references to the keyword arguments of your task. The name will be formatted using Python's standard string formatting syntax as can be seen here:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">datetime</span>
-<span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">datetime</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
 
 <span class="nd">@task</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;My Example Task&quot;</span><span class="p">,</span> 
       <span class="n">description</span><span class="o">=</span><span class="s2">&quot;An example task for a tutorial.&quot;</span><span class="p">,</span>
       <span class="n">task_run_name</span><span class="o">=</span><span class="s2">&quot;hello-</span><span class="si">{name}</span><span class="s2">-on-{date:%A}&quot;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">my_task</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">date</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_task</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">date</span><span class="p">):</span>
     <span class="k">pass</span>
 
 <span class="nd">@flow</span>
-<span class="k">def</span> <span class="nf">my_flow</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_flow</span><span class="p">():</span>
     <span class="c1"># creates a run with a name like &quot;hello-marvin-on-Thursday&quot;</span>
     <span class="n">my_task</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;marvin&quot;</span><span class="p">,</span> <span class="n">date</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">))</span>
 </code></pre></div>
 <p>Additionally this setting also accepts a function that returns a string to be used for the task run name:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">datetime</span>
-<span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">datetime</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
 
-<span class="k">def</span> <span class="nf">generate_task_name</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">generate_task_name</span><span class="p">():</span>
     <span class="n">date</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span>
     <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">date</span><span class="si">:</span><span class="s2">%A</span><span class="si">}</span><span class="s2">-is-a-lovely-day&quot;</span>
 
 <span class="nd">@task</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;My Example Task&quot;</span><span class="p">,</span>
       <span class="n">description</span><span class="o">=</span><span class="s2">&quot;An example task for a tutorial.&quot;</span><span class="p">,</span>
       <span class="n">task_run_name</span><span class="o">=</span><span class="n">generate_task_name</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">my_task</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_task</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
     <span class="k">pass</span>
 
 <span class="nd">@flow</span>
-<span class="k">def</span> <span class="nf">my_flow</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_flow</span><span class="p">():</span>
     <span class="c1"># creates a run with a name like &quot;Thursday-is-a-lovely-day&quot;</span>
     <span class="n">my_task</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;marvin&quot;</span><span class="p">)</span>
 </code></pre></div>
 <p>If you need access to information about the task, use the <code>prefect.runtime</code> module. For example:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span>
-<span class="kn">from</span> <span class="nn">prefect.runtime</span> <span class="kn">import</span> <span class="n">flow_run</span><span class="p">,</span> <span class="n">task_run</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect.runtime</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow_run</span><span class="p">,</span> <span class="n">task_run</span>
 
-<span class="k">def</span> <span class="nf">generate_task_name</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">generate_task_name</span><span class="p">():</span>
     <span class="n">flow_name</span> <span class="o">=</span> <span class="n">flow_run</span><span class="o">.</span><span class="n">flow_name</span>
     <span class="n">task_name</span> <span class="o">=</span> <span class="n">task_run</span><span class="o">.</span><span class="n">task_name</span>
 
@@ -13845,11 +13848,11 @@ if (amplitudeKey){
 <span class="nd">@task</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;my-example-task&quot;</span><span class="p">,</span>
       <span class="n">description</span><span class="o">=</span><span class="s2">&quot;An example task for a tutorial.&quot;</span><span class="p">,</span>
       <span class="n">task_run_name</span><span class="o">=</span><span class="n">generate_task_name</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">my_task</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">limit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_task</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">limit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">):</span>
     <span class="k">pass</span>
 
 <span class="nd">@flow</span>
-<span class="k">def</span> <span class="nf">my_flow</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_flow</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
     <span class="c1"># creates a run with a name like &quot;my-flow-my-example-task-with-marvin-and-100&quot;</span>
     <span class="n">my_task</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;marvin&quot;</span><span class="p">)</span>
 </code></pre></div>
@@ -13861,19 +13864,19 @@ if (amplitudeKey){
 </ul>
 <p>Tags may be specified as a keyword argument on the <a href="/api-ref/prefect/tasks/#prefect.tasks.task">task decorator</a>.</p>
 <div class="highlight"><pre><span></span><code><span class="hll"><span class="nd">@task</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;hello-task&quot;</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;test&quot;</span><span class="p">])</span>
-</span><span class="k">def</span> <span class="nf">my_task</span><span class="p">():</span>
+</span><span class="k">def</span><span class="w"> </span><span class="nf">my_task</span><span class="p">():</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Hello, I&#39;m a task&quot;</span><span class="p">)</span>
 </code></pre></div>
 <p>You can also provide tags as an argument with a <a href="/api-ref/prefect/context/#prefect.context.tags"><code>tags</code> context manager</a>, specifying tags when the task is called rather than in its definition.</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
-<span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">tags</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">tags</span>
 
 <span class="nd">@task</span>
-<span class="k">def</span> <span class="nf">my_task</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_task</span><span class="p">():</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Hello, I&#39;m a task&quot;</span><span class="p">)</span>
 
 <span class="nd">@flow</span>
-<span class="k">def</span> <span class="nf">my_flow</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_flow</span><span class="p">():</span>
 <span class="hll">    <span class="k">with</span> <span class="n">tags</span><span class="p">(</span><span class="s2">&quot;test&quot;</span><span class="p">):</span>
 </span>        <span class="n">my_task</span><span class="p">()</span>
 </code></pre></div>
@@ -13893,13 +13896,13 @@ or <em>failed</em> if it returned a string.</p>
 <p>Consider the real-world problem of making an API request. In this example,
 we'll use the <a href="https://www.python-httpx.org/"><code>httpx</code></a> library to make an HTTP
 request.</p>
-<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">httpx</span>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">httpx</span>
 
-<span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
 <span class="hll">
 </span>
 <span class="nd">@task</span><span class="p">(</span><span class="n">retries</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">retry_delay_seconds</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">get_data_task</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_data_task</span><span class="p">(</span>
     <span class="n">url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;https://api.brittle-service.com/endpoint&quot;</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
     <span class="n">response</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
@@ -13913,7 +13916,7 @@ request.</p>
 
 
 <span class="nd">@flow</span>
-<span class="k">def</span> <span class="nf">get_data_flow</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_data_flow</span><span class="p">():</span>
     <span class="n">get_data_task</span><span class="p">()</span>
 </code></pre></div>
 <p>In this task, if the HTTP request to the brittle API receives any status code
@@ -13921,17 +13924,17 @@ other than a 2xx (200, 201, etc.), Prefect will retry the task a maximum of two
 times, waiting five seconds in between retries.</p>
 <h3 id="custom-retry-behavior">Custom retry behavior<a class="headerlink" href="#custom-retry-behavior" title="Permanent link">&para;</a></h3>
 <p>The <code>retry_delay_seconds</code> option accepts a list of delays for more custom retry behavior. The following task will wait for successively increasing intervals of 1, 10, and 100 seconds, respectively, before the next attempt starts:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">task</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">task</span>
 
 <span class="nd">@task</span><span class="p">(</span><span class="n">retries</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">retry_delay_seconds</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">100</span><span class="p">])</span>
-<span class="k">def</span> <span class="nf">some_task_with_manual_backoff_retries</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">some_task_with_manual_backoff_retries</span><span class="p">():</span>
    <span class="o">...</span>
 </code></pre></div>
 <p>The <code>retry_condition_fn</code> option accepts a callable that returns a boolean. If the callable returns <code>True</code>, the task will be retried. If the callable returns <code>False</code>, the task will not be retried. The callable accepts three arguments &mdash; the task, the task run, and the state of the task run. The following task will retry on HTTP status codes other than 401 or 404:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">httpx</span>
-<span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">httpx</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
 
-<span class="k">def</span> <span class="nf">retry_handler</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">task_run</span><span class="p">,</span> <span class="n">state</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">retry_handler</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">task_run</span><span class="p">,</span> <span class="n">state</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;This is a custom retry handler to handle when we want to retry a task&quot;&quot;&quot;</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="c1"># Attempt to get the result of the task</span>
@@ -13948,24 +13951,24 @@ times, waiting five seconds in between retries.</p>
         <span class="k">return</span> <span class="kc">True</span>
 
 <span class="nd">@task</span><span class="p">(</span><span class="n">retries</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">retry_condition_fn</span><span class="o">=</span><span class="n">retry_handler</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">my_api_call_task</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_api_call_task</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
     <span class="n">response</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
     <span class="n">response</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
 
 <span class="nd">@flow</span>
-<span class="k">def</span> <span class="nf">get_data_flow</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_data_flow</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
     <span class="n">my_api_call_task</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="n">url</span><span class="p">)</span>
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
     <span class="n">get_data_flow</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="s2">&quot;https://httpbin.org/status/503&quot;</span><span class="p">)</span>
 </code></pre></div>
 <p>Additionally, you can pass a callable that accepts the number of retries as an argument and returns a list. Prefect includes an <a href="/api-ref/prefect/tasks/#prefect.tasks.exponential_backoff"><code>exponential_backoff</code></a> utility that will automatically generate a list of retry delays that correspond to an exponential backoff retry strategy. The following flow will wait for 10, 20, then 40 seconds before each retry.</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">task</span>
-<span class="kn">from</span> <span class="nn">prefect.tasks</span> <span class="kn">import</span> <span class="n">exponential_backoff</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">task</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect.tasks</span><span class="w"> </span><span class="kn">import</span> <span class="n">exponential_backoff</span>
 
 <span class="nd">@task</span><span class="p">(</span><span class="n">retries</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">retry_delay_seconds</span><span class="o">=</span><span class="n">exponential_backoff</span><span class="p">(</span><span class="n">backoff_factor</span><span class="o">=</span><span class="mi">10</span><span class="p">))</span>
-<span class="k">def</span> <span class="nf">some_task_with_exponential_backoff_retries</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">some_task_with_exponential_backoff_retries</span><span class="p">():</span>
    <span class="o">...</span>
 </code></pre></div>
 <h4 id="advanced-topic-adding-jitter">Advanced topic: adding "jitter"<a class="headerlink" href="#advanced-topic-adding-jitter" title="Permanent link">&para;</a></h4>
@@ -13973,15 +13976,15 @@ times, waiting five seconds in between retries.</p>
 a random amount of time added to retry periods that helps prevent "thundering herd" scenarios, which
 is when many tasks all retry at the exact same time, potentially overwhelming systems.</p>
 <p>The <code>retry_jitter_factor</code> option can be used to add variance to the base delay. For example, a retry delay of 10 seconds with a <code>retry_jitter_factor</code> of 0.5 will be allowed to delay up to 15 seconds. Large values of <code>retry_jitter_factor</code> provide more protection against "thundering herds," while keeping the average retry delay time constant. For example, the following task adds jitter to its exponential backoff so the retry delays will vary up to a maximum delay time of 20, 40, and 80 seconds respectively.</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">task</span>
-<span class="kn">from</span> <span class="nn">prefect.tasks</span> <span class="kn">import</span> <span class="n">exponential_backoff</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">task</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect.tasks</span><span class="w"> </span><span class="kn">import</span> <span class="n">exponential_backoff</span>
 
 <span class="nd">@task</span><span class="p">(</span>
     <span class="n">retries</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
     <span class="n">retry_delay_seconds</span><span class="o">=</span><span class="n">exponential_backoff</span><span class="p">(</span><span class="n">backoff_factor</span><span class="o">=</span><span class="mi">10</span><span class="p">),</span>
     <span class="n">retry_jitter_factor</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="k">def</span> <span class="nf">some_task_with_exponential_backoff_retries</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">some_task_with_exponential_backoff_retries</span><span class="p">():</span>
    <span class="o">...</span>
 </code></pre></div>
 <h3 id="configuring-retry-behavior-globally-with-settings">Configuring retry behavior globally with settings<a class="headerlink" href="#configuring-retry-behavior-globally-with-settings" title="Permanent link">&para;</a></h3>
@@ -13998,18 +14001,18 @@ prefect config set PREFECT_TASK_DEFAULT_RETRY_DELAY_SECONDS = [1, 10, 100]
 <p>You can define a task that is cached based on its inputs by using the Prefect <code>task_input_hash</code>. This is a task cache key implementation that hashes all inputs to the task using a JSON or cloudpickle serializer. If the task inputs do not change, the cached results are used rather than running the task until the cache expires.</p>
 <p>Note that, if any arguments are not JSON serializable, the pickle serializer is used as a fallback. If cloudpickle fails, <code>task_input_hash</code> returns a null key indicating that a cache key could not be generated for the given inputs.</p>
 <p>In this example, until the <code>cache_expiration</code> time ends, as long as the input to <code>hello_task()</code> remains the same when it is called, the cached return value is returned. In this situation the task is not rerun. However, if the input argument value changes, <code>hello_task()</code> runs using the new input.</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">timedelta</span>
-<span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
-<span class="hll"><span class="kn">from</span> <span class="nn">prefect.tasks</span> <span class="kn">import</span> <span class="n">task_input_hash</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">timedelta</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
+<span class="hll"><span class="kn">from</span><span class="w"> </span><span class="nn">prefect.tasks</span><span class="w"> </span><span class="kn">import</span> <span class="n">task_input_hash</span>
 </span>
 <span class="hll"><span class="nd">@task</span><span class="p">(</span><span class="n">cache_key_fn</span><span class="o">=</span><span class="n">task_input_hash</span><span class="p">,</span> <span class="n">cache_expiration</span><span class="o">=</span><span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
-</span><span class="k">def</span> <span class="nf">hello_task</span><span class="p">(</span><span class="n">name_input</span><span class="p">):</span>
+</span><span class="k">def</span><span class="w"> </span><span class="nf">hello_task</span><span class="p">(</span><span class="n">name_input</span><span class="p">):</span>
     <span class="c1"># Doing some work</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Saying hello&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="s2">&quot;hello &quot;</span> <span class="o">+</span> <span class="n">name_input</span>
 
 <span class="nd">@flow</span><span class="p">(</span><span class="n">log_prints</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">hello_flow</span><span class="p">(</span><span class="n">name_input</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">hello_flow</span><span class="p">(</span><span class="n">name_input</span><span class="p">):</span>
     <span class="n">hello_task</span><span class="p">(</span><span class="n">name_input</span><span class="p">)</span>
 </code></pre></div>
 <p>Alternatively, you can provide your own function or other callable that returns a string cache key. A generic <code>cache_key_fn</code> is a function that accepts two positional arguments:</p>
@@ -14022,19 +14025,19 @@ prefect config set PREFECT_TASK_DEFAULT_RETRY_DELAY_SECONDS = [1, 10, 100]
 <p class="admonition-title">Task cache keys</p>
 <p>By default, a task cache key is limited to 2000 characters, specified by the <code>PREFECT_API_TASK_CACHE_KEY_MAX_LENGTH</code> setting.</p>
 </div>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">task</span><span class="p">,</span> <span class="n">flow</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">task</span><span class="p">,</span> <span class="n">flow</span>
 
-<span class="hll"><span class="k">def</span> <span class="nf">static_cache_key</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">parameters</span><span class="p">):</span>
+<span class="hll"><span class="k">def</span><span class="w"> </span><span class="nf">static_cache_key</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">parameters</span><span class="p">):</span>
 </span><span class="hll">    <span class="c1"># return a constant</span>
 </span><span class="hll">    <span class="k">return</span> <span class="s2">&quot;static cache key&quot;</span>
 </span>
 <span class="hll"><span class="nd">@task</span><span class="p">(</span><span class="n">cache_key_fn</span><span class="o">=</span><span class="n">static_cache_key</span><span class="p">)</span>
-</span><span class="k">def</span> <span class="nf">cached_task</span><span class="p">():</span>
+</span><span class="k">def</span><span class="w"> </span><span class="nf">cached_task</span><span class="p">():</span>
     <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;running an expensive operation&#39;</span><span class="p">)</span>
     <span class="k">return</span> <span class="mi">42</span>
 
 <span class="nd">@flow</span>
-<span class="k">def</span> <span class="nf">test_caching</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_caching</span><span class="p">():</span>
     <span class="n">cached_task</span><span class="p">()</span>
     <span class="n">cached_task</span><span class="p">()</span>
     <span class="n">cached_task</span><span class="p">()</span>
@@ -14050,11 +14053,11 @@ prefect config set PREFECT_TASK_DEFAULT_RETRY_DELAY_SECONDS = [1, 10, 100]
 
 <p>When each task run requested to enter a <code>Running</code> state, it provided its cache key computed from the <code>cache_key_fn</code>.  The Prefect backend identified that there was a COMPLETED state associated with this key and instructed the run to immediately enter the same COMPLETED state, including the same return values.  </p>
 <p>A real-world example might include the flow run ID from the context in the cache key so only repeated calls in the same flow run are cached.</p>
-<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">cache_within_flow_run</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">parameters</span><span class="p">):</span>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">cache_within_flow_run</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">parameters</span><span class="p">):</span>
     <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">context</span><span class="o">.</span><span class="n">task_run</span><span class="o">.</span><span class="n">flow_run_id</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="n">task_input_hash</span><span class="p">(</span><span class="n">context</span><span class="p">,</span><span class="w"> </span><span class="n">parameters</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
 
 <span class="nd">@task</span><span class="p">(</span><span class="n">cache_key_fn</span><span class="o">=</span><span class="n">cache_within_flow_run</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">cached_task</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">cached_task</span><span class="p">():</span>
     <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;running an expensive operation&#39;</span><span class="p">)</span>
     <span class="k">return</span> <span class="mi">42</span>
 </code></pre></div>
@@ -14065,33 +14068,33 @@ prefect config set PREFECT_TASK_DEFAULT_RETRY_DELAY_SECONDS = [1, 10, 100]
 <h3 id="refreshing-the-cache">Refreshing the cache<a class="headerlink" href="#refreshing-the-cache" title="Permanent link">&para;</a></h3>
 <p>Sometimes, you want a task to update the data associated with its cache key instead of using the cache. This is a cache "refresh".</p>
 <p>The <code>refresh_cache</code> option can be used to enable this behavior for a specific task:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">random</span>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">random</span>
 
 
-<span class="k">def</span> <span class="nf">static_cache_key</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">parameters</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">static_cache_key</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">parameters</span><span class="p">):</span>
     <span class="c1"># return a constant</span>
     <span class="k">return</span> <span class="s2">&quot;static cache key&quot;</span>
 
 
 <span class="nd">@task</span><span class="p">(</span><span class="n">cache_key_fn</span><span class="o">=</span><span class="n">static_cache_key</span><span class="p">,</span> <span class="n">refresh_cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">caching_task</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">caching_task</span><span class="p">():</span>
     <span class="k">return</span> <span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span>
 </code></pre></div>
 <p>When this task runs, it will <em>always</em> update the cache key instead of using the cached value. This is particularly useful when you have a flow that is responsible for updating the cache.</p>
 <p>If you want to refresh the cache for all tasks, you can use the <code>PREFECT_TASKS_REFRESH_CACHE</code> setting. Setting <code>PREFECT_TASKS_REFRESH_CACHE=true</code> will change the default behavior of all tasks to refresh. This is particularly useful if you want to rerun a flow without cached results.</p>
 <p>If you have tasks that should not refresh when this setting is enabled, you may explicitly set <code>refresh_cache</code> to <code>False</code>. These tasks will never refresh the cache &mdash; if a cache key exists it will be read, not updated. Note that, if a cache key does <em>not</em> exist yet, these tasks can still write to the cache.</p>
 <div class="highlight"><pre><span></span><code><span class="nd">@task</span><span class="p">(</span><span class="n">cache_key_fn</span><span class="o">=</span><span class="n">static_cache_key</span><span class="p">,</span> <span class="n">refresh_cache</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">caching_task</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">caching_task</span><span class="p">():</span>
     <span class="k">return</span> <span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span>
 </code></pre></div>
 <h2 id="timeouts">Timeouts<a class="headerlink" href="#timeouts" title="Permanent link">&para;</a></h2>
 <p>Task timeouts are used to prevent unintentional long-running tasks. When the duration of execution for a task exceeds the duration specified in the timeout, a timeout exception will be raised and the task will be marked as failed. In the UI, the task will be visibly designated as <code>TimedOut</code>. From the perspective of the flow, the timed-out task will be treated like any other failed task.</p>
 <p>Timeout durations are specified using the <code>timeout_seconds</code> keyword argument.</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">task</span>
-<span class="kn">import</span> <span class="nn">time</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">task</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
 
 <span class="hll"><span class="nd">@task</span><span class="p">(</span><span class="n">timeout_seconds</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">log_prints</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</span><span class="k">def</span> <span class="nf">show_timeouts</span><span class="p">():</span>
+</span><span class="k">def</span><span class="w"> </span><span class="nf">show_timeouts</span><span class="p">():</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;I will execute&quot;</span><span class="p">)</span>
     <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;I will not execute&quot;</span><span class="p">)</span>
@@ -14113,15 +14116,15 @@ prefect config set PREFECT_TASK_DEFAULT_RETRY_DELAY_SECONDS = [1, 10, 100]
 <h2 id="wait-for">Wait for<a class="headerlink" href="#wait-for" title="Permanent link">&para;</a></h2>
 <p>To create a dependency between two tasks that do not exchange data, but one needs to wait for the other to finish, use the special <a href="/api-ref/prefect/tasks/#prefect.tasks.Task.submit"><code>wait_for</code></a> keyword argument:</p>
 <div class="highlight"><pre><span></span><code><span class="nd">@task</span>
-<span class="k">def</span> <span class="nf">task_1</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">task_1</span><span class="p">():</span>
     <span class="k">pass</span>
 
 <span class="nd">@task</span>
-<span class="k">def</span> <span class="nf">task_2</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">task_2</span><span class="p">():</span>
     <span class="k">pass</span>
 
 <span class="nd">@flow</span>
-<span class="k">def</span> <span class="nf">my_flow</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_flow</span><span class="p">():</span>
     <span class="n">x</span> <span class="o">=</span> <span class="n">task_1</span><span class="p">()</span>
 
     <span class="c1"># task 2 will wait for task_1 to complete</span>
@@ -14130,19 +14133,19 @@ prefect config set PREFECT_TASK_DEFAULT_RETRY_DELAY_SECONDS = [1, 10, 100]
 <h2 id="map">Map<a class="headerlink" href="#map" title="Permanent link">&para;</a></h2>
 <p>Prefect provides a <code>.map()</code> implementation that automatically creates a task run for each element of its input data. Mapped tasks represent the computations of many individual children tasks.</p>
 <p>The simplest Prefect map takes a tasks and applies it to each element of its inputs.</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
 
 <span class="nd">@task</span>
-<span class="k">def</span> <span class="nf">print_nums</span><span class="p">(</span><span class="n">nums</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">print_nums</span><span class="p">(</span><span class="n">nums</span><span class="p">):</span>
     <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">nums</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
 
 <span class="nd">@task</span>
-<span class="k">def</span> <span class="nf">square_num</span><span class="p">(</span><span class="n">num</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">square_num</span><span class="p">(</span><span class="n">num</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">num</span><span class="o">**</span><span class="mi">2</span>
 
 <span class="nd">@flow</span>
-<span class="k">def</span> <span class="nf">map_flow</span><span class="p">(</span><span class="n">nums</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">map_flow</span><span class="p">(</span><span class="n">nums</span><span class="p">):</span>
     <span class="n">print_nums</span><span class="p">(</span><span class="n">nums</span><span class="p">)</span>
     <span class="n">squared_nums</span> <span class="o">=</span> <span class="n">square_num</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">nums</span><span class="p">)</span> 
     <span class="n">print_nums</span><span class="p">(</span><span class="n">squared_nums</span><span class="p">)</span>
@@ -14150,28 +14153,28 @@ prefect config set PREFECT_TASK_DEFAULT_RETRY_DELAY_SECONDS = [1, 10, 100]
 <span class="n">map_flow</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">13</span><span class="p">])</span>
 </code></pre></div>
 <p>Prefect also supports <code>unmapped</code> arguments, allowing you to pass static values that don't get mapped over.</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
 
 <span class="nd">@task</span>
-<span class="k">def</span> <span class="nf">add_together</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">add_together</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span>
 
 <span class="nd">@flow</span>
-<span class="k">def</span> <span class="nf">sum_it</span><span class="p">(</span><span class="n">numbers</span><span class="p">,</span> <span class="n">static_value</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">sum_it</span><span class="p">(</span><span class="n">numbers</span><span class="p">,</span> <span class="n">static_value</span><span class="p">):</span>
     <span class="n">futures</span> <span class="o">=</span> <span class="n">add_together</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">numbers</span><span class="p">,</span> <span class="n">static_value</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">futures</span>
 
 <span class="n">sum_it</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="mi">5</span><span class="p">)</span>
 </code></pre></div>
 <p>If your static argument is an iterable, you'll need to wrap it with <code>unmapped</code> to tell Prefect that it should be treated as a static value.</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span><span class="p">,</span> <span class="n">unmapped</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span><span class="p">,</span> <span class="n">unmapped</span>
 
 <span class="nd">@task</span>
-<span class="k">def</span> <span class="nf">sum_plus</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">static_iterable</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">sum_plus</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">static_iterable</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">x</span> <span class="o">+</span> <span class="nb">sum</span><span class="p">(</span><span class="n">static_iterable</span><span class="p">)</span>
 
 <span class="nd">@flow</span>
-<span class="k">def</span> <span class="nf">sum_it</span><span class="p">(</span><span class="n">numbers</span><span class="p">,</span> <span class="n">static_iterable</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">sum_it</span><span class="p">(</span><span class="n">numbers</span><span class="p">,</span> <span class="n">static_iterable</span><span class="p">):</span>
     <span class="n">futures</span> <span class="o">=</span> <span class="n">sum_plus</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">numbers</span><span class="p">,</span> <span class="n">static_iterable</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">futures</span>
 
@@ -14179,18 +14182,18 @@ prefect config set PREFECT_TASK_DEFAULT_RETRY_DELAY_SECONDS = [1, 10, 100]
 </code></pre></div>
 <h2 id="async-tasks">Async tasks<a class="headerlink" href="#async-tasks" title="Permanent link">&para;</a></h2>
 <p>Prefect also supports asynchronous task and flow definitions by default. All of <a href="https://docs.python.org/3/library/asyncio-task.html">the standard rules of async</a> apply:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">asyncio</span>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
 
-<span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">task</span><span class="p">,</span> <span class="n">flow</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">task</span><span class="p">,</span> <span class="n">flow</span>
 
 <span class="nd">@task</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">print_values</span><span class="p">(</span><span class="n">values</span><span class="p">):</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">print_values</span><span class="p">(</span><span class="n">values</span><span class="p">):</span>
     <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">values</span><span class="p">:</span>
         <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># yield</span>
         <span class="nb">print</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
 
 <span class="nd">@flow</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">async_flow</span><span class="p">():</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">async_flow</span><span class="p">():</span>
     <span class="k">await</span> <span class="n">print_values</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>  <span class="c1"># runs immediately</span>
     <span class="n">coros</span> <span class="o">=</span> <span class="p">[</span><span class="n">print_values</span><span class="p">(</span><span class="s2">&quot;abcd&quot;</span><span class="p">),</span> <span class="n">print_values</span><span class="p">(</span><span class="s2">&quot;6789&quot;</span><span class="p">)]</span>
 
@@ -14271,7 +14274,7 @@ prefect config set PREFECT_TASK_DEFAULT_RETRY_DELAY_SECONDS = [1, 10, 100]
 <li><code>concurrency_limit</code> specifies the maximum number of concurrent task runs for that tag.</li>
 </ul>
 <p>For example, to set a concurrency limit of 10 on the 'small_instance' tag:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">get_client</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_client</span>
 
 <span class="k">async</span> <span class="k">with</span> <span class="n">get_client</span><span class="p">()</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
     <span class="c1"># set a concurrency limit of 10 on the &#39;small_instance&#39; tag</span>
