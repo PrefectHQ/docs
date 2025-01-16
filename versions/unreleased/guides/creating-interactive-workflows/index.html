@@ -173,6 +173,9 @@ if (amplitudeKey){
     
 
     
+  <meta name="robots" content="noindex, nofollow">
+  
+
   </head>
   
   
@@ -13499,10 +13502,10 @@ if (amplitudeKey){
 <p>There are a few reasons to use a <code>RunModel</code> or <code>BaseModel</code>. The first is that when you let Prefect automatically create one of these classes for your input type, the field that users will see in Prefect's UI when they click "Resume" on a flow run is named <code>value</code> and has no help text to suggest what the field is. If you create a <code>RunInput</code> or <code>BaseModel</code>, you can change details like the field name, help text, and default value, and users will see those reflected in the "Resume" form.</p>
 </div>
 <p>The simplest way to pause or suspend and wait for input is to pass a built-in type:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">pause_flow_run</span><span class="p">,</span> <span class="n">get_run_logger</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">pause_flow_run</span><span class="p">,</span> <span class="n">get_run_logger</span>
 
 <span class="nd">@flow</span>
-<span class="k">def</span> <span class="nf">greet_user</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">greet_user</span><span class="p">():</span>
     <span class="n">logger</span> <span class="o">=</span> <span class="n">get_run_logger</span><span class="p">()</span>
 
     <span class="n">user</span> <span class="o">=</span> <span class="n">pause_flow_run</span><span class="p">(</span><span class="n">wait_for_input</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
@@ -13515,17 +13518,17 @@ if (amplitudeKey){
 <p>When you pass a built-in type such as <code>int</code> as an argument for the <code>wait_for_input</code> parameter to <code>pause_flow_run</code> or <code>suspend_flow_run</code>, Prefect automatically creates a Pydantic model containing one field annotated with the type you specified. This means you can use <a href="https://docs.pydantic.dev/1.10/usage/types/">any type annotation that Pydantic accepts for model fields</a> with these functions.</p>
 </div>
 <p>Instead of a built-in type, you can pass in a <code>pydantic.BaseModel</code> class. This is useful if you already have a <code>BaseModel</code> you want to use:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">pause_flow_run</span><span class="p">,</span> <span class="n">get_run_logger</span>
-<span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">BaseModel</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">pause_flow_run</span><span class="p">,</span> <span class="n">get_run_logger</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pydantic</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseModel</span>
 
 
-<span class="k">class</span> <span class="nc">User</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">User</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">age</span><span class="p">:</span> <span class="nb">int</span>
 
 
 <span class="nd">@flow</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">greet_user</span><span class="p">():</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">greet_user</span><span class="p">():</span>
     <span class="n">logger</span> <span class="o">=</span> <span class="n">get_run_logger</span><span class="p">()</span>
 
     <span class="n">user</span> <span class="o">=</span> <span class="k">await</span> <span class="n">pause_flow_run</span><span class="p">(</span><span class="n">wait_for_input</span><span class="o">=</span><span class="n">User</span><span class="p">)</span>
@@ -13538,19 +13541,19 @@ if (amplitudeKey){
 <p><code>RunInput</code> classes contain extra logic that allows flows to send and receive them at runtime. You shouldn't notice any difference!</p>
 </div>
 <p>Finally, for advanced use cases like overriding how Prefect stores flow run inputs, you can create a <code>RunInput</code> class:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">get_run_logger</span>
-<span class="kn">from</span> <span class="nn">prefect.input</span> <span class="kn">import</span> <span class="n">RunInput</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_run_logger</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect.input</span><span class="w"> </span><span class="kn">import</span> <span class="n">RunInput</span>
 
-<span class="k">class</span> <span class="nc">UserInput</span><span class="p">(</span><span class="n">RunInput</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">UserInput</span><span class="p">(</span><span class="n">RunInput</span><span class="p">):</span>
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">age</span><span class="p">:</span> <span class="nb">int</span>
 
     <span class="c1"># Imagine overridden methods here!</span>
-    <span class="k">def</span> <span class="nf">override_something</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">override_something</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">override_something</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
 <span class="nd">@flow</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">greet_user</span><span class="p">():</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">greet_user</span><span class="p">():</span>
     <span class="n">logger</span> <span class="o">=</span> <span class="n">get_run_logger</span><span class="p">()</span>
 
     <span class="n">user</span> <span class="o">=</span> <span class="k">await</span> <span class="n">pause_flow_run</span><span class="p">(</span><span class="n">wait_for_input</span><span class="o">=</span><span class="n">UserInput</span><span class="p">)</span>
@@ -13560,15 +13563,15 @@ if (amplitudeKey){
 <h3 id="providing-initial-data">Providing initial data<a class="headerlink" href="#providing-initial-data" title="Permanent link">&para;</a></h3>
 <p>You can set default values for fields in your model by using the <code>with_initial_data</code> method. This is useful when you want to provide default values for the fields in your own <code>RunInput</code> class.</p>
 <p>Expanding on the example above, you could make the <code>name</code> field default to "anonymous":</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">get_run_logger</span>
-<span class="kn">from</span> <span class="nn">prefect.input</span> <span class="kn">import</span> <span class="n">RunInput</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_run_logger</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect.input</span><span class="w"> </span><span class="kn">import</span> <span class="n">RunInput</span>
 
-<span class="k">class</span> <span class="nc">UserInput</span><span class="p">(</span><span class="n">RunInput</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">UserInput</span><span class="p">(</span><span class="n">RunInput</span><span class="p">):</span>
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">age</span><span class="p">:</span> <span class="nb">int</span>
 
 <span class="nd">@flow</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">greet_user</span><span class="p">():</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">greet_user</span><span class="p">():</span>
     <span class="n">logger</span> <span class="o">=</span> <span class="n">get_run_logger</span><span class="p">()</span>
 
     <span class="n">user_input</span> <span class="o">=</span> <span class="k">await</span> <span class="n">pause_flow_run</span><span class="p">(</span>
@@ -13583,18 +13586,18 @@ if (amplitudeKey){
 <p>When a user sees the form for this input, the name field will contain "anonymous" as the default.</p>
 <h3 id="providing-a-description-with-runtime-data">Providing a description with runtime data<a class="headerlink" href="#providing-a-description-with-runtime-data" title="Permanent link">&para;</a></h3>
 <p>You can provide a dynamic, markdown description that will appear in the Prefect UI when the flow run pauses. This feature enables context-specific prompts, enhancing clarity and user interaction. Building on the example above:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
-<span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">pause_flow_run</span><span class="p">,</span> <span class="n">get_run_logger</span>
-<span class="kn">from</span> <span class="nn">prefect.input</span> <span class="kn">import</span> <span class="n">RunInput</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">pause_flow_run</span><span class="p">,</span> <span class="n">get_run_logger</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect.input</span><span class="w"> </span><span class="kn">import</span> <span class="n">RunInput</span>
 
 
-<span class="k">class</span> <span class="nc">UserInput</span><span class="p">(</span><span class="n">RunInput</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">UserInput</span><span class="p">(</span><span class="n">RunInput</span><span class="p">):</span>
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">age</span><span class="p">:</span> <span class="nb">int</span>
 
 
 <span class="nd">@flow</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">greet_user</span><span class="p">():</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">greet_user</span><span class="p">():</span>
     <span class="n">logger</span> <span class="o">=</span> <span class="n">get_run_logger</span><span class="p">()</span>
     <span class="n">current_date</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%B </span><span class="si">%d</span><span class="s2">, %Y&quot;</span><span class="p">)</span>
 
@@ -13626,16 +13629,16 @@ if (amplitudeKey){
 <p>Prefect transforms the type annotations in your <code>RunInput</code> or <code>BaseModel</code> class to a JSON schema and uses that schema in the UI for client-side validation. However, custom validation requires running <em>Python</em> logic defined in your <code>RunInput</code> class. Because of this, validation happens <em>after the flow resumes</em>, so you'll want to handle it explicitly in your flow. Continue reading for an example best practice.</p>
 </div>
 <p>The following is an example <code>RunInput</code> class that uses a custom field validator:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">pydantic</span>
-<span class="kn">from</span> <span class="nn">prefect.input</span> <span class="kn">import</span> <span class="n">RunInput</span>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">pydantic</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect.input</span><span class="w"> </span><span class="kn">import</span> <span class="n">RunInput</span>
 
 
-<span class="k">class</span> <span class="nc">ShirtOrder</span><span class="p">(</span><span class="n">RunInput</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ShirtOrder</span><span class="p">(</span><span class="n">RunInput</span><span class="p">):</span>
     <span class="n">size</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;small&quot;</span><span class="p">,</span> <span class="s2">&quot;medium&quot;</span><span class="p">,</span> <span class="s2">&quot;large&quot;</span><span class="p">,</span> <span class="s2">&quot;xlarge&quot;</span><span class="p">]</span>
     <span class="n">color</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;red&quot;</span><span class="p">,</span> <span class="s2">&quot;green&quot;</span><span class="p">,</span> <span class="s2">&quot;black&quot;</span><span class="p">]</span>
 
     <span class="nd">@pydantic</span><span class="o">.</span><span class="n">validator</span><span class="p">(</span><span class="s2">&quot;color&quot;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">validate_age</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">validate_age</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">value</span> <span class="o">==</span> <span class="s2">&quot;green&quot;</span> <span class="ow">and</span> <span class="n">values</span><span class="p">[</span><span class="s2">&quot;size&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;small&quot;</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="s2">&quot;Green is only in-stock for medium, large, and XL sizes.&quot;</span>
@@ -13644,17 +13647,17 @@ if (amplitudeKey){
         <span class="k">return</span> <span class="n">value</span>
 </code></pre></div>
 <p>In the example, we use Pydantic's <code>validator</code> decorator to define a custom validation method for the <code>color</code> field. We can use it in a flow like this:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">pydantic</span>
-<span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">pause_flow_run</span>
-<span class="kn">from</span> <span class="nn">prefect.input</span> <span class="kn">import</span> <span class="n">RunInput</span>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">pydantic</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">pause_flow_run</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect.input</span><span class="w"> </span><span class="kn">import</span> <span class="n">RunInput</span>
 
 
-<span class="k">class</span> <span class="nc">ShirtOrder</span><span class="p">(</span><span class="n">RunInput</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ShirtOrder</span><span class="p">(</span><span class="n">RunInput</span><span class="p">):</span>
     <span class="n">size</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;small&quot;</span><span class="p">,</span> <span class="s2">&quot;medium&quot;</span><span class="p">,</span> <span class="s2">&quot;large&quot;</span><span class="p">,</span> <span class="s2">&quot;xlarge&quot;</span><span class="p">]</span>
     <span class="n">color</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;red&quot;</span><span class="p">,</span> <span class="s2">&quot;green&quot;</span><span class="p">,</span> <span class="s2">&quot;black&quot;</span><span class="p">]</span>
 
     <span class="nd">@pydantic</span><span class="o">.</span><span class="n">validator</span><span class="p">(</span><span class="s2">&quot;color&quot;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">validate_age</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">validate_age</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">value</span> <span class="o">==</span> <span class="s2">&quot;green&quot;</span> <span class="ow">and</span> <span class="n">values</span><span class="p">[</span><span class="s2">&quot;size&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;small&quot;</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="s2">&quot;Green is only in-stock for medium, large, and XL sizes.&quot;</span>
@@ -13664,24 +13667,24 @@ if (amplitudeKey){
 
 
 <span class="nd">@flow</span>
-<span class="k">def</span> <span class="nf">get_shirt_order</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_shirt_order</span><span class="p">():</span>
     <span class="n">shirt_order</span> <span class="o">=</span> <span class="n">pause_flow_run</span><span class="p">(</span><span class="n">wait_for_input</span><span class="o">=</span><span class="n">ShirtOrder</span><span class="p">)</span>
 </code></pre></div>
 <p>If a user chooses any size and color combination other than <code>small</code> and <code>green</code>, the flow run will resume successfully. However, if the user chooses size <code>small</code> and color <code>green</code>, the flow run will resume, and <code>pause_flow_run</code> will raise a <code>ValidationError</code> exception. This will cause the flow run to fail and log the error.</p>
 <p>However, what if you don't want the flow run to fail? One way to handle this case is to use a <code>while</code> loop and pause again if the <code>ValidationError</code> exception is raised:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Literal</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Literal</span>
 
-<span class="kn">import</span> <span class="nn">pydantic</span>
-<span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">get_run_logger</span><span class="p">,</span> <span class="n">pause_flow_run</span>
-<span class="kn">from</span> <span class="nn">prefect.input</span> <span class="kn">import</span> <span class="n">RunInput</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pydantic</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">get_run_logger</span><span class="p">,</span> <span class="n">pause_flow_run</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect.input</span><span class="w"> </span><span class="kn">import</span> <span class="n">RunInput</span>
 
 
-<span class="k">class</span> <span class="nc">ShirtOrder</span><span class="p">(</span><span class="n">RunInput</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ShirtOrder</span><span class="p">(</span><span class="n">RunInput</span><span class="p">):</span>
     <span class="n">size</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;small&quot;</span><span class="p">,</span> <span class="s2">&quot;medium&quot;</span><span class="p">,</span> <span class="s2">&quot;large&quot;</span><span class="p">,</span> <span class="s2">&quot;xlarge&quot;</span><span class="p">]</span>
     <span class="n">color</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;red&quot;</span><span class="p">,</span> <span class="s2">&quot;green&quot;</span><span class="p">,</span> <span class="s2">&quot;black&quot;</span><span class="p">]</span>
 
     <span class="nd">@pydantic</span><span class="o">.</span><span class="n">validator</span><span class="p">(</span><span class="s2">&quot;color&quot;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">validate_age</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">validate_age</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">value</span> <span class="o">==</span> <span class="s2">&quot;green&quot;</span> <span class="ow">and</span> <span class="n">values</span><span class="p">[</span><span class="s2">&quot;size&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;small&quot;</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="s2">&quot;Green is only in-stock for medium, large, and XL sizes.&quot;</span>
@@ -13691,7 +13694,7 @@ if (amplitudeKey){
 
 
 <span class="nd">@flow</span>
-<span class="k">def</span> <span class="nf">get_shirt_order</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_shirt_order</span><span class="p">():</span>
     <span class="n">logger</span> <span class="o">=</span> <span class="n">get_run_logger</span><span class="p">()</span>
     <span class="n">shirt_order</span> <span class="o">=</span> <span class="kc">None</span>
 
@@ -13726,12 +13729,12 @@ if (amplitudeKey){
 <p>Let's look at some examples! We'll check out <code>receive_input</code> first, followed by <code>send_input</code>, and then we'll see the two functions working together.</p>
 <h3 id="receiving-input">Receiving input<a class="headerlink" href="#receiving-input" title="Permanent link">&para;</a></h3>
 <p>The following flow uses <code>receive_input</code> to continually receive names and print a personalized greeting for each name it receives:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span>
-<span class="kn">from</span> <span class="nn">prefect.input.run_input</span> <span class="kn">import</span> <span class="n">receive_input</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect.input.run_input</span><span class="w"> </span><span class="kn">import</span> <span class="n">receive_input</span>
 
 
 <span class="nd">@flow</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">greeter_flow</span><span class="p">():</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">greeter_flow</span><span class="p">():</span>
     <span class="k">async</span> <span class="k">for</span> <span class="n">name_input</span> <span class="ow">in</span> <span class="n">receive_input</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="c1"># Prints &quot;Hello, andrew!&quot; if another flow sent &quot;andrew&quot;</span>
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Hello, </span><span class="si">{</span><span class="n">name_input</span><span class="si">}</span><span class="s2">!&quot;</span><span class="p">)</span>
@@ -13739,12 +13742,12 @@ if (amplitudeKey){
 <p>When you pass a type such as <code>str</code> into <code>receive_input</code>, Prefect creates a <code>RunInput</code> class to manage your input automatically. When a flow sends input of this type, Prefect uses the <code>RunInput</code> class to validate the input. If the validation succeeds, your flow receives the input in the type you specified. In this example, if the flow received a valid string as input, the variable <code>name_input</code> would contain the string value.</p>
 <p>If, instead, you pass a <code>BaseModel</code>, Prefect upgrades your <code>BaseModel</code> to a <code>RunInput</code> class, and the variable your flow sees &mdash; in this case, <code>name_input</code> &mdash; is a <code>RunInput</code> instance that behaves like a <code>BaseModel</code>. Of course, if you pass in a <code>RunInput</code> class, no upgrade is needed, and you'll get a <code>RunInput</code> instance.</p>
 <p>If you prefer to keep things simple and pass types such as <code>str</code> into <code>receive_input</code>, you can do so. If you need access to the generated <code>RunInput</code> that contains the received value, pass <code>with_metadata=True</code> to <code>receive_input</code>:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span>
-<span class="kn">from</span> <span class="nn">prefect.input.run_input</span> <span class="kn">import</span> <span class="n">receive_input</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect.input.run_input</span><span class="w"> </span><span class="kn">import</span> <span class="n">receive_input</span>
 
 
 <span class="nd">@flow</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">greeter_flow</span><span class="p">():</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">greeter_flow</span><span class="p">():</span>
     <span class="k">async</span> <span class="k">for</span> <span class="n">name_input</span> <span class="ow">in</span> <span class="n">receive_input</span><span class="p">(</span>
         <span class="nb">str</span><span class="p">,</span>
         <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -13758,14 +13761,14 @@ if (amplitudeKey){
 <p>The primary uses of accessing the <code>RunInput</code> object for a receive input are to respond to the sender with the <code>RunInput.respond()</code> function or to access the unique key for an input. Later in this guide, we'll discuss how and why you might use these features.</p>
 </div>
 <p>Notice that we are now printing <code>name_input.value</code>. When Prefect generates a <code>RunInput</code> for you from a built-in type, the <code>RunInput</code> class has a single field, <code>value</code>, that uses a type annotation matching the type you specified. So if you call <code>receive_input</code> like this: <code>receive_input(str, with_metadata=True)</code>, that's equivalent to manually creating the following <code>RunInput</code> class and <code>receive_input</code> call:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span>
-<span class="kn">from</span> <span class="nn">prefect.input.run_input</span> <span class="kn">import</span> <span class="n">RunInput</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect.input.run_input</span><span class="w"> </span><span class="kn">import</span> <span class="n">RunInput</span>
 
-<span class="k">class</span> <span class="nc">GreeterInput</span><span class="p">(</span><span class="n">RunInput</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">GreeterInput</span><span class="p">(</span><span class="n">RunInput</span><span class="p">):</span>
     <span class="n">value</span><span class="p">:</span> <span class="nb">str</span>
 
 <span class="nd">@flow</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">greeter_flow</span><span class="p">():</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">greeter_flow</span><span class="p">():</span>
     <span class="k">async</span> <span class="k">for</span> <span class="n">name_input</span> <span class="ow">in</span> <span class="n">receive_input</span><span class="p">(</span><span class="n">GreeterInput</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Hello, </span><span class="si">{</span><span class="n">name_input</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2">!&quot;</span><span class="p">)</span>
 </code></pre></div>
@@ -13775,15 +13778,15 @@ if (amplitudeKey){
 </div>
 <h3 id="keeping-track-of-inputs-youve-already-seen">Keeping track of inputs you've already seen<a class="headerlink" href="#keeping-track-of-inputs-youve-already-seen" title="Permanent link">&para;</a></h3>
 <p>By default, each time you call <code>receive_input</code>, you get an iterator that iterates over all known inputs to a specific flow run, starting with the first received. The iterator will keep track of your current position as you iterate over it, or you can call <code>next()</code> to explicitly get the next input. If you're using the iterator in a loop, you should probably assign it to a variable:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">get_client</span>
-<span class="kn">from</span> <span class="nn">prefect.deployments.deployments</span> <span class="kn">import</span> <span class="n">run_deployment</span>
-<span class="kn">from</span> <span class="nn">prefect.input.run_input</span> <span class="kn">import</span> <span class="n">receive_input</span><span class="p">,</span> <span class="n">send_input</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">get_client</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect.deployments.deployments</span><span class="w"> </span><span class="kn">import</span> <span class="n">run_deployment</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect.input.run_input</span><span class="w"> </span><span class="kn">import</span> <span class="n">receive_input</span><span class="p">,</span> <span class="n">send_input</span>
 
 <span class="n">EXIT_SIGNAL</span> <span class="o">=</span> <span class="s2">&quot;__EXIT__&quot;</span>
 
 
 <span class="nd">@flow</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">sender</span><span class="p">():</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">sender</span><span class="p">():</span>
     <span class="n">greeter_flow_run</span> <span class="o">=</span> <span class="k">await</span> <span class="n">run_deployment</span><span class="p">(</span>
         <span class="s2">&quot;greeter/send-receive&quot;</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">as_subflow</span><span class="o">=</span><span class="kc">False</span>
     <span class="p">)</span>
@@ -13826,17 +13829,17 @@ if (amplitudeKey){
 </code></pre></div>
 <p>So, an iterator helps to keep track of the inputs your flow has already received. But what if you want your flow to suspend and then resume later, picking up where it left off? In that case, you will need to save the keys of the inputs you've seen so that the flow can read them back out when it resumes. You might use a <a href="/concepts/blocks/">Block</a>, such as a <code>JSONBlock</code>.</p>
 <p>The following flow receives input for 30 seconds then suspends itself, which exits the flow and tears down infrastructure:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">get_run_logger</span><span class="p">,</span> <span class="n">suspend_flow_run</span>
-<span class="kn">from</span> <span class="nn">prefect.blocks.system</span> <span class="kn">import</span> <span class="n">JSON</span>
-<span class="kn">from</span> <span class="nn">prefect.context</span> <span class="kn">import</span> <span class="n">get_run_context</span>
-<span class="kn">from</span> <span class="nn">prefect.input.run_input</span> <span class="kn">import</span> <span class="n">receive_input</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">get_run_logger</span><span class="p">,</span> <span class="n">suspend_flow_run</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect.blocks.system</span><span class="w"> </span><span class="kn">import</span> <span class="n">JSON</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect.context</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_run_context</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect.input.run_input</span><span class="w"> </span><span class="kn">import</span> <span class="n">receive_input</span>
 
 
 <span class="n">EXIT_SIGNAL</span> <span class="o">=</span> <span class="s2">&quot;__EXIT__&quot;</span>
 
 
 <span class="nd">@flow</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">greeter</span><span class="p">():</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">greeter</span><span class="p">():</span>
     <span class="n">logger</span> <span class="o">=</span> <span class="n">get_run_logger</span><span class="p">()</span>
     <span class="n">run_context</span> <span class="o">=</span> <span class="n">get_run_context</span><span class="p">()</span>
     <span class="k">assert</span> <span class="n">run_context</span><span class="o">.</span><span class="n">flow_run</span><span class="p">,</span> <span class="s2">&quot;Could not see my flow run ID&quot;</span>
@@ -13881,12 +13884,12 @@ if (amplitudeKey){
 </ol>
 <p>The <code>respond</code> method is equivalent to calling <code>send_input(..., flow_run_id=sending_flow_run.id)</code>, but with <code>respond</code>, your flow doesn't need to know the sending flow run's ID.</p>
 <p>Now that we know about <code>respond</code>, let's make our <code>greeter_flow</code> respond to name inputs instead of printing them:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span>
-<span class="kn">from</span> <span class="nn">prefect.input.run_input</span> <span class="kn">import</span> <span class="n">receive_input</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect.input.run_input</span><span class="w"> </span><span class="kn">import</span> <span class="n">receive_input</span>
 
 
 <span class="nd">@flow</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">greeter</span><span class="p">():</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">greeter</span><span class="p">():</span>
     <span class="k">async</span> <span class="k">for</span> <span class="n">name_input</span> <span class="ow">in</span> <span class="n">receive_input</span><span class="p">(</span>
         <span class="nb">str</span><span class="p">,</span>
         <span class="n">with_metadata</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
@@ -13895,8 +13898,8 @@ if (amplitudeKey){
         <span class="k">await</span> <span class="n">name_input</span><span class="o">.</span><span class="n">respond</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Hello, </span><span class="si">{</span><span class="n">name_input</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2">!&quot;</span><span class="p">)</span>
 </code></pre></div>
 <p>Cool! There's one problem left: this flow runs forever! We need a way to signal that it should exit. Let's keep things simple and teach it to look for a special string:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span>
-<span class="kn">from</span> <span class="nn">prefect.input.run_input</span> <span class="kn">import</span> <span class="n">receive_input</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect.input.run_input</span><span class="w"> </span><span class="kn">import</span> <span class="n">receive_input</span>
 
 
 
@@ -13904,7 +13907,7 @@ if (amplitudeKey){
 
 
 <span class="nd">@flow</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">greeter</span><span class="p">():</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">greeter</span><span class="p">():</span>
     <span class="k">async</span> <span class="k">for</span> <span class="n">name_input</span> <span class="ow">in</span> <span class="n">receive_input</span><span class="p">(</span>
         <span class="nb">str</span><span class="p">,</span>
         <span class="n">with_metadata</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
@@ -13925,7 +13928,7 @@ if (amplitudeKey){
 </div>
 <p>Next, we'll create a <code>sender</code> flow that starts a <code>greeter</code> flow run and then enters a loop, continuously getting input from the terminal and sending it to the greeter flow:</p>
 <div class="highlight"><pre><span></span><code><span class="nd">@flow</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">sender</span><span class="p">():</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">sender</span><span class="p">():</span>
     <span class="n">greeter_flow_run</span> <span class="o">=</span> <span class="k">await</span> <span class="n">run_deployment</span><span class="p">(</span>
         <span class="s2">&quot;greeter/send-receive&quot;</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">as_subflow</span><span class="o">=</span><span class="kc">False</span>
     <span class="p">)</span>
@@ -13961,20 +13964,20 @@ if (amplitudeKey){
 <p>Finally, we send the new name to <code>greeter</code>. We know that <code>greeter</code> is going to send back a greeting as a string, so we immediately wait for new string input. When we receive the greeting, we print it and continue the loop that gets terminal input.</p>
 <h3 id="seeing-a-complete-example">Seeing a complete example<a class="headerlink" href="#seeing-a-complete-example" title="Permanent link">&para;</a></h3>
 <p>Finally, let's see a complete example of using <code>send_input</code> and <code>receive_input</code>. Here is what the <code>greeter</code> and <code>sender</code> flows look like together:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">asyncio</span>
-<span class="kn">import</span> <span class="nn">sys</span>
-<span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">get_client</span>
-<span class="kn">from</span> <span class="nn">prefect.blocks.system</span> <span class="kn">import</span> <span class="n">JSON</span>
-<span class="kn">from</span> <span class="nn">prefect.context</span> <span class="kn">import</span> <span class="n">get_run_context</span>
-<span class="kn">from</span> <span class="nn">prefect.deployments.deployments</span> <span class="kn">import</span> <span class="n">run_deployment</span>
-<span class="kn">from</span> <span class="nn">prefect.input.run_input</span> <span class="kn">import</span> <span class="n">receive_input</span><span class="p">,</span> <span class="n">send_input</span>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">get_client</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect.blocks.system</span><span class="w"> </span><span class="kn">import</span> <span class="n">JSON</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect.context</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_run_context</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect.deployments.deployments</span><span class="w"> </span><span class="kn">import</span> <span class="n">run_deployment</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect.input.run_input</span><span class="w"> </span><span class="kn">import</span> <span class="n">receive_input</span><span class="p">,</span> <span class="n">send_input</span>
 
 
 <span class="n">EXIT_SIGNAL</span> <span class="o">=</span> <span class="s2">&quot;__EXIT__&quot;</span>
 
 
 <span class="nd">@flow</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">greeter</span><span class="p">():</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">greeter</span><span class="p">():</span>
     <span class="n">run_context</span> <span class="o">=</span> <span class="n">get_run_context</span><span class="p">()</span>
     <span class="k">assert</span> <span class="n">run_context</span><span class="o">.</span><span class="n">flow_run</span><span class="p">,</span> <span class="s2">&quot;Could not see my flow run ID&quot;</span>
 
@@ -14006,7 +14009,7 @@ if (amplitudeKey){
 
 
 <span class="nd">@flow</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">sender</span><span class="p">():</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">sender</span><span class="p">():</span>
     <span class="n">greeter_flow_run</span> <span class="o">=</span> <span class="k">await</span> <span class="n">run_deployment</span><span class="p">(</span>
         <span class="s2">&quot;greeter/send-receive&quot;</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">as_subflow</span><span class="o">=</span><span class="kc">False</span>
     <span class="p">)</span>

@@ -173,6 +173,9 @@ if (amplitudeKey){
     
 
     
+  <meta name="robots" content="noindex, nofollow">
+  
+
   </head>
   
   
@@ -13490,18 +13493,18 @@ if (amplitudeKey){
 <p>Make sure you use <code>.submit()</code> to run your task with a task runner. Calling the task directly, without <code>.submit()</code>, from within a flow will run the task sequentially instead of using a specified task runner.</p>
 </div>
 <p>For example, you can use <code>ConcurrentTaskRunner</code> to allow tasks to switch when they would block.</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
-<span class="hll"><span class="kn">from</span> <span class="nn">prefect.task_runners</span> <span class="kn">import</span> <span class="n">ConcurrentTaskRunner</span>
-</span><span class="kn">import</span> <span class="nn">time</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
+<span class="hll"><span class="kn">from</span><span class="w"> </span><span class="nn">prefect.task_runners</span><span class="w"> </span><span class="kn">import</span> <span class="n">ConcurrentTaskRunner</span>
+</span><span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
 
 <span class="nd">@task</span>
-<span class="k">def</span> <span class="nf">stop_at_floor</span><span class="p">(</span><span class="n">floor</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">stop_at_floor</span><span class="p">(</span><span class="n">floor</span><span class="p">):</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;elevator moving to floor </span><span class="si">{</span><span class="n">floor</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">floor</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;elevator stops on floor </span><span class="si">{</span><span class="n">floor</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
 <span class="hll"><span class="nd">@flow</span><span class="p">(</span><span class="n">task_runner</span><span class="o">=</span><span class="n">ConcurrentTaskRunner</span><span class="p">())</span>
-</span><span class="k">def</span> <span class="nf">elevator</span><span class="p">():</span>
+</span><span class="k">def</span><span class="w"> </span><span class="nf">elevator</span><span class="p">():</span>
     <span class="k">for</span> <span class="n">floor</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
         <span class="n">stop_at_floor</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="n">floor</span><span class="p">)</span>
 </code></pre></div>
@@ -13517,19 +13520,19 @@ if (amplitudeKey){
 <p>The <code>SequentialTaskRunner</code> works with both synchronous and asynchronous task functions. Asynchronous tasks are Python functions defined using <code>async def</code> rather than <code>def</code>.</p>
 </div>
 <p>The following example demonstrates using the <code>SequentialTaskRunner</code> to ensure that tasks run sequentially. In the example, the flow <code>glass_tower</code> runs the task <code>stop_at_floor</code> for floors one through 38, in that order.</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
-<span class="kn">from</span> <span class="nn">prefect.task_runners</span> <span class="kn">import</span> <span class="n">SequentialTaskRunner</span>
-<span class="kn">import</span> <span class="nn">random</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect.task_runners</span><span class="w"> </span><span class="kn">import</span> <span class="n">SequentialTaskRunner</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">random</span>
 
 <span class="nd">@task</span>
-<span class="k">def</span> <span class="nf">stop_at_floor</span><span class="p">(</span><span class="n">floor</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">stop_at_floor</span><span class="p">(</span><span class="n">floor</span><span class="p">):</span>
     <span class="n">situation</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">([</span><span class="s2">&quot;on fire&quot;</span><span class="p">,</span><span class="s2">&quot;clear&quot;</span><span class="p">])</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;elevator stops on </span><span class="si">{</span><span class="n">floor</span><span class="si">}</span><span class="s2"> which is </span><span class="si">{</span><span class="n">situation</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
 <span class="nd">@flow</span><span class="p">(</span><span class="n">task_runner</span><span class="o">=</span><span class="n">SequentialTaskRunner</span><span class="p">(),</span>
       <span class="n">name</span><span class="o">=</span><span class="s2">&quot;towering-infernflow&quot;</span><span class="p">,</span>
       <span class="p">)</span>
-<span class="k">def</span> <span class="nf">glass_tower</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">glass_tower</span><span class="p">():</span>
     <span class="k">for</span> <span class="n">floor</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">39</span><span class="p">):</span>
         <span class="n">stop_at_floor</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="n">floor</span><span class="p">)</span>
 
@@ -13538,26 +13541,26 @@ if (amplitudeKey){
 <h2 id="using-multiple-task-runners">Using multiple task runners<a class="headerlink" href="#using-multiple-task-runners" title="Permanent link">&para;</a></h2>
 <p>Each flow can only have a single task runner, but sometimes you may want a subset of your tasks to run using a specific task runner. In this case, you can create <a href="/concepts/flows/#composing-flows">subflows</a> for tasks that need to use a different task runner.</p>
 <p>For example, you can have a flow (in the example below called <code>sequential_flow</code>) that runs its tasks locally using the <code>SequentialTaskRunner</code>. If you have some tasks that can run more efficiently in parallel on a Dask cluster, you could create a subflow (such as <code>dask_subflow</code>) to run those tasks using the <code>DaskTaskRunner</code>.</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
-<span class="kn">from</span> <span class="nn">prefect.task_runners</span> <span class="kn">import</span> <span class="n">SequentialTaskRunner</span>
-<span class="kn">from</span> <span class="nn">prefect_dask.task_runners</span> <span class="kn">import</span> <span class="n">DaskTaskRunner</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect.task_runners</span><span class="w"> </span><span class="kn">import</span> <span class="n">SequentialTaskRunner</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect_dask.task_runners</span><span class="w"> </span><span class="kn">import</span> <span class="n">DaskTaskRunner</span>
 
 <span class="nd">@task</span>
-<span class="k">def</span> <span class="nf">hello_local</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">hello_local</span><span class="p">():</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Hello!&quot;</span><span class="p">)</span>
 
 <span class="nd">@task</span>
-<span class="k">def</span> <span class="nf">hello_dask</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">hello_dask</span><span class="p">():</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Hello from Dask!&quot;</span><span class="p">)</span>
 
 <span class="nd">@flow</span><span class="p">(</span><span class="n">task_runner</span><span class="o">=</span><span class="n">SequentialTaskRunner</span><span class="p">())</span>
-<span class="k">def</span> <span class="nf">sequential_flow</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">sequential_flow</span><span class="p">():</span>
     <span class="n">hello_local</span><span class="o">.</span><span class="n">submit</span><span class="p">()</span>
     <span class="n">dask_subflow</span><span class="p">()</span>
     <span class="n">hello_local</span><span class="o">.</span><span class="n">submit</span><span class="p">()</span>
 
 <span class="nd">@flow</span><span class="p">(</span><span class="n">task_runner</span><span class="o">=</span><span class="n">DaskTaskRunner</span><span class="p">())</span>
-<span class="k">def</span> <span class="nf">dask_subflow</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">dask_subflow</span><span class="p">():</span>
     <span class="n">hello_dask</span><span class="o">.</span><span class="n">submit</span><span class="p">()</span>
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
@@ -13594,14 +13597,14 @@ Hello!
 <p>When you use <code>.submit()</code> to submit a task to a task runner, the task runner creates a <a href="/api-ref/prefect/futures/#prefect.futures.PrefectFuture"><code>PrefectFuture</code></a> for access to the state and result of the task.</p>
 <p>A <code>PrefectFuture</code> is an object that provides access to a computation happening in a task runner &mdash; even if that computation is happening on a remote system.</p>
 <p>In the following example, we save the return value of calling <code>.submit()</code> on the task <code>say_hello</code> to the variable <code>future</code>, and then we print the type of the variable:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
 
 <span class="nd">@task</span>
-<span class="k">def</span> <span class="nf">say_hello</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">say_hello</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
     <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Hello </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">!&quot;</span>
 
 <span class="nd">@flow</span>
-<span class="k">def</span> <span class="nf">hello_world</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">hello_world</span><span class="p">():</span>
     <span class="n">future</span> <span class="o">=</span> <span class="n">say_hello</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="s2">&quot;Marvin&quot;</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;variable &#39;future&#39; is type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">future</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
@@ -13616,19 +13619,19 @@ Hello!
 <p>When you pass a future into a task, Prefect waits for the "upstream" task &mdash; the one that the future references &mdash; to reach a final state before starting the downstream task.</p>
 <p>This means that the downstream task won't receive the <code>PrefectFuture</code> you passed as an argument. Instead, the downstream task will receive the value that the upstream task returned.</p>
 <p>Take a look at how this works in the following example</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
 
 <span class="nd">@task</span>
-<span class="k">def</span> <span class="nf">say_hello</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">say_hello</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
     <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Hello </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">!&quot;</span>
 
 <span class="nd">@task</span>
-<span class="k">def</span> <span class="nf">print_result</span><span class="p">(</span><span class="n">result</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">print_result</span><span class="p">(</span><span class="n">result</span><span class="p">):</span>
     <span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">result</span><span class="p">))</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
 
 <span class="nd">@flow</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;hello-flow&quot;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">hello_world</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">hello_world</span><span class="p">():</span>
     <span class="n">future</span> <span class="o">=</span> <span class="n">say_hello</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="s2">&quot;Marvin&quot;</span><span class="p">)</span>
     <span class="n">print_result</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="n">future</span><span class="p">)</span>
 
@@ -13641,14 +13644,14 @@ Hello<span class="w"> </span>Marvin!
 </div>
 
 <p>Futures have a few useful methods. For example, you can get the return value of the task run with  <a href="/api-ref/prefect/futures/#prefect.futures.PrefectFuture.result"><code>.result()</code></a>:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
 
 <span class="nd">@task</span>
-<span class="k">def</span> <span class="nf">my_task</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_task</span><span class="p">():</span>
     <span class="k">return</span> <span class="mi">42</span>
 
 <span class="nd">@flow</span>
-<span class="k">def</span> <span class="nf">my_flow</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_flow</span><span class="p">():</span>
     <span class="n">future</span> <span class="o">=</span> <span class="n">my_task</span><span class="o">.</span><span class="n">submit</span><span class="p">()</span>
     <span class="n">result</span> <span class="o">=</span> <span class="n">future</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
@@ -13656,15 +13659,15 @@ Hello<span class="w"> </span>Marvin!
 <span class="n">my_flow</span><span class="p">()</span>
 </code></pre></div>
 <p>The <code>.result()</code> method will wait for the task to complete before returning the result to the caller. If the task run fails, <code>.result()</code> will raise the task run's exception. You may disable this behavior with the <code>raise_on_failure</code> option:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
 
 <span class="nd">@task</span>
-<span class="k">def</span> <span class="nf">my_task</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_task</span><span class="p">():</span>
     <span class="k">return</span> <span class="s2">&quot;I&#39;m a task!&quot;</span>
 
 
 <span class="nd">@flow</span>
-<span class="k">def</span> <span class="nf">my_flow</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_flow</span><span class="p">():</span>
     <span class="n">future</span> <span class="o">=</span> <span class="n">my_task</span><span class="o">.</span><span class="n">submit</span><span class="p">()</span>
     <span class="n">result</span> <span class="o">=</span> <span class="n">future</span><span class="o">.</span><span class="n">result</span><span class="p">(</span><span class="n">raise_on_failure</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">future</span><span class="o">.</span><span class="n">get_state</span><span class="p">()</span><span class="o">.</span><span class="n">is_failed</span><span class="p">():</span>
@@ -13676,19 +13679,19 @@ Hello<span class="w"> </span>Marvin!
 </code></pre></div>
 <p>You can retrieve the current state of the task run associated with the <code>PrefectFuture</code> using <a href="/api-ref/prefect/futures/#prefect.futures.PrefectFuture.get_state"><code>.get_state()</code></a>:</p>
 <div class="highlight"><pre><span></span><code><span class="nd">@flow</span>
-<span class="k">def</span> <span class="nf">my_flow</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_flow</span><span class="p">():</span>
     <span class="n">future</span> <span class="o">=</span> <span class="n">my_task</span><span class="o">.</span><span class="n">submit</span><span class="p">()</span>
     <span class="n">state</span> <span class="o">=</span> <span class="n">future</span><span class="o">.</span><span class="n">get_state</span><span class="p">()</span>
 </code></pre></div>
 <p>You can also wait for a task to complete by using the <a href="/api-ref/prefect/futures/#prefect.futures.PrefectFuture.wait"><code>.wait()</code></a> method:</p>
 <div class="highlight"><pre><span></span><code><span class="nd">@flow</span>
-<span class="k">def</span> <span class="nf">my_flow</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_flow</span><span class="p">():</span>
     <span class="n">future</span> <span class="o">=</span> <span class="n">my_task</span><span class="o">.</span><span class="n">submit</span><span class="p">()</span>
     <span class="n">final_state</span> <span class="o">=</span> <span class="n">future</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
 </code></pre></div>
 <p>You can include a timeout in the <code>wait</code> call to perform logic if the task has not finished in a given amount of time:</p>
 <div class="highlight"><pre><span></span><code><span class="nd">@flow</span>
-<span class="k">def</span> <span class="nf">my_flow</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_flow</span><span class="p">():</span>
     <span class="n">future</span> <span class="o">=</span> <span class="n">my_task</span><span class="o">.</span><span class="n">submit</span><span class="p">()</span>
     <span class="n">final_state</span> <span class="o">=</span> <span class="n">future</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># Wait one second max</span>
     <span class="k">if</span> <span class="n">final_state</span><span class="p">:</span>
@@ -13699,23 +13702,23 @@ Hello<span class="w"> </span>Marvin!
 </code></pre></div>
 <p>You may also use the <a href="/api-ref/prefect/tasks/#prefect.tasks.Task.submit"><code>wait_for=[]</code></a> parameter when calling a task, specifying upstream task dependencies. This enables you to control task execution order for tasks that do not share data dependencies.</p>
 <div class="highlight"><pre><span></span><code><span class="nd">@task</span>
-<span class="k">def</span> <span class="nf">task_a</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">task_a</span><span class="p">():</span>
     <span class="k">pass</span>
 
 <span class="nd">@task</span>
-<span class="k">def</span> <span class="nf">task_b</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">task_b</span><span class="p">():</span>
     <span class="k">pass</span>
 
 <span class="nd">@task</span>
-<span class="k">def</span> <span class="nf">task_c</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">task_c</span><span class="p">():</span>
     <span class="k">pass</span>
 
 <span class="nd">@task</span>
-<span class="k">def</span> <span class="nf">task_d</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">task_d</span><span class="p">():</span>
     <span class="k">pass</span>
 
 <span class="nd">@flow</span>
-<span class="k">def</span> <span class="nf">my_flow</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_flow</span><span class="p">():</span>
     <span class="n">a</span> <span class="o">=</span> <span class="n">task_a</span><span class="o">.</span><span class="n">submit</span><span class="p">()</span>
     <span class="n">b</span> <span class="o">=</span> <span class="n">task_b</span><span class="o">.</span><span class="n">submit</span><span class="p">()</span>
     <span class="c1"># Wait for task_a and task_b to complete</span>
@@ -13727,34 +13730,34 @@ Hello<span class="w"> </span>Marvin!
 <h3 id="when-to-use-result-in-flows">When to use <code>.result()</code> in flows<a class="headerlink" href="#when-to-use-result-in-flows" title="Permanent link">&para;</a></h3>
 <p>The simplest pattern for writing a flow is either only using tasks or only using pure Python functions. When you need to mix the two, use <code>.result()</code>.</p>
 <p>Using only tasks:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
 
 <span class="nd">@task</span>
-<span class="k">def</span> <span class="nf">say_hello</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">say_hello</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
     <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Hello </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">!&quot;</span>
 
 <span class="nd">@task</span>
-<span class="k">def</span> <span class="nf">say_nice_to_meet_you</span><span class="p">(</span><span class="n">hello_greeting</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">say_nice_to_meet_you</span><span class="p">(</span><span class="n">hello_greeting</span><span class="p">):</span>
     <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">hello_greeting</span><span class="si">}</span><span class="s2"> Nice to meet you :)&quot;</span>
 
 <span class="nd">@flow</span>
-<span class="k">def</span> <span class="nf">hello_world</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">hello_world</span><span class="p">():</span>
     <span class="n">hello</span> <span class="o">=</span> <span class="n">say_hello</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="s2">&quot;Marvin&quot;</span><span class="p">)</span>
     <span class="n">nice_to_meet_you</span> <span class="o">=</span> <span class="n">say_nice_to_meet_you</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="n">hello</span><span class="p">)</span>
 
 <span class="n">hello_world</span><span class="p">()</span>
 </code></pre></div>
 <p>Using only Python functions:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
 
-<span class="k">def</span> <span class="nf">say_hello</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">say_hello</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
     <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Hello </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">!&quot;</span>
 
-<span class="k">def</span> <span class="nf">say_nice_to_meet_you</span><span class="p">(</span><span class="n">hello_greeting</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">say_nice_to_meet_you</span><span class="p">(</span><span class="n">hello_greeting</span><span class="p">):</span>
     <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">hello_greeting</span><span class="si">}</span><span class="s2"> Nice to meet you :)&quot;</span>
 
 <span class="nd">@flow</span>
-<span class="k">def</span> <span class="nf">hello_world</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">hello_world</span><span class="p">():</span>
     <span class="c1"># because this is just a Python function, calls will not be tracked</span>
     <span class="n">hello</span> <span class="o">=</span> <span class="n">say_hello</span><span class="p">(</span><span class="s2">&quot;Marvin&quot;</span><span class="p">)</span> 
     <span class="n">nice_to_meet_you</span> <span class="o">=</span> <span class="n">say_nice_to_meet_you</span><span class="p">(</span><span class="n">hello</span><span class="p">)</span>
@@ -13762,23 +13765,23 @@ Hello<span class="w"> </span>Marvin!
 <span class="n">hello_world</span><span class="p">()</span>
 </code></pre></div>
 <p>Mixing tasks and Python functions:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
 
-<span class="k">def</span> <span class="nf">say_hello_extra_nicely_to_marvin</span><span class="p">(</span><span class="n">hello</span><span class="p">):</span> <span class="c1"># not a task or flow!</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">say_hello_extra_nicely_to_marvin</span><span class="p">(</span><span class="n">hello</span><span class="p">):</span> <span class="c1"># not a task or flow!</span>
     <span class="k">if</span> <span class="n">hello</span> <span class="o">==</span> <span class="s2">&quot;Hello Marvin!&quot;</span><span class="p">:</span>
         <span class="k">return</span> <span class="s2">&quot;HI MARVIN!&quot;</span>
     <span class="k">return</span> <span class="n">hello</span>
 
 <span class="nd">@task</span>
-<span class="k">def</span> <span class="nf">say_hello</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">say_hello</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
     <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Hello </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">!&quot;</span>
 
 <span class="nd">@task</span>
-<span class="k">def</span> <span class="nf">say_nice_to_meet_you</span><span class="p">(</span><span class="n">hello_greeting</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">say_nice_to_meet_you</span><span class="p">(</span><span class="n">hello_greeting</span><span class="p">):</span>
     <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">hello_greeting</span><span class="si">}</span><span class="s2"> Nice to meet you :)&quot;</span>
 
 <span class="nd">@flow</span>
-<span class="k">def</span> <span class="nf">hello_world</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">hello_world</span><span class="p">():</span>
     <span class="c1"># run a task and get the result</span>
     <span class="n">hello</span> <span class="o">=</span> <span class="n">say_hello</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="s2">&quot;Marvin&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
 
@@ -13797,18 +13800,18 @@ Hello<span class="w"> </span>Marvin!
 <p class="admonition-title">Calling <code>.result()</code> is blocking</p>
 <p>When calling <code>.result()</code>, be mindful your flow function will have to wait until the task run is completed before continuing.</p>
 </div>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
 
 <span class="nd">@task</span>
-<span class="k">def</span> <span class="nf">say_hello</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">say_hello</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
     <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Hello </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">!&quot;</span>
 
 <span class="nd">@task</span>
-<span class="k">def</span> <span class="nf">do_important_stuff</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">do_important_stuff</span><span class="p">():</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Doing lots of important stuff!&quot;</span><span class="p">)</span>
 
 <span class="nd">@flow</span>
-<span class="k">def</span> <span class="nf">hello_world</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">hello_world</span><span class="p">():</span>
     <span class="c1"># blocks until `say_hello` has finished</span>
     <span class="n">result</span> <span class="o">=</span> <span class="n">say_hello</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="s2">&quot;Marvin&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">result</span><span class="p">()</span> 
     <span class="n">do_important_stuff</span><span class="o">.</span><span class="n">submit</span><span class="p">()</span>
@@ -13823,11 +13826,11 @@ Hello<span class="w"> </span>Marvin!
 <li>Assign it as the task runner when the flow is defined using the <code>task_runner=DaskTaskRunner</code> argument.</li>
 </ol>
 <p>For example, this flow uses the <code>DaskTaskRunner</code> configured to access an existing Dask cluster at <code>http://my-dask-cluster</code>.</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span>
-<span class="kn">from</span> <span class="nn">prefect_dask.task_runners</span> <span class="kn">import</span> <span class="n">DaskTaskRunner</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect_dask.task_runners</span><span class="w"> </span><span class="kn">import</span> <span class="n">DaskTaskRunner</span>
 
 <span class="hll"><span class="nd">@flow</span><span class="p">(</span><span class="n">task_runner</span><span class="o">=</span><span class="n">DaskTaskRunner</span><span class="p">(</span><span class="n">address</span><span class="o">=</span><span class="s2">&quot;http://my-dask-cluster&quot;</span><span class="p">))</span>
-</span><span class="k">def</span> <span class="nf">my_flow</span><span class="p">():</span>
+</span><span class="k">def</span><span class="w"> </span><span class="nf">my_flow</span><span class="p">():</span>
     <span class="o">...</span>
 </code></pre></div>
 <p><code>DaskTaskRunner</code> accepts the following optional parameters:</p>
@@ -13930,17 +13933,17 @@ to at most 10 workers.</p>
 <h3 id="dask-annotations">Dask annotations<a class="headerlink" href="#dask-annotations" title="Permanent link">&para;</a></h3>
 <p>Dask annotations can be used to further control the behavior of tasks.</p>
 <p>For example, we can set the <a href="http://distributed.dask.org/en/stable/priority.html">priority</a> of tasks in the Dask scheduler:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">dask</span>
-<span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
-<span class="kn">from</span> <span class="nn">prefect_dask.task_runners</span> <span class="kn">import</span> <span class="n">DaskTaskRunner</span>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">dask</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect_dask.task_runners</span><span class="w"> </span><span class="kn">import</span> <span class="n">DaskTaskRunner</span>
 
 <span class="nd">@task</span>
-<span class="k">def</span> <span class="nf">show</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">show</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 
 
 <span class="nd">@flow</span><span class="p">(</span><span class="n">task_runner</span><span class="o">=</span><span class="n">DaskTaskRunner</span><span class="p">())</span>
-<span class="k">def</span> <span class="nf">my_flow</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_flow</span><span class="p">():</span>
     <span class="k">with</span> <span class="n">dask</span><span class="o">.</span><span class="n">annotate</span><span class="p">(</span><span class="n">priority</span><span class="o">=-</span><span class="mi">10</span><span class="p">):</span>
         <span class="n">future</span> <span class="o">=</span> <span class="n">show</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># low priority task</span>
 
@@ -13948,12 +13951,12 @@ to at most 10 workers.</p>
         <span class="n">future</span> <span class="o">=</span> <span class="n">show</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>  <span class="c1"># high priority task</span>
 </code></pre></div>
 <p>Another common use case is <a href="http://distributed.dask.org/en/stable/resources.html">resource</a> annotations:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">dask</span>
-<span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
-<span class="kn">from</span> <span class="nn">prefect_dask.task_runners</span> <span class="kn">import</span> <span class="n">DaskTaskRunner</span>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">dask</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect_dask.task_runners</span><span class="w"> </span><span class="kn">import</span> <span class="n">DaskTaskRunner</span>
 
 <span class="nd">@task</span>
-<span class="k">def</span> <span class="nf">show</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">show</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 
 <span class="c1"># Create a `LocalCluster` with some resource annotations</span>
@@ -13965,7 +13968,7 @@ to at most 10 workers.</p>
     <span class="p">)</span>
 <span class="p">)</span>
 
-<span class="k">def</span> <span class="nf">my_flow</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_flow</span><span class="p">():</span>
     <span class="k">with</span> <span class="n">dask</span><span class="o">.</span><span class="n">annotate</span><span class="p">(</span><span class="n">resources</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;GPU&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}):</span>
         <span class="n">future</span> <span class="o">=</span> <span class="n">show</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>  <span class="c1"># this task requires 1 GPU resource on a worker</span>
 
@@ -13994,11 +13997,11 @@ to at most 10 workers.</p>
 <li>Assign it as the task runner when the flow is defined using the <code>task_runner=RayTaskRunner</code> argument.</li>
 </ol>
 <p>For example, this flow uses the <code>RayTaskRunner</code> configured to access an existing Ray instance at <code>ray://192.0.2.255:8786</code>.</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span>
-<span class="kn">from</span> <span class="nn">prefect_ray.task_runners</span> <span class="kn">import</span> <span class="n">RayTaskRunner</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect_ray.task_runners</span><span class="w"> </span><span class="kn">import</span> <span class="n">RayTaskRunner</span>
 
 <span class="hll"><span class="nd">@flow</span><span class="p">(</span><span class="n">task_runner</span><span class="o">=</span><span class="n">RayTaskRunner</span><span class="p">(</span><span class="n">address</span><span class="o">=</span><span class="s2">&quot;ray://192.0.2.255:8786&quot;</span><span class="p">))</span>
-</span><span class="k">def</span> <span class="nf">my_flow</span><span class="p">():</span>
+</span><span class="k">def</span><span class="w"> </span><span class="nf">my_flow</span><span class="p">():</span>
     <span class="o">...</span> 
 </code></pre></div>
 <p><code>RayTaskRunner</code> accepts the following optional parameters:</p>

@@ -173,6 +173,9 @@ if (amplitudeKey){
     
 
     
+  <meta name="robots" content="noindex, nofollow">
+  
+
   </head>
   
   
@@ -13517,15 +13520,15 @@ if (amplitudeKey){
 <h4 id="exposing-objects-from-submodules">Exposing objects from submodules<a class="headerlink" href="#exposing-objects-from-submodules" title="Permanent link">&para;</a></h4>
 <p>If importing objects from submodules, the <code>__init__</code> file should use a relative import. This is <a href="https://github.com/microsoft/pyright/blob/main/docs/typed-libraries.md#library-interface">required for type checkers</a> to understand the exposed interface.</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># Correct</span>
-<span class="kn">from</span> <span class="nn">.flows</span> <span class="kn">import</span> <span class="n">flow</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.flows</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span>
 </code></pre></div>
 <div class="highlight"><pre><span></span><code><span class="c1"># Wrong</span>
-<span class="kn">from</span> <span class="nn">prefect.flows</span> <span class="kn">import</span> <span class="n">flow</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect.flows</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span>
 </code></pre></div>
 <h4 id="exposing-submodules">Exposing submodules<a class="headerlink" href="#exposing-submodules" title="Permanent link">&para;</a></h4>
 <p>Generally, submodules should <em>not</em> be imported in the <code>__init__</code> file. Submodules should only be exposed when the module is designed to be imported and used as a namespaced object.</p>
 <p>For example, we do this for our schema and model modules because it is important to know if you are working with an API schema or database model, both of which may have similar names.</p>
-<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">prefect.server.schemas</span> <span class="k">as</span> <span class="nn">schemas</span>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">prefect.server.schemas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">schemas</span>
 
 <span class="c1"># The full module is accessible now</span>
 <span class="n">schemas</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">FlowRun</span>
@@ -13535,7 +13538,7 @@ if (amplitudeKey){
 from . import flows
 </code></pre></div>
 <div class="highlight"><pre><span></span><code><span class="c1"># Wrong</span>
-<span class="kn">import</span> <span class="nn">prefect.flows</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">prefect.flows</span>
 </code></pre></div>
 <h4 id="importing-to-run-side-effects">Importing to run side-effects<a class="headerlink" href="#importing-to-run-side-effects" title="Permanent link">&para;</a></h4>
 <p>Another use case for importing submodules is perform global side-effects that occur when they are imported.</p>
@@ -13549,32 +13552,32 @@ from . import flows
 <h4 id="importing-other-modules">Importing other modules<a class="headerlink" href="#importing-other-modules" title="Permanent link">&para;</a></h4>
 <p>The <code>from</code> syntax should be reserved for importing objects from modules. Modules should not be imported using the <code>from</code> syntax.</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># Correct</span>
-<span class="kn">import</span> <span class="nn">prefect.server.schemas</span>  <span class="c1"># use with the full name</span>
-<span class="kn">import</span> <span class="nn">prefect.server.schemas</span> <span class="k">as</span> <span class="nn">schemas</span>  <span class="c1"># use the shorter name</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">prefect.server.schemas</span>  <span class="c1"># use with the full name</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">prefect.server.schemas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">schemas</span>  <span class="c1"># use the shorter name</span>
 </code></pre></div>
 <div class="highlight"><pre><span></span><code><span class="c1"># Wrong</span>
-<span class="kn">from</span> <span class="nn">prefect.server</span> <span class="kn">import</span> <span class="n">schemas</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect.server</span><span class="w"> </span><span class="kn">import</span> <span class="n">schemas</span>
 </code></pre></div>
 <p>Unless in an <code>__init__.py</code> file, relative imports should not be used.</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># Correct</span>
-<span class="kn">from</span> <span class="nn">prefect.utilities.foo</span> <span class="kn">import</span> <span class="n">bar</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect.utilities.foo</span><span class="w"> </span><span class="kn">import</span> <span class="n">bar</span>
 </code></pre></div>
 <div class="highlight"><pre><span></span><code><span class="c1"># Wrong</span>
-<span class="kn">from</span> <span class="nn">.utilities.foo</span> <span class="kn">import</span> <span class="n">bar</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.utilities.foo</span><span class="w"> </span><span class="kn">import</span> <span class="n">bar</span>
 </code></pre></div>
 <p>Imports dependent on file location should never be used without explicit indication it is relative. This avoids confusion about the source of a module.</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># Correct</span>
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">test</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">test</span>
 </code></pre></div>
 <div class="highlight"><pre><span></span><code><span class="c1"># Wrong</span>
-<span class="kn">import</span> <span class="nn">test</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">test</span>
 </code></pre></div>
 <h4 id="resolving-circular-dependencies">Resolving circular dependencies<a class="headerlink" href="#resolving-circular-dependencies" title="Permanent link">&para;</a></h4>
 <p>Sometimes, we must defer an import and perform it <em>within</em> a function to avoid a circular dependency.</p>
 <div class="highlight"><pre><span></span><code><span class="c1">## This function in `settings.py` requires a method from the global `context` but the context</span>
 <span class="c1">## uses settings</span>
-<span class="k">def</span> <span class="nf">from_context</span><span class="p">():</span>
-    <span class="kn">from</span> <span class="nn">prefect.context</span> <span class="kn">import</span> <span class="n">get_profile_context</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">from_context</span><span class="p">():</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">prefect.context</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_profile_context</span>
 
     <span class="o">...</span>
 </code></pre></div>
@@ -13583,12 +13586,12 @@ from . import flows
 <h5 id="with-type-annotations">With type annotations<a class="headerlink" href="#with-type-annotations" title="Permanent link">&para;</a></h5>
 <p>If you are just using the imported object for a type signature, you should use the <code>TYPE_CHECKING</code> flag.</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># Correct</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">prefect.server.schemas.states</span> <span class="kn">import</span> <span class="n">State</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">prefect.server.schemas.states</span><span class="w"> </span><span class="kn">import</span> <span class="n">State</span>
 
-<span class="k">def</span> <span class="nf">foo</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="s2">&quot;State&quot;</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">foo</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="s2">&quot;State&quot;</span><span class="p">):</span>
     <span class="k">pass</span>
 </code></pre></div>
 <p>Note that usage of the type within the module will need quotes e.g. <code>"State"</code> since it is not available at runtime.</p>
@@ -13631,7 +13634,7 @@ Inspect<span class="w"> </span>the<span class="w"> </span>created<span class="w"
 <span class="w">    </span>prefect<span class="w"> </span>work-queue<span class="w"> </span>create<span class="w"> </span><span class="s1">&#39;&lt;WORK QUEUE NAME&gt;&#39;</span><span class="w"> </span>-t<span class="w"> </span><span class="s1">&#39;&lt;OPTIONAL TAG 1&gt;&#39;</span><span class="w"> </span>-t<span class="w"> </span><span class="s1">&#39;&lt;OPTIONAL TAG 2&gt;&#39;</span>
 </code></pre></div></p>
 <p>Dedent Example:
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">textwrap</span> <span class="kn">import</span> <span class="n">dedent</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">textwrap</span><span class="w"> </span><span class="kn">import</span> <span class="n">dedent</span>
 <span class="o">...</span>
 <span class="n">output_msg</span> <span class="o">=</span> <span class="n">dedent</span><span class="p">(</span>
     <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>

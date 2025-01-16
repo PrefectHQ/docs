@@ -173,6 +173,9 @@ if (amplitudeKey){
     
 
     
+  <meta name="robots" content="noindex, nofollow">
+  
+
   </head>
   
   
@@ -13706,62 +13709,62 @@ if (amplitudeKey){
 <p>Returning <a href="/api-ref/prefect/futures/#prefect.futures.PrefectFuture"><code>PrefectFuture</code></a> is achieved by calling <code>your_task.submit()</code>.</p>
 <h3 id="return-data">Return Data<a class="headerlink" href="#return-data" title="Permanent link">&para;</a></h3>
 <p>By default, running a task will return data:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span> 
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span> 
 
 <span class="hll"><span class="nd">@task</span> 
-</span><span class="hll"><span class="k">def</span> <span class="nf">add_one</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+</span><span class="hll"><span class="k">def</span><span class="w"> </span><span class="nf">add_one</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
 </span><span class="hll">    <span class="k">return</span> <span class="n">x</span> <span class="o">+</span> <span class="mi">1</span>
 </span>
 <span class="nd">@flow</span> 
-<span class="k">def</span> <span class="nf">my_flow</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_flow</span><span class="p">():</span>
     <span class="n">result</span> <span class="o">=</span> <span class="n">add_one</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># return int</span>
 </code></pre></div>
 <p>The same rule applies for a subflow:</p>
 <div class="highlight"><pre><span></span><code><span class="hll"><span class="nd">@flow</span> 
-</span><span class="hll"><span class="k">def</span> <span class="nf">subflow</span><span class="p">():</span>
+</span><span class="hll"><span class="k">def</span><span class="w"> </span><span class="nf">subflow</span><span class="p">():</span>
 </span><span class="hll">    <span class="k">return</span> <span class="mi">42</span> 
 </span>
 <span class="nd">@flow</span> 
-<span class="k">def</span> <span class="nf">my_flow</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_flow</span><span class="p">():</span>
     <span class="n">result</span> <span class="o">=</span> <span class="n">subflow</span><span class="p">()</span> <span class="c1"># return data</span>
 </code></pre></div>
 <h3 id="return-prefect-state">Return Prefect State<a class="headerlink" href="#return-prefect-state" title="Permanent link">&para;</a></h3>
 <p>To return a <code>State</code> instead, add <code>return_state=True</code> as a parameter of your task call.</p>
 <div class="highlight"><pre><span></span><code><span class="nd">@flow</span> 
-<span class="k">def</span> <span class="nf">my_flow</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_flow</span><span class="p">():</span>
 <span class="hll">    <span class="n">state</span> <span class="o">=</span> <span class="n">add_one</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">return_state</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="c1"># return State</span>
 </span></code></pre></div>
 <p>To get data from a <code>State</code>, call <code>.result()</code>.</p>
 <div class="highlight"><pre><span></span><code><span class="nd">@flow</span> 
-<span class="k">def</span> <span class="nf">my_flow</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_flow</span><span class="p">():</span>
     <span class="n">state</span> <span class="o">=</span> <span class="n">add_one</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">return_state</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="c1"># return State</span>
 <span class="hll">    <span class="n">result</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">result</span><span class="p">()</span> <span class="c1"># return int</span>
 </span></code></pre></div>
 <p>The same rule applies for a subflow:</p>
 <div class="highlight"><pre><span></span><code><span class="nd">@flow</span> 
-<span class="k">def</span> <span class="nf">subflow</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">subflow</span><span class="p">():</span>
     <span class="k">return</span> <span class="mi">42</span> 
 
 <span class="nd">@flow</span> 
-<span class="k">def</span> <span class="nf">my_flow</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_flow</span><span class="p">():</span>
 <span class="hll">    <span class="n">state</span> <span class="o">=</span> <span class="n">subflow</span><span class="p">(</span><span class="n">return_state</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="c1"># return State</span>
 </span><span class="hll">    <span class="n">result</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">result</span><span class="p">()</span> <span class="c1"># return int</span>
 </span></code></pre></div>
 <h3 id="return-a-prefectfuture">Return a PrefectFuture<a class="headerlink" href="#return-a-prefectfuture" title="Permanent link">&para;</a></h3>
 <p>To get a <code>PrefectFuture</code>, add <code>.submit()</code> to your task call.</p>
 <div class="highlight"><pre><span></span><code><span class="nd">@flow</span> 
-<span class="k">def</span> <span class="nf">my_flow</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_flow</span><span class="p">():</span>
 <span class="hll">    <span class="n">future</span> <span class="o">=</span> <span class="n">add_one</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># return PrefectFuture</span>
 </span></code></pre></div>
 <p>To get data from a <code>PrefectFuture</code>, call <code>.result()</code>.</p>
 <div class="highlight"><pre><span></span><code><span class="nd">@flow</span> 
-<span class="k">def</span> <span class="nf">my_flow</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_flow</span><span class="p">():</span>
     <span class="n">future</span> <span class="o">=</span> <span class="n">add_one</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># return PrefectFuture</span>
 <span class="hll">    <span class="n">result</span> <span class="o">=</span> <span class="n">future</span><span class="o">.</span><span class="n">result</span><span class="p">()</span> <span class="c1"># return data</span>
 </span></code></pre></div>
 <p>To get a <code>State</code> from a <code>PrefectFuture</code>, call <code>.wait()</code>.</p>
 <div class="highlight"><pre><span></span><code><span class="nd">@flow</span> 
-<span class="k">def</span> <span class="nf">my_flow</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_flow</span><span class="p">():</span>
     <span class="n">future</span> <span class="o">=</span> <span class="n">add_one</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># return PrefectFuture</span>
 <span class="hll">    <span class="n">state</span> <span class="o">=</span> <span class="n">future</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span> <span class="c1"># return State</span>
 </span></code></pre></div>
@@ -13779,13 +13782,13 @@ if (amplitudeKey){
 <h2 id="state-change-hooks">State Change Hooks<a class="headerlink" href="#state-change-hooks" title="Permanent link">&para;</a></h2>
 <p>State change hooks execute code in response to changes in flow or task run states, enabling you to define actions for specific state transitions in a workflow.</p>
 <h4 id="a-simple-example">A simple example<a class="headerlink" href="#a-simple-example" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span>
 
-<span class="k">def</span> <span class="nf">my_success_hook</span><span class="p">(</span><span class="n">flow</span><span class="p">,</span> <span class="n">flow_run</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_success_hook</span><span class="p">(</span><span class="n">flow</span><span class="p">,</span> <span class="n">flow_run</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Flow run succeeded!&quot;</span><span class="p">)</span>
 
 <span class="nd">@flow</span><span class="p">(</span><span class="n">on_completion</span><span class="o">=</span><span class="p">[</span><span class="n">my_success_hook</span><span class="p">])</span>
-<span class="k">def</span> <span class="nf">my_flow</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_flow</span><span class="p">():</span>
     <span class="k">return</span> <span class="mi">42</span>
 
 <span class="n">my_flow</span><span class="p">()</span>
@@ -13835,7 +13838,7 @@ if (amplitudeKey){
 </tbody>
 </table>
 <h4 id="create-flow-run-state-change-hooks">Create flow run state change hooks<a class="headerlink" href="#create-flow-run-state-change-hooks" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">my_flow_hook</span><span class="p">(</span><span class="n">flow</span><span class="p">:</span> <span class="n">Flow</span><span class="p">,</span> <span class="n">flow_run</span><span class="p">:</span> <span class="n">FlowRun</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="n">State</span><span class="p">):</span>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">my_flow_hook</span><span class="p">(</span><span class="n">flow</span><span class="p">:</span> <span class="n">Flow</span><span class="p">,</span> <span class="n">flow_run</span><span class="p">:</span> <span class="n">FlowRun</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="n">State</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;This is the required signature for a flow run state</span>
 <span class="sd">    change hook. This hook can only be passed into flows.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -13844,7 +13847,7 @@ if (amplitudeKey){
 <span class="nd">@flow</span><span class="p">(</span><span class="n">on_completion</span><span class="o">=</span><span class="p">[</span><span class="n">my_flow_hook</span><span class="p">])</span>
 </code></pre></div>
 <h4 id="create-task-run-state-change-hooks">Create task run state change hooks<a class="headerlink" href="#create-task-run-state-change-hooks" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">my_task_hook</span><span class="p">(</span><span class="n">task</span><span class="p">:</span> <span class="n">Task</span><span class="p">,</span> <span class="n">task_run</span><span class="p">:</span> <span class="n">TaskRun</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="n">State</span><span class="p">):</span>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">my_task_hook</span><span class="p">(</span><span class="n">task</span><span class="p">:</span> <span class="n">Task</span><span class="p">,</span> <span class="n">task_run</span><span class="p">:</span> <span class="n">TaskRun</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="n">State</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;This is the required signature for a task run state change</span>
 <span class="sd">    hook. This hook can only be passed into tasks.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -13854,13 +13857,13 @@ if (amplitudeKey){
 </code></pre></div>
 <h4 id="use-multiple-state-change-hooks">Use multiple state change hooks<a class="headerlink" href="#use-multiple-state-change-hooks" title="Permanent link">&para;</a></h4>
 <p>State change hooks are versatile, allowing you to specify multiple state change hooks for the same state transition, or to use the same state change hook for different transitions:</p>
-<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">my_success_hook</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">task_run</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">my_success_hook</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">task_run</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Task run succeeded!&quot;</span><span class="p">)</span>
 
-<span class="k">def</span> <span class="nf">my_failure_hook</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">task_run</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_failure_hook</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">task_run</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Task run failed!&quot;</span><span class="p">)</span>
 
-<span class="k">def</span> <span class="nf">my_succeed_or_fail_hook</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">task_run</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_succeed_or_fail_hook</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">task_run</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;If the task run succeeds or fails, this hook runs.&quot;</span><span class="p">)</span>
 
 <span class="nd">@task</span><span class="p">(</span>
@@ -13871,15 +13874,15 @@ if (amplitudeKey){
 <h4 id="pass-kwargs-to-your-hooks">Pass <code>kwargs</code> to your hooks<a class="headerlink" href="#pass-kwargs-to-your-hooks" title="Permanent link">&para;</a></h4>
 <p>The Prefect engine will call your hooks for you upon the state change, passing in the flow, flow run, and state objects.</p>
 <p>However, you can define your hook to have additional default arguments:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span>
 
 <span class="n">data</span> <span class="o">=</span> <span class="p">{}</span>
 
-<span class="k">def</span> <span class="nf">my_hook</span><span class="p">(</span><span class="n">flow</span><span class="p">,</span> <span class="n">flow_run</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">my_arg</span><span class="o">=</span><span class="s2">&quot;custom_value&quot;</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_hook</span><span class="p">(</span><span class="n">flow</span><span class="p">,</span> <span class="n">flow_run</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">my_arg</span><span class="o">=</span><span class="s2">&quot;custom_value&quot;</span><span class="p">):</span>
     <span class="n">data</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">my_arg</span><span class="o">=</span><span class="n">my_arg</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="n">state</span><span class="p">)</span>
 
 <span class="nd">@flow</span><span class="p">(</span><span class="n">on_completion</span><span class="o">=</span><span class="p">[</span><span class="n">my_hook</span><span class="p">])</span>
-<span class="k">def</span> <span class="nf">lazy_flow</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">lazy_flow</span><span class="p">():</span>
     <span class="k">pass</span>
 
 <span class="n">state</span> <span class="o">=</span> <span class="n">lazy_flow</span><span class="p">(</span><span class="n">return_state</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -13887,20 +13890,20 @@ if (amplitudeKey){
 <span class="k">assert</span> <span class="n">data</span> <span class="o">==</span> <span class="p">{</span><span class="s2">&quot;my_arg&quot;</span><span class="p">:</span> <span class="s2">&quot;custom_value&quot;</span><span class="p">,</span> <span class="s2">&quot;state&quot;</span><span class="p">:</span> <span class="n">state</span><span class="p">}</span>
 </code></pre></div>
 <p>... or define your hook to accept arbitrary keyword arguments:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
-<span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">partial</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
 
 <span class="n">data</span> <span class="o">=</span> <span class="p">{}</span>
 
-<span class="k">def</span> <span class="nf">my_hook</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">task_run</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_hook</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">task_run</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="n">data</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">state</span><span class="o">=</span><span class="n">state</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
 <span class="nd">@task</span>
-<span class="k">def</span> <span class="nf">bad_task</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">bad_task</span><span class="p">():</span>
     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;meh&quot;</span><span class="p">)</span>
 
 <span class="nd">@flow</span>
-<span class="k">def</span> <span class="nf">ok_with_failure_flow</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;foo&quot;</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">42</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">ok_with_failure_flow</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;foo&quot;</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">42</span><span class="p">):</span>
     <span class="n">bad_task_with_a_hook</span> <span class="o">=</span> <span class="n">bad_task</span><span class="o">.</span><span class="n">with_options</span><span class="p">(</span>
         <span class="n">on_failure</span><span class="o">=</span><span class="p">[</span><span class="n">partial</span><span class="p">(</span><span class="n">my_hook</span><span class="p">,</span> <span class="o">**</span><span class="nb">dict</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">))]</span>
     <span class="p">)</span>

@@ -173,6 +173,9 @@ if (amplitudeKey){
     
 
     
+  <meta name="robots" content="noindex, nofollow">
+  
+
   </head>
   
   
@@ -13400,12 +13403,12 @@ if (amplitudeKey){
 <p>For example, let's try to grab data from an API and send a notification based on the end state. </p>
 <p>We can start by pulling hypothetical user data from an endpoint and then performing data cleaning and transformations. </p>
 <p>Let's create a simple extract method, that pulls the data from a random user data generator endpoint. </p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span><span class="p">,</span> <span class="n">get_run_logger</span>
-<span class="kn">import</span> <span class="nn">requests</span>
-<span class="kn">import</span> <span class="nn">json</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span><span class="p">,</span> <span class="n">get_run_logger</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">requests</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
 
 <span class="nd">@task</span>
-<span class="k">def</span> <span class="nf">fetch</span><span class="p">(</span><span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">fetch</span><span class="p">(</span><span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
     <span class="n">logger</span> <span class="o">=</span> <span class="n">get_run_logger</span><span class="p">()</span>
     <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
     <span class="n">raw_data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
@@ -13413,7 +13416,7 @@ if (amplitudeKey){
     <span class="k">return</span> <span class="n">raw_data</span>
 
 <span class="nd">@task</span>
-<span class="k">def</span> <span class="nf">clean</span><span class="p">(</span><span class="n">raw_data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">clean</span><span class="p">(</span><span class="n">raw_data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">raw_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;results&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
     <span class="n">results</span> <span class="o">=</span> <span class="n">raw_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;results&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">logger</span> <span class="o">=</span> <span class="n">get_run_logger</span><span class="p">()</span>
@@ -13421,7 +13424,7 @@ if (amplitudeKey){
     <span class="k">return</span> <span class="n">results</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
 
 <span class="nd">@flow</span>
-<span class="k">def</span> <span class="nf">build_names</span><span class="p">(</span><span class="n">num</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">build_names</span><span class="p">(</span><span class="n">num</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">):</span>
     <span class="n">df</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">url</span> <span class="o">=</span> <span class="s2">&quot;https://randomuser.me/api/&quot;</span>
     <span class="n">logger</span> <span class="o">=</span> <span class="n">get_run_logger</span><span class="p">()</span>
@@ -13545,7 +13548,7 @@ You can create a deployment with a <code>prefect.yaml</code> file or a Python fi
 └───────────────────────────────────────────────────────┴──────────────────────────────────────┘
 </code></pre></div>
 We can create an automation via a POST call, where we can programmatically create the automation. Ensure you have your <code>api_key</code>, <code>account_id</code>, and <code>workspace_id</code>. </p>
-<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">create_event_driven_automation</span><span class="p">():</span>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">create_event_driven_automation</span><span class="p">():</span>
     <span class="n">api_url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;https://api.prefect.cloud/api/accounts/</span><span class="si">{</span><span class="n">account_id</span><span class="si">}</span><span class="s2">/workspaces/</span><span class="si">{</span><span class="n">workspace_id</span><span class="si">}</span><span class="s2">/automations/&quot;</span>
     <span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Event Driven Redeploy&quot;</span><span class="p">,</span>
@@ -13607,11 +13610,11 @@ We can create an automation via a POST call, where we can programmatically creat
 <span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;cancel-flow-run&quot;</span>
 </code></pre></div>
 <p>We can then have a helper function that applies this YAML file with the REST API function. 
-<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">yaml</span>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">yaml</span>
 
-<span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">post</span><span class="p">,</span> <span class="n">put</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">post</span><span class="p">,</span> <span class="n">put</span>
 
-<span class="k">def</span> <span class="nf">create_or_update_automation</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;automation.yaml&quot;</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">create_or_update_automation</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;automation.yaml&quot;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Create or update an automation from a local YAML file&quot;&quot;&quot;</span>
     <span class="c1"># Load the definition</span>
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
@@ -13670,18 +13673,18 @@ Marvin is great at embedding data science and data analysis applications within 
 <p>We can add a trigger to run a deployment in response to a specific event. </p>
 <p>Let's create an example with Marvin's AI functions. We will take in a pandas DataFrame and use the AI function to analyze it. </p>
 <p>Here is an example of pulling in that data and classifying using Marvin AI. We can help create dummy data based on classifications we have already created.</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">marvin</span> <span class="kn">import</span> <span class="n">ai_classifier</span>
-<span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">marvin</span><span class="w"> </span><span class="kn">import</span> <span class="n">ai_classifier</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">Enum</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 
 <span class="nd">@ai_fn</span>
-<span class="k">def</span> <span class="nf">generate_synthetic_user_data</span><span class="p">(</span><span class="n">build_of_names</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">generate_synthetic_user_data</span><span class="p">(</span><span class="n">build_of_names</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Generate additional data for userID (numerical values with 6 digits), location, and timestamp as separate columns and append the data onto &#39;build_of_names&#39;. Make userID the first column</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
 <span class="nd">@flow</span>
-<span class="k">def</span> <span class="nf">create_fake_user_dataset</span><span class="p">(</span><span class="n">df</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">create_fake_user_dataset</span><span class="p">(</span><span class="n">df</span><span class="p">):</span>
   <span class="n">artifact_df</span> <span class="o">=</span> <span class="n">generate_synthetic_user_data</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
   <span class="nb">print</span><span class="p">(</span><span class="n">artifact_df</span><span class="p">)</span>
 

@@ -173,6 +173,9 @@ if (amplitudeKey){
     
 
     
+  <meta name="robots" content="noindex, nofollow">
+  
+
   </head>
   
   
@@ -13620,6 +13623,11 @@ if (amplitudeKey){
 
 
 
+
+
+
+
+
   <div class="doc doc-children">
 
 
@@ -13645,6 +13653,11 @@ if (amplitudeKey){
 
         <p>A storage adapter for a storage block object to allow it to be used as a
 runner storage object.</p>
+
+
+
+
+
 
               <details class="quote">
                 <summary>Source code in <code>prefect/runner/storage.py</code></summary>
@@ -13711,13 +13724,13 @@ runner storage object.</p>
 <span class="normal">565</span>
 <span class="normal">566</span>
 <span class="normal">567</span>
-<span class="normal">568</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">BlockStorageAdapter</span><span class="p">:</span>
+<span class="normal">568</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">BlockStorageAdapter</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A storage adapter for a storage block object to allow it to be used as a</span>
 <span class="sd">    runner storage object.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">block</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ReadableDeploymentStorage</span><span class="p">,</span> <span class="n">WritableDeploymentStorage</span><span class="p">],</span>
         <span class="n">pull_interval</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">60</span><span class="p">,</span>
@@ -13738,23 +13751,23 @@ runner storage object.</p>
             <span class="k">else</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid4</span><span class="p">())</span>
         <span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">set_base_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_base_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_storage_base_path</span> <span class="o">=</span> <span class="n">path</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">pull_interval</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">pull_interval</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pull_interval</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">destination</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">destination</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_storage_base_path</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span>
 
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">pull_code</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">pull_code</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">destination</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">destination</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_block</span><span class="o">.</span><span class="n">get_directory</span><span class="p">(</span><span class="n">local_path</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">destination</span><span class="p">))</span>
 
-    <span class="k">def</span> <span class="nf">to_pull_step</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_pull_step</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
         <span class="c1"># Give blocks the change to implement their own pull step</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_block</span><span class="p">,</span> <span class="s2">&quot;get_pull_step&quot;</span><span class="p">):</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_block</span><span class="o">.</span><span class="n">get_pull_step</span><span class="p">()</span>
@@ -13771,7 +13784,7 @@ runner storage object.</p>
                 <span class="p">}</span>
             <span class="p">}</span>
 
-    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">__value</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">__value</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">__value</span><span class="p">,</span> <span class="n">BlockStorageAdapter</span><span class="p">):</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_block</span> <span class="o">==</span> <span class="n">__value</span><span class="o">.</span><span class="n">_block</span>
         <span class="k">return</span> <span class="kc">False</span>
@@ -13827,7 +13840,9 @@ runner storage object.</p>
       </thead>
       <tbody>
           <tr class="doc-section-item">
-            <td><code>url</code></td>
+            <td>
+                <code>url</code>
+            </td>
             <td>
                   <code>str</code>
             </td>
@@ -13841,7 +13856,9 @@ runner storage object.</p>
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>credentials</code></td>
+            <td>
+                <code>credentials</code>
+            </td>
             <td>
                   <code><span title="typing.Union">Union</span>[<span title="prefect.runner.storage.GitCredentials">GitCredentials</span>, <a class="autorefs autorefs-internal" title="prefect.blocks.core.Block" href="../../blocks/core/#prefect.blocks.core.Block">Block</a>, <span title="typing.Dict">Dict</span>[str, <span title="typing.Any">Any</span>], None]</code>
             </td>
@@ -13857,7 +13874,9 @@ provided.</p>
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>name</code></td>
+            <td>
+                <code>name</code>
+            </td>
             <td>
                   <code><span title="typing.Optional">Optional</span>[str]</code>
             </td>
@@ -13872,7 +13891,9 @@ inferred from the repository URL.</p>
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>branch</code></td>
+            <td>
+                <code>branch</code>
+            </td>
             <td>
                   <code><span title="typing.Optional">Optional</span>[str]</code>
             </td>
@@ -13886,7 +13907,9 @@ inferred from the repository URL.</p>
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>pull_interval</code></td>
+            <td>
+                <code>pull_interval</code>
+            </td>
             <td>
                   <code><span title="typing.Optional">Optional</span>[int]</code>
             </td>
@@ -13907,7 +13930,7 @@ a one-time sync.</p>
 
 <p><span class="doc-section-title">Examples:</span></p>
     <p>Pull the contents of a private git repository to the local filesystem:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect.runner.storage</span> <span class="kn">import</span> <span class="n">GitRepository</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect.runner.storage</span><span class="w"> </span><span class="kn">import</span> <span class="n">GitRepository</span>
 
 <span class="n">storage</span> <span class="o">=</span> <span class="n">GitRepository</span><span class="p">(</span>
     <span class="n">url</span><span class="o">=</span><span class="s2">&quot;https://github.com/org/repo.git&quot;</span><span class="p">,</span>
@@ -13916,6 +13939,11 @@ a one-time sync.</p>
 
 <span class="k">await</span> <span class="n">storage</span><span class="o">.</span><span class="n">pull_code</span><span class="p">()</span>
 </code></pre></div>
+
+
+
+
+
 
               <details class="quote">
                 <summary>Source code in <code>prefect/runner/storage.py</code></summary>
@@ -14150,7 +14178,7 @@ a one-time sync.</p>
 <span class="normal">308</span>
 <span class="normal">309</span>
 <span class="normal">310</span>
-<span class="normal">311</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">GitRepository</span><span class="p">:</span>
+<span class="normal">311</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">GitRepository</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Pulls the contents of a git repository to the local filesystem.</span>
 
@@ -14181,7 +14209,7 @@ a one-time sync.</p>
 <span class="sd">        ```</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">credentials</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">GitCredentials</span><span class="p">,</span> <span class="n">Block</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -14214,18 +14242,18 @@ a one-time sync.</p>
         <span class="bp">self</span><span class="o">.</span><span class="n">_pull_interval</span> <span class="o">=</span> <span class="n">pull_interval</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">destination</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">destination</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_storage_base_path</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span>
 
-    <span class="k">def</span> <span class="nf">set_base_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_base_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_storage_base_path</span> <span class="o">=</span> <span class="n">path</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">pull_interval</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">pull_interval</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pull_interval</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">_repository_url_with_credentials</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_repository_url_with_credentials</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_credentials</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_url</span>
 
@@ -14256,7 +14284,7 @@ a one-time sync.</p>
 
         <span class="k">return</span> <span class="n">repository_url</span>
 
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">pull_code</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">pull_code</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Pulls the contents of the configured repository to the local filesystem.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -14305,7 +14333,7 @@ a one-time sync.</p>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_clone_repo</span><span class="p">()</span>
 
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">_clone_repo</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">_clone_repo</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Clones the repository into the local destination.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -14334,9 +14362,9 @@ a one-time sync.</p>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;Failed to clone repository </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_url</span><span class="si">!r}</span><span class="s2"> with exit code&quot;</span>
                 <span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="n">exc</span><span class="o">.</span><span class="n">returncode</span><span class="si">}</span><span class="s2">.&quot;</span>
-            <span class="p">)</span> <span class="kn">from</span> <span class="nn">exc_chain</span>
+            <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc_chain</span>
 
-    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">__value</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">__value</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">__value</span><span class="p">,</span> <span class="n">GitRepository</span><span class="p">):</span>
             <span class="k">return</span> <span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_url</span> <span class="o">==</span> <span class="n">__value</span><span class="o">.</span><span class="n">_url</span>
@@ -14345,13 +14373,13 @@ a one-time sync.</p>
             <span class="p">)</span>
         <span class="k">return</span> <span class="kc">False</span>
 
-    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="p">(</span>
             <span class="sa">f</span><span class="s2">&quot;GitRepository(name=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="si">!r}</span><span class="s2"> repository=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_url</span><span class="si">!r}</span><span class="s2">,&quot;</span>
             <span class="sa">f</span><span class="s2">&quot; branch=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_branch</span><span class="si">!r}</span><span class="s2">)&quot;</span>
         <span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">to_pull_step</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_pull_step</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
         <span class="n">pull_step</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s2">&quot;prefect.deployments.steps.git_clone&quot;</span><span class="p">:</span> <span class="p">{</span>
                 <span class="s2">&quot;repository&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_url</span><span class="p">,</span>
@@ -14463,7 +14491,7 @@ a one-time sync.</p>
 <span class="normal">230</span>
 <span class="normal">231</span>
 <span class="normal">232</span>
-<span class="normal">233</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">pull_code</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="normal">233</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">pull_code</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Pulls the contents of the configured repository to the local filesystem.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -14554,7 +14582,9 @@ a one-time sync.</p>
       </thead>
       <tbody>
           <tr class="doc-section-item">
-            <td><code>Path</code></td>
+            <td>
+                <code>Path</code>
+            </td>
             <td>
             </td>
             <td>
@@ -14572,12 +14602,17 @@ a one-time sync.</p>
 
 <p><span class="doc-section-title">Examples:</span></p>
     <p>Sets the working directory for the local path to the flow:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect.runner.storage</span> <span class="kn">import</span> <span class="n">Localstorage</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect.runner.storage</span><span class="w"> </span><span class="kn">import</span> <span class="n">Localstorage</span>
 
 <span class="n">storage</span> <span class="o">=</span> <span class="n">LocalStorage</span><span class="p">(</span>
     <span class="n">path</span><span class="o">=</span><span class="s2">&quot;/path/to/local/flow_directory&quot;</span><span class="p">,</span>
 <span class="p">)</span>
 </code></pre></div>
+
+
+
+
+
 
               <details class="quote">
                 <summary>Source code in <code>prefect/runner/storage.py</code></summary>
@@ -14644,7 +14679,7 @@ a one-time sync.</p>
 <span class="normal">631</span>
 <span class="normal">632</span>
 <span class="normal">633</span>
-<span class="normal">634</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">LocalStorage</span><span class="p">:</span>
+<span class="normal">634</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">LocalStorage</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Sets the working directory in the local filesystem.</span>
 
@@ -14663,7 +14698,7 @@ a one-time sync.</p>
 <span class="sd">        ```</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">pull_interval</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -14674,22 +14709,22 @@ a one-time sync.</p>
         <span class="bp">self</span><span class="o">.</span><span class="n">_pull_interval</span> <span class="o">=</span> <span class="n">pull_interval</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">destination</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">destination</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_path</span>
 
-    <span class="k">def</span> <span class="nf">set_base_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_base_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_storage_base_path</span> <span class="o">=</span> <span class="n">path</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">pull_interval</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">pull_interval</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pull_interval</span>
 
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">pull_code</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">pull_code</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># Local storage assumes the code already exists on the local filesystem</span>
         <span class="c1"># and does not need to be pulled from a remote location</span>
         <span class="k">pass</span>
 
-    <span class="k">def</span> <span class="nf">to_pull_step</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_pull_step</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns a dictionary representation of the storage object that can be</span>
 <span class="sd">        used as a deployment pull step.</span>
@@ -14701,12 +14736,12 @@ a one-time sync.</p>
         <span class="p">}</span>
         <span class="k">return</span> <span class="n">step</span>
 
-    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">__value</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">__value</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">__value</span><span class="p">,</span> <span class="n">LocalStorage</span><span class="p">):</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_path</span> <span class="o">==</span> <span class="n">__value</span><span class="o">.</span><span class="n">_path</span>
         <span class="k">return</span> <span class="kc">False</span>
 
-    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;LocalStorage(path=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_path</span><span class="si">!r}</span><span class="s2">)&quot;</span>
 </code></pre></div></td></tr></table></div>
               </details>
@@ -14749,7 +14784,7 @@ used as a deployment pull step.</p>
 <span class="normal">623</span>
 <span class="normal">624</span>
 <span class="normal">625</span>
-<span class="normal">626</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">to_pull_step</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="normal">626</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">to_pull_step</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns a dictionary representation of the storage object that can be</span>
 <span class="sd">    used as a deployment pull step.</span>
@@ -14803,7 +14838,9 @@ used as a deployment pull step.</p>
       </thead>
       <tbody>
           <tr class="doc-section-item">
-            <td><code>url</code></td>
+            <td>
+                <code>url</code>
+            </td>
             <td>
                   <code>str</code>
             </td>
@@ -14821,7 +14858,9 @@ for more details.</p>
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>pull_interval</code></td>
+            <td>
+                <code>pull_interval</code>
+            </td>
             <td>
                   <code><span title="typing.Optional">Optional</span>[int]</code>
             </td>
@@ -14837,7 +14876,9 @@ a one-time sync.</p>
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>**settings</code></td>
+            <td>
+                <code>**settings</code>
+            </td>
             <td>
                   <code><span title="typing.Any">Any</span></code>
             </td>
@@ -14856,7 +14897,7 @@ a one-time sync.</p>
 
 <p><span class="doc-section-title">Examples:</span></p>
     <p>Pull the contents of a remote storage location to the local filesystem:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect.runner.storage</span> <span class="kn">import</span> <span class="n">RemoteStorage</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect.runner.storage</span><span class="w"> </span><span class="kn">import</span> <span class="n">RemoteStorage</span>
 
 <span class="n">storage</span> <span class="o">=</span> <span class="n">RemoteStorage</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="s2">&quot;s3://my-bucket/my-folder&quot;</span><span class="p">)</span>
 
@@ -14864,8 +14905,8 @@ a one-time sync.</p>
 </code></pre></div>
 <p>Pull the contents of a remote storage location to the local filesystem
 with additional settings:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect.runner.storage</span> <span class="kn">import</span> <span class="n">RemoteStorage</span>
-<span class="kn">from</span> <span class="nn">prefect.blocks.system</span> <span class="kn">import</span> <span class="n">Secret</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect.runner.storage</span><span class="w"> </span><span class="kn">import</span> <span class="n">RemoteStorage</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect.blocks.system</span><span class="w"> </span><span class="kn">import</span> <span class="n">Secret</span>
 
 <span class="n">storage</span> <span class="o">=</span> <span class="n">RemoteStorage</span><span class="p">(</span>
     <span class="n">url</span><span class="o">=</span><span class="s2">&quot;s3://my-bucket/my-folder&quot;</span><span class="p">,</span>
@@ -14876,6 +14917,11 @@ with additional settings:</p>
 
 <span class="k">await</span> <span class="n">storage</span><span class="o">.</span><span class="n">pull_code</span><span class="p">()</span>
 </code></pre></div>
+
+
+
+
+
 
               <details class="quote">
                 <summary>Source code in <code>prefect/runner/storage.py</code></summary>
@@ -15067,7 +15113,7 @@ with additional settings:</p>
 <span class="normal">499</span>
 <span class="normal">500</span>
 <span class="normal">501</span>
-<span class="normal">502</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">RemoteStorage</span><span class="p">:</span>
+<span class="normal">502</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">RemoteStorage</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Pulls the contents of a remote storage location to the local filesystem.</span>
 
@@ -15111,7 +15157,7 @@ with additional settings:</p>
 <span class="sd">        ```</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">pull_interval</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">60</span><span class="p">,</span>
@@ -15124,7 +15170,7 @@ with additional settings:</p>
         <span class="bp">self</span><span class="o">.</span><span class="n">_pull_interval</span> <span class="o">=</span> <span class="n">pull_interval</span>
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_get_required_package_for_scheme</span><span class="p">(</span><span class="n">scheme</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_required_package_for_scheme</span><span class="p">(</span><span class="n">scheme</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
         <span class="c1"># attempt to discover the package name for the given scheme</span>
         <span class="c1"># from fsspec&#39;s registry</span>
         <span class="n">known_implementation</span> <span class="o">=</span> <span class="n">fsspec</span><span class="o">.</span><span class="n">registry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">scheme</span><span class="p">)</span>
@@ -15142,10 +15188,10 @@ with additional settings:</p>
             <span class="k">return</span> <span class="kc">None</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">_filesystem</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">fsspec</span><span class="o">.</span><span class="n">AbstractFileSystem</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_filesystem</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">fsspec</span><span class="o">.</span><span class="n">AbstractFileSystem</span><span class="p">:</span>
         <span class="n">scheme</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">urlsplit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_url</span><span class="p">)</span>
 
-        <span class="k">def</span> <span class="nf">replace_blocks_with_values</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">replace_blocks_with_values</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">Block</span><span class="p">):</span>
                 <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s2">&quot;get&quot;</span><span class="p">):</span>
                     <span class="k">return</span> <span class="n">obj</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
@@ -15161,11 +15207,11 @@ with additional settings:</p>
 
         <span class="k">return</span> <span class="n">fsspec</span><span class="o">.</span><span class="n">filesystem</span><span class="p">(</span><span class="n">scheme</span><span class="p">,</span> <span class="o">**</span><span class="n">settings_with_block_values</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">set_base_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_base_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_storage_base_path</span> <span class="o">=</span> <span class="n">path</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">pull_interval</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">pull_interval</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        The interval at which contents from remote storage should be pulled to</span>
 <span class="sd">        local storage. If None, remote storage will perform a one-time sync.</span>
@@ -15173,21 +15219,21 @@ with additional settings:</p>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pull_interval</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">destination</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">destination</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        The local file path to pull contents from remote storage to.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_storage_base_path</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_remote_path</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">_remote_path</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_remote_path</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        The remote file path to pull contents from remote storage to.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">_</span><span class="p">,</span> <span class="n">netloc</span><span class="p">,</span> <span class="n">urlpath</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">urlsplit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_url</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">Path</span><span class="p">(</span><span class="n">netloc</span><span class="p">)</span> <span class="o">/</span> <span class="n">Path</span><span class="p">(</span><span class="n">urlpath</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">))</span>
 
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">pull_code</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">pull_code</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Pulls contents from remote storage to the local filesystem.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -15215,15 +15261,15 @@ with additional settings:</p>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;Failed to pull contents from remote storage </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_url</span><span class="si">!r}</span><span class="s2"> to&quot;</span>
                 <span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">destination</span><span class="si">!r}</span><span class="s2">&quot;</span>
-            <span class="p">)</span> <span class="kn">from</span> <span class="nn">exc</span>
+            <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
 
-    <span class="k">def</span> <span class="nf">to_pull_step</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_pull_step</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns a dictionary representation of the storage object that can be</span>
 <span class="sd">        used as a deployment pull step.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="k">def</span> <span class="nf">replace_block_with_placeholder</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">replace_block_with_placeholder</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">Block</span><span class="p">):</span>
                 <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">{{{{</span><span class="s2"> </span><span class="si">{</span><span class="n">obj</span><span class="o">.</span><span class="n">get_block_placeholder</span><span class="p">()</span><span class="si">}</span><span class="s2"> </span><span class="se">}}}}</span><span class="s2">&quot;</span>
             <span class="k">return</span> <span class="n">obj</span>
@@ -15246,7 +15292,7 @@ with additional settings:</p>
             <span class="p">]</span> <span class="o">=</span> <span class="n">required_package</span>
         <span class="k">return</span> <span class="n">step</span>
 
-    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">__value</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">__value</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Equality check for runner storage objects.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -15254,7 +15300,7 @@ with additional settings:</p>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_url</span> <span class="o">==</span> <span class="n">__value</span><span class="o">.</span><span class="n">_url</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_settings</span> <span class="o">==</span> <span class="n">__value</span><span class="o">.</span><span class="n">_settings</span>
         <span class="k">return</span> <span class="kc">False</span>
 
-    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;RemoteStorage(url=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_url</span><span class="si">!r}</span><span class="s2">)&quot;</span>
 </code></pre></div></td></tr></table></div>
               </details>
@@ -15274,7 +15320,7 @@ with additional settings:</p>
 
 
 <h3 id="prefect.runner.storage.RemoteStorage.destination" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">destination</span><span class="p">:</span> <span class="n">Path</span></code>
+            <code class="highlight language-python"><span class="n">destination</span></code>
 
   <span class="doc doc-labels">
       <small class="doc doc-label doc-label-property"><code>property</code></small>
@@ -15295,7 +15341,7 @@ with additional settings:</p>
 
 
 <h3 id="prefect.runner.storage.RemoteStorage.pull_interval" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">pull_interval</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span></code>
+            <code class="highlight language-python"><span class="n">pull_interval</span></code>
 
   <span class="doc doc-labels">
       <small class="doc doc-label doc-label-property"><code>property</code></small>
@@ -15361,7 +15407,7 @@ local storage. If None, remote storage will perform a one-time sync.</p>
 <span class="normal">459</span>
 <span class="normal">460</span>
 <span class="normal">461</span>
-<span class="normal">462</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">pull_code</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="normal">462</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">pull_code</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Pulls contents from remote storage to the local filesystem.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -15389,7 +15435,7 @@ local storage. If None, remote storage will perform a one-time sync.</p>
         <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
             <span class="sa">f</span><span class="s2">&quot;Failed to pull contents from remote storage </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_url</span><span class="si">!r}</span><span class="s2"> to&quot;</span>
             <span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">destination</span><span class="si">!r}</span><span class="s2">&quot;</span>
-        <span class="p">)</span> <span class="kn">from</span> <span class="nn">exc</span>
+        <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -15439,13 +15485,13 @@ used as a deployment pull step.</p>
 <span class="normal">488</span>
 <span class="normal">489</span>
 <span class="normal">490</span>
-<span class="normal">491</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">to_pull_step</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="normal">491</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">to_pull_step</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns a dictionary representation of the storage object that can be</span>
 <span class="sd">    used as a deployment pull step.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">replace_block_with_placeholder</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">replace_block_with_placeholder</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">Block</span><span class="p">):</span>
             <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">{{{{</span><span class="s2"> </span><span class="si">{</span><span class="n">obj</span><span class="o">.</span><span class="n">get_block_placeholder</span><span class="p">()</span><span class="si">}</span><span class="s2"> </span><span class="se">}}}}</span><span class="s2">&quot;</span>
         <span class="k">return</span> <span class="n">obj</span>
@@ -15500,6 +15546,11 @@ used as a deployment pull step.</p>
         <p>A storage interface for a runner to use to retrieve
 remotely stored flow code.</p>
 
+
+
+
+
+
               <details class="quote">
                 <summary>Source code in <code>prefect/runner/storage.py</code></summary>
                 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">26</span>
@@ -15549,13 +15600,13 @@ remotely stored flow code.</p>
 <span class="normal">70</span>
 <span class="normal">71</span>
 <span class="normal">72</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@runtime_checkable</span>
-<span class="k">class</span> <span class="nc">RunnerStorage</span><span class="p">(</span><span class="n">Protocol</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">RunnerStorage</span><span class="p">(</span><span class="n">Protocol</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A storage interface for a runner to use to retrieve</span>
 <span class="sd">    remotely stored flow code.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">set_base_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_base_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Sets the base path to use when pulling contents from remote storage to</span>
 <span class="sd">        local storage.</span>
@@ -15563,7 +15614,7 @@ remotely stored flow code.</p>
         <span class="o">...</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">pull_interval</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">pull_interval</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        The interval at which contents from remote storage should be pulled to</span>
 <span class="sd">        local storage. If None, remote storage will perform a one-time sync.</span>
@@ -15571,26 +15622,26 @@ remotely stored flow code.</p>
         <span class="o">...</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">destination</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">destination</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        The local file path to pull contents from remote storage to.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="o">...</span>
 
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">pull_code</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">pull_code</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Pulls contents from remote storage to the local filesystem.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="o">...</span>
 
-    <span class="k">def</span> <span class="nf">to_pull_step</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_pull_step</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns a dictionary representation of the storage object that can be</span>
 <span class="sd">        used as a deployment pull step.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="o">...</span>
 
-    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">__value</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">__value</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Equality check for runner storage objects.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -15613,7 +15664,7 @@ remotely stored flow code.</p>
 
 
 <h3 id="prefect.runner.storage.RunnerStorage.destination" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">destination</span><span class="p">:</span> <span class="n">Path</span></code>
+            <code class="highlight language-python"><span class="n">destination</span></code>
 
   <span class="doc doc-labels">
       <small class="doc doc-label doc-label-property"><code>property</code></small>
@@ -15634,7 +15685,7 @@ remotely stored flow code.</p>
 
 
 <h3 id="prefect.runner.storage.RunnerStorage.pull_interval" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">pull_interval</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span></code>
+            <code class="highlight language-python"><span class="n">pull_interval</span></code>
 
   <span class="doc doc-labels">
       <small class="doc doc-label doc-label-property"><code>property</code></small>
@@ -15676,7 +15727,7 @@ local storage. If None, remote storage will perform a one-time sync.</p>
 <span class="normal">56</span>
 <span class="normal">57</span>
 <span class="normal">58</span>
-<span class="normal">59</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">pull_code</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="normal">59</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">pull_code</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Pulls contents from remote storage to the local filesystem.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -15708,7 +15759,7 @@ local storage.</p>
 <span class="normal">35</span>
 <span class="normal">36</span>
 <span class="normal">37</span>
-<span class="normal">38</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">set_base_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">):</span>
+<span class="normal">38</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">set_base_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Sets the base path to use when pulling contents from remote storage to</span>
 <span class="sd">    local storage.</span>
@@ -15741,7 +15792,7 @@ used as a deployment pull step.</p>
 <span class="normal">63</span>
 <span class="normal">64</span>
 <span class="normal">65</span>
-<span class="normal">66</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">to_pull_step</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="normal">66</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">to_pull_step</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns a dictionary representation of the storage object that can be</span>
 <span class="sd">    used as a deployment pull step.</span>
@@ -15788,7 +15839,9 @@ used as a deployment pull step.</p>
       </thead>
       <tbody>
           <tr class="doc-section-item">
-            <td><code>url</code></td>
+            <td>
+                <code>url</code>
+            </td>
             <td>
             </td>
             <td>
@@ -15802,7 +15855,9 @@ URLs.</p>
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>pull_interval</code></td>
+            <td>
+                <code>pull_interval</code>
+            </td>
             <td>
                   <code><span title="typing.Optional">Optional</span>[int]</code>
             </td>
@@ -15870,7 +15925,7 @@ local storage</p>
 <span class="normal">660</span>
 <span class="normal">661</span>
 <span class="normal">662</span>
-<span class="normal">663</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">create_storage_from_source</span><span class="p">(</span>
+<span class="normal">663</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">create_storage_from_source</span><span class="p">(</span>
     <span class="n">source</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">pull_interval</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">60</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">RunnerStorage</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>

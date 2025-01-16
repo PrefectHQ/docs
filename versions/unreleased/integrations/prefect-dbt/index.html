@@ -171,6 +171,9 @@ if (amplitudeKey){
     
 
     
+  <meta name="robots" content="noindex, nofollow">
+  
+
   </head>
   
   
@@ -13415,13 +13418,13 @@ Prefect provides a global view of the state of your workflows and allows you to 
 <p>If you have an existing dbt Cloud job, use the pre-built flow <code>run_dbt_cloud_job</code> to trigger a job run and wait until the job run is finished.</p>
 <p>If some nodes fail, <code>run_dbt_cloud_job</code> efficiently retries the unsuccessful nodes.</p>
 <p>Prior to running this flow, <a href="#saving-credentials-to-a-block">save your dbt Cloud credentials to a DbtCloudCredentials block</a>:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span>
 
-<span class="kn">from</span> <span class="nn">prefect_dbt.cloud</span> <span class="kn">import</span> <span class="n">DbtCloudJob</span>
-<span class="kn">from</span> <span class="nn">prefect_dbt.cloud.jobs</span> <span class="kn">import</span> <span class="n">run_dbt_cloud_job</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect_dbt.cloud</span><span class="w"> </span><span class="kn">import</span> <span class="n">DbtCloudJob</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect_dbt.cloud.jobs</span><span class="w"> </span><span class="kn">import</span> <span class="n">run_dbt_cloud_job</span>
 
 <span class="nd">@flow</span>
-<span class="k">def</span> <span class="nf">run_dbt_job_flow</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">run_dbt_job_flow</span><span class="p">():</span>
     <span class="n">result</span> <span class="o">=</span> <span class="n">run_dbt_cloud_job</span><span class="p">(</span>
         <span class="n">dbt_cloud_job</span><span class="o">=</span><span class="n">DbtCloudJob</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;my-block-name&quot;</span><span class="p">),</span>
         <span class="n">targeted_retries</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
@@ -13438,12 +13441,12 @@ If <code>profiles_dir</code> is not set, the <code>DBT_PROFILES_DIR</code> envir
 If <code>DBT_PROFILES_DIR</code> is not set, the default directory will be used <code>$HOME/.dbt/</code>.</p>
 <h3 id="use-an-existing-profile">Use an existing profile<a class="headerlink" href="#use-an-existing-profile" title="Permanent link">&para;</a></h3>
 <p>If you have an existing dbt profile, specify the <code>profiles_dir</code> where <code>profiles.yml</code> is located:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span>
-<span class="kn">from</span> <span class="nn">prefect_dbt.cli.commands</span> <span class="kn">import</span> <span class="n">DbtCoreOperation</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect_dbt.cli.commands</span><span class="w"> </span><span class="kn">import</span> <span class="n">DbtCoreOperation</span>
 
 
 <span class="nd">@flow</span>
-<span class="k">def</span> <span class="nf">trigger_dbt_flow</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">trigger_dbt_flow</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
     <span class="n">result</span> <span class="o">=</span> <span class="n">DbtCoreOperation</span><span class="p">(</span>
         <span class="n">commands</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;pwd&quot;</span><span class="p">,</span> <span class="s2">&quot;dbt debug&quot;</span><span class="p">,</span> <span class="s2">&quot;dbt run&quot;</span><span class="p">],</span>
         <span class="n">project_dir</span><span class="o">=</span><span class="s2">&quot;PROJECT-DIRECTORY-PLACEHOLDER&quot;</span><span class="p">,</span>
@@ -13459,12 +13462,12 @@ If <code>DBT_PROFILES_DIR</code> is not set, the default directory will be used 
 <p>To setup a new profile, first <a href="#saving-credentials-to-block">save and load a DbtCliProfile block</a> and use it in <code>DbtCoreOperation</code>.</p>
 <p>Then, specify<code>profiles_dir</code> where <code>profiles.yml</code> will be written.
 Here's example code with placeholders:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span>
-<span class="kn">from</span> <span class="nn">prefect_dbt.cli</span> <span class="kn">import</span> <span class="n">DbtCliProfile</span><span class="p">,</span> <span class="n">DbtCoreOperation</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect_dbt.cli</span><span class="w"> </span><span class="kn">import</span> <span class="n">DbtCliProfile</span><span class="p">,</span> <span class="n">DbtCoreOperation</span>
 
 
 <span class="nd">@flow</span>
-<span class="k">def</span> <span class="nf">trigger_dbt_flow</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">trigger_dbt_flow</span><span class="p">():</span>
     <span class="n">dbt_cli_profile</span> <span class="o">=</span> <span class="n">DbtCliProfile</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;DBT-CORE-OPERATION-BLOCK-NAME-PLACEHOLDER&quot;</span><span class="p">)</span>
     <span class="k">with</span> <span class="n">DbtCoreOperation</span><span class="p">(</span>
         <span class="n">commands</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;dbt debug&quot;</span><span class="p">,</span> <span class="s2">&quot;dbt run&quot;</span><span class="p">],</span>
@@ -13494,7 +13497,7 @@ Here's example code with placeholders:</p>
 <li>Copy the account ID from the URL: <code>https://cloud.getdbt.com/settings/accounts/&lt;ACCOUNT_ID&gt;</code>.</li>
 <li>Create and run the following script, replacing the placeholders.</li>
 </ol>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect_dbt.cloud</span> <span class="kn">import</span> <span class="n">DbtCloudCredentials</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect_dbt.cloud</span><span class="w"> </span><span class="kn">import</span> <span class="n">DbtCloudCredentials</span>
 
 <span class="n">DbtCloudCredentials</span><span class="p">(</span>
     <span class="n">api_key</span><span class="o">=</span><span class="s2">&quot;API-KEY-PLACEHOLDER&quot;</span><span class="p">,</span>
@@ -13509,7 +13512,7 @@ Here's example code with placeholders:</p>
 <li>Copy the job ID from the URL: <code>https://cloud.getdbt.com/deploy/&lt;ACCOUNT_ID&gt;/projects/&lt;PROJECT_ID&gt;/jobs/&lt;JOB_ID&gt;</code></li>
 <li>Create and run the following script, replacing the placeholders.</li>
 </ol>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect_dbt.cloud</span> <span class="kn">import</span> <span class="n">DbtCloudCredentials</span><span class="p">,</span> <span class="n">DbtCloudJob</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect_dbt.cloud</span><span class="w"> </span><span class="kn">import</span> <span class="n">DbtCloudCredentials</span><span class="p">,</span> <span class="n">DbtCloudJob</span>
 
 <span class="n">dbt_cloud_credentials</span> <span class="o">=</span> <span class="n">DbtCloudCredentials</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;CREDENTIALS-BLOCK-NAME-PLACEHOLDER&quot;</span><span class="p">)</span>
 <span class="n">dbt_cloud_job</span> <span class="o">=</span> <span class="n">DbtCloudJob</span><span class="p">(</span>
@@ -13518,7 +13521,7 @@ Here's example code with placeholders:</p>
 <span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">&quot;JOB-BLOCK-NAME-PLACEHOLDER&quot;</span><span class="p">)</span>
 </code></pre></div>
 <p>Load the saved block, which can access your credentials:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect_dbt.cloud</span> <span class="kn">import</span> <span class="n">DbtCloudJob</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect_dbt.cloud</span><span class="w"> </span><span class="kn">import</span> <span class="n">DbtCloudJob</span>
 
 <span class="n">DbtCloudJob</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;JOB-BLOCK-NAME-PLACEHOLDER&quot;</span><span class="p">)</span>
 </code></pre></div>
@@ -13534,8 +13537,8 @@ Here's example code with placeholders:</p>
 <li>Determine the schema / dataset you want to use in BigQuery.</li>
 <li>Create a short script, replacing the placeholders.</li>
 </ol>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect_gcp.credentials</span> <span class="kn">import</span> <span class="n">GcpCredentials</span>
-<span class="kn">from</span> <span class="nn">prefect_dbt.cli</span> <span class="kn">import</span> <span class="n">BigQueryTargetConfigs</span><span class="p">,</span> <span class="n">DbtCliProfile</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect_gcp.credentials</span><span class="w"> </span><span class="kn">import</span> <span class="n">GcpCredentials</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect_dbt.cli</span><span class="w"> </span><span class="kn">import</span> <span class="n">BigQueryTargetConfigs</span><span class="p">,</span> <span class="n">DbtCliProfile</span>
 
 <span class="n">credentials</span> <span class="o">=</span> <span class="n">GcpCredentials</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;CREDENTIALS-BLOCK-NAME-PLACEHOLDER&quot;</span><span class="p">)</span>
 <span class="n">target_configs</span> <span class="o">=</span> <span class="n">BigQueryTargetConfigs</span><span class="p">(</span>
@@ -13556,7 +13559,7 @@ Here's example code with placeholders:</p>
 <li>Determine the dbt commands you want to run.</li>
 <li>Create a short script, replacing the placeholders.</li>
 </ol>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect_dbt.cli</span> <span class="kn">import</span> <span class="n">DbtCliProfile</span><span class="p">,</span> <span class="n">DbtCoreOperation</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect_dbt.cli</span><span class="w"> </span><span class="kn">import</span> <span class="n">DbtCliProfile</span><span class="p">,</span> <span class="n">DbtCoreOperation</span>
 
 <span class="n">dbt_cli_profile</span> <span class="o">=</span> <span class="n">DbtCliProfile</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;DBT-CLI-PROFILE-BLOCK-NAME-PLACEHOLDER&quot;</span><span class="p">)</span>
 <span class="n">dbt_core_operation</span> <span class="o">=</span> <span class="n">DbtCoreOperation</span><span class="p">(</span>
@@ -13567,7 +13570,7 @@ Here's example code with placeholders:</p>
 <span class="n">dbt_core_operation</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">&quot;DBT-CORE-OPERATION-BLOCK-NAME-PLACEHOLDER&quot;</span><span class="p">)</span>
 </code></pre></div>
 <p>Load the saved block that holds your credentials:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect_dbt.cloud</span> <span class="kn">import</span> <span class="n">DbtCoreOperation</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect_dbt.cloud</span><span class="w"> </span><span class="kn">import</span> <span class="n">DbtCoreOperation</span>
 
 <span class="n">DbtCoreOperation</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;DBT-CORE-OPERATION-BLOCK-NAME-PLACEHOLDER&quot;</span><span class="p">)</span>
 </code></pre></div>

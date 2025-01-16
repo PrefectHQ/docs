@@ -173,6 +173,9 @@ if (amplitudeKey){
     
 
     
+  <meta name="robots" content="noindex, nofollow">
+  
+
   </head>
   
   
@@ -13297,22 +13300,22 @@ if (amplitudeKey){
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="nd">@flow</span><span class="p">(</span><span class="n">log_prints</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="c1"># Default task runner is ConcurrentTaskRunner</span>
-<span class="k">def</span> <span class="nf">flow_of_tasks</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">flow_of_tasks</span><span class="p">():</span>
     <span class="c1"># no dependencies, execution is order not guaranteed</span>
     <span class="n">first</span><span class="o">.</span><span class="n">submit</span><span class="p">()</span>
     <span class="n">second</span><span class="o">.</span><span class="n">submit</span><span class="p">()</span>
     <span class="n">third</span><span class="o">.</span><span class="n">submit</span><span class="p">()</span>
 
 <span class="nd">@task</span>
-<span class="k">def</span> <span class="nf">first</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">first</span><span class="p">():</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;I&#39;m first!&quot;</span><span class="p">)</span>
 
 <span class="nd">@task</span>
-<span class="k">def</span> <span class="nf">second</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">second</span><span class="p">():</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;I&#39;m second!&quot;</span><span class="p">)</span>
 
 <span class="nd">@task</span>
-<span class="k">def</span> <span class="nf">third</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">third</span><span class="p">():</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;I&#39;m third!&quot;</span><span class="p">)</span>
 </code></pre></div>
 <div class="highlight"><pre><span></span><code>Flow run &#39;pumpkin-puffin&#39; - Created task run &#39;first-0&#39; for task &#39;first&#39;
@@ -13332,22 +13335,22 @@ Flow run &#39;pumpkin-puffin&#39; - Finished in state Completed(&#39;All states 
 </div>
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="nd">@flow</span><span class="p">(</span><span class="n">log_prints</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="c1"># Default task runner is ConcurrentTaskRunner</span>
-<span class="k">def</span> <span class="nf">flow_of_tasks</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">flow_of_tasks</span><span class="p">():</span>
     <span class="c1"># with dependencies, tasks execute in order</span>
     <span class="n">first_result</span> <span class="o">=</span> <span class="n">first</span><span class="o">.</span><span class="n">submit</span><span class="p">()</span>
     <span class="n">second_result</span> <span class="o">=</span> <span class="n">second</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="n">first_result</span><span class="p">)</span>
     <span class="n">third</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="n">second_result</span><span class="p">)</span>
 
 <span class="nd">@task</span>
-<span class="k">def</span> <span class="nf">first</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">first</span><span class="p">():</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;I&#39;m first!&quot;</span><span class="p">)</span>
 
 <span class="nd">@task</span>
-<span class="k">def</span> <span class="nf">second</span><span class="p">(</span><span class="nb">input</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">second</span><span class="p">(</span><span class="nb">input</span><span class="p">):</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;I&#39;m second!&quot;</span><span class="p">)</span>
 
 <span class="nd">@task</span>
-<span class="k">def</span> <span class="nf">third</span><span class="p">(</span><span class="nb">input</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">third</span><span class="p">(</span><span class="nb">input</span><span class="p">):</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;I&#39;m third!&quot;</span><span class="p">)</span>
 </code></pre></div>
 <div class="highlight"><pre><span></span><code>Flow run &#39;statuesque-waxbill&#39; - Created task run &#39;first-0&#39; for task &#39;first&#39;
@@ -13372,11 +13375,11 @@ Flow run &#39;statuesque-waxbill&#39; - Finished in state Completed(&#39;All sta
 <h3 id="automatic">Automatic<a class="headerlink" href="#automatic" title="Permanent link">&para;</a></h3>
 <p>When a result from a task is used as input for another task, Prefect automatically recognizes the task that result originated from as an upstream dependency.</p>
 <p>This applies to every way you can run tasks with Prefect, whether you're calling the task function directly, calling <a href="/api-ref/prefect/tasks/#prefect.tasks.Task.submit"><code>.submit()</code></a>, or calling <a href="/api-ref/prefect/tasks/#prefect.tasks.Task.map"><code>.map()</code></a>. Subflows similarly recognize tasks results as upstream dependencies.</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
 
 
 <span class="nd">@flow</span><span class="p">(</span><span class="n">log_prints</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">flow_of_tasks</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">flow_of_tasks</span><span class="p">():</span>
     <span class="n">upstream_result</span> <span class="o">=</span> <span class="n">upstream</span><span class="o">.</span><span class="n">submit</span><span class="p">()</span>
     <span class="n">downstream_1_result</span> <span class="o">=</span> <span class="n">downstream_1</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="n">upstream_result</span><span class="p">)</span>
     <span class="n">downstream_2_result</span> <span class="o">=</span> <span class="n">downstream_2</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="n">upstream_result</span><span class="p">)</span>
@@ -13384,23 +13387,23 @@ Flow run &#39;statuesque-waxbill&#39; - Finished in state Completed(&#39;All sta
     <span class="n">final_task</span><span class="p">(</span><span class="n">mapped_task_results</span><span class="p">)</span>
 
 <span class="nd">@task</span>
-<span class="k">def</span> <span class="nf">upstream</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">upstream</span><span class="p">():</span>
     <span class="k">return</span> <span class="s2">&quot;Hello from upstream!&quot;</span>
 
 <span class="nd">@task</span>
-<span class="k">def</span> <span class="nf">downstream_1</span><span class="p">(</span><span class="nb">input</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">downstream_1</span><span class="p">(</span><span class="nb">input</span><span class="p">):</span>
     <span class="k">return</span> <span class="nb">input</span>
 
 <span class="nd">@task</span>
-<span class="k">def</span> <span class="nf">downstream_2</span><span class="p">(</span><span class="nb">input</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">downstream_2</span><span class="p">(</span><span class="nb">input</span><span class="p">):</span>
     <span class="k">return</span> <span class="nb">input</span>
 
 <span class="nd">@task</span>
-<span class="k">def</span> <span class="nf">mapped_task</span><span class="p">(</span><span class="nb">input</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">mapped_task</span><span class="p">(</span><span class="nb">input</span><span class="p">):</span>
     <span class="k">return</span> <span class="nb">input</span>
 
 <span class="nd">@task</span>
-<span class="k">def</span> <span class="nf">final_task</span><span class="p">(</span><span class="nb">input</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">final_task</span><span class="p">(</span><span class="nb">input</span><span class="p">):</span>
     <span class="nb">print</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span>
 </code></pre></div>
 <figure>
@@ -13413,11 +13416,11 @@ Flow run &#39;statuesque-waxbill&#39; - Finished in state Completed(&#39;All sta
 <p class="admonition-title">Differences with <code>.map()</code></p>
 <p>Manually defined upstream dependencies apply to all tasks submitted by <code>.map()</code>, so each mapped task must wait for <em>all</em> upstream dependencies passed into <code>wait_for</code> to finish. This is distinct from automatic dependencies for mapped tasks, where each mapped task must only wait for the upstream tasks whose results it depends on.</p>
 </div>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
 
 
 <span class="nd">@flow</span><span class="p">(</span><span class="n">log_prints</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">flow_of_tasks</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">flow_of_tasks</span><span class="p">():</span>
     <span class="n">upstream_result</span> <span class="o">=</span> <span class="n">upstream</span><span class="o">.</span><span class="n">submit</span><span class="p">()</span>
     <span class="n">downstream_1_result</span> <span class="o">=</span> <span class="n">downstream_1</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="n">wait_for</span><span class="o">=</span><span class="p">[</span><span class="n">upstream_result</span><span class="p">])</span>
     <span class="n">downstream_2_result</span> <span class="o">=</span> <span class="n">downstream_2</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="n">wait_for</span><span class="o">=</span><span class="p">[</span><span class="n">upstream_result</span><span class="p">])</span>
@@ -13425,23 +13428,23 @@ Flow run &#39;statuesque-waxbill&#39; - Finished in state Completed(&#39;All sta
     <span class="n">final_task</span><span class="p">(</span><span class="n">wait_for</span><span class="o">=</span><span class="n">mapped_task_results</span><span class="p">)</span>
 
 <span class="nd">@task</span>
-<span class="k">def</span> <span class="nf">upstream</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">upstream</span><span class="p">():</span>
     <span class="k">pass</span>
 
 <span class="nd">@task</span>
-<span class="k">def</span> <span class="nf">downstream_1</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">downstream_1</span><span class="p">():</span>
     <span class="k">pass</span>
 
 <span class="nd">@task</span>
-<span class="k">def</span> <span class="nf">downstream_2</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">downstream_2</span><span class="p">():</span>
     <span class="k">pass</span>
 
 <span class="nd">@task</span>
-<span class="k">def</span> <span class="nf">mapped_task</span><span class="p">(</span><span class="nb">input</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">mapped_task</span><span class="p">(</span><span class="nb">input</span><span class="p">):</span>
     <span class="k">pass</span>
 
 <span class="nd">@task</span>
-<span class="k">def</span> <span class="nf">final_task</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">final_task</span><span class="p">():</span>
     <span class="k">pass</span>
 </code></pre></div>
 <figure>
@@ -13452,12 +13455,12 @@ Flow run &#39;statuesque-waxbill&#39; - Finished in state Completed(&#39;All sta
 <p>For more complex workflows, parts of your logic may require additional resources, different infrastructure, or independent parallel execution. A typical approach for addressing these needs is to execute that logic as separate <a href="/concepts/deployments">deployment</a> runs from within a flow.</p>
 <p>Composing deployment runs into a flow so that they can be treated as upstream dependencies is as simple as calling <a href="/api-ref/prefect/deployments/deployments/#prefect.deployments.deployments.run_deployment"><code>run_deployment</code></a> from within a task.</p>
 <p>Given a deployment <code>process-user</code> of flow <code>parallel-work</code>, a flow of deployments might look like this:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
-<span class="kn">from</span> <span class="nn">prefect.deployments</span> <span class="kn">import</span> <span class="n">run_deployment</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect.deployments</span><span class="w"> </span><span class="kn">import</span> <span class="n">run_deployment</span>
 
 
 <span class="nd">@flow</span>
-<span class="k">def</span> <span class="nf">flow_of_deployments</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">flow_of_deployments</span><span class="p">():</span>
     <span class="n">deployment_run_1</span> <span class="o">=</span> <span class="n">run_deployment_task</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span>
         <span class="n">flow_name</span><span class="o">=</span><span class="s2">&quot;parallel-work&quot;</span><span class="p">,</span>
         <span class="n">deployment_name</span><span class="o">=</span><span class="s2">&quot;process-user&quot;</span><span class="p">,</span>
@@ -13472,7 +13475,7 @@ Flow run &#39;statuesque-waxbill&#39; - Finished in state Completed(&#39;All sta
 
 
 <span class="nd">@task</span><span class="p">(</span><span class="n">task_run_name</span><span class="o">=</span><span class="s2">&quot;Run deployment </span><span class="si">{flow_name}</span><span class="s2">/</span><span class="si">{deployment_name}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">run_deployment_task</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">run_deployment_task</span><span class="p">(</span>
     <span class="n">flow_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">deployment_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">parameters</span><span class="p">:</span> <span class="nb">dict</span>
@@ -13484,7 +13487,7 @@ Flow run &#39;statuesque-waxbill&#39; - Finished in state Completed(&#39;All sta
 
 
 <span class="nd">@task</span>
-<span class="k">def</span> <span class="nf">downstream_task</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">downstream_task</span><span class="p">():</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;I&#39;m downstream!&quot;</span><span class="p">)</span>
 </code></pre></div>
 <p>By default, deployments started from <code>run_deployment</code> will also appear as subflows for tracking purposes. This behavior can be disabled by setting the <code>as_subflow</code> parameter for <code>run_deployment</code> to <code>False</code>.</p>

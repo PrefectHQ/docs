@@ -173,6 +173,9 @@ if (amplitudeKey){
     
 
     
+  <meta name="robots" content="noindex, nofollow">
+  
+
   </head>
   
   
@@ -13537,6 +13540,11 @@ if (amplitudeKey){
 
 
 
+
+
+
+
+
   <div class="doc doc-children">
 
 
@@ -13564,6 +13572,11 @@ if (amplitudeKey){
 
         <p>A base model for context data that forbids mutation and extra data while providing
 a context manager</p>
+
+
+
+
+
 
               <details class="quote">
                 <summary>Source code in <code>prefect/context.py</code></summary>
@@ -13619,7 +13632,7 @@ a context manager</p>
 <span class="normal">118</span>
 <span class="normal">119</span>
 <span class="normal">120</span>
-<span class="normal">121</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">ContextModel</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="normal">121</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">ContextModel</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A base model for context data that forbids mutation and extra data while providing</span>
 <span class="sd">    a context manager</span>
@@ -13629,12 +13642,12 @@ a context manager</p>
     <span class="n">__var__</span><span class="p">:</span> <span class="n">ContextVar</span>
     <span class="n">_token</span><span class="p">:</span> <span class="n">Token</span> <span class="o">=</span> <span class="n">PrivateAttr</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
 
-    <span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
+    <span class="k">class</span><span class="w"> </span><span class="nc">Config</span><span class="p">:</span>
         <span class="c1"># allow_mutation = False</span>
         <span class="n">arbitrary_types_allowed</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="n">extra</span> <span class="o">=</span> <span class="s2">&quot;forbid&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_token</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
                 <span class="s2">&quot;Context already entered. Context enter calls cannot be nested.&quot;</span>
@@ -13642,7 +13655,7 @@ a context manager</p>
         <span class="bp">self</span><span class="o">.</span><span class="n">_token</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__var__</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span>
 
-    <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_token</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
                 <span class="s2">&quot;Asymmetric use of context. Context exit called without an enter.&quot;</span>
@@ -13651,10 +13664,10 @@ a context manager</p>
         <span class="bp">self</span><span class="o">.</span><span class="n">_token</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">cls</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">T</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get</span><span class="p">(</span><span class="bp">cls</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">T</span><span class="p">]:</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">__var__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Duplicate the context model, optionally choosing which fields to include, exclude, or change.</span>
 
@@ -13796,7 +13809,7 @@ the new model - you should trust this data.</p>
 <span class="normal">118</span>
 <span class="normal">119</span>
 <span class="normal">120</span>
-<span class="normal">121</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="normal">121</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Duplicate the context model, optionally choosing which fields to include, exclude, or change.</span>
 
@@ -13960,6 +13973,11 @@ flow run function.</p>
       </tbody>
     </table>
 
+
+
+
+
+
               <details class="quote">
                 <summary>Source code in <code>prefect/context.py</code></summary>
                 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">219</span>
@@ -14012,7 +14030,7 @@ flow run function.</p>
 <span class="normal">266</span>
 <span class="normal">267</span>
 <span class="normal">268</span>
-<span class="normal">269</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">EngineContext</span><span class="p">(</span><span class="n">RunContext</span><span class="p">):</span>
+<span class="normal">269</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">EngineContext</span><span class="p">(</span><span class="n">RunContext</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The context for a flow run. Data in this context is only available from within a</span>
 <span class="sd">    flow run function.</span>
@@ -14152,6 +14170,11 @@ registered during load and execution.</p>
       </tbody>
     </table>
 
+
+
+
+
+
               <details class="quote">
                 <summary>Source code in <code>prefect/context.py</code></summary>
                 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">124</span>
@@ -14231,7 +14254,7 @@ registered during load and execution.</p>
 <span class="normal">198</span>
 <span class="normal">199</span>
 <span class="normal">200</span>
-<span class="normal">201</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">PrefectObjectRegistry</span><span class="p">(</span><span class="n">ContextModel</span><span class="p">):</span>
+<span class="normal">201</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">PrefectObjectRegistry</span><span class="p">(</span><span class="n">ContextModel</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A context that acts as a registry for all Prefect objects that are</span>
 <span class="sd">    registered during load and execution.</span>
@@ -14258,14 +14281,14 @@ registered during load and execution.</p>
 
     <span class="n">__var__</span> <span class="o">=</span> <span class="n">ContextVar</span><span class="p">(</span><span class="s2">&quot;object_registry&quot;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">get_instances</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">type_</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">T</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_instances</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">type_</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">T</span><span class="p">]:</span>
         <span class="n">instances</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">registered_type</span><span class="p">,</span> <span class="n">type_instances</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_instance_registry</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="n">type_</span> <span class="ow">in</span> <span class="n">registered_type</span><span class="o">.</span><span class="n">mro</span><span class="p">():</span>
                 <span class="n">instances</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">type_instances</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">instances</span>
 
-    <span class="k">def</span> <span class="nf">get_instance_failures</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_instance_failures</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">type_</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">T</span><span class="p">]</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="ne">Exception</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Dict</span><span class="p">]]:</span>
         <span class="n">failures</span> <span class="o">=</span> <span class="p">[]</span>
@@ -14273,11 +14296,11 @@ registered during load and execution.</p>
             <span class="n">failures</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_instance_init_failures</span><span class="p">[</span><span class="n">type__</span><span class="p">])</span>
         <span class="k">return</span> <span class="n">failures</span>
 
-    <span class="k">def</span> <span class="nf">register_instance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">register_instance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">object</span><span class="p">):</span>
         <span class="c1"># TODO: Consider using a &#39;Set&#39; to avoid duplicate entries</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_instance_registry</span><span class="p">[</span><span class="nb">type</span><span class="p">(</span><span class="nb">object</span><span class="p">)]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">object</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">register_init_failure</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">register_init_failure</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">exc</span><span class="p">:</span> <span class="ne">Exception</span><span class="p">,</span> <span class="nb">object</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">init_args</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">init_kwargs</span><span class="p">:</span> <span class="n">Dict</span>
     <span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_instance_init_failures</span><span class="p">[</span><span class="nb">type</span><span class="p">(</span><span class="nb">object</span><span class="p">)]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
@@ -14285,14 +14308,14 @@ registered during load and execution.</p>
         <span class="p">)</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">register_instances</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">type_</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Type</span><span class="p">[</span><span class="n">T</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">register_instances</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">type_</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Type</span><span class="p">[</span><span class="n">T</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Decorator for a class that adds registration to the `PrefectObjectRegistry`</span>
 <span class="sd">        on initialization of instances.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">original_init</span> <span class="o">=</span> <span class="n">type_</span><span class="o">.</span><span class="fm">__init__</span>
 
-        <span class="k">def</span> <span class="nf">__register_init__</span><span class="p">(</span><span class="vm">__self__</span><span class="p">:</span> <span class="n">T</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">__register_init__</span><span class="p">(</span><span class="vm">__self__</span><span class="p">:</span> <span class="n">T</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">registry</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">original_init</span><span class="p">(</span><span class="vm">__self__</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -14369,14 +14392,14 @@ on initialization of instances.</p>
 <span class="normal">199</span>
 <span class="normal">200</span>
 <span class="normal">201</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@classmethod</span>
-<span class="k">def</span> <span class="nf">register_instances</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">type_</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Type</span><span class="p">[</span><span class="n">T</span><span class="p">]:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">register_instances</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">type_</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Type</span><span class="p">[</span><span class="n">T</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Decorator for a class that adds registration to the `PrefectObjectRegistry`</span>
 <span class="sd">    on initialization of instances.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">original_init</span> <span class="o">=</span> <span class="n">type_</span><span class="o">.</span><span class="fm">__init__</span>
 
-    <span class="k">def</span> <span class="nf">__register_init__</span><span class="p">(</span><span class="vm">__self__</span><span class="p">:</span> <span class="n">T</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__register_init__</span><span class="p">(</span><span class="vm">__self__</span><span class="p">:</span> <span class="n">T</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">registry</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">original_init</span><span class="p">(</span><span class="vm">__self__</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -14462,6 +14485,11 @@ available when <code>get_run_context</code> is called.</p>
       </tbody>
     </table>
 
+
+
+
+
+
               <details class="quote">
                 <summary>Source code in <code>prefect/context.py</code></summary>
                 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">204</span>
@@ -14476,7 +14504,7 @@ available when <code>get_run_context</code> is called.</p>
 <span class="normal">213</span>
 <span class="normal">214</span>
 <span class="normal">215</span>
-<span class="normal">216</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">RunContext</span><span class="p">(</span><span class="n">ContextModel</span><span class="p">):</span>
+<span class="normal">216</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">RunContext</span><span class="p">(</span><span class="n">ContextModel</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The base context for a flow or task run. Data in this context will always be</span>
 <span class="sd">    available when `get_run_context` is called.</span>
@@ -14567,6 +14595,11 @@ available when <code>get_run_context</code> is called.</p>
       </tbody>
     </table>
 
+
+
+
+
+
               <details class="quote">
                 <summary>Source code in <code>prefect/context.py</code></summary>
                 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">314</span>
@@ -14611,7 +14644,7 @@ available when <code>get_run_context</code> is called.</p>
 <span class="normal">353</span>
 <span class="normal">354</span>
 <span class="normal">355</span>
-<span class="normal">356</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">SettingsContext</span><span class="p">(</span><span class="n">ContextModel</span><span class="p">):</span>
+<span class="normal">356</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">SettingsContext</span><span class="p">(</span><span class="n">ContextModel</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The context for a Prefect settings.</span>
 
@@ -14627,10 +14660,10 @@ available when <code>get_run_context</code> is called.</p>
 
     <span class="n">__var__</span> <span class="o">=</span> <span class="n">ContextVar</span><span class="p">(</span><span class="s2">&quot;settings&quot;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
         <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Upon entrance, we ensure the home directory for the profile exists.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -14651,7 +14684,7 @@ available when <code>get_run_context</code> is called.</p>
         <span class="k">return</span> <span class="n">return_value</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;SettingsContext&quot;</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;SettingsContext&quot;</span><span class="p">:</span>
         <span class="c1"># Return the global context instead of `None` if no context exists</span>
         <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">()</span> <span class="ow">or</span> <span class="n">GLOBAL_SETTINGS_CONTEXT</span>
 </code></pre></div></td></tr></table></div>
@@ -14720,6 +14753,11 @@ available when <code>get_run_context</code> is called.</p>
       </tbody>
     </table>
 
+
+
+
+
+
               <details class="quote">
                 <summary>Source code in <code>prefect/context.py</code></summary>
                 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">296</span>
@@ -14737,7 +14775,7 @@ available when <code>get_run_context</code> is called.</p>
 <span class="normal">308</span>
 <span class="normal">309</span>
 <span class="normal">310</span>
-<span class="normal">311</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">TagsContext</span><span class="p">(</span><span class="n">ContextModel</span><span class="p">):</span>
+<span class="normal">311</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">TagsContext</span><span class="p">(</span><span class="n">ContextModel</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The context for `prefect.tags` management.</span>
 
@@ -14748,7 +14786,7 @@ available when <code>get_run_context</code> is called.</p>
     <span class="n">current_tags</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">set</span><span class="p">)</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;TagsContext&quot;</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;TagsContext&quot;</span><span class="p">:</span>
         <span class="c1"># Return an empty `TagsContext` instead of `None` if no context exists</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">__var__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">TagsContext</span><span class="p">())</span>
 
@@ -14831,6 +14869,11 @@ task run function.</p>
       </tbody>
     </table>
 
+
+
+
+
+
               <details class="quote">
                 <summary>Source code in <code>prefect/context.py</code></summary>
                 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">275</span>
@@ -14851,7 +14894,7 @@ task run function.</p>
 <span class="normal">290</span>
 <span class="normal">291</span>
 <span class="normal">292</span>
-<span class="normal">293</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">TaskRunContext</span><span class="p">(</span><span class="n">RunContext</span><span class="p">):</span>
+<span class="normal">293</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">TaskRunContext</span><span class="p">(</span><span class="n">RunContext</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The context for a task run. Data in this context is only available from within a</span>
 <span class="sd">    task run function.</span>
@@ -14954,7 +14997,7 @@ task run function.</p>
 <span class="normal">376</span>
 <span class="normal">377</span>
 <span class="normal">378</span>
-<span class="normal">379</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_run_context</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">FlowRunContext</span><span class="p">,</span> <span class="n">TaskRunContext</span><span class="p">]:</span>
+<span class="normal">379</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_run_context</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">FlowRunContext</span><span class="p">,</span> <span class="n">TaskRunContext</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get the current run context from within a task or flow function.</span>
 
@@ -15012,7 +15055,7 @@ profile and environment. See <code>prefect.context.use_profile</code> for more d
 <span class="normal">392</span>
 <span class="normal">393</span>
 <span class="normal">394</span>
-<span class="normal">395</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_settings_context</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">SettingsContext</span><span class="p">:</span>
+<span class="normal">395</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_settings_context</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">SettingsContext</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get the current settings context which contains profile information and the</span>
 <span class="sd">    settings that are being used.</span>
@@ -15061,7 +15104,7 @@ profile and environment. See <code>prefect.context.use_profile</code> for more d
 <span class="normal">466</span>
 <span class="normal">467</span>
 <span class="normal">468</span>
-<span class="normal">469</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">registry_from_script</span><span class="p">(</span>
+<span class="normal">469</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">registry_from_script</span><span class="p">(</span>
     <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">block_code_execution</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="n">capture_failures</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
@@ -15141,7 +15184,7 @@ profile and environment. See <code>prefect.context.use_profile</code> for more d
 <span class="normal">562</span>
 <span class="normal">563</span>
 <span class="normal">564</span>
-<span class="normal">565</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">root_settings_context</span><span class="p">():</span>
+<span class="normal">565</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">root_settings_context</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return the settings context that will exist as the root context for the module.</span>
 
@@ -15227,27 +15270,27 @@ profile and environment. See <code>prefect.context.use_profile</code> for more d
 
 
 <p><span class="doc-section-title">Examples:</span></p>
-    <div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">tags</span><span class="p">,</span> <span class="n">task</span><span class="p">,</span> <span class="n">flow</span>
+    <div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">tags</span><span class="p">,</span> <span class="n">task</span><span class="p">,</span> <span class="n">flow</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nd">@task</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">my_task</span><span class="p">():</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">def</span><span class="w"> </span><span class="nf">my_task</span><span class="p">():</span>
 <span class="gp">&gt;&gt;&gt; </span>    <span class="k">pass</span>
 </code></pre></div>
     <p>Run a task with tags</p>
     <div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="nd">@flow</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">my_flow</span><span class="p">():</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">def</span><span class="w"> </span><span class="nf">my_flow</span><span class="p">():</span>
 <span class="gp">&gt;&gt;&gt; </span>    <span class="k">with</span> <span class="n">tags</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">):</span>
 <span class="gp">&gt;&gt;&gt; </span>        <span class="n">my_task</span><span class="p">()</span>  <span class="c1"># has tags: a, b</span>
 </code></pre></div>
     <p>Run a flow with tags</p>
     <div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="nd">@flow</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">my_flow</span><span class="p">():</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">def</span><span class="w"> </span><span class="nf">my_flow</span><span class="p">():</span>
 <span class="gp">&gt;&gt;&gt; </span>    <span class="k">pass</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">tags</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">):</span>
 <span class="gp">&gt;&gt;&gt; </span>    <span class="n">my_flow</span><span class="p">()</span>  <span class="c1"># has tags: a, b</span>
 </code></pre></div>
     <p>Run a task with nested tag contexts</p>
     <div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="nd">@flow</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">my_flow</span><span class="p">():</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">def</span><span class="w"> </span><span class="nf">my_flow</span><span class="p">():</span>
 <span class="gp">&gt;&gt;&gt; </span>    <span class="k">with</span> <span class="n">tags</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">):</span>
 <span class="gp">&gt;&gt;&gt; </span>        <span class="k">with</span> <span class="n">tags</span><span class="p">(</span><span class="s2">&quot;c&quot;</span><span class="p">,</span> <span class="s2">&quot;d&quot;</span><span class="p">):</span>
 <span class="gp">&gt;&gt;&gt; </span>            <span class="n">my_task</span><span class="p">()</span>  <span class="c1"># has tags: a, b, c, d</span>
@@ -15255,7 +15298,7 @@ profile and environment. See <code>prefect.context.use_profile</code> for more d
 </code></pre></div>
     <p>Inspect the current tags</p>
     <div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="nd">@flow</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">my_flow</span><span class="p">():</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">def</span><span class="w"> </span><span class="nf">my_flow</span><span class="p">():</span>
 <span class="gp">&gt;&gt;&gt; </span>    <span class="k">with</span> <span class="n">tags</span><span class="p">(</span><span class="s2">&quot;c&quot;</span><span class="p">,</span> <span class="s2">&quot;d&quot;</span><span class="p">):</span>
 <span class="gp">&gt;&gt;&gt; </span>        <span class="k">with</span> <span class="n">tags</span><span class="p">(</span><span class="s2">&quot;e&quot;</span><span class="p">,</span> <span class="s2">&quot;f&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">current_tags</span><span class="p">:</span>
 <span class="gp">&gt;&gt;&gt; </span>             <span class="nb">print</span><span class="p">(</span><span class="n">current_tags</span><span class="p">)</span>
@@ -15321,7 +15364,7 @@ profile and environment. See <code>prefect.context.use_profile</code> for more d
 <span class="normal">450</span>
 <span class="normal">451</span>
 <span class="normal">452</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@contextmanager</span>
-<span class="k">def</span> <span class="nf">tags</span><span class="p">(</span><span class="o">*</span><span class="n">new_tags</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">tags</span><span class="p">(</span><span class="o">*</span><span class="n">new_tags</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Context manager to add tags to flow and task run calls.</span>
 
@@ -15408,7 +15451,9 @@ profile and environment. See <code>prefect.context.use_profile</code> for more d
       </thead>
       <tbody>
           <tr class="doc-section-item">
-            <td><code>profile</code></td>
+            <td>
+                <code>profile</code>
+            </td>
             <td>
                   <code><span title="typing.Union">Union</span>[<a class="autorefs autorefs-internal" title="prefect.settings.Profile" href="../settings/#prefect.settings.Profile">Profile</a>, str]</code>
             </td>
@@ -15422,7 +15467,9 @@ profile and environment. See <code>prefect.context.use_profile</code> for more d
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>override_environment_variable</code></td>
+            <td>
+                <code>override_environment_variable</code>
+            </td>
             <td>
             </td>
             <td>
@@ -15437,7 +15484,9 @@ variables will override profile settings.</p>
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>include_current_context</code></td>
+            <td>
+                <code>include_current_context</code>
+            </td>
             <td>
                   <code>bool</code>
             </td>
@@ -15530,7 +15579,7 @@ will be loaded from the environment and defaults.</p>
 <span class="normal">520</span>
 <span class="normal">521</span>
 <span class="normal">522</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@contextmanager</span>
-<span class="k">def</span> <span class="nf">use_profile</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">use_profile</span><span class="p">(</span>
     <span class="n">profile</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Profile</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
     <span class="n">override_environment_variables</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">include_current_context</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>

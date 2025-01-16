@@ -173,6 +173,9 @@ if (amplitudeKey){
     
 
     
+  <meta name="robots" content="noindex, nofollow">
+  
+
   </head>
   
   
@@ -13497,17 +13500,17 @@ input and output.</p>
 other and waits for a response. The other receives the number, squares it, and
 sends the result back. The sender flow then prints the result.</p>
 <p>Sender flow:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">random</span>
-<span class="kn">from</span> <span class="nn">uuid</span> <span class="kn">import</span> <span class="n">UUID</span>
-<span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">get_run_logger</span>
-<span class="kn">from</span> <span class="nn">prefect.input</span> <span class="kn">import</span> <span class="n">RunInput</span>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">random</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">uuid</span><span class="w"> </span><span class="kn">import</span> <span class="n">UUID</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">get_run_logger</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect.input</span><span class="w"> </span><span class="kn">import</span> <span class="n">RunInput</span>
 
-<span class="k">class</span> <span class="nc">NumberData</span><span class="p">(</span><span class="n">RunInput</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">NumberData</span><span class="p">(</span><span class="n">RunInput</span><span class="p">):</span>
     <span class="n">number</span><span class="p">:</span> <span class="nb">int</span>
 
 
 <span class="nd">@flow</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">sender_flow</span><span class="p">(</span><span class="n">receiver_flow_run_id</span><span class="p">:</span> <span class="n">UUID</span><span class="p">):</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">sender_flow</span><span class="p">(</span><span class="n">receiver_flow_run_id</span><span class="p">:</span> <span class="n">UUID</span><span class="p">):</span>
     <span class="n">logger</span> <span class="o">=</span> <span class="n">get_run_logger</span><span class="p">()</span>
 
     <span class="n">the_number</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
@@ -13520,21 +13523,26 @@ sends the result back. The sender flow then prints the result.</p>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">the_number</span><span class="si">}</span><span class="s2"> squared is </span><span class="si">{</span><span class="n">squared</span><span class="o">.</span><span class="n">number</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </code></pre></div>
 <p>Receiver flow:
-<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">random</span>
-<span class="kn">from</span> <span class="nn">uuid</span> <span class="kn">import</span> <span class="n">UUID</span>
-<span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">get_run_logger</span>
-<span class="kn">from</span> <span class="nn">prefect.input</span> <span class="kn">import</span> <span class="n">RunInput</span>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">random</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">uuid</span><span class="w"> </span><span class="kn">import</span> <span class="n">UUID</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">get_run_logger</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect.input</span><span class="w"> </span><span class="kn">import</span> <span class="n">RunInput</span>
 
-<span class="k">class</span> <span class="nc">NumberData</span><span class="p">(</span><span class="n">RunInput</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">NumberData</span><span class="p">(</span><span class="n">RunInput</span><span class="p">):</span>
     <span class="n">number</span><span class="p">:</span> <span class="nb">int</span>
 
 
 <span class="nd">@flow</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">receiver_flow</span><span class="p">():</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">receiver_flow</span><span class="p">():</span>
     <span class="k">async</span> <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">NumberData</span><span class="o">.</span><span class="n">receive</span><span class="p">():</span>
         <span class="n">squared</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">number</span> <span class="o">**</span> <span class="mi">2</span>
         <span class="n">data</span><span class="o">.</span><span class="n">respond</span><span class="p">(</span><span class="n">NumberData</span><span class="p">(</span><span class="n">number</span><span class="o">=</span><span class="n">squared</span><span class="p">))</span>
 </code></pre></div></p>
+
+
+
+
+
 
 
 
@@ -13561,6 +13569,11 @@ sends the result back. The sender flow then prints the result.</p>
     <div class="doc doc-contents ">
             <p class="doc doc-class-bases">
               Bases: <code><a class="autorefs autorefs-internal" title="prefect.input.run_input.RunInput" href="#prefect.input.run_input.RunInput">RunInput</a></code>, <code><span title="typing.Generic">Generic</span>[<span title="prefect.input.run_input.T">T</span>]</code></p>
+
+
+
+
+
 
 
               <details class="quote">
@@ -13623,12 +13636,12 @@ sends the result back. The sender flow then prints the result.</p>
 <span class="normal">379</span>
 <span class="normal">380</span>
 <span class="normal">381</span>
-<span class="normal">382</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">AutomaticRunInput</span><span class="p">(</span><span class="n">RunInput</span><span class="p">,</span> <span class="n">Generic</span><span class="p">[</span><span class="n">T</span><span class="p">]):</span>
+<span class="normal">382</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">AutomaticRunInput</span><span class="p">(</span><span class="n">RunInput</span><span class="p">,</span> <span class="n">Generic</span><span class="p">[</span><span class="n">T</span><span class="p">]):</span>
     <span class="n">value</span><span class="p">:</span> <span class="n">T</span>
 
     <span class="nd">@classmethod</span>
     <span class="nd">@sync_compatible</span>
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">keyset</span><span class="p">:</span> <span class="n">Keyset</span><span class="p">,</span> <span class="n">flow_run_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">UUID</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="p">:</span>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">load</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">keyset</span><span class="p">:</span> <span class="n">Keyset</span><span class="p">,</span> <span class="n">flow_run_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">UUID</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Load the run input response from the given key.</span>
 
@@ -13640,7 +13653,7 @@ sends the result back. The sender flow then prints the result.</p>
         <span class="k">return</span> <span class="n">instance</span><span class="o">.</span><span class="n">value</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">subclass_from_type</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">_type</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Type</span><span class="p">[</span><span class="s2">&quot;AutomaticRunInput[T]&quot;</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">subclass_from_type</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">_type</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Type</span><span class="p">[</span><span class="s2">&quot;AutomaticRunInput[T]&quot;</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create a new `AutomaticRunInput` subclass from the given type.</span>
 
@@ -13677,7 +13690,7 @@ sends the result back. The sender flow then prints the result.</p>
         <span class="k">return</span> <span class="n">new_cls</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">receive</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">receive</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;key_prefix&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;key_prefix&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="si">}</span><span class="s2">-auto&quot;</span>
 
@@ -13728,7 +13741,9 @@ sends the result back. The sender flow then prints the result.</p>
       </thead>
       <tbody>
           <tr class="doc-section-item">
-            <td><code>-</code></td>
+            <td>
+                <code>-</code>
+            </td>
             <td>
                   <code>keyset (Keyset</code>
             </td>
@@ -13742,7 +13757,9 @@ sends the result back. The sender flow then prints the result.</p>
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>-</code></td>
+            <td>
+                <code>-</code>
+            </td>
             <td>
                   <code>flow_run_id (UUID</code>
             </td>
@@ -13773,7 +13790,7 @@ sends the result back. The sender flow then prints the result.</p>
 <span class="normal">337</span>
 <span class="normal">338</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@classmethod</span>
 <span class="nd">@sync_compatible</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">keyset</span><span class="p">:</span> <span class="n">Keyset</span><span class="p">,</span> <span class="n">flow_run_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">UUID</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="p">:</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">load</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">keyset</span><span class="p">:</span> <span class="n">Keyset</span><span class="p">,</span> <span class="n">flow_run_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">UUID</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Load the run input response from the given key.</span>
 
@@ -13847,7 +13864,7 @@ flow run inputs. This helps in ensuring that values saved under a type
 <span class="normal">373</span>
 <span class="normal">374</span>
 <span class="normal">375</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@classmethod</span>
-<span class="k">def</span> <span class="nf">subclass_from_type</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">_type</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Type</span><span class="p">[</span><span class="s2">&quot;AutomaticRunInput[T]&quot;</span><span class="p">]:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">subclass_from_type</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">_type</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Type</span><span class="p">[</span><span class="s2">&quot;AutomaticRunInput[T]&quot;</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create a new `AutomaticRunInput` subclass from the given type.</span>
 
@@ -13910,6 +13927,11 @@ flow run inputs. This helps in ensuring that values saved under a type
     <div class="doc doc-contents ">
             <p class="doc doc-class-bases">
               Bases: <code><span title="pydantic.BaseModel">BaseModel</span></code></p>
+
+
+
+
+
 
 
               <details class="quote">
@@ -14090,24 +14112,24 @@ flow run inputs. This helps in ensuring that values saved under a type
 <span class="normal">318</span>
 <span class="normal">319</span>
 <span class="normal">320</span>
-<span class="normal">321</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">RunInput</span><span class="p">(</span><span class="n">pydantic</span><span class="o">.</span><span class="n">BaseModel</span><span class="p">):</span>
-    <span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
+<span class="normal">321</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">RunInput</span><span class="p">(</span><span class="n">pydantic</span><span class="o">.</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="k">class</span><span class="w"> </span><span class="nc">Config</span><span class="p">:</span>
         <span class="n">extra</span> <span class="o">=</span> <span class="s2">&quot;forbid&quot;</span>
 
     <span class="n">_description</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">pydantic</span><span class="o">.</span><span class="n">PrivateAttr</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
     <span class="n">_metadata</span><span class="p">:</span> <span class="n">RunInputMetadata</span> <span class="o">=</span> <span class="n">pydantic</span><span class="o">.</span><span class="n">PrivateAttr</span><span class="p">()</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">RunInputMetadata</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">RunInputMetadata</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_metadata</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">keyset_from_type</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Keyset</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">keyset_from_type</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Keyset</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">keyset_from_base_key</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span>
 
     <span class="nd">@classmethod</span>
     <span class="nd">@sync_compatible</span>
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">keyset</span><span class="p">:</span> <span class="n">Keyset</span><span class="p">,</span> <span class="n">flow_run_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">UUID</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">save</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">keyset</span><span class="p">:</span> <span class="n">Keyset</span><span class="p">,</span> <span class="n">flow_run_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">UUID</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Save the run input response to the given key.</span>
 
@@ -14135,7 +14157,7 @@ flow run inputs. This helps in ensuring that values saved under a type
 
     <span class="nd">@classmethod</span>
     <span class="nd">@sync_compatible</span>
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">keyset</span><span class="p">:</span> <span class="n">Keyset</span><span class="p">,</span> <span class="n">flow_run_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">UUID</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">load</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">keyset</span><span class="p">:</span> <span class="n">Keyset</span><span class="p">,</span> <span class="n">flow_run_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">UUID</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Load the run input response from the given key.</span>
 
@@ -14155,7 +14177,7 @@ flow run inputs. This helps in ensuring that values saved under a type
         <span class="k">return</span> <span class="n">instance</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">load_from_flow_run_input</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">flow_run_input</span><span class="p">:</span> <span class="s2">&quot;FlowRunInput&quot;</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">load_from_flow_run_input</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">flow_run_input</span><span class="p">:</span> <span class="s2">&quot;FlowRunInput&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Load the run input from a FlowRunInput object.</span>
 
@@ -14171,7 +14193,7 @@ flow run inputs. This helps in ensuring that values saved under a type
         <span class="k">return</span> <span class="n">instance</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">with_initial_data</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">with_initial_data</span><span class="p">(</span>
         <span class="bp">cls</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">R</span><span class="p">],</span> <span class="n">description</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Type</span><span class="p">[</span><span class="n">R</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -14194,7 +14216,7 @@ flow run inputs. This helps in ensuring that values saved under a type
         <span class="k">return</span> <span class="n">model</span>
 
     <span class="nd">@sync_compatible</span>
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">respond</span><span class="p">(</span>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">respond</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">run_input</span><span class="p">:</span> <span class="s2">&quot;RunInput&quot;</span><span class="p">,</span>
         <span class="n">sender</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -14218,7 +14240,7 @@ flow run inputs. This helps in ensuring that values saved under a type
         <span class="p">)</span>
 
     <span class="nd">@sync_compatible</span>
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">send_to</span><span class="p">(</span>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">send_to</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">flow_run_id</span><span class="p">:</span> <span class="n">UUID</span><span class="p">,</span>
         <span class="n">sender</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -14232,7 +14254,7 @@ flow run inputs. This helps in ensuring that values saved under a type
         <span class="p">)</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">receive</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">receive</span><span class="p">(</span>
         <span class="bp">cls</span><span class="p">,</span>
         <span class="n">timeout</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mi">3600</span><span class="p">,</span>
         <span class="n">poll_interval</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
@@ -14255,7 +14277,7 @@ flow run inputs. This helps in ensuring that values saved under a type
         <span class="p">)</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">subclass_from_base_model_type</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">subclass_from_base_model_type</span><span class="p">(</span>
         <span class="bp">cls</span><span class="p">,</span> <span class="n">model_cls</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">pydantic</span><span class="o">.</span><span class="n">BaseModel</span><span class="p">]</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Type</span><span class="p">[</span><span class="s2">&quot;RunInput&quot;</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -14313,7 +14335,9 @@ flow run inputs. This helps in ensuring that values saved under a type
       </thead>
       <tbody>
           <tr class="doc-section-item">
-            <td><code>-</code></td>
+            <td>
+                <code>-</code>
+            </td>
             <td>
                   <code>keyset (Keyset</code>
             </td>
@@ -14327,7 +14351,9 @@ flow run inputs. This helps in ensuring that values saved under a type
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>-</code></td>
+            <td>
+                <code>-</code>
+            </td>
             <td>
                   <code>flow_run_id (UUID</code>
             </td>
@@ -14366,7 +14392,7 @@ flow run inputs. This helps in ensuring that values saved under a type
 <span class="normal">206</span>
 <span class="normal">207</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@classmethod</span>
 <span class="nd">@sync_compatible</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">keyset</span><span class="p">:</span> <span class="n">Keyset</span><span class="p">,</span> <span class="n">flow_run_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">UUID</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">load</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">keyset</span><span class="p">:</span> <span class="n">Keyset</span><span class="p">,</span> <span class="n">flow_run_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">UUID</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Load the run input response from the given key.</span>
 
@@ -14420,7 +14446,9 @@ flow run inputs. This helps in ensuring that values saved under a type
       </thead>
       <tbody>
           <tr class="doc-section-item">
-            <td><code>-</code></td>
+            <td>
+                <code>-</code>
+            </td>
             <td>
                   <code>flow_run_input (FlowRunInput</code>
             </td>
@@ -14453,7 +14481,7 @@ flow run inputs. This helps in ensuring that values saved under a type
 <span class="normal">221</span>
 <span class="normal">222</span>
 <span class="normal">223</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@classmethod</span>
-<span class="k">def</span> <span class="nf">load_from_flow_run_input</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">flow_run_input</span><span class="p">:</span> <span class="s2">&quot;FlowRunInput&quot;</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">load_from_flow_run_input</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">flow_run_input</span><span class="p">:</span> <span class="s2">&quot;FlowRunInput&quot;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Load the run input from a FlowRunInput object.</span>
 
@@ -14504,7 +14532,9 @@ flow run inputs. This helps in ensuring that values saved under a type
       </thead>
       <tbody>
           <tr class="doc-section-item">
-            <td><code>-</code></td>
+            <td>
+                <code>-</code>
+            </td>
             <td>
                   <code>keyset (Keyset</code>
             </td>
@@ -14518,7 +14548,9 @@ flow run inputs. This helps in ensuring that values saved under a type
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>-</code></td>
+            <td>
+                <code>-</code>
+            </td>
             <td>
                   <code>flow_run_id (UUID</code>
             </td>
@@ -14564,7 +14596,7 @@ flow run inputs. This helps in ensuring that values saved under a type
 <span class="normal">185</span>
 <span class="normal">186</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@classmethod</span>
 <span class="nd">@sync_compatible</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">keyset</span><span class="p">:</span> <span class="n">Keyset</span><span class="p">,</span> <span class="n">flow_run_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">UUID</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">save</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">keyset</span><span class="p">:</span> <span class="n">Keyset</span><span class="p">,</span> <span class="n">flow_run_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">UUID</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Save the run input response to the given key.</span>
 
@@ -14626,7 +14658,9 @@ subclass.</p>
       </thead>
       <tbody>
           <tr class="doc-section-item">
-            <td><code>-</code></td>
+            <td>
+                <code>-</code>
+            </td>
             <td>
                   <code>model_cls (pydantic.BaseModel subclass</code>
             </td>
@@ -14658,7 +14692,7 @@ to create the new <code>RunInput</code> subclass</p>
 <span class="normal">319</span>
 <span class="normal">320</span>
 <span class="normal">321</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@classmethod</span>
-<span class="k">def</span> <span class="nf">subclass_from_base_model_type</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">subclass_from_base_model_type</span><span class="p">(</span>
     <span class="bp">cls</span><span class="p">,</span> <span class="n">model_cls</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">pydantic</span><span class="o">.</span><span class="n">BaseModel</span><span class="p">]</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Type</span><span class="p">[</span><span class="s2">&quot;RunInput&quot;</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -14707,7 +14741,9 @@ defaults.</p>
       </thead>
       <tbody>
           <tr class="doc-section-item">
-            <td><code>-</code></td>
+            <td>
+                <code>-</code>
+            </td>
             <td>
                   <code>description (str</code>
             </td>
@@ -14722,7 +14758,9 @@ a flow run that requires input</p>
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>-</code></td>
+            <td>
+                <code>-</code>
+            </td>
             <td>
                   <code>kwargs (Any</code>
             </td>
@@ -14762,7 +14800,7 @@ a flow run that requires input</p>
 <span class="normal">244</span>
 <span class="normal">245</span>
 <span class="normal">246</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@classmethod</span>
-<span class="k">def</span> <span class="nf">with_initial_data</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">with_initial_data</span><span class="p">(</span>
     <span class="bp">cls</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">R</span><span class="p">],</span> <span class="n">description</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Type</span><span class="p">[</span><span class="n">R</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -14824,7 +14862,9 @@ a flow run that requires input</p>
       </thead>
       <tbody>
           <tr class="doc-section-item">
-            <td><code>-</code></td>
+            <td>
+                <code>-</code>
+            </td>
             <td>
                   <code>base_key (str</code>
             </td>
@@ -14881,7 +14921,7 @@ a flow run that requires input</p>
 <span class="normal">133</span>
 <span class="normal">134</span>
 <span class="normal">135</span>
-<span class="normal">136</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">keyset_from_base_key</span><span class="p">(</span><span class="n">base_key</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Keyset</span><span class="p">:</span>
+<span class="normal">136</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">keyset_from_base_key</span><span class="p">(</span><span class="n">base_key</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Keyset</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get the keyset for the given base key.</span>
 
@@ -14928,7 +14968,9 @@ a flow run that requires input</p>
       </thead>
       <tbody>
           <tr class="doc-section-item">
-            <td><code>-</code></td>
+            <td>
+                <code>-</code>
+            </td>
             <td>
                   <code>state (State</code>
             </td>
@@ -14959,7 +15001,7 @@ a flow run that requires input</p>
 <span class="normal">116</span>
 <span class="normal">117</span>
 <span class="normal">118</span>
-<span class="normal">119</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">keyset_from_paused_state</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="s2">&quot;State&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Keyset</span><span class="p">:</span>
+<span class="normal">119</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">keyset_from_paused_state</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="s2">&quot;State&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Keyset</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get the keyset for the given Paused state.</span>
 
@@ -15012,7 +15054,7 @@ a flow run that requires input</p>
 <span class="normal">400</span>
 <span class="normal">401</span>
 <span class="normal">402</span>
-<span class="normal">403</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">run_input_subclass_from_type</span><span class="p">(</span>
+<span class="normal">403</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">run_input_subclass_from_type</span><span class="p">(</span>
     <span class="n">_type</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="n">R</span><span class="p">],</span> <span class="n">Type</span><span class="p">[</span><span class="n">T</span><span class="p">],</span> <span class="n">pydantic</span><span class="o">.</span><span class="n">BaseModel</span><span class="p">],</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="n">AutomaticRunInput</span><span class="p">[</span><span class="n">T</span><span class="p">]],</span> <span class="n">Type</span><span class="p">[</span><span class="n">R</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>

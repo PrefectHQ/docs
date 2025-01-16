@@ -173,6 +173,9 @@ if (amplitudeKey){
     
 
     
+  <meta name="robots" content="noindex, nofollow">
+  
+
   </head>
   
   
@@ -13261,11 +13264,11 @@ This guide provides examples of real-world use cases.</p>
 <h2 id="example-use-cases">Example use cases<a class="headerlink" href="#example-use-cases" title="Permanent link">&para;</a></h2>
 <h3 id="send-a-notification-when-a-flow-run-fails">Send a notification when a flow run fails<a class="headerlink" href="#send-a-notification-when-a-flow-run-fails" title="Permanent link">&para;</a></h3>
 <p>State change hooks enable you to customize messages sent when tasks transition between states, such as sending notifications containing sensitive information when tasks enter a <code>Failed</code> state. Let's run a client-side hook upon a flow run entering a <code>Failed</code> state.</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span>
-<span class="kn">from</span> <span class="nn">prefect.blocks.core</span> <span class="kn">import</span> <span class="n">Block</span>
-<span class="kn">from</span> <span class="nn">prefect.settings</span> <span class="kn">import</span> <span class="n">PREFECT_API_URL</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect.blocks.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">Block</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect.settings</span><span class="w"> </span><span class="kn">import</span> <span class="n">PREFECT_API_URL</span>
 
-<span class="k">def</span> <span class="nf">notify_slack</span><span class="p">(</span><span class="n">flow</span><span class="p">,</span> <span class="n">flow_run</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">notify_slack</span><span class="p">(</span><span class="n">flow</span><span class="p">,</span> <span class="n">flow_run</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
     <span class="n">slack_webhook_block</span> <span class="o">=</span> <span class="n">Block</span><span class="o">.</span><span class="n">load</span><span class="p">(</span>
         <span class="s2">&quot;slack-webhook/my-slack-webhook&quot;</span>
     <span class="p">)</span>
@@ -13282,7 +13285,7 @@ This guide provides examples of real-world use cases.</p>
     <span class="p">)</span>
 
 <span class="nd">@flow</span><span class="p">(</span><span class="n">on_failure</span><span class="o">=</span><span class="p">[</span><span class="n">notify_slack</span><span class="p">],</span> <span class="n">retries</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">failing_flow</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">failing_flow</span><span class="p">():</span>
     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;oops!&quot;</span><span class="p">)</span>
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
@@ -13294,13 +13297,13 @@ This guide provides examples of real-world use cases.</p>
 When a flow run crashes, tasks may exit abruptly, resulting in the potential omission of cleanup logic within the tasks.
 State change hooks can be used to ensure infrastructure is properly cleaned up even when a flow run enters a <code>Crashed</code> state!</p>
 <p>Let's create a hook that deletes a Cloud Run job if the flow run crashes.</p>
-<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
-<span class="kn">from</span> <span class="nn">prefect.blocks.system</span> <span class="kn">import</span> <span class="n">String</span>
-<span class="kn">from</span> <span class="nn">prefect.client</span> <span class="kn">import</span> <span class="n">get_client</span>
-<span class="kn">import</span> <span class="nn">prefect.runtime</span>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect.blocks.system</span><span class="w"> </span><span class="kn">import</span> <span class="n">String</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect.client</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_client</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">prefect.runtime</span>
 
-<span class="k">async</span> <span class="k">def</span> <span class="nf">delete_cloud_run_job</span><span class="p">(</span><span class="n">flow</span><span class="p">,</span> <span class="n">flow_run</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">delete_cloud_run_job</span><span class="p">(</span><span class="n">flow</span><span class="p">,</span> <span class="n">flow_run</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Flow run state change hook that deletes a Cloud Run Job if</span>
 <span class="sd">    the flow run crashes.&quot;&quot;&quot;</span>
 
@@ -13322,11 +13325,11 @@ State change hooks can be used to ensure infrastructure is properly cleaned up e
         <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">delete_block_document</span><span class="p">(</span><span class="n">block_document</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
 
 <span class="nd">@task</span>
-<span class="k">def</span> <span class="nf">my_task_that_crashes</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_task_that_crashes</span><span class="p">():</span>
     <span class="k">raise</span> <span class="ne">SystemExit</span><span class="p">(</span><span class="s2">&quot;Crashing on purpose!&quot;</span><span class="p">)</span>
 
 <span class="nd">@flow</span><span class="p">(</span><span class="n">on_crashed</span><span class="o">=</span><span class="p">[</span><span class="n">delete_cloud_run_job</span><span class="p">])</span>
-<span class="k">def</span> <span class="nf">crashing_flow</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">crashing_flow</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Save the flow run name (i.e. Cloud Run job name) as a </span>
 <span class="sd">    String block. It then executes a task that ends up crashing.&quot;&quot;&quot;</span>
     <span class="n">flow_run_name</span> <span class="o">=</span> <span class="n">prefect</span><span class="o">.</span><span class="n">runtime</span><span class="o">.</span><span class="n">flow_run</span><span class="o">.</span><span class="n">name</span>
