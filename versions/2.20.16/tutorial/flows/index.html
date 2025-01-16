@@ -173,6 +173,9 @@ if (amplitudeKey){
     
 
     
+  <meta name="robots" content="noindex, nofollow">
+  
+
   </head>
   
   
@@ -229,7 +232,7 @@ if (amplitudeKey){
           <aside class="md-banner md-banner--warning">
             <div class="md-banner__inner md-grid md-typeset">
               
-  You're viewing the docs for Prefect 2.20.16.
+  You're viewing the docs for Prefect unreleased.
   <a href="../../.."> 
     <strong>Click here to view the latest docs.</strong>
   </a>
@@ -13297,12 +13300,12 @@ When a function becomes a flow, its behavior changes, giving it the following ad
 The script below fetches statistics about the <a href="https://github.com/PrefectHQ/prefect">main Prefect repository</a>.
 Note that <a href="https://www.python-httpx.org/">httpx</a> is an HTTP client library and a dependency of Prefect.
 Let's turn this function into a Prefect flow and run the script:</p>
-<div class="highlight"><span class="filename">repo_info.py</span><pre><span></span><code><span class="kn">import</span> <span class="nn">httpx</span>
-<span class="hll"><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span>
+<div class="highlight"><span class="filename">repo_info.py</span><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">httpx</span>
+<span class="hll"><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span>
 </span>
 
 <span class="hll"><span class="nd">@flow</span>
-</span><span class="k">def</span> <span class="nf">get_repo_info</span><span class="p">():</span>
+</span><span class="k">def</span><span class="w"> </span><span class="nf">get_repo_info</span><span class="p">():</span>
     <span class="n">url</span> <span class="o">=</span> <span class="s2">&quot;https://api.github.com/repos/PrefectHQ/prefect&quot;</span>
     <span class="n">response</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
     <span class="n">response</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
@@ -13335,12 +13338,12 @@ Forks<span class="w"> </span>🍴<span class="w"> </span>:<span class="w"> </spa
 The positional and keyword arguments defined on your flow function are called <a href="/concepts/flows/#parameters">parameters</a>.
 Prefect will automatically perform type conversion using any provided type hints.
 Let's make the repository a string parameter with a default value:</p>
-<div class="highlight"><span class="filename">repo_info.py</span><pre><span></span><code><span class="kn">import</span> <span class="nn">httpx</span>
-<span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span>
+<div class="highlight"><span class="filename">repo_info.py</span><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">httpx</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span>
 
 
 <span class="nd">@flow</span>
-<span class="hll"><span class="k">def</span> <span class="nf">get_repo_info</span><span class="p">(</span><span class="n">repo_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;PrefectHQ/prefect&quot;</span><span class="p">):</span>
+<span class="hll"><span class="k">def</span><span class="w"> </span><span class="nf">get_repo_info</span><span class="p">(</span><span class="n">repo_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;PrefectHQ/prefect&quot;</span><span class="p">):</span>
 </span><span class="hll">    <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;https://api.github.com/repos/</span><span class="si">{</span><span class="n">repo_name</span><span class="si">}</span><span class="s2">&quot;</span>
 </span>    <span class="n">response</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
     <span class="n">response</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
@@ -13375,12 +13378,12 @@ Let's make the repository a string parameter with a default value:</p>
 <p>Prefect enables you to log a variety of useful information about your flow and task runs, capturing information about your workflows for purposes such as monitoring, troubleshooting, and auditing.
 If we navigate to our dashboard and explore the runs we created above, we will notice that the repository statistics are not captured in the flow run logs.<br />
 Let's fix that by adding some <a href="/concepts/logs">logging</a> to our flow:</p>
-<div class="highlight"><span class="filename">repo_info.py</span><pre><span></span><code><span class="kn">import</span> <span class="nn">httpx</span>
-<span class="hll"><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">get_run_logger</span>
+<div class="highlight"><span class="filename">repo_info.py</span><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">httpx</span>
+<span class="hll"><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">get_run_logger</span>
 </span>
 
 <span class="nd">@flow</span>
-<span class="k">def</span> <span class="nf">get_repo_info</span><span class="p">(</span><span class="n">repo_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;PrefectHQ/prefect&quot;</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_repo_info</span><span class="p">(</span><span class="n">repo_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;PrefectHQ/prefect&quot;</span><span class="p">):</span>
     <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;https://api.github.com/repos/</span><span class="si">{</span><span class="n">repo_name</span><span class="si">}</span><span class="s2">&quot;</span>
     <span class="n">response</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
     <span class="n">response</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
@@ -13404,7 +13407,7 @@ Let's fix that by adding some <a href="/concepts/logs">logging</a> to our flow:<
 <p class="admonition-title"><code>log_prints=True</code></p>
 <p>We could have achieved the exact same outcome by using Prefect's convenient <code>log_prints</code> keyword argument in the <code>flow</code> decorator:</p>
 <div class="highlight"><pre><span></span><code><span class="nd">@flow</span><span class="p">(</span><span class="n">log_prints</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">get_repo_info</span><span class="p">(</span><span class="n">repo_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;PrefectHQ/prefect&quot;</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_repo_info</span><span class="p">(</span><span class="n">repo_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;PrefectHQ/prefect&quot;</span><span class="p">):</span>
     <span class="o">...</span>
 </code></pre></div>
 </div>
@@ -13419,12 +13422,12 @@ Logs are best for tracking progress and debugging errors.</p>
 For example the GitHub API may be temporarily unavailable or rate limited.
 <a href="/concepts/flows/#flow-settings">Retries</a> help make our flow more resilient.
 Let's add retry functionality to our example above:</p>
-<div class="highlight"><span class="filename">repo_info.py</span><pre><span></span><code><span class="kn">import</span> <span class="nn">httpx</span>
-<span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span>
+<div class="highlight"><span class="filename">repo_info.py</span><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">httpx</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span>
 
 
 <span class="hll"><span class="nd">@flow</span><span class="p">(</span><span class="n">retries</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">retry_delay_seconds</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">log_prints</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</span><span class="k">def</span> <span class="nf">get_repo_info</span><span class="p">(</span><span class="n">repo_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;PrefectHQ/prefect&quot;</span><span class="p">):</span>
+</span><span class="k">def</span><span class="w"> </span><span class="nf">get_repo_info</span><span class="p">(</span><span class="n">repo_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;PrefectHQ/prefect&quot;</span><span class="p">):</span>
     <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;https://api.github.com/repos/</span><span class="si">{</span><span class="n">repo_name</span><span class="si">}</span><span class="s2">&quot;</span>
     <span class="n">response</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
     <span class="n">response</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>

@@ -171,6 +171,9 @@ if (amplitudeKey){
     
 
     
+  <meta name="robots" content="noindex, nofollow">
+  
+
   </head>
   
   
@@ -227,7 +230,7 @@ if (amplitudeKey){
           <aside class="md-banner md-banner--warning">
             <div class="md-banner__inner md-grid md-typeset">
               
-  You're viewing the docs for Prefect 2.20.16.
+  You're viewing the docs for Prefect unreleased.
   <a href="../../../.."> 
     <strong>Click here to view the latest docs.</strong>
   </a>
@@ -14018,7 +14021,7 @@ clause, or the dialect's equivalent clause, like <code>TOP</code>, to the query.
 <span class="normal">943</span>
 <span class="normal">944</span>
 <span class="normal">945</span>
-<span class="normal">946</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">BigQueryWarehouse</span><span class="p">(</span><span class="n">DatabaseBlock</span><span class="p">):</span>
+<span class="normal">946</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">BigQueryWarehouse</span><span class="p">(</span><span class="n">DatabaseBlock</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A block for querying a database with BigQuery.</span>
 
@@ -14052,14 +14055,14 @@ clause, or the dialect's equivalent clause, like <code>TOP</code>, to the query.
     <span class="n">_connection</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s2">&quot;Connection&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">_unique_cursors</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="s2">&quot;Cursor&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 
-    <span class="k">def</span> <span class="nf">_start_connection</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_start_connection</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Starts a connection.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">gcp_credentials</span><span class="o">.</span><span class="n">get_bigquery_client</span><span class="p">()</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_connection</span> <span class="o">=</span> <span class="n">Connection</span><span class="p">(</span><span class="n">client</span><span class="o">=</span><span class="n">client</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">block_initialization</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">block_initialization</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">block_initialization</span><span class="p">()</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_connection</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_start_connection</span><span class="p">()</span>
@@ -14067,13 +14070,13 @@ clause, or the dialect's equivalent clause, like <code>TOP</code>, to the query.
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unique_cursors</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_unique_cursors</span> <span class="o">=</span> <span class="p">{}</span>
 
-    <span class="k">def</span> <span class="nf">get_connection</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Connection&quot;</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_connection</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Connection&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the opened connection to BigQuery.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_connection</span>
 
-    <span class="k">def</span> <span class="nf">_get_cursor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="s2">&quot;Cursor&quot;</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_cursor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="s2">&quot;Cursor&quot;</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get a BigQuery cursor.</span>
 
@@ -14098,7 +14101,7 @@ clause, or the dialect's equivalent clause, like <code>TOP</code>, to the query.
             <span class="n">existing_cursor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unique_cursors</span><span class="p">[</span><span class="n">input_hash</span><span class="p">]</span>
             <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="n">existing_cursor</span>
 
-    <span class="k">def</span> <span class="nf">reset_cursors</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">reset_cursors</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Tries to close all opened cursors.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -14113,7 +14116,7 @@ clause, or the dialect's equivalent clause, like <code>TOP</code>, to the query.
                 <span class="p">)</span>
 
     <span class="nd">@sync_compatible</span>
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_one</span><span class="p">(</span>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">fetch_one</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">operation</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">parameters</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -14172,7 +14175,7 @@ clause, or the dialect's equivalent clause, like <code>TOP</code>, to the query.
         <span class="k">return</span> <span class="n">result</span>
 
     <span class="nd">@sync_compatible</span>
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_many</span><span class="p">(</span>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">fetch_many</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">operation</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">parameters</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -14239,7 +14242,7 @@ clause, or the dialect's equivalent clause, like <code>TOP</code>, to the query.
         <span class="k">return</span> <span class="n">result</span>
 
     <span class="nd">@sync_compatible</span>
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_all</span><span class="p">(</span>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">fetch_all</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">operation</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">parameters</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -14296,7 +14299,7 @@ clause, or the dialect's equivalent clause, like <code>TOP</code>, to the query.
         <span class="k">return</span> <span class="n">result</span>
 
     <span class="nd">@sync_compatible</span>
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">execute</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">operation</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">parameters</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -14343,7 +14346,7 @@ clause, or the dialect's equivalent clause, like <code>TOP</code>, to the query.
         <span class="k">await</span> <span class="n">run_sync_in_worker_thread</span><span class="p">(</span><span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">,</span> <span class="o">**</span><span class="n">inputs</span><span class="p">)</span>
 
     <span class="nd">@sync_compatible</span>
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">execute_many</span><span class="p">(</span>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">execute_many</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">operation</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">seq_of_parameters</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]],</span>
@@ -14393,7 +14396,7 @@ clause, or the dialect's equivalent clause, like <code>TOP</code>, to the query.
         <span class="n">cursor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_cursor</span><span class="p">(</span><span class="n">inputs</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
         <span class="k">await</span> <span class="n">run_sync_in_worker_thread</span><span class="p">(</span><span class="n">cursor</span><span class="o">.</span><span class="n">executemany</span><span class="p">,</span> <span class="o">**</span><span class="n">inputs</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Closes connection and its cursors.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -14404,25 +14407,25 @@ clause, or the dialect's equivalent clause, like <code>TOP</code>, to the query.
                 <span class="bp">self</span><span class="o">.</span><span class="n">_connection</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_connection</span> <span class="o">=</span> <span class="kc">None</span>
 
-    <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Start a connection upon entry.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span>
 
-    <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Closes connection and its cursors upon exit.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; &quot;&quot;&quot;</span>
         <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="n">data</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">k</span><span class="p">:</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot;_connection&quot;</span><span class="p">,</span> <span class="s2">&quot;_unique_cursors&quot;</span><span class="p">}})</span>
         <span class="k">return</span> <span class="n">data</span>
 
-    <span class="k">def</span> <span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_unique_cursors</span> <span class="o">=</span> <span class="p">{}</span>
@@ -14466,7 +14469,7 @@ clause, or the dialect's equivalent clause, like <code>TOP</code>, to the query.
 <span class="normal">919</span>
 <span class="normal">920</span>
 <span class="normal">921</span>
-<span class="normal">922</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="normal">922</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Closes connection and its cursors.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -14568,7 +14571,7 @@ upon calling.</p>
 
 <p><span class="doc-section-title">Examples:</span></p>
     <p>Execute operation with parameters:
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect_gcp.bigquery</span> <span class="kn">import</span> <span class="n">BigQueryWarehouse</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect_gcp.bigquery</span><span class="w"> </span><span class="kn">import</span> <span class="n">BigQueryWarehouse</span>
 
 <span class="k">with</span> <span class="n">BigQueryWarehouse</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;BLOCK_NAME&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">warehouse</span><span class="p">:</span>
     <span class="n">operation</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;</span>
@@ -14633,7 +14636,7 @@ upon calling.</p>
 <span class="normal">858</span>
 <span class="normal">859</span>
 <span class="normal">860</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@sync_compatible</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">execute</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">operation</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">parameters</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -14754,7 +14757,7 @@ upon calling.</p>
 
 <p><span class="doc-section-title">Examples:</span></p>
     <p>Create mytable in mydataset and insert two rows into it:
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect_gcp.bigquery</span> <span class="kn">import</span> <span class="n">BigQueryWarehouse</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect_gcp.bigquery</span><span class="w"> </span><span class="kn">import</span> <span class="n">BigQueryWarehouse</span>
 
 <span class="k">with</span> <span class="n">BigQueryWarehouse</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;bigquery&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">warehouse</span><span class="p">:</span>
     <span class="n">create_operation</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;</span>
@@ -14830,7 +14833,7 @@ upon calling.</p>
 <span class="normal">909</span>
 <span class="normal">910</span>
 <span class="normal">911</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@sync_compatible</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">execute_many</span><span class="p">(</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">execute_many</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">operation</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">seq_of_parameters</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]],</span>
@@ -14996,7 +14999,7 @@ where each row is a tuple and each column is a value in the tuple.</p>
 
 <p><span class="doc-section-title">Examples:</span></p>
     <p>Execute operation with parameters, fetching all rows:
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect_gcp.bigquery</span> <span class="kn">import</span> <span class="n">BigQueryWarehouse</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect_gcp.bigquery</span><span class="w"> </span><span class="kn">import</span> <span class="n">BigQueryWarehouse</span>
 
 <span class="k">with</span> <span class="n">BigQueryWarehouse</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;BLOCK_NAME&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">warehouse</span><span class="p">:</span>
     <span class="n">operation</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;</span>
@@ -15072,7 +15075,7 @@ where each row is a tuple and each column is a value in the tuple.</p>
 <span class="normal">811</span>
 <span class="normal">812</span>
 <span class="normal">813</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@sync_compatible</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_all</span><span class="p">(</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">fetch_all</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">operation</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">parameters</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -15261,7 +15264,7 @@ where each row is a tuple and each column is a value in the tuple.</p>
 
 <p><span class="doc-section-title">Examples:</span></p>
     <p>Execute operation with parameters, fetching two new rows at a time:
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect_gcp.bigquery</span> <span class="kn">import</span> <span class="n">BigQueryWarehouse</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect_gcp.bigquery</span><span class="w"> </span><span class="kn">import</span> <span class="n">BigQueryWarehouse</span>
 
 <span class="k">with</span> <span class="n">BigQueryWarehouse</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;BLOCK_NAME&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">warehouse</span><span class="p">:</span>
     <span class="n">operation</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;</span>
@@ -15353,7 +15356,7 @@ where each row is a tuple and each column is a value in the tuple.</p>
 <span class="normal">754</span>
 <span class="normal">755</span>
 <span class="normal">756</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@sync_compatible</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_many</span><span class="p">(</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">fetch_many</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">operation</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">parameters</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -15535,7 +15538,7 @@ where each row is a tuple and each column is a value in the tuple.</p>
 
 <p><span class="doc-section-title">Examples:</span></p>
     <p>Execute operation with parameters, fetching one new row at a time:
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect_gcp.bigquery</span> <span class="kn">import</span> <span class="n">BigQueryWarehouse</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect_gcp.bigquery</span><span class="w"> </span><span class="kn">import</span> <span class="n">BigQueryWarehouse</span>
 
 <span class="k">with</span> <span class="n">BigQueryWarehouse</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;BLOCK_NAME&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">warehouse</span><span class="p">:</span>
     <span class="n">operation</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;</span>
@@ -15615,7 +15618,7 @@ where each row is a tuple and each column is a value in the tuple.</p>
 <span class="normal">687</span>
 <span class="normal">688</span>
 <span class="normal">689</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@sync_compatible</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_one</span><span class="p">(</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">fetch_one</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">operation</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">parameters</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -15697,7 +15700,7 @@ where each row is a tuple and each column is a value in the tuple.</p>
 <span class="normal">588</span>
 <span class="normal">589</span>
 <span class="normal">590</span>
-<span class="normal">591</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_connection</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Connection&quot;</span><span class="p">:</span>
+<span class="normal">591</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_connection</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Connection&quot;</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get the opened connection to BigQuery.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -15735,7 +15738,7 @@ where each row is a tuple and each column is a value in the tuple.</p>
 <span class="normal">627</span>
 <span class="normal">628</span>
 <span class="normal">629</span>
-<span class="normal">630</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">reset_cursors</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="normal">630</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">reset_cursors</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Tries to close all opened cursors.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -15794,12 +15797,12 @@ Args:
 Returns:
     Table name.
 Example:
-    <div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span>
-<span class="kn">from</span> <span class="nn">prefect_gcp</span> <span class="kn">import</span> <span class="n">GcpCredentials</span>
-<span class="kn">from</span> <span class="nn">prefect_gcp.bigquery</span> <span class="kn">import</span> <span class="n">bigquery_create_table</span>
-<span class="kn">from</span> <span class="nn">google.cloud.bigquery</span> <span class="kn">import</span> <span class="n">SchemaField</span>
+    <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect_gcp</span><span class="w"> </span><span class="kn">import</span> <span class="n">GcpCredentials</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect_gcp.bigquery</span><span class="w"> </span><span class="kn">import</span> <span class="n">bigquery_create_table</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">google.cloud.bigquery</span><span class="w"> </span><span class="kn">import</span> <span class="n">SchemaField</span>
 <span class="nd">@flow</span>
-<span class="k">def</span> <span class="nf">example_bigquery_create_table_flow</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">example_bigquery_create_table_flow</span><span class="p">():</span>
     <span class="n">gcp_credentials</span> <span class="o">=</span> <span class="n">GcpCredentials</span><span class="p">(</span><span class="n">project</span><span class="o">=</span><span class="s2">&quot;project&quot;</span><span class="p">)</span>
     <span class="n">schema</span> <span class="o">=</span> <span class="p">[</span>
         <span class="n">SchemaField</span><span class="p">(</span><span class="s2">&quot;number&quot;</span><span class="p">,</span> <span class="n">field_type</span><span class="o">=</span><span class="s2">&quot;INTEGER&quot;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;REQUIRED&quot;</span><span class="p">),</span>
@@ -15910,7 +15913,7 @@ Example:
 <span class="normal">266</span>
 <span class="normal">267</span>
 <span class="normal">268</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@task</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">bigquery_create_table</span><span class="p">(</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">bigquery_create_table</span><span class="p">(</span>
     <span class="n">dataset</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">table</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">gcp_credentials</span><span class="p">:</span> <span class="n">GcpCredentials</span><span class="p">,</span>
@@ -16165,13 +16168,13 @@ not provided, will default to the one inferred from your credentials.</p>
 
 <details class="example" open>
   <summary>Example</summary>
-  <div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span>
-<span class="kn">from</span> <span class="nn">prefect_gcp</span> <span class="kn">import</span> <span class="n">GcpCredentials</span>
-<span class="kn">from</span> <span class="nn">prefect_gcp.bigquery</span> <span class="kn">import</span> <span class="n">bigquery_insert_stream</span>
-<span class="kn">from</span> <span class="nn">google.cloud.bigquery</span> <span class="kn">import</span> <span class="n">SchemaField</span>
+  <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect_gcp</span><span class="w"> </span><span class="kn">import</span> <span class="n">GcpCredentials</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect_gcp.bigquery</span><span class="w"> </span><span class="kn">import</span> <span class="n">bigquery_insert_stream</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">google.cloud.bigquery</span><span class="w"> </span><span class="kn">import</span> <span class="n">SchemaField</span>
 
 <span class="nd">@flow</span>
-<span class="k">def</span> <span class="nf">example_bigquery_insert_stream_flow</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">example_bigquery_insert_stream_flow</span><span class="p">():</span>
     <span class="n">gcp_credentials</span> <span class="o">=</span> <span class="n">GcpCredentials</span><span class="p">(</span><span class="n">project</span><span class="o">=</span><span class="s2">&quot;project&quot;</span><span class="p">)</span>
     <span class="n">records</span> <span class="o">=</span> <span class="p">[</span>
         <span class="p">{</span><span class="s2">&quot;number&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="s2">&quot;abc&quot;</span><span class="p">,</span> <span class="s2">&quot;bool&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">},</span>
@@ -16263,7 +16266,7 @@ not provided, will default to the one inferred from your credentials.</p>
 <span class="normal">341</span>
 <span class="normal">342</span>
 <span class="normal">343</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@task</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">bigquery_insert_stream</span><span class="p">(</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">bigquery_insert_stream</span><span class="p">(</span>
     <span class="n">dataset</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">table</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">records</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">dict</span><span class="p">],</span>
@@ -16397,12 +16400,12 @@ Args:
 
 <details class="example" open>
   <summary>Example</summary>
-  <div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span>
-<span class="kn">from</span> <span class="nn">prefect_gcp</span> <span class="kn">import</span> <span class="n">GcpCredentials</span>
-<span class="kn">from</span> <span class="nn">prefect_gcp.bigquery</span> <span class="kn">import</span> <span class="n">bigquery_load_cloud_storage</span>
+  <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect_gcp</span><span class="w"> </span><span class="kn">import</span> <span class="n">GcpCredentials</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect_gcp.bigquery</span><span class="w"> </span><span class="kn">import</span> <span class="n">bigquery_load_cloud_storage</span>
 
 <span class="nd">@flow</span>
-<span class="k">def</span> <span class="nf">example_bigquery_load_cloud_storage_flow</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">example_bigquery_load_cloud_storage_flow</span><span class="p">():</span>
     <span class="n">gcp_credentials</span> <span class="o">=</span> <span class="n">GcpCredentials</span><span class="p">(</span><span class="n">project</span><span class="o">=</span><span class="s2">&quot;project&quot;</span><span class="p">)</span>
     <span class="n">result</span> <span class="o">=</span> <span class="n">bigquery_load_cloud_storage</span><span class="p">(</span>
         <span class="n">dataset</span><span class="o">=</span><span class="s2">&quot;dataset&quot;</span><span class="p">,</span>
@@ -16503,7 +16506,7 @@ Args:
 <span class="normal">429</span>
 <span class="normal">430</span>
 <span class="normal">431</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@task</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">bigquery_load_cloud_storage</span><span class="p">(</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">bigquery_load_cloud_storage</span><span class="p">(</span>
     <span class="n">dataset</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">table</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">uri</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -16819,13 +16822,13 @@ not provided, will default to the one inferred from your credentials.</p>
 
 <details class="example" open>
   <summary>Example</summary>
-  <div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span>
-<span class="kn">from</span> <span class="nn">prefect_gcp</span> <span class="kn">import</span> <span class="n">GcpCredentials</span>
-<span class="kn">from</span> <span class="nn">prefect_gcp.bigquery</span> <span class="kn">import</span> <span class="n">bigquery_load_file</span>
-<span class="kn">from</span> <span class="nn">google.cloud.bigquery</span> <span class="kn">import</span> <span class="n">SchemaField</span>
+  <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect_gcp</span><span class="w"> </span><span class="kn">import</span> <span class="n">GcpCredentials</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect_gcp.bigquery</span><span class="w"> </span><span class="kn">import</span> <span class="n">bigquery_load_file</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">google.cloud.bigquery</span><span class="w"> </span><span class="kn">import</span> <span class="n">SchemaField</span>
 
 <span class="nd">@flow</span>
-<span class="k">def</span> <span class="nf">example_bigquery_load_file_flow</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">example_bigquery_load_file_flow</span><span class="p">():</span>
     <span class="n">gcp_credentials</span> <span class="o">=</span> <span class="n">GcpCredentials</span><span class="p">(</span><span class="n">project</span><span class="o">=</span><span class="s2">&quot;project&quot;</span><span class="p">)</span>
     <span class="n">result</span> <span class="o">=</span> <span class="n">bigquery_load_file</span><span class="p">(</span>
         <span class="n">dataset</span><span class="o">=</span><span class="s2">&quot;dataset&quot;</span><span class="p">,</span>
@@ -16942,7 +16945,7 @@ not provided, will default to the one inferred from your credentials.</p>
 <span class="normal">533</span>
 <span class="normal">534</span>
 <span class="normal">535</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@task</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">bigquery_load_file</span><span class="p">(</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">bigquery_load_file</span><span class="p">(</span>
     <span class="n">dataset</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">table</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">path</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">],</span>
@@ -17305,12 +17308,12 @@ provided, will default to the one inferred from your credentials.</p>
 <details class="example" open>
   <summary>Example</summary>
   <p>Queries the public names database, returning 10 results.
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span>
-<span class="kn">from</span> <span class="nn">prefect_gcp</span> <span class="kn">import</span> <span class="n">GcpCredentials</span>
-<span class="kn">from</span> <span class="nn">prefect_gcp.bigquery</span> <span class="kn">import</span> <span class="n">bigquery_query</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect_gcp</span><span class="w"> </span><span class="kn">import</span> <span class="n">GcpCredentials</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect_gcp.bigquery</span><span class="w"> </span><span class="kn">import</span> <span class="n">bigquery_query</span>
 
 <span class="nd">@flow</span>
-<span class="k">def</span> <span class="nf">example_bigquery_query_flow</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">example_bigquery_query_flow</span><span class="p">():</span>
     <span class="n">gcp_credentials</span> <span class="o">=</span> <span class="n">GcpCredentials</span><span class="p">(</span>
         <span class="n">service_account_file</span><span class="o">=</span><span class="s2">&quot;/path/to/service/account/keyfile.json&quot;</span><span class="p">,</span>
         <span class="n">project</span><span class="o">=</span><span class="s2">&quot;project&quot;</span>
@@ -17461,7 +17464,7 @@ provided, will default to the one inferred from your credentials.</p>
 <span class="normal">172</span>
 <span class="normal">173</span>
 <span class="normal">174</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@task</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">bigquery_query</span><span class="p">(</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">bigquery_query</span><span class="p">(</span>
     <span class="n">query</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">gcp_credentials</span><span class="p">:</span> <span class="n">GcpCredentials</span><span class="p">,</span>
     <span class="n">query_params</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">tuple</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>  <span class="c1"># 3-tuples</span>

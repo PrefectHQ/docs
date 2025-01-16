@@ -173,6 +173,9 @@ if (amplitudeKey){
     
 
     
+  <meta name="robots" content="noindex, nofollow">
+  
+
   </head>
   
   
@@ -229,7 +232,7 @@ if (amplitudeKey){
           <aside class="md-banner md-banner--warning">
             <div class="md-banner__inner md-grid md-typeset">
               
-  You're viewing the docs for Prefect 2.20.16.
+  You're viewing the docs for Prefect unreleased.
   <a href="../../../../.."> 
     <strong>Click here to view the latest docs.</strong>
   </a>
@@ -13599,7 +13602,7 @@ if (amplitudeKey){
 <span class="normal">74</span>
 <span class="normal">75</span>
 <span class="normal">76</span>
-<span class="normal">77</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">AbstractAppriseNotificationBlock</span><span class="p">(</span><span class="n">NotificationBlock</span><span class="p">,</span> <span class="n">ABC</span><span class="p">):</span>
+<span class="normal">77</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">AbstractAppriseNotificationBlock</span><span class="p">(</span><span class="n">NotificationBlock</span><span class="p">,</span> <span class="n">ABC</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    An abstract class for sending notifications using Apprise.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -13614,16 +13617,16 @@ if (amplitudeKey){
         <span class="p">),</span>
     <span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="kn">import</span> <span class="nn">apprise</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">apprise</span>
 
         <span class="k">if</span> <span class="n">PREFECT_NOTIFY_TYPE_DEFAULT</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">apprise</span><span class="o">.</span><span class="n">NOTIFY_TYPES</span><span class="p">:</span>
             <span class="n">apprise</span><span class="o">.</span><span class="n">NOTIFY_TYPES</span> <span class="o">+=</span> <span class="p">(</span><span class="n">PREFECT_NOTIFY_TYPE_DEFAULT</span><span class="p">,)</span>
 
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_start_apprise_client</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">:</span> <span class="n">SecretStr</span><span class="p">):</span>
-        <span class="kn">from</span> <span class="nn">apprise</span> <span class="kn">import</span> <span class="n">Apprise</span><span class="p">,</span> <span class="n">AppriseAsset</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_start_apprise_client</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">:</span> <span class="n">SecretStr</span><span class="p">):</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">apprise</span><span class="w"> </span><span class="kn">import</span> <span class="n">Apprise</span><span class="p">,</span> <span class="n">AppriseAsset</span>
 
         <span class="c1"># A custom `AppriseAsset` that ensures Prefect Notifications</span>
         <span class="c1"># appear correctly across multiple messaging platforms</span>
@@ -13636,12 +13639,12 @@ if (amplitudeKey){
         <span class="bp">self</span><span class="o">.</span><span class="n">_apprise_client</span> <span class="o">=</span> <span class="n">Apprise</span><span class="p">(</span><span class="n">asset</span><span class="o">=</span><span class="n">prefect_app_data</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_apprise_client</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">url</span><span class="o">.</span><span class="n">get_secret_value</span><span class="p">())</span>
 
-    <span class="k">def</span> <span class="nf">block_initialization</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">block_initialization</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_start_apprise_client</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="p">)</span>
 
     <span class="nd">@sync_compatible</span>
     <span class="nd">@instrument_instance_method_call</span>
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">notify</span><span class="p">(</span>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">notify</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">body</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">subject</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -13731,7 +13734,7 @@ if (amplitudeKey){
 <span class="normal">108</span>
 <span class="normal">109</span>
 <span class="normal">110</span>
-<span class="normal">111</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">AppriseNotificationBlock</span><span class="p">(</span><span class="n">AbstractAppriseNotificationBlock</span><span class="p">,</span> <span class="n">ABC</span><span class="p">):</span>
+<span class="normal">111</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">AppriseNotificationBlock</span><span class="p">(</span><span class="n">AbstractAppriseNotificationBlock</span><span class="p">,</span> <span class="n">ABC</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A base class for sending notifications using Apprise, through webhook URLs.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -13749,7 +13752,7 @@ if (amplitudeKey){
     <span class="p">)</span>
 
     <span class="nd">@sync_compatible</span>
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">notify</span><span class="p">(</span>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">notify</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">body</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">subject</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -13809,7 +13812,7 @@ if (amplitudeKey){
 
 <p><span class="doc-section-title">Examples:</span></p>
     <p>Load a saved custom webhook and send a message:
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect.blocks.notifications</span> <span class="kn">import</span> <span class="n">CustomWebhookNotificationBlock</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect.blocks.notifications</span><span class="w"> </span><span class="kn">import</span> <span class="n">CustomWebhookNotificationBlock</span>
 
 <span class="n">custom_webhook_block</span> <span class="o">=</span> <span class="n">CustomWebhookNotificationBlock</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;BLOCK_NAME&quot;</span><span class="p">)</span>
 
@@ -13954,7 +13957,7 @@ if (amplitudeKey){
 <span class="normal">799</span>
 <span class="normal">800</span>
 <span class="normal">801</span>
-<span class="normal">802</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">CustomWebhookNotificationBlock</span><span class="p">(</span><span class="n">NotificationBlock</span><span class="p">):</span>
+<span class="normal">802</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">CustomWebhookNotificationBlock</span><span class="p">(</span><span class="n">NotificationBlock</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Enables sending notifications via any custom webhook.</span>
 
@@ -14027,7 +14030,7 @@ if (amplitudeKey){
         <span class="n">examples</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;{&quot;tokenFromSecrets&quot;:&quot;SomeSecretToken&quot;}&#39;</span><span class="p">],</span>
     <span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_build_request_args</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">body</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">subject</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_build_request_args</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">body</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">subject</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Build kwargs for httpx.AsyncClient.request&quot;&quot;&quot;</span>
         <span class="c1"># prepare values</span>
         <span class="n">values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">secrets</span><span class="o">.</span><span class="n">get_secret_value</span><span class="p">()</span>
@@ -14054,7 +14057,7 @@ if (amplitudeKey){
             <span class="n">values</span><span class="p">,</span>
         <span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">block_initialization</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">block_initialization</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="c1"># check form_data and json_data</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">form_data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">json_data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;both `Form Data` and `JSON Data` provided&quot;</span><span class="p">)</span>
@@ -14074,8 +14077,8 @@ if (amplitudeKey){
 
     <span class="nd">@sync_compatible</span>
     <span class="nd">@instrument_instance_method_call</span>
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">notify</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">body</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">subject</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-        <span class="kn">import</span> <span class="nn">httpx</span>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">notify</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">body</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">subject</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">httpx</span>
 
         <span class="n">request_args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_request_args</span><span class="p">(</span><span class="n">body</span><span class="p">,</span> <span class="n">subject</span><span class="p">)</span>
         <span class="n">cookies</span> <span class="o">=</span> <span class="n">request_args</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;cookies&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
@@ -14131,7 +14134,7 @@ See <a href="https://github.com/caronc/apprise/wiki/Notify_Discord">Apprise noti
 
 <p><span class="doc-section-title">Examples:</span></p>
     <p>Load a saved Discord webhook and send a message:
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect.blocks.notifications</span> <span class="kn">import</span> <span class="n">DiscordWebhook</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect.blocks.notifications</span><span class="w"> </span><span class="kn">import</span> <span class="n">DiscordWebhook</span>
 
 <span class="n">discord_webhook_block</span> <span class="o">=</span> <span class="n">DiscordWebhook</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;BLOCK_NAME&quot;</span><span class="p">)</span>
 
@@ -14235,7 +14238,7 @@ See <a href="https://github.com/caronc/apprise/wiki/Notify_Discord">Apprise noti
 <span class="normal">665</span>
 <span class="normal">666</span>
 <span class="normal">667</span>
-<span class="normal">668</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">DiscordWebhook</span><span class="p">(</span><span class="n">AbstractAppriseNotificationBlock</span><span class="p">):</span>
+<span class="normal">668</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">DiscordWebhook</span><span class="p">(</span><span class="n">AbstractAppriseNotificationBlock</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Enables sending notifications via a provided Discord webhook.</span>
 <span class="sd">    See [Apprise notify_Discord docs](https://github.com/caronc/apprise/wiki/Notify_Discord) # noqa</span>
@@ -14311,8 +14314,8 @@ See <a href="https://github.com/caronc/apprise/wiki/Notify_Discord">Apprise noti
         <span class="p">),</span>
     <span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">block_initialization</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="kn">from</span> <span class="nn">apprise.plugins.discord</span> <span class="kn">import</span> <span class="n">NotifyDiscord</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">block_initialization</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">apprise.plugins.discord</span><span class="w"> </span><span class="kn">import</span> <span class="n">NotifyDiscord</span>
 
         <span class="n">url</span> <span class="o">=</span> <span class="n">SecretStr</span><span class="p">(</span>
             <span class="n">NotifyDiscord</span><span class="p">(</span>
@@ -14371,7 +14374,7 @@ See <a href="https://github.com/caronc/apprise/wiki/Notify_Mattermost">Apprise n
 
 <p><span class="doc-section-title">Examples:</span></p>
     <p>Load a saved Mattermost webhook and send a message:
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect.blocks.notifications</span> <span class="kn">import</span> <span class="n">MattermostWebhook</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect.blocks.notifications</span><span class="w"> </span><span class="kn">import</span> <span class="n">MattermostWebhook</span>
 
 <span class="n">mattermost_webhook_block</span> <span class="o">=</span> <span class="n">MattermostWebhook</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;BLOCK_NAME&quot;</span><span class="p">)</span>
 
@@ -14459,7 +14462,7 @@ See <a href="https://github.com/caronc/apprise/wiki/Notify_Mattermost">Apprise n
 <span class="normal">572</span>
 <span class="normal">573</span>
 <span class="normal">574</span>
-<span class="normal">575</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">MattermostWebhook</span><span class="p">(</span><span class="n">AbstractAppriseNotificationBlock</span><span class="p">):</span>
+<span class="normal">575</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">MattermostWebhook</span><span class="p">(</span><span class="n">AbstractAppriseNotificationBlock</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Enables sending notifications via a provided Mattermost webhook.</span>
 <span class="sd">    See [Apprise notify_Mattermost docs](https://github.com/caronc/apprise/wiki/Notify_Mattermost) # noqa</span>
@@ -14519,8 +14522,8 @@ See <a href="https://github.com/caronc/apprise/wiki/Notify_Mattermost">Apprise n
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The port of your Mattermost server.&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">block_initialization</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="kn">from</span> <span class="nn">apprise.plugins.mattermost</span> <span class="kn">import</span> <span class="n">NotifyMattermost</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">block_initialization</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">apprise.plugins.mattermost</span><span class="w"> </span><span class="kn">import</span> <span class="n">NotifyMattermost</span>
 
         <span class="n">url</span> <span class="o">=</span> <span class="n">SecretStr</span><span class="p">(</span>
             <span class="n">NotifyMattermost</span><span class="p">(</span>
@@ -14578,7 +14581,7 @@ See <a href="https://github.com/caronc/apprise/wiki/Notify_Mattermost">Apprise n
 
 <p><span class="doc-section-title">Examples:</span></p>
     <p>Load a saved Teams webhook and send a message:
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect.blocks.notifications</span> <span class="kn">import</span> <span class="n">MicrosoftTeamsWebhook</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect.blocks.notifications</span><span class="w"> </span><span class="kn">import</span> <span class="n">MicrosoftTeamsWebhook</span>
 <span class="n">teams_webhook_block</span> <span class="o">=</span> <span class="n">MicrosoftTeamsWebhook</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;BLOCK_NAME&quot;</span><span class="p">)</span>
 <span class="n">teams_webhook_block</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="s2">&quot;Hello from Prefect!&quot;</span><span class="p">)</span>
 </code></pre></div></p>
@@ -14643,7 +14646,7 @@ See <a href="https://github.com/caronc/apprise/wiki/Notify_Mattermost">Apprise n
 <span class="normal">192</span>
 <span class="normal">193</span>
 <span class="normal">194</span>
-<span class="normal">195</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">MicrosoftTeamsWebhook</span><span class="p">(</span><span class="n">AppriseNotificationBlock</span><span class="p">):</span>
+<span class="normal">195</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">MicrosoftTeamsWebhook</span><span class="p">(</span><span class="n">AppriseNotificationBlock</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Enables sending notifications via a provided Microsoft Teams webhook.</span>
 
@@ -14680,9 +14683,9 @@ See <a href="https://github.com/caronc/apprise/wiki/Notify_Mattermost">Apprise n
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Wrap the notification text.&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">block_initialization</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">block_initialization</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;see https://github.com/caronc/apprise/pull/1172&quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">apprise.plugins.workflows</span> <span class="kn">import</span> <span class="n">NotifyWorkflows</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">apprise.plugins.workflows</span><span class="w"> </span><span class="kn">import</span> <span class="n">NotifyWorkflows</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span>
             <span class="n">parsed_url</span> <span class="o">:=</span> <span class="n">NotifyWorkflows</span><span class="o">.</span><span class="n">parse_native_url</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="o">.</span><span class="n">get_secret_value</span><span class="p">())</span>
@@ -14743,9 +14746,9 @@ See <a href="https://github.com/caronc/apprise/wiki/Notify_Mattermost">Apprise n
 <span class="normal">192</span>
 <span class="normal">193</span>
 <span class="normal">194</span>
-<span class="normal">195</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">block_initialization</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="normal">195</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">block_initialization</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;see https://github.com/caronc/apprise/pull/1172&quot;&quot;&quot;</span>
-    <span class="kn">from</span> <span class="nn">apprise.plugins.workflows</span> <span class="kn">import</span> <span class="n">NotifyWorkflows</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">apprise.plugins.workflows</span><span class="w"> </span><span class="kn">import</span> <span class="n">NotifyWorkflows</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span>
         <span class="n">parsed_url</span> <span class="o">:=</span> <span class="n">NotifyWorkflows</span><span class="o">.</span><span class="n">parse_native_url</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="o">.</span><span class="n">get_secret_value</span><span class="p">())</span>
@@ -14797,7 +14800,7 @@ for more info on formatting the URL.</p>
 
 <p><span class="doc-section-title">Examples:</span></p>
     <p>Load a saved Opsgenie webhook and send a message:
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect.blocks.notifications</span> <span class="kn">import</span> <span class="n">OpsgenieWebhook</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect.blocks.notifications</span><span class="w"> </span><span class="kn">import</span> <span class="n">OpsgenieWebhook</span>
 <span class="n">opsgenie_webhook_block</span> <span class="o">=</span> <span class="n">OpsgenieWebhook</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;BLOCK_NAME&quot;</span><span class="p">)</span>
 <span class="n">opsgenie_webhook_block</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="s2">&quot;Hello from Prefect!&quot;</span><span class="p">)</span>
 </code></pre></div></p>
@@ -14918,7 +14921,7 @@ for more info on formatting the URL.</p>
 <span class="normal">495</span>
 <span class="normal">496</span>
 <span class="normal">497</span>
-<span class="normal">498</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">OpsgenieWebhook</span><span class="p">(</span><span class="n">AbstractAppriseNotificationBlock</span><span class="p">):</span>
+<span class="normal">498</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">OpsgenieWebhook</span><span class="p">(</span><span class="n">AbstractAppriseNotificationBlock</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Enables sending notifications via a provided Opsgenie webhook.</span>
 <span class="sd">    See [Apprise notify_opsgenie docs](https://github.com/caronc/apprise/wiki/Notify_opsgenie)</span>
@@ -15002,8 +15005,8 @@ for more info on formatting the URL.</p>
         <span class="n">examples</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;{&quot;key1&quot;: &quot;value1&quot;, &quot;key2&quot;: &quot;value2&quot;}&#39;</span><span class="p">],</span>
     <span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">block_initialization</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="kn">from</span> <span class="nn">apprise.plugins.opsgenie</span> <span class="kn">import</span> <span class="n">NotifyOpsgenie</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">block_initialization</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">apprise.plugins.opsgenie</span><span class="w"> </span><span class="kn">import</span> <span class="n">NotifyOpsgenie</span>
 
         <span class="n">targets</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">target_user</span><span class="p">:</span>
@@ -15074,7 +15077,7 @@ for more info on formatting the URL.</p>
 
 <p><span class="doc-section-title">Examples:</span></p>
     <p>Load a saved PagerDuty webhook and send a message:
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect.blocks.notifications</span> <span class="kn">import</span> <span class="n">PagerDutyWebHook</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect.blocks.notifications</span><span class="w"> </span><span class="kn">import</span> <span class="n">PagerDutyWebHook</span>
 <span class="n">pagerduty_webhook_block</span> <span class="o">=</span> <span class="n">PagerDutyWebHook</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;BLOCK_NAME&quot;</span><span class="p">)</span>
 <span class="n">pagerduty_webhook_block</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="s2">&quot;Hello from Prefect!&quot;</span><span class="p">)</span>
 </code></pre></div></p>
@@ -15212,7 +15215,7 @@ for more info on formatting the URL.</p>
 <span class="normal">321</span>
 <span class="normal">322</span>
 <span class="normal">323</span>
-<span class="normal">324</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">PagerDutyWebHook</span><span class="p">(</span><span class="n">AbstractAppriseNotificationBlock</span><span class="p">):</span>
+<span class="normal">324</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">PagerDutyWebHook</span><span class="p">(</span><span class="n">AbstractAppriseNotificationBlock</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Enables sending notifications via a provided PagerDuty webhook.</span>
 <span class="sd">    See [Apprise notify_pagerduty docs](https://github.com/caronc/apprise/wiki/Notify_pagerduty)</span>
@@ -15300,8 +15303,8 @@ for more info on formatting the URL.</p>
         <span class="n">examples</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;{&quot;disk_space_left&quot;: &quot;145GB&quot;}&#39;</span><span class="p">],</span>
     <span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">block_initialization</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="kn">from</span> <span class="nn">apprise.plugins.pagerduty</span> <span class="kn">import</span> <span class="n">NotifyPagerDuty</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">block_initialization</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">apprise.plugins.pagerduty</span><span class="w"> </span><span class="kn">import</span> <span class="n">NotifyPagerDuty</span>
 
         <span class="n">url</span> <span class="o">=</span> <span class="n">SecretStr</span><span class="p">(</span>
             <span class="n">NotifyPagerDuty</span><span class="p">(</span>
@@ -15320,7 +15323,7 @@ for more info on formatting the URL.</p>
         <span class="bp">self</span><span class="o">.</span><span class="n">_start_apprise_client</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
 
     <span class="nd">@sync_compatible</span>
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">notify</span><span class="p">(</span>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">notify</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">body</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">subject</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -15395,7 +15398,7 @@ webhook url, so we need to update the url and restart the client.</p>
 <span class="normal">322</span>
 <span class="normal">323</span>
 <span class="normal">324</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@sync_compatible</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">notify</span><span class="p">(</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">notify</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">body</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">subject</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -15513,7 +15516,7 @@ from prefect.blocks.notifications import SendgridEmail</p>
 <span class="normal">853</span>
 <span class="normal">854</span>
 <span class="normal">855</span>
-<span class="normal">856</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">SendgridEmail</span><span class="p">(</span><span class="n">AbstractAppriseNotificationBlock</span><span class="p">):</span>
+<span class="normal">856</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">SendgridEmail</span><span class="p">(</span><span class="n">AbstractAppriseNotificationBlock</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Enables sending notifications via any sendgrid account.</span>
 <span class="sd">    See [Apprise Notify_sendgrid docs](https://github.com/caronc/apprise/wiki/Notify_Sendgrid)</span>
@@ -15553,8 +15556,8 @@ from prefect.blocks.notifications import SendgridEmail</p>
         <span class="n">examples</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;&quot;recipient1@gmail.com&quot;&#39;</span><span class="p">],</span>
     <span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">block_initialization</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="kn">from</span> <span class="nn">apprise.plugins.sendgrid</span> <span class="kn">import</span> <span class="n">NotifySendGrid</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">block_initialization</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">apprise.plugins.sendgrid</span><span class="w"> </span><span class="kn">import</span> <span class="n">NotifySendGrid</span>
 
         <span class="n">url</span> <span class="o">=</span> <span class="n">SecretStr</span><span class="p">(</span>
             <span class="n">NotifySendGrid</span><span class="p">(</span>
@@ -15609,7 +15612,7 @@ from prefect.blocks.notifications import SendgridEmail</p>
 
 <p><span class="doc-section-title">Examples:</span></p>
     <p>Load a saved Slack webhook and send a message:
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect.blocks.notifications</span> <span class="kn">import</span> <span class="n">SlackWebhook</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect.blocks.notifications</span><span class="w"> </span><span class="kn">import</span> <span class="n">SlackWebhook</span>
 
 <span class="n">slack_webhook_block</span> <span class="o">=</span> <span class="n">SlackWebhook</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;BLOCK_NAME&quot;</span><span class="p">)</span>
 <span class="n">slack_webhook_block</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="s2">&quot;Hello from Prefect!&quot;</span><span class="p">)</span>
@@ -15645,7 +15648,7 @@ from prefect.blocks.notifications import SendgridEmail</p>
 <span class="normal">136</span>
 <span class="normal">137</span>
 <span class="normal">138</span>
-<span class="normal">139</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">SlackWebhook</span><span class="p">(</span><span class="n">AppriseNotificationBlock</span><span class="p">):</span>
+<span class="normal">139</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">SlackWebhook</span><span class="p">(</span><span class="n">AppriseNotificationBlock</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Enables sending notifications via a provided Slack webhook.</span>
 
@@ -15714,7 +15717,7 @@ Find more on sending Twilio SMS messages in the <a href="https://www.twilio.com/
 
 <p><span class="doc-section-title">Examples:</span></p>
     <p>Load a saved <code>TwilioSMS</code> block and send a message:
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect.blocks.notifications</span> <span class="kn">import</span> <span class="n">TwilioSMS</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect.blocks.notifications</span><span class="w"> </span><span class="kn">import</span> <span class="n">TwilioSMS</span>
 <span class="n">twilio_webhook_block</span> <span class="o">=</span> <span class="n">TwilioSMS</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;BLOCK_NAME&quot;</span><span class="p">)</span>
 <span class="n">twilio_webhook_block</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="s2">&quot;Hello from Prefect!&quot;</span><span class="p">)</span>
 </code></pre></div></p>
@@ -15785,7 +15788,7 @@ Find more on sending Twilio SMS messages in the <a href="https://www.twilio.com/
 <span class="normal">383</span>
 <span class="normal">384</span>
 <span class="normal">385</span>
-<span class="normal">386</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">TwilioSMS</span><span class="p">(</span><span class="n">AbstractAppriseNotificationBlock</span><span class="p">):</span>
+<span class="normal">386</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">TwilioSMS</span><span class="p">(</span><span class="n">AbstractAppriseNotificationBlock</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Enables sending notifications via Twilio SMS.</span>
 <span class="sd">    Find more on sending Twilio SMS messages in the [docs](https://www.twilio.com/docs/sms).</span>
 
@@ -15833,8 +15836,8 @@ Find more on sending Twilio SMS messages in the <a href="https://www.twilio.com/
         <span class="n">examples</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;18004242424&quot;</span><span class="p">],</span>
     <span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">block_initialization</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="kn">from</span> <span class="nn">apprise.plugins.twilio</span> <span class="kn">import</span> <span class="n">NotifyTwilio</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">block_initialization</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">apprise.plugins.twilio</span><span class="w"> </span><span class="kn">import</span> <span class="n">NotifyTwilio</span>
 
         <span class="n">url</span> <span class="o">=</span> <span class="n">SecretStr</span><span class="p">(</span>
             <span class="n">NotifyTwilio</span><span class="p">(</span>

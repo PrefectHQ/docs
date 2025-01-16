@@ -173,6 +173,9 @@ if (amplitudeKey){
     
 
     
+  <meta name="robots" content="noindex, nofollow">
+  
+
   </head>
   
   
@@ -229,7 +232,7 @@ if (amplitudeKey){
           <aside class="md-banner md-banner--warning">
             <div class="md-banner__inner md-grid md-typeset">
               
-  You're viewing the docs for Prefect 2.20.16.
+  You're viewing the docs for Prefect unreleased.
   <a href="../../.."> 
     <strong>Click here to view the latest docs.</strong>
   </a>
@@ -13378,13 +13381,13 @@ In this guide, we'll discuss methods to reduce the processing time or memory uti
 <p>When a task is called from a flow, each argument is introspected by Prefect, by default.
 To speed up your flow runs, you can disable this behavior for a task by wrapping the argument using <a href="https://docs.prefect.io/latest/api-ref/prefect/utilities/annotations/#prefect.utilities.annotations.quote"><code>quote</code></a>.</p>
 <p>To demonstrate, let's use a basic example that extracts and transforms some New York taxi data.</p>
-<div class="highlight"><span class="filename">et_quote.py</span><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">task</span><span class="p">,</span> <span class="n">flow</span>
-<span class="hll"><span class="kn">from</span> <span class="nn">prefect.utilities.annotations</span> <span class="kn">import</span> <span class="n">quote</span>
-</span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<div class="highlight"><span class="filename">et_quote.py</span><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">task</span><span class="p">,</span> <span class="n">flow</span>
+<span class="hll"><span class="kn">from</span><span class="w"> </span><span class="nn">prefect.utilities.annotations</span><span class="w"> </span><span class="kn">import</span> <span class="n">quote</span>
+</span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 
 
 <span class="nd">@task</span>
-<span class="k">def</span> <span class="nf">extract</span><span class="p">(</span><span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">extract</span><span class="p">(</span><span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Extract data&quot;&quot;&quot;</span>
     <span class="n">df_raw</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_parquet</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">df_raw</span><span class="o">.</span><span class="n">info</span><span class="p">())</span>
@@ -13392,7 +13395,7 @@ To speed up your flow runs, you can disable this behavior for a task by wrapping
 
 
 <span class="nd">@task</span>
-<span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">transform</span><span class="p">(</span><span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Basic transformation&quot;&quot;&quot;</span>
     <span class="n">df</span><span class="p">[</span><span class="s2">&quot;tip_fraction&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;tip_amount&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;total_amount&quot;</span><span class="p">]</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">info</span><span class="p">())</span>
@@ -13400,7 +13403,7 @@ To speed up your flow runs, you can disable this behavior for a task by wrapping
 
 
 <span class="nd">@flow</span><span class="p">(</span><span class="n">log_prints</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">et</span><span class="p">(</span><span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">et</span><span class="p">(</span><span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;ET pipeline&quot;&quot;&quot;</span>
     <span class="n">df_raw</span> <span class="o">=</span> <span class="n">extract</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
 <span class="hll">    <span class="n">df</span> <span class="o">=</span> <span class="n">transform</span><span class="p">(</span><span class="n">quote</span><span class="p">(</span><span class="n">df_raw</span><span class="p">))</span>
@@ -13422,7 +13425,7 @@ Learn more about blocks <a href="/concepts/blocks/">here</a>.</p>
 <p>Install the relevant library, register the block with the server, and create your storage block.
 Then you can reference the block in your flow like this:</p>
 <div class="highlight"><pre><span></span><code><span class="o">...</span>
-<span class="kn">from</span> <span class="nn">prefect_aws.s3</span> <span class="kn">import</span> <span class="n">S3Bucket</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect_aws.s3</span><span class="w"> </span><span class="kn">import</span> <span class="n">S3Bucket</span>
 
 <span class="n">my_s3_block</span> <span class="o">=</span> <span class="n">S3Bucket</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;MY_BLOCK_NAME&quot;</span><span class="p">)</span>
 
