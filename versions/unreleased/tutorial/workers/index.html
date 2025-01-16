@@ -173,6 +173,9 @@ if (amplitudeKey){
     
 
     
+  <meta name="robots" content="noindex, nofollow">
+  
+
   </head>
   
   
@@ -13452,12 +13455,12 @@ We're going to update our <code>repo_info.py</code> file to build a Docker image
 <li>Tell <code>flow.deploy</code> the name to use for the Docker image that will be built.</li>
 </ol>
 <p>Here's what the updated <code>repo_info.py</code> looks like:</p>
-<div class="highlight"><span class="filename">repo_info.py</span><pre><span></span><code><span class="kn">import</span> <span class="nn">httpx</span>
-<span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span>
+<div class="highlight"><span class="filename">repo_info.py</span><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">httpx</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span>
 
 
 <span class="nd">@flow</span><span class="p">(</span><span class="n">log_prints</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">get_repo_info</span><span class="p">(</span><span class="n">repo_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;PrefectHQ/prefect&quot;</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_repo_info</span><span class="p">(</span><span class="n">repo_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;PrefectHQ/prefect&quot;</span><span class="p">):</span>
     <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;https://api.github.com/repos/</span><span class="si">{</span><span class="n">repo_name</span><span class="si">}</span><span class="s2">&quot;</span>
     <span class="n">response</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
     <span class="n">response</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
@@ -13493,13 +13496,13 @@ We're going to update our <code>repo_info.py</code> file to build a Docker image
 <p class="admonition-title">What Dockerfile?</p>
 <p>In this example, Prefect generates a Dockerfile for you that will build an image based off of one of Prefect's published images. The generated Dockerfile will copy the current directory into the Docker image and install any dependencies listed in a <code>requirements.txt</code> file.</p>
 <p>If you want to use a custom Dockerfile, you can specify the path to the Dockerfile using the <code>DeploymentImage</code> class:</p>
-<div class="highlight"><span class="filename">repo_info.py</span><pre><span></span><code><span class="kn">import</span> <span class="nn">httpx</span>
-<span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span>
-<span class="kn">from</span> <span class="nn">prefect.deployments</span> <span class="kn">import</span> <span class="n">DeploymentImage</span>
+<div class="highlight"><span class="filename">repo_info.py</span><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">httpx</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect.deployments</span><span class="w"> </span><span class="kn">import</span> <span class="n">DeploymentImage</span>
 
 
 <span class="nd">@flow</span><span class="p">(</span><span class="n">log_prints</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">get_repo_info</span><span class="p">(</span><span class="n">repo_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;PrefectHQ/prefect&quot;</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_repo_info</span><span class="p">(</span><span class="n">repo_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;PrefectHQ/prefect&quot;</span><span class="p">):</span>
     <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;https://api.github.com/repos/</span><span class="si">{</span><span class="n">repo_name</span><span class="si">}</span><span class="s2">&quot;</span>
     <span class="n">response</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
     <span class="n">response</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
@@ -13527,12 +13530,12 @@ We're going to update our <code>repo_info.py</code> file to build a Docker image
 <p>The <code>job_variables</code> section allows you to fine-tune the infrastructure settings for a specific deployment. These values override default values in the specified work pool's <a href="/concepts/work-pools/#base-job-template">base job template</a>.</p>
 <p>When testing images locally without pushing them to a registry (to avoid potential errors like docker.errors.NotFound), it's recommended to include an <code>image_pull_policy</code> job_variable set to <code>Never</code>. However, for production workflows, always consider pushing images to a remote registry for more reliability and accessibility.</p>
 <p>Here's how you can quickly set the <code>image_pull_policy</code> to be <code>Never</code> for this tutorial deployment without affecting the default value set on your work pool:</p>
-<div class="highlight"><span class="filename">repo_info.py</span><pre><span></span><code><span class="kn">import</span> <span class="nn">httpx</span>
-<span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span>
+<div class="highlight"><span class="filename">repo_info.py</span><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">httpx</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span>
 
 
 <span class="nd">@flow</span><span class="p">(</span><span class="n">log_prints</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">get_repo_info</span><span class="p">(</span><span class="n">repo_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;PrefectHQ/prefect&quot;</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_repo_info</span><span class="p">(</span><span class="n">repo_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;PrefectHQ/prefect&quot;</span><span class="p">):</span>
     <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;https://api.github.com/repos/</span><span class="si">{</span><span class="n">repo_name</span><span class="si">}</span><span class="s2">&quot;</span>
     <span class="n">response</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
     <span class="n">response</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>

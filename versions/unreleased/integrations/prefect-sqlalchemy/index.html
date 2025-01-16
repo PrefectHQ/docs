@@ -171,6 +171,9 @@ if (amplitudeKey){
     
 
     
+  <meta name="robots" content="noindex, nofollow">
+  
+
   </head>
   
   
@@ -13264,7 +13267,7 @@ if (amplitudeKey){
 <div class="admonition note">
 <p class="admonition-title">Async support</p>
 <p><code>SqlAlchemyConnector</code> also supports async workflows! Just be sure to save, load, and use an async driver as in the example below.</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect_sqlalchemy</span> <span class="kn">import</span> <span class="n">SqlAlchemyConnector</span><span class="p">,</span> <span class="n">ConnectionComponents</span><span class="p">,</span> <span class="n">AsyncDriver</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect_sqlalchemy</span><span class="w"> </span><span class="kn">import</span> <span class="n">SqlAlchemyConnector</span><span class="p">,</span> <span class="n">ConnectionComponents</span><span class="p">,</span> <span class="n">AsyncDriver</span>
 
 <span class="n">connector</span> <span class="o">=</span> <span class="n">SqlAlchemyConnector</span><span class="p">(</span>
     <span class="n">connection_info</span><span class="o">=</span><span class="n">ConnectionComponents</span><span class="p">(</span>
@@ -13279,12 +13282,12 @@ if (amplitudeKey){
 <div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Sync</label><label for="__tabbed_1_2">Async</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
-<span class="kn">from</span> <span class="nn">prefect_sqlalchemy</span> <span class="kn">import</span> <span class="n">SqlAlchemyConnector</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect_sqlalchemy</span><span class="w"> </span><span class="kn">import</span> <span class="n">SqlAlchemyConnector</span>
 
 
 <span class="nd">@task</span>
-<span class="k">def</span> <span class="nf">setup_table</span><span class="p">(</span><span class="n">block_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">setup_table</span><span class="p">(</span><span class="n">block_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="k">with</span> <span class="n">SqlAlchemyConnector</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">block_name</span><span class="p">)</span> <span class="k">as</span> <span class="n">connector</span><span class="p">:</span>
         <span class="n">connector</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
             <span class="s2">&quot;CREATE TABLE IF NOT EXISTS customers (name varchar, address varchar);&quot;</span>
@@ -13302,7 +13305,7 @@ if (amplitudeKey){
         <span class="p">)</span>
 
 <span class="nd">@task</span>
-<span class="k">def</span> <span class="nf">fetch_data</span><span class="p">(</span><span class="n">block_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">fetch_data</span><span class="p">(</span><span class="n">block_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
     <span class="n">all_rows</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">with</span> <span class="n">SqlAlchemyConnector</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">block_name</span><span class="p">)</span> <span class="k">as</span> <span class="n">connector</span><span class="p">:</span>
         <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
@@ -13315,7 +13318,7 @@ if (amplitudeKey){
     <span class="k">return</span> <span class="n">all_rows</span>
 
 <span class="nd">@flow</span>
-<span class="k">def</span> <span class="nf">sqlalchemy_flow</span><span class="p">(</span><span class="n">block_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">sqlalchemy_flow</span><span class="p">(</span><span class="n">block_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
     <span class="n">setup_table</span><span class="p">(</span><span class="n">block_name</span><span class="p">)</span>
     <span class="n">all_rows</span> <span class="o">=</span> <span class="n">fetch_data</span><span class="p">(</span><span class="n">block_name</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">all_rows</span>
@@ -13325,12 +13328,12 @@ if (amplitudeKey){
 </code></pre></div>
 </div>
 <div class="tabbed-block">
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
-<span class="kn">from</span> <span class="nn">prefect_sqlalchemy</span> <span class="kn">import</span> <span class="n">SqlAlchemyConnector</span>
-<span class="kn">import</span> <span class="nn">asyncio</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect_sqlalchemy</span><span class="w"> </span><span class="kn">import</span> <span class="n">SqlAlchemyConnector</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
 
 <span class="nd">@task</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">setup_table</span><span class="p">(</span><span class="n">block_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">setup_table</span><span class="p">(</span><span class="n">block_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="k">async</span> <span class="k">with</span> <span class="k">await</span> <span class="n">SqlAlchemyConnector</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">block_name</span><span class="p">)</span> <span class="k">as</span> <span class="n">connector</span><span class="p">:</span>
         <span class="k">await</span> <span class="n">connector</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
             <span class="s2">&quot;CREATE TABLE IF NOT EXISTS customers (name varchar, address varchar);&quot;</span>
@@ -13348,7 +13351,7 @@ if (amplitudeKey){
         <span class="p">)</span>
 
 <span class="nd">@task</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_data</span><span class="p">(</span><span class="n">block_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">fetch_data</span><span class="p">(</span><span class="n">block_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
     <span class="n">all_rows</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">async</span> <span class="k">with</span> <span class="k">await</span> <span class="n">SqlAlchemyConnector</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">block_name</span><span class="p">)</span> <span class="k">as</span> <span class="n">connector</span><span class="p">:</span>
         <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
@@ -13361,7 +13364,7 @@ if (amplitudeKey){
     <span class="k">return</span> <span class="n">all_rows</span>
 
 <span class="nd">@flow</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">sqlalchemy_flow</span><span class="p">(</span><span class="n">block_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">sqlalchemy_flow</span><span class="p">(</span><span class="n">block_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
     <span class="k">await</span> <span class="n">setup_table</span><span class="p">(</span><span class="n">block_name</span><span class="p">)</span>
     <span class="n">all_rows</span> <span class="o">=</span> <span class="k">await</span> <span class="n">fetch_data</span><span class="p">(</span><span class="n">block_name</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">all_rows</span>
@@ -13382,7 +13385,7 @@ if (amplitudeKey){
 <h3 id="saving-credentials-to-a-block">Saving credentials to a block<a class="headerlink" href="#saving-credentials-to-a-block" title="Permanent link">&para;</a></h3>
 <p>To use the <code>load</code> method on Blocks, you must have a block document <a href="https://docs.prefect.io/concepts/blocks/#saving-blocks">saved through code</a> or saved through the UI.</p>
 <p>Below is a walkthrough on saving block documents through code; simply create a short script, replacing the placeholders.</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect_sqlalchemy</span> <span class="kn">import</span> <span class="n">SqlAlchemyConnector</span><span class="p">,</span> <span class="n">ConnectionComponents</span><span class="p">,</span> <span class="n">SyncDriver</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect_sqlalchemy</span><span class="w"> </span><span class="kn">import</span> <span class="n">SqlAlchemyConnector</span><span class="p">,</span> <span class="n">ConnectionComponents</span><span class="p">,</span> <span class="n">SyncDriver</span>
 
 <span class="n">connector</span> <span class="o">=</span> <span class="n">SqlAlchemyConnector</span><span class="p">(</span>
     <span class="n">connection_info</span><span class="o">=</span><span class="n">ConnectionComponents</span><span class="p">(</span>
@@ -13398,12 +13401,12 @@ if (amplitudeKey){
 <span class="n">connector</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">&quot;BLOCK_NAME-PLACEHOLDER&quot;</span><span class="p">)</span>
 </code></pre></div>
 <p>Congrats! You can now easily load the saved block, which holds your credentials:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect_sqlalchemy</span> <span class="kn">import</span> <span class="n">SqlAlchemyConnector</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect_sqlalchemy</span><span class="w"> </span><span class="kn">import</span> <span class="n">SqlAlchemyConnector</span>
 
 <span class="n">SqlAlchemyConnector</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;BLOCK_NAME-PLACEHOLDER&quot;</span><span class="p">)</span>
 </code></pre></div>
 <p>The required keywords depend upon the desired driver. For example, SQLite requires only the <code>driver</code> and <code>database</code> arguments:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect_sqlalchemy</span> <span class="kn">import</span> <span class="n">SqlAlchemyConnector</span><span class="p">,</span> <span class="n">ConnectionComponents</span><span class="p">,</span> <span class="n">SyncDriver</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect_sqlalchemy</span><span class="w"> </span><span class="kn">import</span> <span class="n">SqlAlchemyConnector</span><span class="p">,</span> <span class="n">ConnectionComponents</span><span class="p">,</span> <span class="n">SyncDriver</span>
 
 <span class="n">connector</span> <span class="o">=</span> <span class="n">SqlAlchemyConnector</span><span class="p">(</span>
     <span class="n">connection_info</span><span class="o">=</span><span class="n">ConnectionComponents</span><span class="p">(</span>

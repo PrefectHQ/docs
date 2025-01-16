@@ -173,6 +173,9 @@ if (amplitudeKey){
     
 
     
+  <meta name="robots" content="noindex, nofollow">
+  
+
   </head>
   
   
@@ -13878,28 +13881,28 @@ For example, by running a Python script or importing the flow into an interactiv
 <p><img alt="Prefect UI" src="/img/ui/timeline-flows.png" /></p>
 <h2 id="writing-flows">Writing flows<a class="headerlink" href="#writing-flows" title="Permanent link">&para;</a></h2>
 <p>The <a class="autorefs autorefs-internal" href="../../api-ref/prefect/flows/#prefect.flows.flow"><code>@flow</code></a> decorator is used to designate a flow:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span>
 
 <span class="hll"><span class="nd">@flow</span>
-</span><span class="k">def</span> <span class="nf">my_flow</span><span class="p">():</span>
+</span><span class="k">def</span><span class="w"> </span><span class="nf">my_flow</span><span class="p">():</span>
     <span class="k">return</span>
 </code></pre></div>
 <p>There are no rigid rules for what code you include within a flow definition - all valid Python is acceptable.</p>
 <p>Flows are uniquely identified by name. You can provide a <code>name</code> parameter value for the flow.
 If you don't provide a name, Prefect uses the flow function name.</p>
 <div class="highlight"><pre><span></span><code><span class="hll"><span class="nd">@flow</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;My Flow&quot;</span><span class="p">)</span>
-</span><span class="k">def</span> <span class="nf">my_flow</span><span class="p">():</span>
+</span><span class="k">def</span><span class="w"> </span><span class="nf">my_flow</span><span class="p">():</span>
     <span class="k">return</span>
 </code></pre></div>
 <p>Flows can call tasks to allow Prefect to orchestrate and track more granular units of work:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
 
 <span class="nd">@task</span>
-<span class="k">def</span> <span class="nf">print_hello</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">print_hello</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Hello </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">!&quot;</span><span class="p">)</span>
 
 <span class="nd">@flow</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Hello Flow&quot;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">hello_world</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;world&quot;</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">hello_world</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;world&quot;</span><span class="p">):</span>
     <span class="n">print_hello</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
 </code></pre></div>
 <div class="admonition tip">
@@ -13962,46 +13965,46 @@ This allows Prefect to better contain task failures.</p>
 </tbody>
 </table>
 <p>For example, you can provide a <code>name</code> value for the flow. Here we've also used the optional <code>description</code> argument and specified a non-default task runner.</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span>
-<span class="kn">from</span> <span class="nn">prefect.task_runners</span> <span class="kn">import</span> <span class="n">SequentialTaskRunner</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect.task_runners</span><span class="w"> </span><span class="kn">import</span> <span class="n">SequentialTaskRunner</span>
 
 <span class="nd">@flow</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;My Flow&quot;</span><span class="p">,</span>
       <span class="n">description</span><span class="o">=</span><span class="s2">&quot;My flow using SequentialTaskRunner&quot;</span><span class="p">,</span>
       <span class="n">task_runner</span><span class="o">=</span><span class="n">SequentialTaskRunner</span><span class="p">())</span>
-<span class="k">def</span> <span class="nf">my_flow</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_flow</span><span class="p">():</span>
     <span class="k">return</span>
 </code></pre></div>
 <p>You can also provide the description as the docstring on the flow function.</p>
 <div class="highlight"><pre><span></span><code><span class="nd">@flow</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;My Flow&quot;</span><span class="p">,</span>
       <span class="n">task_runner</span><span class="o">=</span><span class="n">SequentialTaskRunner</span><span class="p">())</span>
-<span class="k">def</span> <span class="nf">my_flow</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_flow</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;My flow using SequentialTaskRunner&quot;&quot;&quot;</span>
     <span class="k">return</span>
 </code></pre></div>
 <p>You can distinguish runs of this flow by providing a <code>flow_run_name</code>.
 This setting accepts a string that can optionally contain templated references to the parameters of your flow.
 The name will be formatted using Python's standard string formatting syntax as can be seen here:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">datetime</span>
-<span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">datetime</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span>
 
 <span class="nd">@flow</span><span class="p">(</span><span class="n">flow_run_name</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">{name}</span><span class="s2">-on-{date:%A}&quot;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">my_flow</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">date</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_flow</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">date</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">):</span>
     <span class="k">pass</span>
 
 <span class="c1"># creates a flow run called &#39;marvin-on-Thursday&#39;</span>
 <span class="n">my_flow</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;marvin&quot;</span><span class="p">,</span> <span class="n">date</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">))</span>
 </code></pre></div>
 <p>Additionally this setting also accepts a function that returns a string for the flow run name:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">datetime</span>
-<span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">datetime</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span>
 
-<span class="k">def</span> <span class="nf">generate_flow_run_name</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">generate_flow_run_name</span><span class="p">():</span>
     <span class="n">date</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">date</span><span class="si">:</span><span class="s2">%A</span><span class="si">}</span><span class="s2">-is-a-nice-day&quot;</span>
 
 <span class="nd">@flow</span><span class="p">(</span><span class="n">flow_run_name</span><span class="o">=</span><span class="n">generate_flow_run_name</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">my_flow</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_flow</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
     <span class="k">pass</span>
 
 <span class="c1"># creates a flow run called &#39;Thursday-is-a-nice-day&#39;</span>
@@ -14009,10 +14012,10 @@ The name will be formatted using Python's standard string formatting syntax as c
     <span class="n">my_flow</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;marvin&quot;</span><span class="p">)</span>
 </code></pre></div>
 <p>If you need access to information about the flow, use the <code>prefect.runtime</code> module. For example:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span>
-<span class="kn">from</span> <span class="nn">prefect.runtime</span> <span class="kn">import</span> <span class="n">flow_run</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect.runtime</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow_run</span>
 
-<span class="k">def</span> <span class="nf">generate_flow_run_name</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">generate_flow_run_name</span><span class="p">():</span>
     <span class="n">flow_name</span> <span class="o">=</span> <span class="n">flow_run</span><span class="o">.</span><span class="n">flow_name</span>
 
     <span class="n">parameters</span> <span class="o">=</span> <span class="n">flow_run</span><span class="o">.</span><span class="n">parameters</span>
@@ -14022,7 +14025,7 @@ The name will be formatted using Python's standard string formatting syntax as c
     <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">flow_name</span><span class="si">}</span><span class="s2">-with-</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">-and-</span><span class="si">{</span><span class="n">limit</span><span class="si">}</span><span class="s2">&quot;</span>
 
 <span class="nd">@flow</span><span class="p">(</span><span class="n">flow_run_name</span><span class="o">=</span><span class="n">generate_flow_run_name</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">my_flow</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">limit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_flow</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">limit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">):</span>
     <span class="k">pass</span>
 
 <span class="c1"># creates a flow run called &#39;my-flow-with-marvin-and-100&#39;</span>
@@ -14034,10 +14037,10 @@ Where possible, values will be coerced into the correct type. For example, if a 
 If set to <code>False</code>, no validation will be performed on flow parameters.</p>
 <h2 id="separating-logic-into-tasks">Separating logic into tasks<a class="headerlink" href="#separating-logic-into-tasks" title="Permanent link">&para;</a></h2>
 <p>The simplest workflow is just a <code>@flow</code> function that does all the work of the workflow.</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span>
 
 <span class="nd">@flow</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Hello Flow&quot;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">hello_world</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;world&quot;</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">hello_world</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;world&quot;</span><span class="p">):</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Hello </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">!&quot;</span><span class="p">)</span>
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
@@ -14054,16 +14057,16 @@ Hello<span class="w"> </span>Marvin!
 </div>
 
 <p>A better practice is to create <code>@task</code> functions that do the specific work of your flow, and use your <code>@flow</code> function as the conductor that orchestrates the flow of your application:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
 
 <span class="nd">@task</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Print Hello&quot;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">print_hello</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">print_hello</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
     <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Hello </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">!&quot;</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">msg</span>
 
 <span class="nd">@flow</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Hello Flow&quot;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">hello_world</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;world&quot;</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">hello_world</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;world&quot;</span><span class="p">):</span>
     <span class="n">message</span> <span class="o">=</span> <span class="n">print_hello</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
@@ -14089,22 +14092,22 @@ Hello<span class="w"> </span>Marvin!
 <div class="admonition note">
 <p class="admonition-title">To use the <code>visualize()</code> method, Graphviz must be installed and on your PATH. Please install Graphviz from <a href="http://www.graphviz.org/download/">http://www.graphviz.org/download/</a>. And note: just installing the <code>graphviz</code> python package is not sufficient.</p>
 </div>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
 
 <span class="nd">@task</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Print Hello&quot;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">print_hello</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">print_hello</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
     <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Hello </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">!&quot;</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">msg</span>
 
 <span class="nd">@task</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Print Hello Again&quot;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">print_hello_again</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">print_hello_again</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
     <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Hello </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">!&quot;</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">msg</span>
 
 <span class="nd">@flow</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Hello Flow&quot;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">hello_world</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;world&quot;</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">hello_world</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;world&quot;</span><span class="p">):</span>
     <span class="n">message</span> <span class="o">=</span> <span class="n">print_hello</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
     <span class="n">message2</span> <span class="o">=</span> <span class="n">print_hello_again</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
 
@@ -14114,17 +14117,17 @@ Hello<span class="w"> </span>Marvin!
 <p><img alt="A simple flow visualized with the .visualize() method" src="/img/orchestration/hello-flow-viz.png" /></p>
 <p>Prefect cannot automatically produce a schematic for dynamic workflows, such as those with loops or if/else control flow.
 In this case, you can provide tasks with mock return values for use in the <code>visualize()</code> call.</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
 <span class="nd">@task</span><span class="p">(</span><span class="n">viz_return_value</span><span class="o">=</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span>
-<span class="k">def</span> <span class="nf">get_list</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_list</span><span class="p">():</span>
     <span class="k">return</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
 
 <span class="nd">@task</span>
-<span class="k">def</span> <span class="nf">append_one</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">append_one</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">n</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>
 
 <span class="nd">@flow</span>
-<span class="k">def</span> <span class="nf">viz_return_value_tracked</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">viz_return_value_tracked</span><span class="p">():</span>
     <span class="n">l</span> <span class="o">=</span> <span class="n">get_list</span><span class="p">()</span>
     <span class="k">for</span> <span class="n">num</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
         <span class="n">l</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
@@ -14156,20 +14159,20 @@ Whether running locally or via a <a href="/concepts/deployments/">deployment</a>
 <p>Inline subflow runs, specifically those created without <code>run_deployment</code>, cannot be cancelled without cancelling their parent flow run.
 If you may need to cancel a subflow run independent of its parent flow run, we recommend deploying it separately and starting it using the <a href="/api-ref/prefect/deployments/deployments/#prefect.deployments.deployments.run_deployment">run_deployment</a> function.</p>
 </div>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
 
 <span class="nd">@task</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Print Hello&quot;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">print_hello</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">print_hello</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
     <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Hello </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">!&quot;</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">msg</span>
 
 <span class="nd">@flow</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Subflow&quot;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">my_subflow</span><span class="p">(</span><span class="n">msg</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_subflow</span><span class="p">(</span><span class="n">msg</span><span class="p">):</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Subflow says: </span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
 <span class="nd">@flow</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Hello Flow&quot;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">hello_world</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;world&quot;</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">hello_world</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;world&quot;</span><span class="p">):</span>
     <span class="n">message</span> <span class="o">=</span> <span class="n">print_hello</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
     <span class="n">my_subflow</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
 
@@ -14177,24 +14180,24 @@ If you may need to cancel a subflow run independent of its parent flow run, we r
     <span class="n">hello_world</span><span class="p">(</span><span class="s2">&quot;Marvin&quot;</span><span class="p">)</span>
 </code></pre></div>
 <p>You can also define flows or tasks in separate modules and import them for usage. For example, here's a simple subflow module:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
 
 <span class="nd">@flow</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Subflow&quot;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">my_subflow</span><span class="p">(</span><span class="n">msg</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_subflow</span><span class="p">(</span><span class="n">msg</span><span class="p">):</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Subflow says: </span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </code></pre></div>
 <p>Here's a parent flow that imports and uses <code>my_subflow()</code> as a subflow:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
-<span class="kn">from</span> <span class="nn">subflow</span> <span class="kn">import</span> <span class="n">my_subflow</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">subflow</span><span class="w"> </span><span class="kn">import</span> <span class="n">my_subflow</span>
 
 <span class="nd">@task</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Print Hello&quot;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">print_hello</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">print_hello</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
     <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Hello </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">!&quot;</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">msg</span>
 
 <span class="nd">@flow</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Hello Flow&quot;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">hello_world</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;world&quot;</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">hello_world</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;world&quot;</span><span class="p">):</span>
     <span class="n">message</span> <span class="o">=</span> <span class="n">print_hello</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
     <span class="n">my_subflow</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
 
@@ -14241,27 +14244,27 @@ These parameters are stored by the Prefect orchestration engine on the flow run 
 </div>
 <p>Type hints provide an easy way to enforce typing on your flow parameters via <a href="https://pydantic-docs.helpmanual.io/">pydantic</a>.
 This means <em>any</em> pydantic model used as a type hint within a flow will be coerced automatically into the relevant object type:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span>
-<span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">BaseModel</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pydantic</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseModel</span>
 
-<span class="k">class</span> <span class="nc">Model</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Model</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
     <span class="n">a</span><span class="p">:</span> <span class="nb">int</span>
     <span class="n">b</span><span class="p">:</span> <span class="nb">float</span>
     <span class="n">c</span><span class="p">:</span> <span class="nb">str</span>
 
 <span class="nd">@flow</span>
-<span class="k">def</span> <span class="nf">model_validator</span><span class="p">(</span><span class="n">model</span><span class="p">:</span> <span class="n">Model</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">model_validator</span><span class="p">(</span><span class="n">model</span><span class="p">:</span> <span class="n">Model</span><span class="p">):</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
 </code></pre></div>
 <p>Note that parameter values can be provided to a flow via API using a <a href="/concepts/deployments/">deployment</a>.
 Flow run parameters sent to the API on flow calls are coerced to a serializable form.
 Type hints on your flow functions provide you a way of automatically coercing JSON provided values to their appropriate Python representation.</p>
 <p>For example, to automatically convert something to a datetime:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span>
-<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
 
 <span class="nd">@flow</span>
-<span class="k">def</span> <span class="nf">what_day_is_it</span><span class="p">(</span><span class="n">date</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">what_day_is_it</span><span class="p">(</span><span class="n">date</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">date</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">date</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;It was </span><span class="si">{</span><span class="n">date</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%A&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2"> on </span><span class="si">{</span><span class="n">date</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -14298,10 +14301,10 @@ If a flow run for a deployment receives invalid parameters, it will move from a 
 <p>The following examples illustrate each of these cases:</p>
 <h3 id="raise-an-exception">Raise an exception<a class="headerlink" href="#raise-an-exception" title="Permanent link">&para;</a></h3>
 <p>If an exception is raised within the flow function, the flow is immediately marked as failed.</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span>
 
 <span class="nd">@flow</span>
-<span class="k">def</span> <span class="nf">always_fails_flow</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">always_fails_flow</span><span class="p">():</span>
 <span class="hll">    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;This flow immediately fails&quot;</span><span class="p">)</span>
 </span>
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
@@ -14319,19 +14322,19 @@ ValueError:<span class="w"> </span>This<span class="w"> </span>flow<span class="
 
 <h3 id="return-none">Return <code>none</code><a class="headerlink" href="#return-none" title="Permanent link">&para;</a></h3>
 <p>A flow with no return statement is determined by the state of all of its task runs.</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
 
 <span class="nd">@task</span>
-<span class="k">def</span> <span class="nf">always_fails_task</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">always_fails_task</span><span class="p">():</span>
     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;I fail successfully&quot;</span><span class="p">)</span>
 
 <span class="nd">@task</span>
-<span class="k">def</span> <span class="nf">always_succeeds_task</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">always_succeeds_task</span><span class="p">():</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;I&#39;m fail safe!&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="s2">&quot;success&quot;</span>
 
 <span class="nd">@flow</span>
-<span class="k">def</span> <span class="nf">always_fails_flow</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">always_fails_flow</span><span class="p">():</span>
     <span class="n">always_fails_task</span><span class="o">.</span><span class="n">submit</span><span class="p">()</span><span class="o">.</span><span class="n">result</span><span class="p">(</span><span class="n">raise_on_failure</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="n">always_succeeds_task</span><span class="p">()</span>
 
@@ -14362,19 +14365,19 @@ ValueError:<span class="w"> </span>I<span class="w"> </span>fail<span class="w">
 
 <h3 id="return-a-future">Return a future<a class="headerlink" href="#return-a-future" title="Permanent link">&para;</a></h3>
 <p>If a flow returns one or more futures, the final state is determined based on the underlying states.</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
 
 <span class="nd">@task</span>
-<span class="k">def</span> <span class="nf">always_fails_task</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">always_fails_task</span><span class="p">():</span>
     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;I fail successfully&quot;</span><span class="p">)</span>
 
 <span class="nd">@task</span>
-<span class="k">def</span> <span class="nf">always_succeeds_task</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">always_succeeds_task</span><span class="p">():</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;I&#39;m fail safe!&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="s2">&quot;success&quot;</span>
 
 <span class="nd">@flow</span>
-<span class="k">def</span> <span class="nf">always_succeeds_flow</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">always_succeeds_flow</span><span class="p">():</span>
     <span class="n">x</span> <span class="o">=</span> <span class="n">always_fails_task</span><span class="o">.</span><span class="n">submit</span><span class="p">()</span><span class="o">.</span><span class="n">result</span><span class="p">(</span><span class="n">raise_on_failure</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="hll">    <span class="n">y</span> <span class="o">=</span> <span class="n">always_succeeds_task</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="n">wait_for</span><span class="o">=</span><span class="p">[</span><span class="n">x</span><span class="p">])</span>
 </span>    <span class="k">return</span> <span class="n">y</span>
@@ -14403,22 +14406,22 @@ I<span class="s1">&#39;m fail safe!</span>
 
 <h3 id="return-multiple-states-or-futures">Return multiple states or futures<a class="headerlink" href="#return-multiple-states-or-futures" title="Permanent link">&para;</a></h3>
 <p>If a flow returns a mix of futures and states, the final state is determined by resolving all futures to states, then determining if any of the states are not <code>COMPLETED</code>.</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">task</span><span class="p">,</span> <span class="n">flow</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">task</span><span class="p">,</span> <span class="n">flow</span>
 
 <span class="nd">@task</span>
-<span class="k">def</span> <span class="nf">always_fails_task</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">always_fails_task</span><span class="p">():</span>
     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;I am bad task&quot;</span><span class="p">)</span>
 
 <span class="nd">@task</span>
-<span class="k">def</span> <span class="nf">always_succeeds_task</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">always_succeeds_task</span><span class="p">():</span>
     <span class="k">return</span> <span class="s2">&quot;foo&quot;</span>
 
 <span class="nd">@flow</span>
-<span class="k">def</span> <span class="nf">always_succeeds_flow</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">always_succeeds_flow</span><span class="p">():</span>
     <span class="k">return</span> <span class="s2">&quot;bar&quot;</span>
 
 <span class="nd">@flow</span>
-<span class="k">def</span> <span class="nf">always_fails_flow</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">always_fails_flow</span><span class="p">():</span>
     <span class="n">x</span> <span class="o">=</span> <span class="n">always_fails_task</span><span class="p">()</span>
     <span class="n">y</span> <span class="o">=</span> <span class="n">always_succeeds_task</span><span class="p">()</span>
     <span class="n">z</span> <span class="o">=</span> <span class="n">always_succeeds_flow</span><span class="p">()</span>
@@ -14451,20 +14454,20 @@ If other collection types are used, the result of the contained states will not 
 </div>
 <h3 id="return-a-manual-state">Return a manual state<a class="headerlink" href="#return-a-manual-state" title="Permanent link">&para;</a></h3>
 <p>If a flow returns a manually created state, the final state is determined based on the return value.</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">task</span><span class="p">,</span> <span class="n">flow</span>
-<span class="kn">from</span> <span class="nn">prefect.states</span> <span class="kn">import</span> <span class="n">Completed</span><span class="p">,</span> <span class="n">Failed</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">task</span><span class="p">,</span> <span class="n">flow</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect.states</span><span class="w"> </span><span class="kn">import</span> <span class="n">Completed</span><span class="p">,</span> <span class="n">Failed</span>
 
 <span class="nd">@task</span>
-<span class="k">def</span> <span class="nf">always_fails_task</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">always_fails_task</span><span class="p">():</span>
     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;I fail successfully&quot;</span><span class="p">)</span>
 
 <span class="nd">@task</span>
-<span class="k">def</span> <span class="nf">always_succeeds_task</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">always_succeeds_task</span><span class="p">():</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;I&#39;m fail safe!&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="s2">&quot;success&quot;</span>
 
 <span class="nd">@flow</span>
-<span class="k">def</span> <span class="nf">always_succeeds_flow</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">always_succeeds_flow</span><span class="p">():</span>
     <span class="n">x</span> <span class="o">=</span> <span class="n">always_fails_task</span><span class="o">.</span><span class="n">submit</span><span class="p">()</span>
 <span class="hll">    <span class="n">y</span> <span class="o">=</span> <span class="n">always_succeeds_task</span><span class="o">.</span><span class="n">submit</span><span class="p">()</span>
 </span><span class="hll">    <span class="k">if</span> <span class="n">y</span><span class="o">.</span><span class="n">result</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;success&quot;</span><span class="p">:</span>
@@ -14496,14 +14499,14 @@ I<span class="s1">&#39;m fail safe!</span>
 
 <h3 id="return-an-object">Return an object<a class="headerlink" href="#return-an-object" title="Permanent link">&para;</a></h3>
 <p>If the flow run returns <em>any other object</em>, then it is marked as completed.</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">task</span><span class="p">,</span> <span class="n">flow</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">task</span><span class="p">,</span> <span class="n">flow</span>
 
 <span class="nd">@task</span>
-<span class="k">def</span> <span class="nf">always_fails_task</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">always_fails_task</span><span class="p">():</span>
     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;I fail successfully&quot;</span><span class="p">)</span>
 
 <span class="nd">@flow</span>
-<span class="k">def</span> <span class="nf">always_succeeds_flow</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">always_succeeds_flow</span><span class="p">():</span>
     <span class="n">always_fails_task</span><span class="p">()</span><span class="o">.</span><span class="n">submit</span><span class="p">()</span>
 <span class="hll">    <span class="k">return</span> <span class="s2">&quot;foo&quot;</span>
 </span>
@@ -14528,11 +14531,11 @@ Completed<span class="o">(</span><span class="nv">message</span><span class="o">
 <p>The simplest way to create a <a href="/concepts/deployments/">deployment</a> for your flow is by calling its <a href="/api-ref/prefect/flows/#prefect.flows.Flow.serve"><code>serve</code> method</a>.
 This method creates a deployment for the flow and starts a long-running process that monitors for work from the Prefect server.
 When work is found, it is executed within its own isolated subprocess.</p>
-<div class="highlight"><span class="filename">hello_world.py</span><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span>
+<div class="highlight"><span class="filename">hello_world.py</span><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span>
 
 
 <span class="nd">@flow</span><span class="p">(</span><span class="n">log_prints</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">hello_world</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;world&quot;</span><span class="p">,</span> <span class="n">goodbye</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">hello_world</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;world&quot;</span><span class="p">,</span> <span class="n">goodbye</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Hello </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> from Prefect! 🤗&quot;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">goodbye</span><span class="p">:</span>
@@ -14568,18 +14571,18 @@ When running this in environments where restarts are expected use the <code>paus
 </div>
 <h3 id="serving-multiple-flows-at-once">Serving multiple flows at once<a class="headerlink" href="#serving-multiple-flows-at-once" title="Permanent link">&para;</a></h3>
 <p>You can take this further and serve multiple flows with the same process using the <a href="/api-ref/prefect/runner/#prefect.runner.serve"><code>serve</code></a> utility along with the <code>to_deployment</code> method of flows:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">time</span>
-<span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">serve</span>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">serve</span>
 
 
 <span class="nd">@flow</span>
-<span class="k">def</span> <span class="nf">slow_flow</span><span class="p">(</span><span class="n">sleep</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">60</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">slow_flow</span><span class="p">(</span><span class="n">sleep</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">60</span><span class="p">):</span>
     <span class="s2">&quot;Sleepy flow - sleeps the provided amount of time (in seconds).&quot;</span>
     <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">sleep</span><span class="p">)</span>
 
 
 <span class="nd">@flow</span>
-<span class="k">def</span> <span class="nf">fast_flow</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">fast_flow</span><span class="p">():</span>
     <span class="s2">&quot;Fastest flow this side of the Mississippi.&quot;</span>
     <span class="k">return</span>
 
@@ -14593,7 +14596,7 @@ When running this in environments where restarts are expected use the <code>paus
 <h2 id="retrieve-a-flow-from-remote-storage">Retrieve a flow from remote storage<a class="headerlink" href="#retrieve-a-flow-from-remote-storage" title="Permanent link">&para;</a></h2>
 <p>Flows can be retrieved from remote storage using the <a href="/api-ref/prefect/flows/#prefect.flows.Flow.from_source"><code>flow.from_source</code></a> method.</p>
 <p><code>flow.from_source</code> accepts a git repository URL  and an entrypoint pointing to the flow to load from the repository:</p>
-<div class="highlight"><span class="filename">load_from_url.py</span><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span>
+<div class="highlight"><span class="filename">load_from_url.py</span><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span>
 
 <span class="n">my_flow</span> <span class="o">=</span> <span class="n">flow</span><span class="o">.</span><span class="n">from_source</span><span class="p">(</span>
     <span class="n">source</span><span class="o">=</span><span class="s2">&quot;https://github.com/PrefectHQ/prefect.git&quot;</span><span class="p">,</span>
@@ -14614,9 +14617,9 @@ When running this in environments where restarts are expected use the <code>paus
 
 <p>A flow entrypoint is the path to the file the flow is located in and the name of the flow function separated by a colon.</p>
 <p>If you need additional configuration, such as specifying a private repository, you can provide a <a href="/api-ref/prefect/flows/#prefect.runner.storage.GitRepository"><code>GitRepository</code></a> instead of URL:</p>
-<div class="highlight"><span class="filename">load_from_storage.py</span><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span>
-<span class="kn">from</span> <span class="nn">prefect.runner.storage</span> <span class="kn">import</span> <span class="n">GitRepository</span>
-<span class="kn">from</span> <span class="nn">prefect.blocks.system</span> <span class="kn">import</span> <span class="n">Secret</span>
+<div class="highlight"><span class="filename">load_from_storage.py</span><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect.runner.storage</span><span class="w"> </span><span class="kn">import</span> <span class="n">GitRepository</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect.blocks.system</span><span class="w"> </span><span class="kn">import</span> <span class="n">Secret</span>
 
 <span class="n">my_flow</span> <span class="o">=</span> <span class="n">flow</span><span class="o">.</span><span class="n">from_source</span><span class="p">(</span>
     <span class="n">source</span><span class="o">=</span><span class="n">GitRepository</span><span class="p">(</span>
@@ -14635,7 +14638,7 @@ When running this in environments where restarts are expected use the <code>paus
 <div class="admonition tip">
 <p class="admonition-title">You can serve loaded flows</p>
 <p>Flows loaded from remote storage can be served using the same <a href="#serving-a-flow"><code>serve</code></a> method as local flows:</p>
-<div class="highlight"><span class="filename">serve_loaded_flow.py</span><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span>
+<div class="highlight"><span class="filename">serve_loaded_flow.py</span><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span>
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
     <span class="n">flow</span><span class="o">.</span><span class="n">from_source</span><span class="p">(</span>
@@ -14660,35 +14663,35 @@ After the timeout, the flow run will fail with a message saying it paused and ne
 You can specify a different timeout period in seconds using the <code>timeout</code> parameter.</p>
 </div>
 <p>Most simply, <code>pause_flow_run</code> can be called inside a flow:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">task</span><span class="p">,</span> <span class="n">flow</span><span class="p">,</span> <span class="n">pause_flow_run</span><span class="p">,</span> <span class="n">resume_flow_run</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">task</span><span class="p">,</span> <span class="n">flow</span><span class="p">,</span> <span class="n">pause_flow_run</span><span class="p">,</span> <span class="n">resume_flow_run</span>
 
 <span class="nd">@task</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">marvin_setup</span><span class="p">():</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">marvin_setup</span><span class="p">():</span>
     <span class="k">return</span> <span class="s2">&quot;a raft of ducks walk into a bar...&quot;</span>
 
 
 <span class="nd">@task</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">marvin_punchline</span><span class="p">():</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">marvin_punchline</span><span class="p">():</span>
     <span class="k">return</span> <span class="s2">&quot;it&#39;s a wonder none of them ducked!&quot;</span>
 
 
 <span class="nd">@flow</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">inspiring_joke</span><span class="p">():</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">inspiring_joke</span><span class="p">():</span>
     <span class="k">await</span> <span class="n">marvin_setup</span><span class="p">()</span>
     <span class="k">await</span> <span class="n">pause_flow_run</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="mi">600</span><span class="p">)</span>  <span class="c1"># pauses for 10 minutes</span>
     <span class="k">await</span> <span class="n">marvin_punchline</span><span class="p">()</span>
 </code></pre></div>
 <p>You can also implement conditional pauses:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">task</span><span class="p">,</span> <span class="n">flow</span><span class="p">,</span> <span class="n">pause_flow_run</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">task</span><span class="p">,</span> <span class="n">flow</span><span class="p">,</span> <span class="n">pause_flow_run</span>
 
 <span class="nd">@task</span>
-<span class="k">def</span> <span class="nf">task_one</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">task_one</span><span class="p">():</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
         <span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
 
 <span class="nd">@flow</span><span class="p">(</span><span class="n">log_prints</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">my_flow</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_flow</span><span class="p">():</span>
     <span class="n">terminal_state</span> <span class="o">=</span> <span class="n">task_one</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="n">return_state</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">terminal_state</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">StateType</span><span class="o">.</span><span class="n">COMPLETED</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Task one succeeded! Pausing flow run..&quot;</span><span class="p">)</span>
@@ -14735,14 +14738,14 @@ You can specify a different timeout period in seconds using the <code>timeout</c
 <p>Here is an example of a flow that does not block flow execution while paused.
 This flow will exit after one task, and will be rescheduled upon resuming.
 The stored result of the first task is retrieved instead of being rerun.</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">pause_flow_run</span><span class="p">,</span> <span class="n">task</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">pause_flow_run</span><span class="p">,</span> <span class="n">task</span>
 
 <span class="nd">@task</span><span class="p">(</span><span class="n">persist_result</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">foo</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">foo</span><span class="p">():</span>
     <span class="k">return</span> <span class="mi">42</span>
 
 <span class="nd">@flow</span><span class="p">(</span><span class="n">persist_result</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">noblock_pausing</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">noblock_pausing</span><span class="p">():</span>
     <span class="n">x</span> <span class="o">=</span> <span class="n">foo</span><span class="o">.</span><span class="n">submit</span><span class="p">()</span>
     <span class="n">pause_flow_run</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">reschedule</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">y</span> <span class="o">=</span> <span class="n">foo</span><span class="o">.</span><span class="n">submit</span><span class="p">()</span>
@@ -14776,16 +14779,16 @@ Prefect provides a way to do this by leveraging the <code>pause_flow_run</code> 
 These functions accept a <code>wait_for_input</code> argument, the value of which should be a subclass of <code>prefect.input.RunInput</code>, a pydantic model.
 When resuming the flow run, users are required to provide data for this model. Upon successful validation, the flow run resumes, and the return value of the <code>pause_flow_run</code> or <code>suspend_flow_run</code> is an instance of the model containing the provided data.</p>
 <p>Here is an example of a flow that pauses and waits for input from a user:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">pause_flow_run</span>
-<span class="kn">from</span> <span class="nn">prefect.input</span> <span class="kn">import</span> <span class="n">RunInput</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">pause_flow_run</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect.input</span><span class="w"> </span><span class="kn">import</span> <span class="n">RunInput</span>
 
 
-<span class="k">class</span> <span class="nc">UserNameInput</span><span class="p">(</span><span class="n">RunInput</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">UserNameInput</span><span class="p">(</span><span class="n">RunInput</span><span class="p">):</span>
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
 
 
 <span class="nd">@flow</span><span class="p">(</span><span class="n">log_prints</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">greet_user</span><span class="p">():</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">greet_user</span><span class="p">():</span>
     <span class="n">user_input</span> <span class="o">=</span> <span class="k">await</span> <span class="n">pause_flow_run</span><span class="p">(</span>
         <span class="n">wait_for_input</span><span class="o">=</span><span class="n">UserNameInput</span>
     <span class="p">)</span>
@@ -14858,11 +14861,11 @@ You can try the improved cancellation experience by enabling the <code>PREFECT_E
 <h2 id="timeouts">Timeouts<a class="headerlink" href="#timeouts" title="Permanent link">&para;</a></h2>
 <p>Flow timeouts are used to prevent unintentional long-running flows. When the duration of execution for a flow exceeds the duration specified in the timeout, a timeout exception will be raised and the flow will be marked as failed. In the UI, the flow will be visibly designated as <code>TimedOut</code>.</p>
 <p>Timeout durations are specified using the <code>timeout_seconds</code> keyword argument.</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span>
-<span class="kn">import</span> <span class="nn">time</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
 
 <span class="hll"><span class="nd">@flow</span><span class="p">(</span><span class="n">timeout_seconds</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">log_prints</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</span><span class="k">def</span> <span class="nf">show_timeouts</span><span class="p">():</span>
+</span><span class="k">def</span><span class="w"> </span><span class="nf">show_timeouts</span><span class="p">():</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;I will execute&quot;</span><span class="p">)</span>
     <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;I will not execute&quot;</span><span class="p">)</span>

@@ -173,6 +173,9 @@ if (amplitudeKey){
     
 
     
+  <meta name="robots" content="noindex, nofollow">
+  
+
   </head>
   
   
@@ -13552,6 +13555,11 @@ if (amplitudeKey){
 
 
 
+
+
+
+
+
   <div class="doc doc-children">
 
 
@@ -13588,6 +13596,11 @@ not with the Prefect API.</p>
 <p>Instead of the <strong>init</strong> method, a block implementation allows the
 definition of a <code>block_initialization</code> method that is called after
 initialization.</p>
+
+
+
+
+
 
               <details class="quote">
                 <summary>Source code in <code>prefect/blocks/core.py</code></summary>
@@ -14494,7 +14507,7 @@ initialization.</p>
 <span class="normal">1094</span>
 <span class="normal">1095</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@register_base_type</span>
 <span class="nd">@instrument_method_calls_on_class_instances</span>
-<span class="k">class</span> <span class="nc">Block</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">,</span> <span class="n">ABC</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Block</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">,</span> <span class="n">ABC</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A base class for implementing a block that wraps an external service.</span>
 
@@ -14511,13 +14524,13 @@ initialization.</p>
 <span class="sd">    initialization.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
+    <span class="k">class</span><span class="w"> </span><span class="nc">Config</span><span class="p">:</span>
         <span class="n">extra</span> <span class="o">=</span> <span class="s2">&quot;allow&quot;</span>
 
         <span class="n">json_encoders</span> <span class="o">=</span> <span class="p">{</span><span class="n">SecretDict</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="n">v</span><span class="o">.</span><span class="n">dict</span><span class="p">()}</span>
 
         <span class="nd">@staticmethod</span>
-        <span class="k">def</span> <span class="nf">schema_extra</span><span class="p">(</span><span class="n">schema</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">model</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="s2">&quot;Block&quot;</span><span class="p">]):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">schema_extra</span><span class="p">(</span><span class="n">schema</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">model</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="s2">&quot;Block&quot;</span><span class="p">]):</span>
 <span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">            Customizes Pydantic&#39;s schema generation feature to add blocks related information.</span>
 <span class="sd">            &quot;&quot;&quot;</span>
@@ -14543,7 +14556,7 @@ initialization.</p>
             <span class="c1"># create block schema references</span>
             <span class="n">refs</span> <span class="o">=</span> <span class="n">schema</span><span class="p">[</span><span class="s2">&quot;block_schema_references&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
 
-            <span class="k">def</span> <span class="nf">collect_block_schema_references</span><span class="p">(</span>
+            <span class="k">def</span><span class="w"> </span><span class="nf">collect_block_schema_references</span><span class="p">(</span>
                 <span class="n">field_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">annotation</span><span class="p">:</span> <span class="nb">type</span>
             <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">                </span><span class="sd">&quot;&quot;&quot;Walk through the annotation and collect block schemas for any nested blocks.&quot;&quot;&quot;</span>
@@ -14566,21 +14579,21 @@ initialization.</p>
             <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">__fields__</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
                 <span class="n">collect_block_schema_references</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">field</span><span class="o">.</span><span class="n">type_</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">block_initialization</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">__repr_args__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__repr_args__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">repr_args</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__repr_args__</span><span class="p">()</span>
         <span class="n">data_keys</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">schema</span><span class="p">()[</span><span class="s2">&quot;properties&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
         <span class="k">return</span> <span class="p">[</span>
             <span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">repr_args</span> <span class="k">if</span> <span class="n">key</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">data_keys</span>
         <span class="p">]</span>
 
-    <span class="k">def</span> <span class="nf">block_initialization</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">block_initialization</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">pass</span>
 
     <span class="c1"># -- private class variables</span>
@@ -14614,21 +14627,21 @@ initialization.</p>
     <span class="n">_events_excluded_methods</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;block_initialization&quot;</span><span class="p">,</span> <span class="s2">&quot;save&quot;</span><span class="p">,</span> <span class="s2">&quot;dict&quot;</span><span class="p">]</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">__dispatch_key__</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__dispatch_key__</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;Block&quot;</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span>  <span class="c1"># The base class is abstract</span>
         <span class="k">return</span> <span class="n">block_schema_to_key</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">_to_block_schema</span><span class="p">())</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">get_block_type_name</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_block_type_name</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_block_type_name</span> <span class="ow">or</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">get_block_type_slug</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_block_type_slug</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">slugify</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">_block_type_slug</span> <span class="ow">or</span> <span class="bp">cls</span><span class="o">.</span><span class="n">get_block_type_name</span><span class="p">())</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">get_block_capabilities</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FrozenSet</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_block_capabilities</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FrozenSet</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns the block capabilities for this Block. Recursively collects all block</span>
 <span class="sd">        capabilities of all parent classes into a single frozenset.</span>
@@ -14642,7 +14655,7 @@ initialization.</p>
         <span class="p">)</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">_get_current_package_version</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_current_package_version</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
         <span class="n">current_module</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getmodule</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">current_module</span><span class="p">:</span>
             <span class="n">top_level_module</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">[</span>
@@ -14658,18 +14671,18 @@ initialization.</p>
         <span class="k">return</span> <span class="n">DEFAULT_BLOCK_SCHEMA_VERSION</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">get_block_schema_version</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_block_schema_version</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_block_schema_version</span> <span class="ow">or</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_get_current_package_version</span><span class="p">()</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">_to_block_schema_reference_dict</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_to_block_schema_reference_dict</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span>
             <span class="n">block_type_slug</span><span class="o">=</span><span class="bp">cls</span><span class="o">.</span><span class="n">get_block_type_slug</span><span class="p">(),</span>
             <span class="n">block_schema_checksum</span><span class="o">=</span><span class="bp">cls</span><span class="o">.</span><span class="n">_calculate_schema_checksum</span><span class="p">(),</span>
         <span class="p">)</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">_calculate_schema_checksum</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_calculate_schema_checksum</span><span class="p">(</span>
         <span class="bp">cls</span><span class="p">,</span> <span class="n">block_schema_fields</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -14703,7 +14716,7 @@ initialization.</p>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;sha256:</span><span class="si">{</span><span class="n">checksum</span><span class="si">}</span><span class="s2">&quot;</span>
 
-    <span class="k">def</span> <span class="nf">_to_block_document</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_to_block_document</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">block_schema_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">UUID</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -14777,7 +14790,7 @@ initialization.</p>
         <span class="p">)</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">_to_block_schema</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">block_type_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">UUID</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BlockSchema</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_to_block_schema</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">block_type_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">UUID</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BlockSchema</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Creates the corresponding block schema of the block.</span>
 <span class="sd">        The corresponding block_type_id must either be passed into</span>
@@ -14801,7 +14814,7 @@ initialization.</p>
         <span class="p">)</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">_parse_docstring</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">DocstringSection</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_parse_docstring</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">DocstringSection</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Parses the docstring into list of DocstringSection objects.</span>
 <span class="sd">        Helper method used primarily to suppress irrelevant logs, e.g.</span>
@@ -14814,7 +14827,7 @@ initialization.</p>
         <span class="k">return</span> <span class="n">parsed</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">get_description</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_description</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns the description for the current block. Attempts to parse</span>
 <span class="sd">        description from class docstring if an override is not defined.</span>
@@ -14837,7 +14850,7 @@ initialization.</p>
         <span class="k">return</span> <span class="n">description</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">get_code_example</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_code_example</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns the code example for the given block. Attempts to parse</span>
 <span class="sd">        code example from the class docstring if an override is not provided.</span>
@@ -14875,7 +14888,7 @@ initialization.</p>
         <span class="k">return</span> <span class="n">code_example</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">_generate_code_example</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_generate_code_example</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Generates a default code example for the current class&quot;&quot;&quot;</span>
         <span class="n">qualified_name</span> <span class="o">=</span> <span class="n">to_qualified_name</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
         <span class="n">module_str</span> <span class="o">=</span> <span class="s2">&quot;.&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">qualified_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
@@ -14892,7 +14905,7 @@ initialization.</p>
         <span class="p">)</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">_to_block_type</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BlockType</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_to_block_type</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BlockType</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Creates the corresponding block type of the block.</span>
 
@@ -14910,7 +14923,7 @@ initialization.</p>
         <span class="p">)</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">_from_block_document</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">block_document</span><span class="p">:</span> <span class="n">BlockDocument</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_from_block_document</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">block_document</span><span class="p">:</span> <span class="n">BlockDocument</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Instantiates a block from a given block document. The corresponding block class</span>
 <span class="sd">        will be looked up in the block registry based on the corresponding block schema</span>
@@ -14960,10 +14973,10 @@ initialization.</p>
 
         <span class="k">return</span> <span class="n">block</span>
 
-    <span class="k">def</span> <span class="nf">_event_kind</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_event_kind</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;prefect.block.</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">get_block_type_slug</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span>
 
-    <span class="k">def</span> <span class="nf">_event_method_called_resources</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ResourceTuple</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_event_method_called_resources</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ResourceTuple</span><span class="p">]:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_block_document_id</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_block_document_name</span><span class="p">):</span>
             <span class="k">return</span> <span class="kc">None</span>
 
@@ -14985,14 +14998,14 @@ initialization.</p>
         <span class="p">)</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">get_block_class_from_schema</span><span class="p">(</span><span class="bp">cls</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">Self</span><span class="p">],</span> <span class="n">schema</span><span class="p">:</span> <span class="n">BlockSchema</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Type</span><span class="p">[</span><span class="n">Self</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_block_class_from_schema</span><span class="p">(</span><span class="bp">cls</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">Self</span><span class="p">],</span> <span class="n">schema</span><span class="p">:</span> <span class="n">BlockSchema</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Type</span><span class="p">[</span><span class="n">Self</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Retrieve the block class implementation given a schema.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">get_block_class_from_key</span><span class="p">(</span><span class="n">block_schema_to_key</span><span class="p">(</span><span class="n">schema</span><span class="p">))</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">get_block_class_from_key</span><span class="p">(</span><span class="bp">cls</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">Self</span><span class="p">],</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Type</span><span class="p">[</span><span class="n">Self</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_block_class_from_key</span><span class="p">(</span><span class="bp">cls</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">Self</span><span class="p">],</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Type</span><span class="p">[</span><span class="n">Self</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Retrieve the block class implementation given a key.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -15002,7 +15015,7 @@ initialization.</p>
 
         <span class="k">return</span> <span class="n">lookup_type</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_define_metadata_on_nested_blocks</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_define_metadata_on_nested_blocks</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">block_document_references</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -15032,7 +15045,7 @@ initialization.</p>
 
     <span class="nd">@classmethod</span>
     <span class="nd">@inject_client</span>
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">_get_block_document</span><span class="p">(</span>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">_get_block_document</span><span class="p">(</span>
         <span class="bp">cls</span><span class="p">,</span>
         <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">client</span><span class="p">:</span> <span class="s2">&quot;PrefectClient&quot;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -15051,14 +15064,14 @@ initialization.</p>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;Unable to find block document named </span><span class="si">{</span><span class="n">block_document_name</span><span class="si">}</span><span class="s2"> for block&quot;</span>
                 <span class="sa">f</span><span class="s2">&quot; type </span><span class="si">{</span><span class="n">block_type_slug</span><span class="si">}</span><span class="s2">&quot;</span>
-            <span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span>
+            <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span>
 
         <span class="k">return</span> <span class="n">block_document</span><span class="p">,</span> <span class="n">block_document_name</span>
 
     <span class="nd">@classmethod</span>
     <span class="nd">@sync_compatible</span>
     <span class="nd">@inject_client</span>
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">load</span><span class="p">(</span>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">load</span><span class="p">(</span>
         <span class="bp">cls</span><span class="p">,</span>
         <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">validate</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
@@ -15162,16 +15175,16 @@ initialization.</p>
                 <span class="sa">f</span><span class="s2">&quot;Unable to load </span><span class="si">{</span><span class="n">block_document_name</span><span class="si">!r}</span><span class="s2"> of block type&quot;</span>
                 <span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="n">_block_type_slug</span><span class="si">!r}</span><span class="s2"> due to failed validation. To load without&quot;</span>
                 <span class="s2">&quot; validation, try loading again with `validate=False`.&quot;</span>
-            <span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span>
+            <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span>
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">is_block_class</span><span class="p">(</span><span class="n">block</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_block_class</span><span class="p">(</span><span class="n">block</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">_is_subclass</span><span class="p">(</span><span class="n">block</span><span class="p">,</span> <span class="n">Block</span><span class="p">)</span>
 
     <span class="nd">@classmethod</span>
     <span class="nd">@sync_compatible</span>
     <span class="nd">@inject_client</span>
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">register_type_and_schema</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">client</span><span class="p">:</span> <span class="s2">&quot;PrefectClient&quot;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">register_type_and_schema</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">client</span><span class="p">:</span> <span class="s2">&quot;PrefectClient&quot;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Makes block available for configuration with current Prefect API.</span>
 <span class="sd">        Recursively registers all nested blocks. Registration is idempotent.</span>
@@ -15192,7 +15205,7 @@ initialization.</p>
                 <span class="s2">&quot;subclass and not on a Block interface class directly.&quot;</span>
             <span class="p">)</span>
 
-        <span class="k">async</span> <span class="k">def</span> <span class="nf">register_blocks_in_annotation</span><span class="p">(</span><span class="n">annotation</span><span class="p">:</span> <span class="nb">type</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">register_blocks_in_annotation</span><span class="p">(</span><span class="n">annotation</span><span class="p">:</span> <span class="nb">type</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">            </span><span class="sd">&quot;&quot;&quot;Walk through the annotation and register any nested blocks.&quot;&quot;&quot;</span>
             <span class="k">if</span> <span class="n">Block</span><span class="o">.</span><span class="n">is_block_class</span><span class="p">(</span><span class="n">annotation</span><span class="p">):</span>
                 <span class="k">await</span> <span class="n">annotation</span><span class="o">.</span><span class="n">register_type_and_schema</span><span class="p">(</span><span class="n">client</span><span class="o">=</span><span class="n">client</span><span class="p">)</span>
@@ -15232,7 +15245,7 @@ initialization.</p>
         <span class="bp">cls</span><span class="o">.</span><span class="n">_block_schema_id</span> <span class="o">=</span> <span class="n">block_schema</span><span class="o">.</span><span class="n">id</span>
 
     <span class="nd">@inject_client</span>
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">_save</span><span class="p">(</span>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">_save</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">is_anonymous</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -15295,7 +15308,7 @@ initialization.</p>
                     <span class="s2">&quot;You are attempting to save values with a name that is already in&quot;</span>
                     <span class="s2">&quot; use for this block type. If you would like to overwrite the&quot;</span>
                     <span class="s2">&quot; values that are saved, then save with `overwrite=True`.&quot;</span>
-                <span class="p">)</span> <span class="kn">from</span> <span class="nn">err</span>
+                <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">err</span>
 
         <span class="c1"># Update metadata on block instance for later use.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_block_document_name</span> <span class="o">=</span> <span class="n">block_document</span><span class="o">.</span><span class="n">name</span>
@@ -15304,7 +15317,7 @@ initialization.</p>
 
     <span class="nd">@sync_compatible</span>
     <span class="nd">@instrument_instance_method_call</span>
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">save</span><span class="p">(</span>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">save</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">overwrite</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -15327,7 +15340,7 @@ initialization.</p>
     <span class="nd">@classmethod</span>
     <span class="nd">@sync_compatible</span>
     <span class="nd">@inject_client</span>
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">delete</span><span class="p">(</span>
         <span class="bp">cls</span><span class="p">,</span>
         <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">client</span><span class="p">:</span> <span class="s2">&quot;PrefectClient&quot;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -15336,7 +15349,7 @@ initialization.</p>
 
         <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">delete_block_document</span><span class="p">(</span><span class="n">block_document</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_iter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">include</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">exclude</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_iter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">include</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">exclude</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="c1"># Injects the `block_type_slug` into serialized payloads for dispatch</span>
         <span class="k">for</span> <span class="n">key_value</span> <span class="ow">in</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_iter</span><span class="p">(</span><span class="n">include</span><span class="o">=</span><span class="n">include</span><span class="p">,</span> <span class="n">exclude</span><span class="o">=</span><span class="n">exclude</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
             <span class="k">yield</span> <span class="n">key_value</span>
@@ -15349,7 +15362,7 @@ initialization.</p>
 
         <span class="k">yield</span> <span class="s2">&quot;block_type_slug&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_block_type_slug</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">Self</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">Self</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create an instance of the Block subclass type if a `block_type_slug` is</span>
 <span class="sd">        present in the data payload.</span>
@@ -15373,7 +15386,7 @@ initialization.</p>
             <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s2">&quot;__fields_set__&quot;</span><span class="p">,</span> <span class="nb">set</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
             <span class="k">return</span> <span class="n">m</span>
 
-    <span class="k">def</span> <span class="nf">get_block_placeholder</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_block_placeholder</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns the block placeholder for the current block which can be used for</span>
 <span class="sd">        templating.</span>
@@ -15420,6 +15433,11 @@ initialization.</p>
 
 
     <div class="doc doc-contents ">
+
+
+
+
+
 
 
               <details class="quote">
@@ -15477,13 +15495,13 @@ initialization.</p>
 <span class="normal">263</span>
 <span class="normal">264</span>
 <span class="normal">265</span>
-<span class="normal">266</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
+<span class="normal">266</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">Config</span><span class="p">:</span>
     <span class="n">extra</span> <span class="o">=</span> <span class="s2">&quot;allow&quot;</span>
 
     <span class="n">json_encoders</span> <span class="o">=</span> <span class="p">{</span><span class="n">SecretDict</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="n">v</span><span class="o">.</span><span class="n">dict</span><span class="p">()}</span>
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">schema_extra</span><span class="p">(</span><span class="n">schema</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">model</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="s2">&quot;Block&quot;</span><span class="p">]):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">schema_extra</span><span class="p">(</span><span class="n">schema</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">model</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="s2">&quot;Block&quot;</span><span class="p">]):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Customizes Pydantic&#39;s schema generation feature to add blocks related information.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -15509,7 +15527,7 @@ initialization.</p>
         <span class="c1"># create block schema references</span>
         <span class="n">refs</span> <span class="o">=</span> <span class="n">schema</span><span class="p">[</span><span class="s2">&quot;block_schema_references&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
 
-        <span class="k">def</span> <span class="nf">collect_block_schema_references</span><span class="p">(</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">collect_block_schema_references</span><span class="p">(</span>
             <span class="n">field_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">annotation</span><span class="p">:</span> <span class="nb">type</span>
         <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">            </span><span class="sd">&quot;&quot;&quot;Walk through the annotation and collect block schemas for any nested blocks.&quot;&quot;&quot;</span>
@@ -15614,7 +15632,7 @@ initialization.</p>
 <span class="normal">264</span>
 <span class="normal">265</span>
 <span class="normal">266</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@staticmethod</span>
-<span class="k">def</span> <span class="nf">schema_extra</span><span class="p">(</span><span class="n">schema</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">model</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="s2">&quot;Block&quot;</span><span class="p">]):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">schema_extra</span><span class="p">(</span><span class="n">schema</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">model</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="s2">&quot;Block&quot;</span><span class="p">]):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Customizes Pydantic&#39;s schema generation feature to add blocks related information.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -15640,7 +15658,7 @@ initialization.</p>
     <span class="c1"># create block schema references</span>
     <span class="n">refs</span> <span class="o">=</span> <span class="n">schema</span><span class="p">[</span><span class="s2">&quot;block_schema_references&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
 
-    <span class="k">def</span> <span class="nf">collect_block_schema_references</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">collect_block_schema_references</span><span class="p">(</span>
         <span class="n">field_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">annotation</span><span class="p">:</span> <span class="nb">type</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Walk through the annotation and collect block schemas for any nested blocks.&quot;&quot;&quot;</span>
@@ -15710,7 +15728,7 @@ capabilities of all parent classes into a single frozenset.</p>
 <span class="normal">339</span>
 <span class="normal">340</span>
 <span class="normal">341</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@classmethod</span>
-<span class="k">def</span> <span class="nf">get_block_capabilities</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FrozenSet</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_block_capabilities</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FrozenSet</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns the block capabilities for this Block. Recursively collects all block</span>
 <span class="sd">    capabilities of all parent classes into a single frozenset.</span>
@@ -15757,7 +15775,7 @@ capabilities of all parent classes into a single frozenset.</p>
 <span class="normal">700</span>
 <span class="normal">701</span>
 <span class="normal">702</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@classmethod</span>
-<span class="k">def</span> <span class="nf">get_block_class_from_key</span><span class="p">(</span><span class="bp">cls</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">Self</span><span class="p">],</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Type</span><span class="p">[</span><span class="n">Self</span><span class="p">]:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_block_class_from_key</span><span class="p">(</span><span class="bp">cls</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">Self</span><span class="p">],</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Type</span><span class="p">[</span><span class="n">Self</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Retrieve the block class implementation given a key.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -15797,7 +15815,7 @@ capabilities of all parent classes into a single frozenset.</p>
 <span class="normal">689</span>
 <span class="normal">690</span>
 <span class="normal">691</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@classmethod</span>
-<span class="k">def</span> <span class="nf">get_block_class_from_schema</span><span class="p">(</span><span class="bp">cls</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">Self</span><span class="p">],</span> <span class="n">schema</span><span class="p">:</span> <span class="n">BlockSchema</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Type</span><span class="p">[</span><span class="n">Self</span><span class="p">]:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_block_class_from_schema</span><span class="p">(</span><span class="bp">cls</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">Self</span><span class="p">],</span> <span class="n">schema</span><span class="p">:</span> <span class="n">BlockSchema</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Type</span><span class="p">[</span><span class="n">Self</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Retrieve the block class implementation given a schema.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -15892,7 +15910,7 @@ templating.</p>
 <span class="normal">1092</span>
 <span class="normal">1093</span>
 <span class="normal">1094</span>
-<span class="normal">1095</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_block_placeholder</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="normal">1095</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_block_placeholder</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns the block placeholder for the current block which can be used for</span>
 <span class="sd">    templating.</span>
@@ -15976,7 +15994,7 @@ code example from the class docstring if an override is not provided.</p>
 <span class="normal">572</span>
 <span class="normal">573</span>
 <span class="normal">574</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@classmethod</span>
-<span class="k">def</span> <span class="nf">get_code_example</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_code_example</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns the code example for the given block. Attempts to parse</span>
 <span class="sd">    code example from the class docstring if an override is not provided.</span>
@@ -16060,7 +16078,7 @@ description from class docstring if an override is not defined.</p>
 <span class="normal">534</span>
 <span class="normal">535</span>
 <span class="normal">536</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@classmethod</span>
-<span class="k">def</span> <span class="nf">get_description</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_description</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns the description for the current block. Attempts to parse</span>
 <span class="sd">    description from class docstring if an override is not defined.</span>
@@ -16128,7 +16146,9 @@ and saved to a new block document before the block can be used as expected.</p>
       </thead>
       <tbody>
           <tr class="doc-section-item">
-            <td><code>name</code></td>
+            <td>
+                <code>name</code>
+            </td>
             <td>
                   <code>str</code>
             </td>
@@ -16143,7 +16163,9 @@ string with the format <block_type_slug>/<block_document_name></p>
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>validate</code></td>
+            <td>
+                <code>validate</code>
+            </td>
             <td>
                   <code>bool</code>
             </td>
@@ -16159,7 +16181,9 @@ changed client-side since the block document referred to by <code>name</code> wa
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>client</code></td>
+            <td>
+                <code>client</code>
+            </td>
             <td>
                   <code><a class="autorefs autorefs-internal" title="prefect.client.orchestration.PrefectClient" href="../../client/orchestration/#prefect.client.orchestration.PrefectClient">PrefectClient</a></code>
             </td>
@@ -16233,7 +16257,7 @@ default client will be injected.</p>
 
 <p><span class="doc-section-title">Examples:</span></p>
     <p>Load from a Block subclass with a block document name:
-<div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Custom</span><span class="p">(</span><span class="n">Block</span><span class="p">):</span>
+<div class="highlight"><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">Custom</span><span class="p">(</span><span class="n">Block</span><span class="p">):</span>
     <span class="n">message</span><span class="p">:</span> <span class="nb">str</span>
 
 <span class="n">Custom</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="s2">&quot;Hello!&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">&quot;my-custom-message&quot;</span><span class="p">)</span>
@@ -16241,7 +16265,7 @@ default client will be injected.</p>
 <span class="n">loaded_block</span> <span class="o">=</span> <span class="n">Custom</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;my-custom-message&quot;</span><span class="p">)</span>
 </code></pre></div></p>
 <p>Load from Block with a block document slug:
-<div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Custom</span><span class="p">(</span><span class="n">Block</span><span class="p">):</span>
+<div class="highlight"><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">Custom</span><span class="p">(</span><span class="n">Block</span><span class="p">):</span>
     <span class="n">message</span><span class="p">:</span> <span class="nb">str</span>
 
 <span class="n">Custom</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="s2">&quot;Hello!&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">&quot;my-custom-message&quot;</span><span class="p">)</span>
@@ -16250,13 +16274,13 @@ default client will be injected.</p>
 </code></pre></div></p>
 <p>Migrate a block document to a new schema:
 <div class="highlight"><pre><span></span><code><span class="c1"># original class</span>
-<span class="k">class</span> <span class="nc">Custom</span><span class="p">(</span><span class="n">Block</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Custom</span><span class="p">(</span><span class="n">Block</span><span class="p">):</span>
     <span class="n">message</span><span class="p">:</span> <span class="nb">str</span>
 
 <span class="n">Custom</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="s2">&quot;Hello!&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">&quot;my-custom-message&quot;</span><span class="p">)</span>
 
 <span class="c1"># Updated class with new required field</span>
-<span class="k">class</span> <span class="nc">Custom</span><span class="p">(</span><span class="n">Block</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Custom</span><span class="p">(</span><span class="n">Block</span><span class="p">):</span>
     <span class="n">message</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">number_of_ducks</span><span class="p">:</span> <span class="nb">int</span>
 
@@ -16381,7 +16405,7 @@ default client will be injected.</p>
 <span class="normal">864</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@classmethod</span>
 <span class="nd">@sync_compatible</span>
 <span class="nd">@inject_client</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">load</span><span class="p">(</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">load</span><span class="p">(</span>
     <span class="bp">cls</span><span class="p">,</span>
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">validate</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
@@ -16485,7 +16509,7 @@ default client will be injected.</p>
             <span class="sa">f</span><span class="s2">&quot;Unable to load </span><span class="si">{</span><span class="n">block_document_name</span><span class="si">!r}</span><span class="s2"> of block type&quot;</span>
             <span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="n">_block_type_slug</span><span class="si">!r}</span><span class="s2"> due to failed validation. To load without&quot;</span>
             <span class="s2">&quot; validation, try loading again with `validate=False`.&quot;</span>
-        <span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span>
+        <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -16524,7 +16548,9 @@ Recursively registers all nested blocks. Registration is idempotent.</p>
       </thead>
       <tbody>
           <tr class="doc-section-item">
-            <td><code>client</code></td>
+            <td>
+                <code>client</code>
+            </td>
             <td>
                   <code><a class="autorefs autorefs-internal" title="prefect.client.orchestration.PrefectClient" href="../../client/orchestration/#prefect.client.orchestration.PrefectClient">PrefectClient</a></code>
             </td>
@@ -16608,7 +16634,7 @@ provided.</p>
 <span class="normal">931</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@classmethod</span>
 <span class="nd">@sync_compatible</span>
 <span class="nd">@inject_client</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">register_type_and_schema</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">client</span><span class="p">:</span> <span class="s2">&quot;PrefectClient&quot;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">register_type_and_schema</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">client</span><span class="p">:</span> <span class="s2">&quot;PrefectClient&quot;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Makes block available for configuration with current Prefect API.</span>
 <span class="sd">    Recursively registers all nested blocks. Registration is idempotent.</span>
@@ -16629,7 +16655,7 @@ provided.</p>
             <span class="s2">&quot;subclass and not on a Block interface class directly.&quot;</span>
         <span class="p">)</span>
 
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">register_blocks_in_annotation</span><span class="p">(</span><span class="n">annotation</span><span class="p">:</span> <span class="nb">type</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">register_blocks_in_annotation</span><span class="p">(</span><span class="n">annotation</span><span class="p">:</span> <span class="nb">type</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Walk through the annotation and register any nested blocks.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">Block</span><span class="o">.</span><span class="n">is_block_class</span><span class="p">(</span><span class="n">annotation</span><span class="p">):</span>
             <span class="k">await</span> <span class="n">annotation</span><span class="o">.</span><span class="n">register_type_and_schema</span><span class="p">(</span><span class="n">client</span><span class="o">=</span><span class="n">client</span><span class="p">)</span>
@@ -16703,7 +16729,9 @@ provided.</p>
       </thead>
       <tbody>
           <tr class="doc-section-item">
-            <td><code>name</code></td>
+            <td>
+                <code>name</code>
+            </td>
             <td>
                   <code><span title="typing.Optional">Optional</span>[str]</code>
             </td>
@@ -16718,7 +16746,9 @@ block document.</p>
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code>overwrite</code></td>
+            <td>
+                <code>overwrite</code>
+            </td>
             <td>
                   <code>bool</code>
             </td>
@@ -16759,7 +16789,7 @@ the specified name already exists.</p>
 <span class="normal">1023</span>
 <span class="normal">1024</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@sync_compatible</span>
 <span class="nd">@instrument_instance_method_call</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">save</span><span class="p">(</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">save</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">overwrite</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -16811,6 +16841,11 @@ the specified name already exists.</p>
         <p>Raised when a given block is not saved and an operation that requires
 the block to be saved is attempted.</p>
 
+
+
+
+
+
               <details class="quote">
                 <summary>Source code in <code>prefect/blocks/core.py</code></summary>
                 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">185</span>
@@ -16819,7 +16854,7 @@ the block to be saved is attempted.</p>
 <span class="normal">188</span>
 <span class="normal">189</span>
 <span class="normal">190</span>
-<span class="normal">191</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">BlockNotSavedError</span><span class="p">(</span><span class="ne">RuntimeError</span><span class="p">):</span>
+<span class="normal">191</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">BlockNotSavedError</span><span class="p">(</span><span class="ne">RuntimeError</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Raised when a given block is not saved and an operation that requires</span>
 <span class="sd">    the block to be saved is attempted.</span>
@@ -16852,13 +16887,18 @@ the block to be saved is attempted.</p>
         <p>Raised on attempted registration of the base Block
 class or a Block interface class</p>
 
+
+
+
+
+
               <details class="quote">
                 <summary>Source code in <code>prefect/blocks/core.py</code></summary>
                 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">72</span>
 <span class="normal">73</span>
 <span class="normal">74</span>
 <span class="normal">75</span>
-<span class="normal">76</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">InvalidBlockRegistration</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+<span class="normal">76</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">InvalidBlockRegistration</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Raised on attempted registration of the base Block</span>
 <span class="sd">    class or a Block interface class</span>
@@ -16890,7 +16930,7 @@ class or a Block interface class</p>
 <span class="normal">66</span>
 <span class="normal">67</span>
 <span class="normal">68</span>
-<span class="normal">69</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">block_schema_to_key</span><span class="p">(</span><span class="n">schema</span><span class="p">:</span> <span class="n">BlockSchema</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="normal">69</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">block_schema_to_key</span><span class="p">(</span><span class="n">schema</span><span class="p">:</span> <span class="n">BlockSchema</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Defines the unique key used to lookup the Block class for a given schema.</span>
 <span class="sd">    &quot;&quot;&quot;</span>

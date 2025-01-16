@@ -173,6 +173,9 @@ if (amplitudeKey){
     
 
     
+  <meta name="robots" content="noindex, nofollow">
+  
+
   </head>
   
   
@@ -13311,9 +13314,9 @@ With Prefect, you can go from a Python script to a production-ready workflow tha
 <p>Let's get started!</p>
 <h2 id="setup">Setup<a class="headerlink" href="#setup" title="Permanent link">&para;</a></h2>
 <p>Here's a basic script that fetches statistics about the <a href="https://github.com/PrefectHQ/prefect">main Prefect GitHub repository</a>.</p>
-<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">httpx</span>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">httpx</span>
 
-<span class="k">def</span> <span class="nf">get_repo_info</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_repo_info</span><span class="p">():</span>
     <span class="n">url</span> <span class="o">=</span> <span class="s2">&quot;https://api.github.com/repos/PrefectHQ/prefect&quot;</span>
     <span class="n">response</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
     <span class="n">repo</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
@@ -13353,12 +13356,12 @@ Note that you will need to both host your own server and run your flows on your 
 <h2 id="step-3-turn-your-function-into-a-prefect-flow">Step 3: Turn your function into a Prefect flow<a class="headerlink" href="#step-3-turn-your-function-into-a-prefect-flow" title="Permanent link">&para;</a></h2>
 <p>The fastest way to get started with Prefect is to add a <code>@flow</code> decorator to your Python function.
 <a href="/concepts/flows/">Flows</a> are the core observable, deployable units in Prefect and are the primary entrypoint to orchestrated work.</p>
-<div class="highlight"><span class="filename">my_gh_workflow.py</span><pre><span></span><code><span class="kn">import</span> <span class="nn">httpx</span>   <span class="c1"># an HTTP client library and dependency of Prefect</span>
-<span class="hll"><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
+<div class="highlight"><span class="filename">my_gh_workflow.py</span><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">httpx</span>   <span class="c1"># an HTTP client library and dependency of Prefect</span>
+<span class="hll"><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
 </span>
 
 <span class="hll"><span class="nd">@task</span><span class="p">(</span><span class="n">retries</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-</span><span class="k">def</span> <span class="nf">get_repo_info</span><span class="p">(</span><span class="n">repo_owner</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">repo_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+</span><span class="k">def</span><span class="w"> </span><span class="nf">get_repo_info</span><span class="p">(</span><span class="n">repo_owner</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">repo_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get info about a repo - will retry twice after failing&quot;&quot;&quot;</span>
     <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;https://api.github.com/repos/</span><span class="si">{</span><span class="n">repo_owner</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">repo_name</span><span class="si">}</span><span class="s2">&quot;</span>
     <span class="n">api_response</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
@@ -13368,7 +13371,7 @@ Note that you will need to both host your own server and run your flows on your 
 
 
 <span class="nd">@task</span>
-<span class="k">def</span> <span class="nf">get_contributors</span><span class="p">(</span><span class="n">repo_info</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_contributors</span><span class="p">(</span><span class="n">repo_info</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get contributors for a repo&quot;&quot;&quot;</span>
     <span class="n">contributors_url</span> <span class="o">=</span> <span class="n">repo_info</span><span class="p">[</span><span class="s2">&quot;contributors_url&quot;</span><span class="p">]</span>
     <span class="n">response</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">contributors_url</span><span class="p">)</span>
@@ -13378,7 +13381,7 @@ Note that you will need to both host your own server and run your flows on your 
 
 
 <span class="nd">@flow</span><span class="p">(</span><span class="n">log_prints</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">repo_info</span><span class="p">(</span><span class="n">repo_owner</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;PrefectHQ&quot;</span><span class="p">,</span> <span class="n">repo_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;prefect&quot;</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">repo_info</span><span class="p">(</span><span class="n">repo_owner</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;PrefectHQ&quot;</span><span class="p">,</span> <span class="n">repo_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;prefect&quot;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Given a GitHub repository, logs the number of stargazers</span>
 <span class="sd">    and contributors for that repo.</span>
@@ -13443,7 +13446,7 @@ Feel free to check out your new work pool on the <strong>Work Pools</strong> pag
 Let's package both of these things, along with the location for where to find our flow code, into a <a href="/concepts/deployments/">deployment</a> so that we can schedule our workflow to run remotely.</p>
 <p>Deployments elevate flows to remotely configurable entities that have their own API.</p>
 <p>Let's make a script to build a deployment with the name <em>my-first-deployment</em> and set it to run on a schedule.</p>
-<div class="highlight"><span class="filename">create_deployment.py</span><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span>
+<div class="highlight"><span class="filename">create_deployment.py</span><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span>
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
     <span class="n">flow</span><span class="o">.</span><span class="n">from_source</span><span class="p">(</span>

@@ -171,6 +171,9 @@ if (amplitudeKey){
     
 
     
+  <meta name="robots" content="noindex, nofollow">
+  
+
   </head>
   
   
@@ -13323,7 +13326,7 @@ Prefect makes it simple to provide credentials via a AWS Credentials block.</p>
 <li>Copy the access key ID and secret access key.</li>
 <li>Create an <code>AWSCredenitals</code> block in the Prefect UI or use a Python script like the one below.</li>
 </ol>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect_aws</span> <span class="kn">import</span> <span class="n">AwsCredentials</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect_aws</span><span class="w"> </span><span class="kn">import</span> <span class="n">AwsCredentials</span>
 
 
 <span class="n">AwsCredentials</span><span class="p">(</span>
@@ -13338,7 +13341,7 @@ To find credentials for authentication, any data not provided to the block are s
 Prefect creates the session object using the values in the block and then, any missing values follow the sequence in the Boto3 docs.</p>
 <p>See an example of using the <code>AwsCredentials</code> block with <a href="#aws-secrets-manager">AWS Secrets Manager</a> with third-party services without storing credentials in the block itself in <a href="https://docs.prefect.io/latest/guides/secrets/">this guide</a>.</p>
 <p>Here's how to load the saved credentials:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect_aws</span> <span class="kn">import</span> <span class="n">AwsCredentials</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect_aws</span><span class="w"> </span><span class="kn">import</span> <span class="n">AwsCredentials</span>
 
 
 <span class="n">AwsCredentials</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;BLOCK-NAME-PLACEHOLDER&quot;</span><span class="p">)</span>
@@ -13347,13 +13350,13 @@ Prefect creates the session object using the values in the block and then, any m
 <h3 id="read-and-write-files-to-aws-s3">Read and write files to AWS S3<a class="headerlink" href="#read-and-write-files-to-aws-s3" title="Permanent link">&para;</a></h3>
 <p>Upload a file to an AWS S3 bucket and download the same file under a different file name.
 The following code assumes that the bucket already exists:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
-<span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span>
-<span class="kn">from</span> <span class="nn">prefect_aws</span> <span class="kn">import</span> <span class="n">AwsCredentials</span><span class="p">,</span> <span class="n">S3Bucket</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect_aws</span><span class="w"> </span><span class="kn">import</span> <span class="n">AwsCredentials</span><span class="p">,</span> <span class="n">S3Bucket</span>
 
 
 <span class="nd">@flow</span>
-<span class="k">def</span> <span class="nf">s3_flow</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">s3_flow</span><span class="p">():</span>
     <span class="c1"># create a dummy file to upload</span>
     <span class="n">file_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;test-example.txt&quot;</span><span class="p">)</span>
     <span class="n">file_path</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="s2">&quot;Hello, Prefect!&quot;</span><span class="p">)</span>
@@ -13376,12 +13379,12 @@ The following code assumes that the bucket already exists:</p>
 </code></pre></div>
 <h3 id="access-secrets-with-aws-secrets-manager">Access secrets with AWS Secrets Manager<a class="headerlink" href="#access-secrets-with-aws-secrets-manager" title="Permanent link">&para;</a></h3>
 <p>Write a secret to AWS Secrets Manager, read the secret data, delete the secret, and return the secret data.</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span>
-<span class="kn">from</span> <span class="nn">prefect_aws</span> <span class="kn">import</span> <span class="n">AwsCredentials</span><span class="p">,</span> <span class="n">AwsSecret</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect_aws</span><span class="w"> </span><span class="kn">import</span> <span class="n">AwsCredentials</span><span class="p">,</span> <span class="n">AwsSecret</span>
 
 
 <span class="nd">@flow</span>
-<span class="k">def</span> <span class="nf">secrets_manager_flow</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">secrets_manager_flow</span><span class="p">():</span>
     <span class="n">aws_credentials</span> <span class="o">=</span> <span class="n">AwsCredentials</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;BLOCK-NAME-PLACEHOLDER&quot;</span><span class="p">)</span>
     <span class="n">aws_secret</span> <span class="o">=</span> <span class="n">AwsSecret</span><span class="p">(</span><span class="n">secret_name</span><span class="o">=</span><span class="s2">&quot;test-example&quot;</span><span class="p">,</span> <span class="n">aws_credentials</span><span class="o">=</span><span class="n">aws_credentials</span><span class="p">)</span>
     <span class="n">aws_secret</span><span class="o">.</span><span class="n">write_secret</span><span class="p">(</span><span class="n">secret_data</span><span class="o">=</span><span class="sa">b</span><span class="s2">&quot;Hello, Prefect!&quot;</span><span class="p">)</span>

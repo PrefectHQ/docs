@@ -171,6 +171,9 @@ if (amplitudeKey){
     
 
     
+  <meta name="robots" content="noindex, nofollow">
+  
+
   </head>
   
   
@@ -13255,6 +13258,11 @@ The threshold for a late run can be configured by changing <code>PREFECT_API_SER
 
 
 
+
+
+
+
+
   <div class="doc doc-children">
 
 
@@ -13284,6 +13292,11 @@ The threshold for a late run can be configured by changing <code>PREFECT_API_SER
 <p>A flow run is defined as "late" if has not scheduled within a certain amount
 of time after its scheduled start time. The exact amount is configurable in
 Prefect REST API Settings.</p>
+
+
+
+
+
 
               <details class="quote">
                 <summary>Source code in <code>prefect/server/services/late_runs.py</code></summary>
@@ -13385,7 +13398,7 @@ Prefect REST API Settings.</p>
 <span class="normal">121</span>
 <span class="normal">122</span>
 <span class="normal">123</span>
-<span class="normal">124</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">MarkLateRuns</span><span class="p">(</span><span class="n">LoopService</span><span class="p">):</span>
+<span class="normal">124</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">MarkLateRuns</span><span class="p">(</span><span class="n">LoopService</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A simple loop service responsible for identifying flow runs that are &quot;late&quot;.</span>
 
@@ -13394,7 +13407,7 @@ Prefect REST API Settings.</p>
 <span class="sd">    Prefect REST API Settings.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">loop_seconds</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">loop_seconds</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
             <span class="n">loop_seconds</span><span class="o">=</span><span class="n">loop_seconds</span>
             <span class="ow">or</span> <span class="n">PREFECT_API_SERVICES_LATE_RUNS_LOOP_SECONDS</span><span class="o">.</span><span class="n">value</span><span class="p">(),</span>
@@ -13410,7 +13423,7 @@ Prefect REST API Settings.</p>
         <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span> <span class="o">=</span> <span class="mi">400</span>
 
     <span class="nd">@inject_db</span>
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">run_once</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">:</span> <span class="n">PrefectDBInterface</span><span class="p">):</span>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">run_once</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">:</span> <span class="n">PrefectDBInterface</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Mark flow runs as late by:</span>
 
@@ -13441,7 +13454,7 @@ Prefect REST API Settings.</p>
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Finished monitoring for late runs.&quot;</span><span class="p">)</span>
 
     <span class="nd">@inject_db</span>
-    <span class="k">def</span> <span class="nf">_get_select_late_flow_runs_query</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_select_late_flow_runs_query</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">scheduled_to_start_before</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">,</span> <span class="n">db</span><span class="p">:</span> <span class="n">PrefectDBInterface</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -13467,7 +13480,7 @@ Prefect REST API Settings.</p>
         <span class="p">)</span>
         <span class="k">return</span> <span class="n">query</span>
 
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">_mark_flow_run_as_late</span><span class="p">(</span>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">_mark_flow_run_as_late</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">session</span><span class="p">:</span> <span class="n">AsyncSession</span><span class="p">,</span> <span class="n">flow_run</span><span class="p">:</span> <span class="n">PrefectDBInterface</span><span class="o">.</span><span class="n">FlowRun</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -13552,7 +13565,7 @@ Prefect REST API Settings.</p>
 <span class="normal">77</span>
 <span class="normal">78</span>
 <span class="normal">79</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@inject_db</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">run_once</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">:</span> <span class="n">PrefectDBInterface</span><span class="p">):</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">run_once</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">:</span> <span class="n">PrefectDBInterface</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Mark flow runs as late by:</span>
 

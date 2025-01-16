@@ -173,6 +173,9 @@ if (amplitudeKey){
     
 
     
+  <meta name="robots" content="noindex, nofollow">
+  
+
   </head>
   
   
@@ -13675,17 +13678,17 @@ if (amplitudeKey){
 </table>
 <p>Prefect sets values for each attribute before giving the configuration to the worker. If you want to customize the values of these attributes, use the <a href="/api-ref/prefect/workers/base/#prefect.workers.base.BaseJobConfiguration.prepare_for_flow_run"><code>prepare_for_flow_run</code></a> method.</p>
 <p>Here's an example <code>prepare_for_flow_run</code> method that adds a label to the execution environment:</p>
-<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">prepare_for_flow_run</span><span class="p">(</span>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">prepare_for_flow_run</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span> <span class="n">flow_run</span><span class="p">,</span> <span class="n">deployment</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">flow</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">):</span>  
     <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">prepare_for_flow_run</span><span class="p">(</span><span class="n">flow_run</span><span class="p">,</span> <span class="n">deployment</span><span class="p">,</span> <span class="n">flow</span><span class="p">)</span>  
     <span class="bp">self</span><span class="o">.</span><span class="n">labels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;my-custom-label&quot;</span><span class="p">)</span>
 </code></pre></div>
 <p>A worker configuration class is a <a href="https://docs.pydantic.dev/usage/models/">Pydantic model</a>, so you can add additional attributes to your configuration class as Pydantic fields. For example, if you want to allow memory and CPU requests for your worker, you can do so like this:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">Field</span>
-<span class="kn">from</span> <span class="nn">prefect.workers.base</span> <span class="kn">import</span> <span class="n">BaseJobConfiguration</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">pydantic</span><span class="w"> </span><span class="kn">import</span> <span class="n">Field</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect.workers.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseJobConfiguration</span>
 
-<span class="k">class</span> <span class="nc">MyWorkerConfiguration</span><span class="p">(</span><span class="n">BaseJobConfiguration</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MyWorkerConfiguration</span><span class="p">(</span><span class="n">BaseJobConfiguration</span><span class="p">):</span>
     <span class="n">memory</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
             <span class="n">default</span><span class="o">=</span><span class="mi">1024</span><span class="p">,</span>
             <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Memory allocation for the execution environment.&quot;</span>
@@ -13744,10 +13747,10 @@ if (amplitudeKey){
 <p>Notice that each attribute for the class was added in the <code>job_configuration</code> section with placeholders whose name matches the attribute name. The <code>variables</code> section was also populated with the OpenAPI schema for each attribute. If a configuration class is used without explicitly declaring any template variables, the template variables will be inferred from the configuration class attributes.</p>
 <h3 id="customizing-configuration-attribute-templates">Customizing Configuration Attribute Templates<a class="headerlink" href="#customizing-configuration-attribute-templates" title="Permanent link">&para;</a></h3>
 <p>You can customize the template for each attribute for situations where the configuration values should use more sophisticated templating. For example, if you want to add units for the <code>memory</code> attribute, you can do so like this:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">Field</span>
-<span class="kn">from</span> <span class="nn">prefect.workers.base</span> <span class="kn">import</span> <span class="n">BaseJobConfiguration</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">pydantic</span><span class="w"> </span><span class="kn">import</span> <span class="n">Field</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect.workers.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseJobConfiguration</span>
 
-<span class="k">class</span> <span class="nc">MyWorkerConfiguration</span><span class="p">(</span><span class="n">BaseJobConfiguration</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MyWorkerConfiguration</span><span class="p">(</span><span class="n">BaseJobConfiguration</span><span class="p">):</span>
     <span class="n">memory</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
             <span class="n">default</span><span class="o">=</span><span class="s2">&quot;1024Mi&quot;</span><span class="p">,</span>
             <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Memory allocation for the execution environment.&quot;</span>
@@ -13793,9 +13796,9 @@ if (amplitudeKey){
 <h3 id="configuring-credentials">Configuring credentials<a class="headerlink" href="#configuring-credentials" title="Permanent link">&para;</a></h3>
 <p>When executing flow runs within cloud services, workers will often need credentials to authenticate with those services. For example, a worker that executes flow runs in AWS Fargate will need AWS credentials. As a worker developer, you can use blocks to accept credentials configuration from the user.</p>
 <p>For example, if you want to allow the user to configure AWS credentials, you can do so like this:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect_aws</span> <span class="kn">import</span> <span class="n">AwsCredentials</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect_aws</span><span class="w"> </span><span class="kn">import</span> <span class="n">AwsCredentials</span>
 
-<span class="k">class</span> <span class="nc">MyWorkerConfiguration</span><span class="p">(</span><span class="n">BaseJobConfiguration</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MyWorkerConfiguration</span><span class="p">(</span><span class="n">BaseJobConfiguration</span><span class="p">):</span>
     <span class="n">aws_credentials</span><span class="p">:</span> <span class="n">AwsCredentials</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;AWS credentials to use when creating AWS resources.&quot;</span>
@@ -13832,10 +13835,10 @@ if (amplitudeKey){
 </tbody>
 </table>
 <p>Additional attributes can be added to the <code>BaseVariables</code> class to define additional template variables. For example, if you want to allow memory and CPU requests for your worker, you can do so like this:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">Field</span>
-<span class="kn">from</span> <span class="nn">prefect.workers.base</span> <span class="kn">import</span> <span class="n">BaseVariables</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">pydantic</span><span class="w"> </span><span class="kn">import</span> <span class="n">Field</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect.workers.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseVariables</span>
 
-<span class="k">class</span> <span class="nc">MyWorkerTemplateVariables</span><span class="p">(</span><span class="n">BaseVariables</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MyWorkerTemplateVariables</span><span class="p">(</span><span class="n">BaseVariables</span><span class="p">):</span>
     <span class="n">memory_request</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
             <span class="n">default</span><span class="o">=</span><span class="mi">1024</span><span class="p">,</span>
             <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Memory allocation for the execution environment.&quot;</span>
@@ -13940,16 +13943,16 @@ if (amplitudeKey){
 <h4 id="run"><code>run</code><a class="headerlink" href="#run" title="Permanent link">&para;</a></h4>
 <p>In addition to the attributes above, you must also implement a <code>run</code> method. The <code>run</code> method is called for each flow run the worker receives for execution from the work pool.</p>
 <p>The <code>run</code> method has the following signature:</p>
-<div class="highlight"><pre><span></span><code> <span class="k">async</span> <span class="k">def</span> <span class="nf">run</span><span class="p">(</span>
+<div class="highlight"><pre><span></span><code> <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">flow_run</span><span class="p">:</span> <span class="n">FlowRun</span><span class="p">,</span> <span class="n">configuration</span><span class="p">:</span> <span class="n">BaseJobConfiguration</span><span class="p">,</span> <span class="n">task_status</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">anyio</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">TaskStatus</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BaseWorkerResult</span><span class="p">:</span>
         <span class="o">...</span>
 </code></pre></div>
 <p>The <code>run</code> method is passed: the flow run to execute, the execution environment configuration for the flow run, and a task status object that allows the worker to track whether the flow run was submitted successfully.</p>
 <p>The <code>run</code> method must also return a <code>BaseWorkerResult</code> object. The <code>BaseWorkerResult</code> object returned contains information about the flow run execution. For the most part, you can implement the <code>BaseWorkerResult</code> with no modifications like so:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect.workers.base</span> <span class="kn">import</span> <span class="n">BaseWorkerResult</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect.workers.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseWorkerResult</span>
 
-<span class="k">class</span> <span class="nc">MyWorkerResult</span><span class="p">(</span><span class="n">BaseWorkerResult</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MyWorkerResult</span><span class="p">(</span><span class="n">BaseWorkerResult</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Result returned by the MyWorker.&quot;&quot;&quot;</span>
 </code></pre></div>
 <p>If you would like to return more information about a flow run, then additional attributes can be added to the <code>BaseWorkerResult</code> class.</p>
@@ -13960,9 +13963,9 @@ if (amplitudeKey){
 <p>If a worker cannot tear down infrastructure created for a flow run, the <code>kill_infrastructure</code> command should raise an <code>InfrastructureNotFound</code> or <code>InfrastructureNotAvailable</code> exception.</p>
 <h3 id="worker-implementation-example">Worker implementation example<a class="headerlink" href="#worker-implementation-example" title="Permanent link">&para;</a></h3>
 <p>Below is an example of a worker implementation. This example is not intended to be a complete implementation but to illustrate the aforementioned concepts.</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect.workers.base</span> <span class="kn">import</span> <span class="n">BaseWorker</span><span class="p">,</span> <span class="n">BaseWorkerResult</span><span class="p">,</span> <span class="n">BaseJobConfiguration</span><span class="p">,</span> <span class="n">BaseVariables</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect.workers.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseWorker</span><span class="p">,</span> <span class="n">BaseWorkerResult</span><span class="p">,</span> <span class="n">BaseJobConfiguration</span><span class="p">,</span> <span class="n">BaseVariables</span>
 
-<span class="k">class</span> <span class="nc">MyWorkerConfiguration</span><span class="p">(</span><span class="n">BaseJobConfiguration</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MyWorkerConfiguration</span><span class="p">(</span><span class="n">BaseJobConfiguration</span><span class="p">):</span>
     <span class="n">memory</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
             <span class="n">default</span><span class="o">=</span><span class="s2">&quot;1024Mi&quot;</span><span class="p">,</span>
             <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Memory allocation for the execution environment.&quot;</span>
@@ -13974,7 +13977,7 @@ if (amplitudeKey){
             <span class="n">template</span><span class="o">=</span><span class="s2">&quot;{{ cpu_request }}m&quot;</span>
         <span class="p">)</span>
 
-<span class="k">class</span> <span class="nc">MyWorkerTemplateVariables</span><span class="p">(</span><span class="n">BaseVariables</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MyWorkerTemplateVariables</span><span class="p">(</span><span class="n">BaseVariables</span><span class="p">):</span>
     <span class="n">memory_request</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
             <span class="n">default</span><span class="o">=</span><span class="mi">1024</span><span class="p">,</span>
             <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Memory allocation for the execution environment.&quot;</span>
@@ -13984,10 +13987,10 @@ if (amplitudeKey){
             <span class="n">description</span><span class="o">=</span><span class="s2">&quot;CPU allocation for the execution environment.&quot;</span>
         <span class="p">)</span>
 
-<span class="k">class</span> <span class="nc">MyWorkerResult</span><span class="p">(</span><span class="n">BaseWorkerResult</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MyWorkerResult</span><span class="p">(</span><span class="n">BaseWorkerResult</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Result returned by the MyWorker.&quot;&quot;&quot;</span>
 
-<span class="k">class</span> <span class="nc">MyWorker</span><span class="p">(</span><span class="n">BaseWorker</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MyWorker</span><span class="p">(</span><span class="n">BaseWorker</span><span class="p">):</span>
     <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;my-worker&quot;</span>
     <span class="n">job_configuration</span> <span class="o">=</span> <span class="n">MyWorkerConfiguration</span>
     <span class="n">job_configuration_variables</span> <span class="o">=</span> <span class="n">MyWorkerTemplateVariables</span>
@@ -13995,7 +13998,7 @@ if (amplitudeKey){
     <span class="n">_logo_url</span> <span class="o">=</span> <span class="s2">&quot;https://example.com/logo&quot;</span>
     <span class="n">_description</span> <span class="o">=</span> <span class="s2">&quot;My worker description.&quot;</span>
 
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">run</span><span class="p">(</span>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">flow_run</span><span class="p">:</span> <span class="n">FlowRun</span><span class="p">,</span> <span class="n">configuration</span><span class="p">:</span> <span class="n">BaseJobConfiguration</span><span class="p">,</span> <span class="n">task_status</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">anyio</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">TaskStatus</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BaseWorkerResult</span><span class="p">:</span>
         <span class="c1"># Create the execution environment and start execution</span>
@@ -14015,7 +14018,7 @@ if (amplitudeKey){
             <span class="n">identifier</span><span class="o">=</span><span class="n">job</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
         <span class="p">)</span>
 
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">kill_infrastructure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">infrastructure_pid</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">configuration</span><span class="p">:</span> <span class="n">BaseJobConfiguration</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">kill_infrastructure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">infrastructure_pid</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">configuration</span><span class="p">:</span> <span class="n">BaseJobConfiguration</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="c1"># Tear down the execution environment</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kill_job</span><span class="p">(</span><span class="n">infrastructure_pid</span><span class="p">,</span> <span class="n">configuration</span><span class="p">)</span>
 </code></pre></div>

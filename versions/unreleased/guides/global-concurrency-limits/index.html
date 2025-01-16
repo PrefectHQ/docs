@@ -173,6 +173,9 @@ if (amplitudeKey){
     
 
     
+  <meta name="robots" content="noindex, nofollow">
+  
+
   </head>
   
   
@@ -13566,18 +13569,18 @@ Deleted<span class="w"> </span>global<span class="w"> </span>concurrency<span cl
 <p>When using the <code>concurrency</code> context manager, the concurrency limit you use will be created, in an inactive state, if it does not already exist.</p>
 </div>
 <p><strong>Sync</strong></p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
-<span class="kn">from</span> <span class="nn">prefect.concurrency.sync</span> <span class="kn">import</span> <span class="n">concurrency</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect.concurrency.sync</span><span class="w"> </span><span class="kn">import</span> <span class="n">concurrency</span>
 
 
 <span class="nd">@task</span>
-<span class="k">def</span> <span class="nf">process_data</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">process_data</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
     <span class="k">with</span> <span class="n">concurrency</span><span class="p">(</span><span class="s2">&quot;database&quot;</span><span class="p">,</span> <span class="n">occupy</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span>
 
 
 <span class="nd">@flow</span>
-<span class="k">def</span> <span class="nf">my_flow</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_flow</span><span class="p">():</span>
     <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="p">[(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">)]:</span>
         <span class="n">process_data</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
 
@@ -13586,19 +13589,19 @@ Deleted<span class="w"> </span>global<span class="w"> </span>concurrency<span cl
     <span class="n">my_flow</span><span class="p">()</span>
 </code></pre></div>
 <p><strong>Async</strong></p>
-<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">asyncio</span>
-<span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
-<span class="kn">from</span> <span class="nn">prefect.concurrency.asyncio</span> <span class="kn">import</span> <span class="n">concurrency</span>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect.concurrency.asyncio</span><span class="w"> </span><span class="kn">import</span> <span class="n">concurrency</span>
 
 
 <span class="nd">@task</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">process_data</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">process_data</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
     <span class="k">async</span> <span class="k">with</span> <span class="n">concurrency</span><span class="p">(</span><span class="s2">&quot;database&quot;</span><span class="p">,</span> <span class="n">occupy</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span>
 
 
 <span class="nd">@flow</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">my_flow</span><span class="p">():</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">my_flow</span><span class="p">():</span>
     <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="p">[(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">)]:</span>
         <span class="k">await</span> <span class="n">process_data</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
 
@@ -13618,18 +13621,18 @@ Deleted<span class="w"> </span>global<span class="w"> </span>concurrency<span cl
 <p>When using the <code>rate_limit</code> function the concurrency limit you use must have a slot decay configured.</p>
 </div>
 <p><strong>Sync</strong></p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
-<span class="kn">from</span> <span class="nn">prefect.concurrency.sync</span> <span class="kn">import</span> <span class="n">rate_limit</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect.concurrency.sync</span><span class="w"> </span><span class="kn">import</span> <span class="n">rate_limit</span>
 
 
 <span class="nd">@task</span>
-<span class="k">def</span> <span class="nf">make_http_request</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">make_http_request</span><span class="p">():</span>
     <span class="n">rate_limit</span><span class="p">(</span><span class="s2">&quot;rate-limited-api&quot;</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Making an HTTP request...&quot;</span><span class="p">)</span>
 
 
 <span class="nd">@flow</span>
-<span class="k">def</span> <span class="nf">my_flow</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_flow</span><span class="p">():</span>
     <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
         <span class="n">make_http_request</span><span class="o">.</span><span class="n">submit</span><span class="p">()</span>
 
@@ -13638,20 +13641,20 @@ Deleted<span class="w"> </span>global<span class="w"> </span>concurrency<span cl
     <span class="n">my_flow</span><span class="p">()</span>
 </code></pre></div>
 <p><strong>Async</strong></p>
-<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">asyncio</span>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
 
-<span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
-<span class="kn">from</span> <span class="nn">prefect.concurrency.asyncio</span> <span class="kn">import</span> <span class="n">rate_limit</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect.concurrency.asyncio</span><span class="w"> </span><span class="kn">import</span> <span class="n">rate_limit</span>
 
 
 <span class="nd">@task</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">make_http_request</span><span class="p">():</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">make_http_request</span><span class="p">():</span>
     <span class="k">await</span> <span class="n">rate_limit</span><span class="p">(</span><span class="s2">&quot;rate-limited-api&quot;</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Making an HTTP request...&quot;</span><span class="p">)</span>
 
 
 <span class="nd">@flow</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">my_flow</span><span class="p">():</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">my_flow</span><span class="p">():</span>
     <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
         <span class="k">await</span> <span class="n">make_http_request</span><span class="o">.</span><span class="n">submit</span><span class="p">()</span>
 
@@ -13666,12 +13669,12 @@ Deleted<span class="w"> </span>global<span class="w"> </span>concurrency<span cl
 </ol>
 <h2 id="using-concurrency-and-rate_limit-outside-of-a-flow">Using <code>concurrency</code> and <code>rate_limit</code> outside of a flow<a class="headerlink" href="#using-concurrency-and-rate_limit-outside-of-a-flow" title="Permanent link">&para;</a></h2>
 <p><code>concurreny</code> and <code>rate_limit</code> can be used outside of a flow to control concurrency and rate limits for any operation.</p>
-<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">asyncio</span>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
 
-<span class="kn">from</span> <span class="nn">prefect.concurrency.asyncio</span> <span class="kn">import</span> <span class="n">rate_limit</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect.concurrency.asyncio</span><span class="w"> </span><span class="kn">import</span> <span class="n">rate_limit</span>
 
 
-<span class="k">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
     <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
         <span class="k">await</span> <span class="n">rate_limit</span><span class="p">(</span><span class="s2">&quot;rate-limited-api&quot;</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Making an HTTP request...&quot;</span><span class="p">)</span>
@@ -13685,17 +13688,17 @@ Deleted<span class="w"> </span>global<span class="w"> </span>concurrency<span cl
 <h3 id="throttling-task-submission">Throttling task submission<a class="headerlink" href="#throttling-task-submission" title="Permanent link">&para;</a></h3>
 <p>Throttling task submission to avoid overloading resources, to comply with external rate limits, or ensure a steady, controlled flow of work.</p>
 <p>In this scenario the <code>rate_limit</code> function is used to throttle the submission of tasks. The rate limit acts as a bottleneck, ensuring that tasks are submitted at a controlled rate, governed by the <code>slot_decay_per_second</code> setting on the associated concurrency limit.</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
-<span class="kn">from</span> <span class="nn">prefect.concurrency.sync</span> <span class="kn">import</span> <span class="n">rate_limit</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect.concurrency.sync</span><span class="w"> </span><span class="kn">import</span> <span class="n">rate_limit</span>
 
 
 <span class="nd">@task</span>
-<span class="k">def</span> <span class="nf">my_task</span><span class="p">(</span><span class="n">i</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_task</span><span class="p">(</span><span class="n">i</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">i</span>
 
 
 <span class="nd">@flow</span>
-<span class="k">def</span> <span class="nf">my_flow</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_flow</span><span class="p">():</span>
     <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
         <span class="n">rate_limit</span><span class="p">(</span><span class="s2">&quot;slow-my-flow&quot;</span><span class="p">,</span> <span class="n">occupy</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
         <span class="n">my_task</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
@@ -13707,11 +13710,11 @@ Deleted<span class="w"> </span>global<span class="w"> </span>concurrency<span cl
 <h3 id="managing-database-connections">Managing database connections<a class="headerlink" href="#managing-database-connections" title="Permanent link">&para;</a></h3>
 <p>Managing the maximum number of concurrent database connections to avoid exhausting database resources.</p>
 <p>In this scenario we've setup a concurrency limit named <code>database</code> and given it a maximum concurrency limit that matches the maximum number of database connections we want to allow. We then use the <code>concurrency</code> context manager to control the number of database connections allowed at any one time.</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span><span class="p">,</span> <span class="n">concurrency</span>
-<span class="kn">import</span> <span class="nn">psycopg2</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span><span class="p">,</span> <span class="n">concurrency</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">psycopg2</span>
 
 <span class="nd">@task</span>
-<span class="k">def</span> <span class="nf">database_query</span><span class="p">(</span><span class="n">query</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">database_query</span><span class="p">(</span><span class="n">query</span><span class="p">):</span>
     <span class="c1"># Here we request a single slot on the &#39;database&#39; concurrency limit. This</span>
     <span class="c1"># will block in the case that all of the database connections are in use</span>
     <span class="c1"># ensuring that we never exceed the maximum number of database connections.</span>
@@ -13724,7 +13727,7 @@ Deleted<span class="w"> </span>global<span class="w"> </span>concurrency<span cl
         <span class="k">return</span> <span class="n">result</span>
 
 <span class="nd">@flow</span>
-<span class="k">def</span> <span class="nf">my_flow</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_flow</span><span class="p">():</span>
     <span class="n">queries</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;SELECT * FROM table1&quot;</span><span class="p">,</span> <span class="s2">&quot;SELECT * FROM table2&quot;</span><span class="p">,</span> <span class="s2">&quot;SELECT * FROM table3&quot;</span><span class="p">]</span>
 
     <span class="k">for</span> <span class="n">query</span> <span class="ow">in</span> <span class="n">queries</span><span class="p">:</span>
@@ -13736,17 +13739,17 @@ Deleted<span class="w"> </span>global<span class="w"> </span>concurrency<span cl
 <h3 id="parallel-data-processing">Parallel data processing<a class="headerlink" href="#parallel-data-processing" title="Permanent link">&para;</a></h3>
 <p>Limiting the maximum number of parallel processing tasks.</p>
 <p>In this scenario we want to limit the number of <code>process_data</code> tasks to five at any one time. We do this by using the <code>concurrency</code> context manager to request five slots on the <code>data-processing</code> concurrency limit. This will block until five slots are free and then submit five more tasks, ensuring that we never exceed the maximum number of parallel processing tasks.</p>
-<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">asyncio</span>
-<span class="kn">from</span> <span class="nn">prefect.concurrency.sync</span> <span class="kn">import</span> <span class="n">concurrency</span>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect.concurrency.sync</span><span class="w"> </span><span class="kn">import</span> <span class="n">concurrency</span>
 
 
-<span class="k">async</span> <span class="k">def</span> <span class="nf">process_data</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">process_data</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Processing: </span><span class="si">{</span><span class="n">data</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
     <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Processed: </span><span class="si">{</span><span class="n">data</span><span class="si">}</span><span class="s2">&quot;</span>
 
 
-<span class="k">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
     <span class="n">data_items</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">))</span>
     <span class="n">processed_data</span> <span class="o">=</span> <span class="p">[]</span>
 

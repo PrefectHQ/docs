@@ -173,6 +173,9 @@ if (amplitudeKey){
     
 
     
+  <meta name="robots" content="noindex, nofollow">
+  
+
   </head>
   
   
@@ -13770,14 +13773,14 @@ if (amplitudeKey){
 <p>Results represent the data returned by a flow or a task.</p>
 <h2 id="retrieving-results">Retrieving results<a class="headerlink" href="#retrieving-results" title="Permanent link">&para;</a></h2>
 <p>When <strong>calling</strong> flows or tasks, the result is returned directly:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
 
 <span class="nd">@task</span>
-<span class="k">def</span> <span class="nf">my_task</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_task</span><span class="p">():</span>
     <span class="k">return</span> <span class="mi">1</span>
 
 <span class="nd">@flow</span>
-<span class="k">def</span> <span class="nf">my_flow</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_flow</span><span class="p">():</span>
     <span class="n">task_result</span> <span class="o">=</span> <span class="n">my_task</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">task_result</span> <span class="o">+</span> <span class="mi">1</span>
 
@@ -13785,14 +13788,14 @@ if (amplitudeKey){
 <span class="k">assert</span> <span class="n">result</span> <span class="o">==</span> <span class="mi">2</span>
 </code></pre></div>
 <p>When working with flow and task states, the result can be retrieved with the <code>State.result()</code> method:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
 
 <span class="nd">@task</span>
-<span class="k">def</span> <span class="nf">my_task</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_task</span><span class="p">():</span>
     <span class="k">return</span> <span class="mi">1</span>
 
 <span class="nd">@flow</span>
-<span class="k">def</span> <span class="nf">my_flow</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_flow</span><span class="p">():</span>
     <span class="n">state</span> <span class="o">=</span> <span class="n">my_task</span><span class="p">(</span><span class="n">return_state</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">state</span><span class="o">.</span><span class="n">result</span><span class="p">()</span> <span class="o">+</span> <span class="mi">1</span>
 
@@ -13800,14 +13803,14 @@ if (amplitudeKey){
 <span class="k">assert</span> <span class="n">state</span><span class="o">.</span><span class="n">result</span><span class="p">()</span> <span class="o">==</span> <span class="mi">2</span>
 </code></pre></div>
 <p>When submitting tasks to a runner, the result can be retrieved with the <code>Future.result()</code> method:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
 
 <span class="nd">@task</span>
-<span class="k">def</span> <span class="nf">my_task</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_task</span><span class="p">():</span>
     <span class="k">return</span> <span class="mi">1</span>
 
 <span class="nd">@flow</span>
-<span class="k">def</span> <span class="nf">my_flow</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_flow</span><span class="p">():</span>
     <span class="n">future</span> <span class="o">=</span> <span class="n">my_task</span><span class="o">.</span><span class="n">submit</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">future</span><span class="o">.</span><span class="n">result</span><span class="p">()</span> <span class="o">+</span> <span class="mi">1</span>
 
@@ -13817,14 +13820,14 @@ if (amplitudeKey){
 <h3 id="handling-failures">Handling failures<a class="headerlink" href="#handling-failures" title="Permanent link">&para;</a></h3>
 <p>Sometimes your flows or tasks will encounter an <strong>exception</strong>. Prefect captures all exceptions in order to report states to the orchestrator, but we do not hide them from you (unless you ask us to) as your program needs to know if an unexpected error has occurred.</p>
 <p>When <strong>calling</strong> flows or tasks, the exceptions are raised as in normal Python:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
 
 <span class="nd">@task</span>
-<span class="k">def</span> <span class="nf">my_task</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_task</span><span class="p">():</span>
     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">()</span>
 
 <span class="nd">@flow</span>
-<span class="k">def</span> <span class="nf">my_flow</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_flow</span><span class="p">():</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">my_task</span><span class="p">()</span>
     <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
@@ -13835,14 +13838,14 @@ if (amplitudeKey){
 <span class="n">my_flow</span><span class="p">()</span>
 </code></pre></div>
 <p>If you would prefer to check for a failed task without using <code>try/except</code>, you may ask Prefect to return the state:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
 
 <span class="nd">@task</span>
-<span class="k">def</span> <span class="nf">my_task</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_task</span><span class="p">():</span>
     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">()</span>
 
 <span class="nd">@flow</span>
-<span class="k">def</span> <span class="nf">my_flow</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_flow</span><span class="p">():</span>
     <span class="n">state</span> <span class="o">=</span> <span class="n">my_task</span><span class="p">(</span><span class="n">return_state</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">state</span><span class="o">.</span><span class="n">is_failed</span><span class="p">():</span>
@@ -13857,14 +13860,14 @@ if (amplitudeKey){
 <span class="k">assert</span> <span class="n">result</span> <span class="o">==</span> <span class="mi">2</span>
 </code></pre></div>
 <p>If you retrieve the result from a failed state, the exception will be raised. For this reason, it's often best to check if the state is failed first.</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
 
 <span class="nd">@task</span>
-<span class="k">def</span> <span class="nf">my_task</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_task</span><span class="p">():</span>
     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">()</span>
 
 <span class="nd">@flow</span>
-<span class="k">def</span> <span class="nf">my_flow</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_flow</span><span class="p">():</span>
     <span class="n">state</span> <span class="o">=</span> <span class="n">my_task</span><span class="p">(</span><span class="n">return_state</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="k">try</span><span class="p">:</span>
@@ -13877,14 +13880,14 @@ if (amplitudeKey){
 <span class="n">my_flow</span><span class="p">()</span>
 </code></pre></div>
 <p>When retrieving the result from a state, you can ask Prefect not to raise exceptions:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
 
 <span class="nd">@task</span>
-<span class="k">def</span> <span class="nf">my_task</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_task</span><span class="p">():</span>
     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">()</span>
 
 <span class="nd">@flow</span>
-<span class="k">def</span> <span class="nf">my_flow</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_flow</span><span class="p">():</span>
     <span class="n">state</span> <span class="o">=</span> <span class="n">my_task</span><span class="p">(</span><span class="n">return_state</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="n">maybe_result</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">result</span><span class="p">(</span><span class="n">raise_on_failure</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -13900,14 +13903,14 @@ if (amplitudeKey){
 <span class="k">assert</span> <span class="n">result</span> <span class="o">==</span> <span class="mi">2</span>
 </code></pre></div>
 <p>When submitting tasks to a runner, <code>Future.result()</code> works the same as <code>State.result()</code>:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
 
 <span class="nd">@task</span>
-<span class="k">def</span> <span class="nf">my_task</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_task</span><span class="p">():</span>
     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">()</span>
 
 <span class="nd">@flow</span>
-<span class="k">def</span> <span class="nf">my_flow</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_flow</span><span class="p">():</span>
     <span class="n">future</span> <span class="o">=</span> <span class="n">my_task</span><span class="o">.</span><span class="n">submit</span><span class="p">()</span>
 
     <span class="k">try</span><span class="p">:</span>
@@ -13925,15 +13928,15 @@ if (amplitudeKey){
 </code></pre></div>
 <h3 id="working-with-async-results">Working with async results<a class="headerlink" href="#working-with-async-results" title="Permanent link">&para;</a></h3>
 <p>When <strong>calling</strong> flows or tasks, the result is returned directly:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">asyncio</span>
-<span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
 
 <span class="nd">@task</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">my_task</span><span class="p">():</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">my_task</span><span class="p">():</span>
     <span class="k">return</span> <span class="mi">1</span>
 
 <span class="nd">@flow</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">my_flow</span><span class="p">():</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">my_flow</span><span class="p">():</span>
     <span class="n">task_result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">my_task</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">task_result</span> <span class="o">+</span> <span class="mi">1</span>
 
@@ -13941,20 +13944,20 @@ if (amplitudeKey){
 <span class="k">assert</span> <span class="n">result</span> <span class="o">==</span> <span class="mi">2</span>
 </code></pre></div>
 <p>When working with flow and task states, the result can be retrieved with the <code>State.result()</code> method:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">asyncio</span>
-<span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
 
 <span class="nd">@task</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">my_task</span><span class="p">():</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">my_task</span><span class="p">():</span>
     <span class="k">return</span> <span class="mi">1</span>
 
 <span class="nd">@flow</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">my_flow</span><span class="p">():</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">my_flow</span><span class="p">():</span>
     <span class="n">state</span> <span class="o">=</span> <span class="k">await</span> <span class="n">my_task</span><span class="p">(</span><span class="n">return_state</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">state</span><span class="o">.</span><span class="n">result</span><span class="p">(</span><span class="n">fetch</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">result</span> <span class="o">+</span> <span class="mi">1</span>
 
-<span class="k">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
     <span class="n">state</span> <span class="o">=</span> <span class="k">await</span> <span class="n">my_flow</span><span class="p">(</span><span class="n">return_state</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="k">assert</span> <span class="k">await</span> <span class="n">state</span><span class="o">.</span><span class="n">result</span><span class="p">(</span><span class="n">fetch</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span>
 
@@ -13972,15 +13975,15 @@ If you do not opt-in to this behavior, you will see a warning.</p>
 This will silence the warning, but you will need to retrieve your result manually from the result type.</p>
 </div>
 <p>When submitting tasks to a runner, the result can be retrieved with the <code>Future.result()</code> method:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">asyncio</span>
-<span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
 
 <span class="nd">@task</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">my_task</span><span class="p">():</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">my_task</span><span class="p">():</span>
     <span class="k">return</span> <span class="mi">1</span>
 
 <span class="nd">@flow</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">my_flow</span><span class="p">():</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">my_flow</span><span class="p">():</span>
     <span class="n">future</span> <span class="o">=</span> <span class="k">await</span> <span class="n">my_task</span><span class="o">.</span><span class="n">submit</span><span class="p">()</span>
     <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">future</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">result</span> <span class="o">+</span> <span class="mi">1</span>
@@ -14006,35 +14009,35 @@ This will silence the warning, but you will need to retrieve your result manuall
 <h4 id="toggling-persistence">Toggling persistence<a class="headerlink" href="#toggling-persistence" title="Permanent link">&para;</a></h4>
 <p>Persistence of the result of a task or flow can be configured with the <code>persist_result</code> option. The <code>persist_result</code> option defaults to a null value, which will automatically enable persistence if it is needed for a Prefect feature used by the flow or task. Otherwise, persistence is disabled by default.</p>
 <p>For example, the following flow has retries enabled. Flow retries require that all task results are persisted, so the task's result will be persisted:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
 
 <span class="nd">@task</span>
-<span class="k">def</span> <span class="nf">my_task</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_task</span><span class="p">():</span>
     <span class="k">return</span> <span class="s2">&quot;hello world!&quot;</span>
 
 <span class="nd">@flow</span><span class="p">(</span><span class="n">retries</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">my_flow</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_flow</span><span class="p">():</span>
     <span class="c1"># This task does not have persistence toggled off and it is needed for the flow feature,</span>
     <span class="c1"># so Prefect will persist its result at runtime</span>
     <span class="n">my_task</span><span class="p">()</span>
 </code></pre></div>
 <p>Flow retries do not require the flow's result to be persisted, so it will not be.</p>
 <p>In this next example, one task has caching enabled. Task caching requires that the given task's result is persisted:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
-<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">timedelta</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">timedelta</span>
 
 <span class="nd">@task</span><span class="p">(</span><span class="n">cache_key_fn</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="s2">&quot;always&quot;</span><span class="p">,</span> <span class="n">cache_expiration</span><span class="o">=</span><span class="n">timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="mi">20</span><span class="p">))</span>
-<span class="k">def</span> <span class="nf">my_task</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_task</span><span class="p">():</span>
     <span class="c1"># This task uses caching so its result will be persisted by default</span>
     <span class="k">return</span> <span class="s2">&quot;hello world!&quot;</span>
 
 
 <span class="nd">@task</span>
-<span class="k">def</span> <span class="nf">my_other_task</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_other_task</span><span class="p">():</span>
     <span class="o">...</span>
 
 <span class="nd">@flow</span>
-<span class="k">def</span> <span class="nf">my_flow</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_flow</span><span class="p">():</span>
     <span class="c1"># This task uses a feature that requires result persistence</span>
     <span class="n">my_task</span><span class="p">()</span>
 
@@ -14044,15 +14047,15 @@ This will silence the warning, but you will need to retrieve your result manuall
     <span class="n">my_other_task</span><span class="p">()</span>
 </code></pre></div>
 <p>Persistence of results can be manually toggled on or off:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
 
 <span class="nd">@flow</span><span class="p">(</span><span class="n">persist_result</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">my_flow</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_flow</span><span class="p">():</span>
     <span class="c1"># This flow will persist its result even if not necessary for a feature.</span>
     <span class="o">...</span>
 
 <span class="nd">@task</span><span class="p">(</span><span class="n">persist_result</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">my_task</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_task</span><span class="p">():</span>
     <span class="c1"># This task will never persist its result.</span>
     <span class="c1"># If persistence needed for a feature, an error will be raised.</span>
     <span class="o">...</span>
@@ -14066,15 +14069,15 @@ This will silence the warning, but you will need to retrieve your result manuall
 <p><a href="#result-storage-types">The result storage location</a> can be configured with the <code>result_storage</code> option. The <code>result_storage</code> option defaults to a null value, which infers storage from the context.
 Generally, this means that tasks will use the result storage configured on the flow unless otherwise specified.
 If there is no context to load the storage from and results must be persisted, results will be stored in the path specified by the <code>PREFECT_LOCAL_STORAGE_PATH</code> setting (defaults to <code>~/.prefect/storage</code>).</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
-<span class="kn">from</span> <span class="nn">prefect.filesystems</span> <span class="kn">import</span> <span class="n">LocalFileSystem</span><span class="p">,</span> <span class="n">S3</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect.filesystems</span><span class="w"> </span><span class="kn">import</span> <span class="n">LocalFileSystem</span><span class="p">,</span> <span class="n">S3</span>
 
 <span class="nd">@flow</span><span class="p">(</span><span class="n">persist_result</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">my_flow</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_flow</span><span class="p">():</span>
     <span class="n">my_task</span><span class="p">()</span>  <span class="c1"># This task will use the flow&#39;s result storage</span>
 
 <span class="nd">@task</span><span class="p">(</span><span class="n">persist_result</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">my_task</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_task</span><span class="p">():</span>
     <span class="o">...</span>
 
 <span class="n">my_flow</span><span class="p">()</span>  <span class="c1"># The flow has no result storage configured and no parent, the local file system will be used.</span>
@@ -14092,30 +14095,30 @@ If there is no context to load the storage from and results must be persisted, r
 </ul>
 <h4 id="result-storage-key">Result storage key<a class="headerlink" href="#result-storage-key" title="Permanent link">&para;</a></h4>
 <p>The path of the result file in the result storage can be configured with the <code>result_storage_key</code>. The <code>result_storage_key</code> option defaults to a null value, which generates a unique identifier for each result.</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
-<span class="kn">from</span> <span class="nn">prefect.filesystems</span> <span class="kn">import</span> <span class="n">LocalFileSystem</span><span class="p">,</span> <span class="n">S3</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect.filesystems</span><span class="w"> </span><span class="kn">import</span> <span class="n">LocalFileSystem</span><span class="p">,</span> <span class="n">S3</span>
 
 <span class="nd">@flow</span><span class="p">(</span><span class="n">result_storage</span><span class="o">=</span><span class="n">S3</span><span class="p">(</span><span class="n">bucket_path</span><span class="o">=</span><span class="s2">&quot;my-bucket&quot;</span><span class="p">))</span>
-<span class="k">def</span> <span class="nf">my_flow</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_flow</span><span class="p">():</span>
     <span class="n">my_task</span><span class="p">()</span>
 
 <span class="nd">@task</span><span class="p">(</span><span class="n">persist_result</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">result_storage_key</span><span class="o">=</span><span class="s2">&quot;my_task.json&quot;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">my_task</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_task</span><span class="p">():</span>
     <span class="o">...</span>
 
 <span class="n">my_flow</span><span class="p">()</span>  <span class="c1"># The task&#39;s result will be persisted to &#39;s3://my-bucket/my_task.json&#39;</span>
 </code></pre></div>
 <p>Result storage keys are formatted with access to all of the modules in <code>prefect.runtime</code> and the run's <code>parameters</code>. In the following example, we will run a flow with three runs of the same task. Each task run will write its result to a unique file based on the <code>name</code> parameter.</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
 
 <span class="nd">@flow</span><span class="p">()</span>
-<span class="k">def</span> <span class="nf">my_flow</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_flow</span><span class="p">():</span>
     <span class="n">hello_world</span><span class="p">()</span>
     <span class="n">hello_world</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;foo&quot;</span><span class="p">)</span>
     <span class="n">hello_world</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;bar&quot;</span><span class="p">)</span>
 
 <span class="nd">@task</span><span class="p">(</span><span class="n">persist_result</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">result_storage_key</span><span class="o">=</span><span class="s2">&quot;hello-</span><span class="si">{parameters[name]}</span><span class="s2">.json&quot;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">hello_world</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;world&quot;</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">hello_world</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;world&quot;</span><span class="p">):</span>
     <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;hello </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span>
 
 <span class="n">my_flow</span><span class="p">()</span>
@@ -14127,14 +14130,14 @@ hello-foo.json
 hello-world.json
 </code></pre></div>
 <p>In the next example, we include metadata about the flow run from the <code>prefect.runtime.flow_run</code> module:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span><span class="p">,</span> <span class="n">task</span>
 
 <span class="nd">@flow</span>
-<span class="k">def</span> <span class="nf">my_flow</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_flow</span><span class="p">():</span>
     <span class="n">hello_world</span><span class="p">()</span>
 
 <span class="nd">@task</span><span class="p">(</span><span class="n">persist_result</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">result_storage_key</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">{flow_run.flow_name}</span><span class="s2">_</span><span class="si">{flow_run.name}</span><span class="s2">_hello.json&quot;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">hello_world</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;world&quot;</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">hello_world</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;world&quot;</span><span class="p">):</span>
     <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;hello </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span>
 
 <span class="n">my_flow</span><span class="p">()</span>
@@ -14188,16 +14191,16 @@ If you are using custom serializers, you must pass a full instance.</p>
 <p>When running your workflows, Prefect will keep the results of all tasks and flows in memory so they can be passed downstream. In some cases, it is desirable to override this behavior. For example, if you are returning a large amount of data from a task it can be costly to keep it memory for the entire duration of the flow run.</p>
 <p>Flows and tasks both include an option to drop the result from memory with <code>cache_result_in_memory</code>:</p>
 <div class="highlight"><pre><span></span><code><span class="nd">@flow</span><span class="p">(</span><span class="n">cache_result_in_memory</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">foo</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">foo</span><span class="p">():</span>
     <span class="k">return</span> <span class="s2">&quot;pretend this is large data&quot;</span>
 
 <span class="nd">@task</span><span class="p">(</span><span class="n">cache_result_in_memory</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">bar</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">bar</span><span class="p">():</span>
     <span class="k">return</span> <span class="s2">&quot;pretend this is biiiig data&quot;</span>
 </code></pre></div>
 <p>When <code>cache_result_in_memory</code> is disabled, the result of your flow or task will be persisted by default. The result will then be pulled from storage when needed.</p>
 <div class="highlight"><pre><span></span><code><span class="nd">@flow</span>
-<span class="k">def</span> <span class="nf">foo</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">foo</span><span class="p">():</span>
     <span class="n">result</span> <span class="o">=</span> <span class="n">bar</span><span class="p">()</span>
     <span class="n">state</span> <span class="o">=</span> <span class="n">bar</span><span class="p">(</span><span class="n">return_state</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
@@ -14209,17 +14212,17 @@ If you are using custom serializers, you must pass a full instance.</p>
     <span class="n">future</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
 
 <span class="nd">@task</span><span class="p">(</span><span class="n">cache_result_in_memory</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">bar</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">bar</span><span class="p">():</span>
     <span class="c1"># This result will persisted</span>
     <span class="k">return</span> <span class="s2">&quot;pretend this is biiiig data&quot;</span>
 </code></pre></div>
 <p>If both <code>cache_result_in_memory</code> and persistence are disabled, your results will not be available downstream.</p>
 <div class="highlight"><pre><span></span><code><span class="nd">@task</span><span class="p">(</span><span class="n">persist_result</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">cache_result_in_memory</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">bar</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">bar</span><span class="p">():</span>
     <span class="k">return</span> <span class="s2">&quot;pretend this is biiiig data&quot;</span>
 
 <span class="nd">@flow</span>
-<span class="k">def</span> <span class="nf">foo</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">foo</span><span class="p">():</span>
     <span class="c1"># Raises an error</span>
     <span class="n">result</span> <span class="o">=</span> <span class="n">bar</span><span class="p">()</span>
 
@@ -14241,7 +14244,7 @@ If you are using custom serializers, you must pass a full instance.</p>
 <p>A result serializer is responsible for converting your Python object to and from bytes. This is necessary to store the object outside of Python and retrieve it later.</p>
 <h3 id="pickle-serializer">Pickle serializer<a class="headerlink" href="#pickle-serializer" title="Permanent link">&para;</a></h3>
 <p>Pickle is a standard Python protocol for encoding arbitrary Python objects. We supply a custom pickle serializer at <code>prefect.serializers.PickleSerializer</code>. Prefect's pickle serializer uses the <a href="https://github.com/cloudpipe/cloudpickle">cloudpickle</a> project by default to support more object types. Alternative pickle libraries can be specified:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect.serializers</span> <span class="kn">import</span> <span class="n">PickleSerializer</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect.serializers</span><span class="w"> </span><span class="kn">import</span> <span class="n">PickleSerializer</span>
 
 <span class="n">PickleSerializer</span><span class="p">(</span><span class="n">picklelib</span><span class="o">=</span><span class="s2">&quot;custompickle&quot;</span><span class="p">)</span>
 </code></pre></div>
@@ -14260,7 +14263,7 @@ If you are using custom serializers, you must pass a full instance.</p>
 <h3 id="json-serializer">JSON serializer<a class="headerlink" href="#json-serializer" title="Permanent link">&para;</a></h3>
 <p>We supply a custom JSON serializer at <code>prefect.serializers.JSONSerializer</code>. Prefect's JSON serializer uses custom hooks by default to support more object types. Specifically, we add support for all types supported by <a href="https://pydantic-docs.helpmanual.io/">Pydantic</a>.</p>
 <p>By default, we use the standard Python <code>json</code> library. Alternative JSON libraries can be specified:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect.serializers</span> <span class="kn">import</span> <span class="n">JSONSerializer</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect.serializers</span><span class="w"> </span><span class="kn">import</span> <span class="n">JSONSerializer</span>
 
 <span class="n">JSONSerializer</span><span class="p">(</span><span class="n">jsonlib</span><span class="o">=</span><span class="s2">&quot;orjson&quot;</span><span class="p">)</span>
 </code></pre></div>

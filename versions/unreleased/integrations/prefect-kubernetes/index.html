@@ -171,6 +171,9 @@ if (amplitudeKey){
     
 
     
+  <meta name="robots" content="noindex, nofollow">
+  
+
   </head>
   
   
@@ -13300,7 +13303,7 @@ prefect<span class="w"> </span>block<span class="w"> </span>register<span class=
 
 <h2 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h2>
 <h3 id="use-with_options-to-customize-options-on-an-existing-task-or-flow">Use <code>with_options</code> to customize options on an existing task or flow<a class="headerlink" href="#use-with_options-to-customize-options-on-an-existing-task-or-flow" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect_kubernetes.flows</span> <span class="kn">import</span> <span class="n">run_namespaced_job</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect_kubernetes.flows</span><span class="w"> </span><span class="kn">import</span> <span class="n">run_namespaced_job</span>
 
 <span class="n">customized_run_namespaced_job</span> <span class="o">=</span> <span class="n">run_namespaced_job</span><span class="o">.</span><span class="n">with_options</span><span class="p">(</span>
     <span class="n">name</span><span class="o">=</span><span class="s2">&quot;My flow running a Kubernetes Job&quot;</span><span class="p">,</span>
@@ -13309,9 +13312,9 @@ prefect<span class="w"> </span>block<span class="w"> </span>register<span class=
 <span class="p">)</span> <span class="c1"># this is now a new flow object that can be called</span>
 </code></pre></div>
 <h3 id="specify-and-run-a-kubernetes-job-from-a-yaml-file">Specify and run a Kubernetes Job from a YAML file<a class="headerlink" href="#specify-and-run-a-kubernetes-job-from-a-yaml-file" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect_kubernetes.credentials</span> <span class="kn">import</span> <span class="n">KubernetesCredentials</span>
-<span class="kn">from</span> <span class="nn">prefect_kubernetes.flows</span> <span class="kn">import</span> <span class="n">run_namespaced_job</span> <span class="c1"># this is a flow</span>
-<span class="kn">from</span> <span class="nn">prefect_kubernetes.jobs</span> <span class="kn">import</span> <span class="n">KubernetesJob</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect_kubernetes.credentials</span><span class="w"> </span><span class="kn">import</span> <span class="n">KubernetesCredentials</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect_kubernetes.flows</span><span class="w"> </span><span class="kn">import</span> <span class="n">run_namespaced_job</span> <span class="c1"># this is a flow</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect_kubernetes.jobs</span><span class="w"> </span><span class="kn">import</span> <span class="n">KubernetesJob</span>
 
 <span class="n">k8s_creds</span> <span class="o">=</span> <span class="n">KubernetesCredentials</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;k8s-creds&quot;</span><span class="p">)</span>
 
@@ -13328,8 +13331,8 @@ prefect<span class="w"> </span>block<span class="w"> </span>register<span class=
 </code></pre></div>
 <h3 id="generate-a-resource-specific-client-from-kubernetesclusterconfig">Generate a resource-specific client from <code>KubernetesClusterConfig</code><a class="headerlink" href="#generate-a-resource-specific-client-from-kubernetesclusterconfig" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><span class="c1"># with minikube / docker desktop &amp; a valid ~/.kube/config this should ~just work~</span>
-<span class="kn">from</span> <span class="nn">prefect.blocks.kubernetes</span> <span class="kn">import</span> <span class="n">KubernetesClusterConfig</span>
-<span class="kn">from</span> <span class="nn">prefect_kubernetes.credentials</span> <span class="kn">import</span> <span class="n">KubernetesCredentials</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect.blocks.kubernetes</span><span class="w"> </span><span class="kn">import</span> <span class="n">KubernetesClusterConfig</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect_kubernetes.credentials</span><span class="w"> </span><span class="kn">import</span> <span class="n">KubernetesCredentials</span>
 
 <span class="n">k8s_config</span> <span class="o">=</span> <span class="n">KubernetesClusterConfig</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="s1">&#39;~/.kube/config&#39;</span><span class="p">)</span>
 
@@ -13340,27 +13343,27 @@ prefect<span class="w"> </span>block<span class="w"> </span>register<span class=
         <span class="nb">print</span><span class="p">(</span><span class="n">namespace</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
 </code></pre></div>
 <h3 id="list-jobs-in-a-namespace">List jobs in a namespace<a class="headerlink" href="#list-jobs-in-a-namespace" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span>
-<span class="kn">from</span> <span class="nn">prefect_kubernetes.credentials</span> <span class="kn">import</span> <span class="n">KubernetesCredentials</span>
-<span class="kn">from</span> <span class="nn">prefect_kubernetes.jobs</span> <span class="kn">import</span> <span class="n">list_namespaced_job</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect_kubernetes.credentials</span><span class="w"> </span><span class="kn">import</span> <span class="n">KubernetesCredentials</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect_kubernetes.jobs</span><span class="w"> </span><span class="kn">import</span> <span class="n">list_namespaced_job</span>
 
 <span class="nd">@flow</span>
-<span class="k">def</span> <span class="nf">kubernetes_orchestrator</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">kubernetes_orchestrator</span><span class="p">():</span>
     <span class="n">v1_job_list</span> <span class="o">=</span> <span class="n">list_namespaced_job</span><span class="p">(</span>
         <span class="n">kubernetes_credentials</span><span class="o">=</span><span class="n">KubernetesCredentials</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;k8s-creds&quot;</span><span class="p">),</span>
         <span class="n">namespace</span><span class="o">=</span><span class="s2">&quot;my-namespace&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 </code></pre></div>
 <h3 id="patch-an-existing-kubernetes-deployment">Patch an existing Kubernetes deployment<a class="headerlink" href="#patch-an-existing-kubernetes-deployment" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">kubernetes.client.models</span> <span class="kn">import</span> <span class="n">V1Deployment</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">kubernetes.client.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">V1Deployment</span>
 
-<span class="kn">from</span> <span class="nn">prefect</span> <span class="kn">import</span> <span class="n">flow</span>
-<span class="kn">from</span> <span class="nn">prefect_kubernetes.credentials</span> <span class="kn">import</span> <span class="n">KubernetesCredentials</span>
-<span class="kn">from</span> <span class="nn">prefect_kubernetes.deployments</span> <span class="kn">import</span> <span class="n">patch_namespaced_deployment</span>
-<span class="kn">from</span> <span class="nn">prefect_kubernetes.utilities</span> <span class="kn">import</span> <span class="n">convert_manifest_to_model</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect</span><span class="w"> </span><span class="kn">import</span> <span class="n">flow</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect_kubernetes.credentials</span><span class="w"> </span><span class="kn">import</span> <span class="n">KubernetesCredentials</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect_kubernetes.deployments</span><span class="w"> </span><span class="kn">import</span> <span class="n">patch_namespaced_deployment</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prefect_kubernetes.utilities</span><span class="w"> </span><span class="kn">import</span> <span class="n">convert_manifest_to_model</span>
 
 <span class="nd">@flow</span>
-<span class="k">def</span> <span class="nf">kubernetes_orchestrator</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">kubernetes_orchestrator</span><span class="p">():</span>
 
     <span class="n">v1_deployment_updates</span> <span class="o">=</span> <span class="n">convert_manifest_to_model</span><span class="p">(</span>
         <span class="n">manifest</span><span class="o">=</span><span class="s2">&quot;path/to/manifest.yaml&quot;</span><span class="p">,</span>
